@@ -1,0 +1,27 @@
+﻿os: Visual Studio 2017
+version: 1.0.{build}
+
+environment:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  NUGET_XMLDOC_MODE: skip
+
+branches:
+  only:
+    - master
+
+build_script:
+  - ps: .\Build.ps1 -RestorePackages
+
+after_build:
+    - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
+    - pip install codecov
+    - codecov -f "artifacts\code-coverage.xml"
+
+artifacts:
+  - path: artifacts
+
+nuget:
+  disable_publish_on_pr: true
+
+skip_tags: false
+test: off

@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{00F2B78C-D33E-4090-9888-C33435B02F1F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1A2A0990-94DE-4F14-850B-39BA7183BC63}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		.travis.yml = .travis.yml
+		appveyor.yml = appveyor.yml
+		AssemblyVersion.cs = AssemblyVersion.cs
+		Build.ps1 = Build.ps1
+		build.sh = build.sh
+		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
+		global.json = global.json
+		HttpClientInterception.Common.props = HttpClientInterception.Common.props
+		HttpClientInterception.ruleset = HttpClientInterception.ruleset
+		LICENSE = LICENSE
+		NuGet.config = NuGet.config
+		README.md = README.md
+		stylecop.json = stylecop.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6DC2A1B9-1D37-4062-A75D-6A03C7367A46}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustEat.HttpClientInterception", "src\HttpClientInterception\JustEat.HttpClientInterception.csproj", "{ED8F9445-5C18-48C1-B946-CBF8AC4A2C47}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustEat.HttpClientInterception.Tests", "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj", "{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED8F9445-5C18-48C1-B946-CBF8AC4A2C47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED8F9445-5C18-48C1-B946-CBF8AC4A2C47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED8F9445-5C18-48C1-B946-CBF8AC4A2C47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED8F9445-5C18-48C1-B946-CBF8AC4A2C47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ED8F9445-5C18-48C1-B946-CBF8AC4A2C47} = {00F2B78C-D33E-4090-9888-C33435B02F1F}
+		{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07} = {6DC2A1B9-1D37-4062-A75D-6A03C7367A46}
+	EndGlobalSection
+EndGlobal
