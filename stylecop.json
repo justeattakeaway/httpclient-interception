@@ -5,9 +5,9 @@
       "copyrightText": "Copyright (c) {ownerName}, {year}. All rights reserved.\nLicensed under the {licenseName} license. See the {licenseFile} file in the project root for full license information.",
       "documentExposedElements": true,
       "documentInterfaces": true,
-      "documentInternalElements": true,
-      "documentPrivateElements": true,
-      "documentPrivateFields": true,
+      "documentInternalElements": false,
+      "documentPrivateElements": false,
+      "documentPrivateFields": false,
       "fileNamingConvention": "metadata",
       "xmlHeader": false,
       "variables": {
@@ -34,7 +34,7 @@
         "readonly"
       ],
       "systemUsingDirectivesFirst": true,
-      "usingDirectivesPlacement": "insideNamespace"
+      "usingDirectivesPlacement": "outsideNamespace"
     },
     "readabilityRules": {},
     "spacingRules": {}
