@@ -2,6 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -14,6 +15,52 @@ namespace JustEat.HttpClientInterception
     /// </summary>
     public static class HttpClientInterceptorOptionsExtensions
     {
+        /// <summary>
+        /// Registers an HTTP request interception, replacing any existing registration.
+        /// </summary>
+        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
+        /// <param name="method">The HTTP method to register an interception for.</param>
+        /// <param name="uri">The request URI to register an interception for.</param>
+        /// <param name="contentFactory">A delegate to a method that returns the raw response content.</param>
+        /// <param name="statusCode">The optional HTTP status code to return.</param>
+        /// <param name="mediaType">The optional media type for the content-type.</param>
+        /// <param name="headers">The optional HTTP response headers.</param>
+        /// <returns>
+        /// The current <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="method"/>, <paramref name="uri"/> or <paramref name="contentFactory"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpClientInterceptorOptions Register(
+            this HttpClientInterceptorOptions options,
+            HttpMethod method,
+            Uri uri,
+            Func<byte[]> contentFactory,
+            HttpStatusCode statusCode = HttpStatusCode.OK,
+            string mediaType = HttpClientInterceptorOptions.JsonMediaType,
+            IEnumerable<KeyValuePair<string, string>> headers = null)
+        {
+            IDictionary<string, IEnumerable<string>> multivalueHeaders = null;
+
+            if (headers != null)
+            {
+                multivalueHeaders = new Dictionary<string, IEnumerable<string>>();
+
+                foreach (var pair in headers)
+                {
+                    multivalueHeaders[pair.Key] = new[] { pair.Value };
+                }
+            }
+
+            return options.Register(
+                method,
+                uri,
+                contentFactory,
+                statusCode,
+                mediaType,
+                multivalueHeaders);
+        }
+
         /// <summary>
         /// Registers an HTTP GET request for the specified JSON content.
         /// </summary>

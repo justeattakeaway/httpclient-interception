@@ -123,6 +123,56 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static void TryGetResponse_Returns_Empty_Response_If_Custom_Response_Header()
+        {
+            // Arrange
+            var method = HttpMethod.Get;
+            var uri = new Uri("https://google.com/");
+
+            var headers = new Dictionary<string, string>()
+            {
+                { "a", "b" },
+                { "c", "d" },
+            };
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(method, uri, Array.Empty<byte>, headers: headers);
+
+            var request = new HttpRequestMessage(method, uri);
+
+            // Act
+            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+
+            // Assert
+            actual.ShouldBeTrue();
+            response.ShouldNotBeNull();
+            response.Headers.GetValues("a").ShouldBe(new[] { "b" });
+            response.Headers.GetValues("c").ShouldBe(new[] { "d" });
+        }
+
+        [Fact]
+        public static void TryGetResponse_Returns_Empty_Response_If_Custom_Response_Header_Is_Null()
+        {
+            // Arrange
+            var method = HttpMethod.Get;
+            var uri = new Uri("https://google.com/");
+
+            IDictionary<string, string> headers = null;
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(method, uri, Array.Empty<byte>, headers: headers);
+
+            var request = new HttpRequestMessage(method, uri);
+
+            // Act
+            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+
+            // Assert
+            actual.ShouldBeTrue();
+            response.ShouldNotBeNull();
+        }
+
+        [Fact]
         public static void TryGetResponse_Returns_Empty_Response_If_Custom_Response_Headers()
         {
             // Arrange
