@@ -384,6 +384,17 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static void Register_Throws_If_Builder_Is_Null()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            HttpRequestInterceptionBuilder builder = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => options.Register(builder));
+        }
+
+        [Fact]
         public static void TryGetResponse_Throws_If_Content_Cannot_Be_Created()
         {
             // Arrange
@@ -397,6 +408,17 @@ namespace JustEat.HttpClientInterception
 
             // Act and Assert
             Assert.Throws<NotImplementedException>(() => options.TryGetResponse(request, out HttpResponseMessage _));
+        }
+
+        [Fact]
+        public static void Register_Throws_Builder_Has_Not_Set_RequestUri()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder();
+
+            // Act and Assert
+            Assert.Throws<InvalidOperationException>(() => options.Register(builder));
         }
 
         private sealed class MyObject

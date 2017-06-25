@@ -168,6 +168,34 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
+        /// Registers an HTTP request interception, replacing any existing registration.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use to create the registration.</param>
+        /// <returns>
+        /// The current <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="builder"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// No request URI has been setup for <paramref name="builder"/>.
+        /// </exception>
+        public HttpClientInterceptorOptions Register(HttpRequestInterceptionBuilder builder)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            HttpInterceptionResponse interceptor = builder.Build();
+
+            string key = BuildKey(interceptor.Method, interceptor.RequestUri);
+            _mappings[key] = interceptor;
+
+            return this;
+        }
+
+        /// <summary>
         /// Tries to fetch the HTTP response, if any, set up for the specified HTTP request.
         /// </summary>
         /// <param name="request">The HTTP request to try and get the intercepted response for.</param>
@@ -252,21 +280,6 @@ namespace JustEat.HttpClientInterception
         /// A <see cref="string"/> to use as the key for the interceptor registration.
         /// </returns>
         private static string BuildKey(HttpMethod method, Uri uri) => $"{method.Method}:{uri}";
-
-        private sealed class HttpInterceptionResponse
-        {
-            internal HttpMethod Method { get; set; }
-
-            internal Uri RequestUri { get; set; }
-
-            internal HttpStatusCode StatusCode { get; set; }
-
-            internal Func<byte[]> ContentFactory { get; set; }
-
-            internal string ContentMediaType { get; set; }
-
-            internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> Headers { get; set; }
-        }
 
         private sealed class OptionsScope : IDisposable
         {

@@ -29,7 +29,8 @@ namespace JustEat.HttpClientInterception
         /// The current <see cref="HttpClientInterceptorOptions"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="method"/>, <paramref name="uri"/> or <paramref name="contentFactory"/> is <see langword="null"/>.
+        /// <paramref name="options"/>, <paramref name="method"/>, <paramref name="uri"/> or
+        /// <paramref name="contentFactory"/> is <see langword="null"/>.
         /// </exception>
         public static HttpClientInterceptorOptions Register(
             this HttpClientInterceptorOptions options,
@@ -40,6 +41,11 @@ namespace JustEat.HttpClientInterception
             string mediaType = HttpClientInterceptorOptions.JsonMediaType,
             IEnumerable<KeyValuePair<string, string>> headers = null)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             IDictionary<string, IEnumerable<string>> multivalueHeaders = null;
 
             if (headers != null)
@@ -72,7 +78,7 @@ namespace JustEat.HttpClientInterception
         /// The value specified by <paramref name="options"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="content"/> is <see langword="null"/>.
+        /// <paramref name="options"/> or <paramref name="content"/> is <see langword="null"/>.
         /// </exception>
         public static HttpClientInterceptorOptions RegisterGet(
             this HttpClientInterceptorOptions options,
@@ -80,30 +86,11 @@ namespace JustEat.HttpClientInterception
             object content,
             HttpStatusCode statusCode = HttpStatusCode.OK)
         {
-            return options.RegisterGet(new Uri(uriString), content, statusCode);
-        }
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
-        /// <summary>
-        /// Registers an HTTP GET request for the specified JSON object.
-        /// </summary>
-        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
-        /// <param name="uri">The request URI.</param>
-        /// <param name="content">The object to serialize as JSON as the content.</param>
-        /// <param name="statusCode">The optional HTTP status code to return.</param>
-        /// <param name="serializerSettings">The optional settings to use to serialize <paramref name="content"/> as JSON.</param>
-        /// <returns>
-        /// The value specified by <paramref name="options"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="content"/> is <see langword="null"/>.
-        /// </exception>
-        public static HttpClientInterceptorOptions RegisterGet(
-            this HttpClientInterceptorOptions options,
-            Uri uri,
-            object content,
-            HttpStatusCode statusCode = HttpStatusCode.OK,
-            JsonSerializerSettings serializerSettings = null)
-        {
             if (content == null)
             {
                 throw new ArgumentNullException(nameof(content));
@@ -111,11 +98,11 @@ namespace JustEat.HttpClientInterception
 
             Func<byte[]> contentFactory = () =>
             {
-                string json = JsonConvert.SerializeObject(content, serializerSettings ?? new JsonSerializerSettings());
+                string json = JsonConvert.SerializeObject(content);
                 return Encoding.UTF8.GetBytes(json);
             };
 
-            return options.RegisterGet(uri, contentFactory, statusCode);
+            return options.Register(HttpMethod.Get, new Uri(uriString), contentFactory, statusCode);
         }
 
         /// <summary>
@@ -129,6 +116,9 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The value specified by <paramref name="options"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="options"/> is <see langword="null"/>.
+        /// </exception>
         public static HttpClientInterceptorOptions RegisterGet(
             this HttpClientInterceptorOptions options,
             string uriString,
@@ -136,70 +126,12 @@ namespace JustEat.HttpClientInterception
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = HttpClientInterceptorOptions.JsonMediaType)
         {
-            return options.RegisterGet(new Uri(uriString), content, statusCode, mediaType);
-        }
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
-        /// <summary>
-        /// Registers an HTTP GET request for the specified string.
-        /// </summary>
-        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
-        /// <param name="uri">The request URI.</param>
-        /// <param name="content">The UTF-8 encoded string to use as the content.</param>
-        /// <param name="statusCode">The optional HTTP status code to return.</param>
-        /// <param name="mediaType">The optional media type for the content-type.</param>
-        /// <returns>
-        /// The value specified by <paramref name="options"/>.
-        /// </returns>
-        public static HttpClientInterceptorOptions RegisterGet(
-            this HttpClientInterceptorOptions options,
-            Uri uri,
-            string content,
-            HttpStatusCode statusCode = HttpStatusCode.OK,
-            string mediaType = HttpClientInterceptorOptions.JsonMediaType)
-        {
-            return options.RegisterGet(uri, () => Encoding.UTF8.GetBytes(content ?? string.Empty), statusCode, mediaType);
-        }
-
-        /// <summary>
-        /// Registers an HTTP GET request for the specified byte content.
-        /// </summary>
-        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
-        /// <param name="uriString">The request URL.</param>
-        /// <param name="contentFactory">A delegate to a method that returns the raw response content.</param>
-        /// <param name="statusCode">The optional HTTP status code to return.</param>
-        /// <param name="mediaType">The optional media type for the content-type.</param>
-        /// <returns>
-        /// The value specified by <paramref name="options"/>.
-        /// </returns>
-        public static HttpClientInterceptorOptions RegisterGet(
-            this HttpClientInterceptorOptions options,
-            string uriString,
-            Func<byte[]> contentFactory,
-            HttpStatusCode statusCode = HttpStatusCode.OK,
-            string mediaType = HttpClientInterceptorOptions.JsonMediaType)
-        {
-            return options.RegisterGet(new Uri(uriString), contentFactory, statusCode, mediaType);
-        }
-
-        /// <summary>
-        /// Registers an HTTP GET request the specified byte content.
-        /// </summary>
-        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
-        /// <param name="uri">The request URI.</param>
-        /// <param name="contentFactory">A delegate to a method that returns the raw response content.</param>
-        /// <param name="statusCode">The optional HTTP status code to return.</param>
-        /// <param name="mediaType">The optional media type for the content-type.</param>
-        /// <returns>
-        /// The value specified by <paramref name="options"/>.
-        /// </returns>
-        public static HttpClientInterceptorOptions RegisterGet(
-            this HttpClientInterceptorOptions options,
-            Uri uri,
-            Func<byte[]> contentFactory,
-            HttpStatusCode statusCode = HttpStatusCode.OK,
-            string mediaType = HttpClientInterceptorOptions.JsonMediaType)
-        {
-            return options.Register(HttpMethod.Get, uri, contentFactory, statusCode, mediaType);
+            return options.Register(HttpMethod.Get, new Uri(uriString), () => Encoding.UTF8.GetBytes(content ?? string.Empty), statusCode, mediaType);
         }
 
         /// <summary>
@@ -210,22 +142,17 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The value specified by <paramref name="options"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="options"/> is <see langword="null"/>.
+        /// </exception>
         public static HttpClientInterceptorOptions DeregisterGet(this HttpClientInterceptorOptions options, string uriString)
         {
-            return options.DeregisterGet(new Uri(uriString));
-        }
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
-        /// <summary>
-        /// Deregisters an HTTP GET request.
-        /// </summary>
-        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
-        /// <param name="uri">The request URI.</param>
-        /// <returns>
-        /// The value specified by <paramref name="options"/>.
-        /// </returns>
-        public static HttpClientInterceptorOptions DeregisterGet(this HttpClientInterceptorOptions options, Uri uri)
-        {
-            return options.Deregister(HttpMethod.Get, uri);
+            return options.Deregister(HttpMethod.Get, new Uri(uriString));
         }
     }
 }

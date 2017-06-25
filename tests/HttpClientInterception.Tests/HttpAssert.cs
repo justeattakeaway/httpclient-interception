@@ -3,6 +3,7 @@
 
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -21,24 +22,53 @@ namespace JustEat.HttpClientInterception
             return JsonConvert.DeserializeObject<T>(json);
         }
 
-        internal static async Task<string> GetAsync(
+        internal static Task<string> GetAsync(
             HttpClientInterceptorOptions target,
             string requestUri,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = null)
         {
+            return SendAsync(target, HttpMethod.Get, requestUri, null, statusCode, mediaType);
+        }
+
+        internal static async Task<string> PostAsync(
+            HttpClientInterceptorOptions target,
+            string requestUri,
+            object content,
+            HttpStatusCode statusCode = HttpStatusCode.OK,
+            string mediaType = null)
+        {
+            string json = JsonConvert.SerializeObject(content);
+
+            using (var httpContent = new StringContent(json, Encoding.UTF8, mediaType ?? "application/json"))
+            {
+                return await SendAsync(target, HttpMethod.Post, requestUri, httpContent, statusCode, mediaType);
+            }
+        }
+
+        internal static async Task<string> SendAsync(
+            HttpClientInterceptorOptions target,
+            HttpMethod httpMethod,
+            string requestUri,
+            HttpContent content = null,
+            HttpStatusCode statusCode = HttpStatusCode.OK,
+            string mediaType = null)
+        {
             using (var httpClient = target.CreateHttpClient(ErroringHandler.Handler))
             {
-                using (var response = await httpClient.GetAsync(requestUri))
+                using (var request = new HttpRequestMessage(httpMethod, requestUri))
                 {
-                    response.StatusCode.ShouldBe(statusCode);
-
-                    if (mediaType != null)
+                    using (var response = await httpClient.SendAsync(request))
                     {
-                        response.Content.Headers.ContentType.MediaType.ShouldBe(mediaType);
-                    }
+                        response.StatusCode.ShouldBe(statusCode);
 
-                    return await response.Content.ReadAsStringAsync();
+                        if (mediaType != null)
+                        {
+                            response.Content.Headers.ContentType.MediaType.ShouldBe(mediaType);
+                        }
+
+                        return await response.Content.ReadAsStringAsync();
+                    }
                 }
             }
         }
