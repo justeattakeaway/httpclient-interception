@@ -49,11 +49,6 @@ namespace JustEat.HttpClientInterception
         /// <inheritdoc />
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             if (_options.TryGetResponse(request, out HttpResponseMessage response))
             {
                 return Task.FromResult(response);

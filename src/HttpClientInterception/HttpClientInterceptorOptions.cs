@@ -251,7 +251,7 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// A <see cref="string"/> to use as the key for the interceptor registration.
         /// </returns>
-        private static string BuildKey(HttpMethod method, Uri uri) => $"{method?.Method}:{uri}";
+        private static string BuildKey(HttpMethod method, Uri uri) => $"{method.Method}:{uri}";
 
         private sealed class HttpInterceptionResponse
         {
