@@ -47,7 +47,7 @@ namespace JustEat.HttpClientInterception
         /// <summary>
         /// Begins a new options scope where any changes to the
         /// currently registered interceptions are only persisted
-        /// until the returned <see cref="IDisposable"/> is disposed.
+        /// until the returned <see cref="IDisposable"/> is disposed of.
         /// </summary>
         /// <returns>
         /// An <see cref="IDisposable"/> that is used to end the registration scope.
