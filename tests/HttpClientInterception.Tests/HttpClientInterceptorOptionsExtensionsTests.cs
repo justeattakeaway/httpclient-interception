@@ -3,7 +3,6 @@
 
 using System;
 using System.Net;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -25,7 +24,7 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions().RegisterGet(requestUri, expected);
 
             // Act
-            string[] actual = await AssertGet<string[]>(options, requestUri);
+            string[] actual = await HttpAssert.GetAsync<string[]>(options, requestUri);
 
             // Assert
             actual.ShouldBe(expected);
@@ -41,7 +40,7 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions().RegisterGet(uri, expected);
 
             // Act
-            string[] actual = await AssertGet<string[]>(options, uri.AbsoluteUri);
+            string[] actual = await HttpAssert.GetAsync<string[]>(options, uri.AbsoluteUri);
 
             // Assert
             actual.ShouldBe(expected);
@@ -63,7 +62,7 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions().RegisterGet(requestUri, expected);
 
             // Act
-            var actual1 = await AssertGet<CustomObject>(options, requestUri);
+            var actual1 = await HttpAssert.GetAsync<CustomObject>(options, requestUri);
 
             // Assert
             actual1.ShouldNotBeNull();
@@ -78,7 +77,7 @@ namespace JustEat.HttpClientInterception
             expected.Text = "L'éléphant";
 
             // Act
-            var actual2 = await AssertGet<CustomObject>(options, requestUri);
+            var actual2 = await HttpAssert.GetAsync<CustomObject>(options, requestUri);
 
             // Assert
             actual2.ShouldNotBeNull();
@@ -98,7 +97,7 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions().RegisterGet(requestUri, expected);
 
             // Act
-            string actual = await AssertGet(options, requestUri);
+            string actual = await HttpAssert.GetAsync(options, requestUri);
 
             // Assert
             actual.Equals(@"{""mode"":1}");
@@ -118,7 +117,7 @@ namespace JustEat.HttpClientInterception
                 .RegisterGet(uri, expected, serializerSettings: serializerSettings);
 
             // Act
-            string actual = await AssertGet(options, uri.AbsoluteUri);
+            string actual = await HttpAssert.GetAsync(options, uri.AbsoluteUri);
 
             // Assert
             actual.Equals(@"{""mode"":""ManualReset""}");
@@ -136,7 +135,7 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions().RegisterGet(requestUri, expected, statusCode);
 
             // Act
-            string actual = await AssertGet(options, requestUri, statusCode);
+            string actual = await HttpAssert.GetAsync(options, requestUri, statusCode);
 
             // Assert
             actual.ShouldBe(expected);
@@ -153,7 +152,7 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions().RegisterGet(uri, expected, mediaType: mediaType);
 
             // Act
-            string actual = await AssertGet(options, uri.AbsoluteUri, mediaType: mediaType);
+            string actual = await HttpAssert.GetAsync(options, uri.AbsoluteUri, mediaType: mediaType);
 
             // Assert
             actual.ShouldBe(expected);
@@ -170,7 +169,7 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions().RegisterGet(requestUri, content);
 
             // Act
-            string actual = await AssertGet(options, requestUri);
+            string actual = await HttpAssert.GetAsync(options, requestUri);
 
             // Assert
             actual.ShouldBe(expected);
@@ -186,7 +185,7 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions().RegisterGet(requestUri, contentFactory);
 
             // Act
-            string actual = await AssertGet(options, requestUri);
+            string actual = await HttpAssert.GetAsync(options, requestUri);
 
             // Assert
             actual.ShouldBe(".NET");
@@ -202,47 +201,6 @@ namespace JustEat.HttpClientInterception
             // Act and Assert
             Assert.Throws<ArgumentNullException>("content", () => options.RegisterGet("https://google.com", content));
             Assert.Throws<ArgumentNullException>("content", () => options.RegisterGet(new Uri("https://google.com"), content));
-        }
-
-        private static async Task<T> AssertGet<T>(
-            HttpClientInterceptorOptions target,
-            string requestUri,
-            HttpStatusCode statusCode = HttpStatusCode.OK)
-        {
-            string json = await AssertGet(target, requestUri, statusCode);
-            return JsonConvert.DeserializeObject<T>(json);
-        }
-
-        private static async Task<string> AssertGet(
-            HttpClientInterceptorOptions target,
-            string requestUri,
-            HttpStatusCode statusCode = HttpStatusCode.OK,
-            string mediaType = null)
-        {
-            using (var httpClient = target.CreateHttpClient(ErroringHandler.Handler))
-            {
-                using (var response = await httpClient.GetAsync(requestUri))
-                {
-                    response.StatusCode.ShouldBe(statusCode);
-
-                    if (mediaType != null)
-                    {
-                        response.Content.Headers.ContentType.MediaType.ShouldBe(mediaType);
-                    }
-
-                    return await response.Content.ReadAsStringAsync();
-                }
-            }
-        }
-
-        private sealed class ErroringHandler : HttpMessageHandler
-        {
-            internal static readonly ErroringHandler Handler = new ErroringHandler();
-
-            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-            {
-                throw new HttpRequestException("HTTP request was not intercepted.");
-            }
         }
 
         private sealed class CustomObject
