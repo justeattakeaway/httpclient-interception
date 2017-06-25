@@ -24,30 +24,34 @@ namespace SampleApp.Tests
         [Fact]
         public async Task Can_Get_Organization_Repositories()
         {
-            // Arrange - Setup an expected response from the GitHub API
-            var response = new[]
+            // Arrange - use a scope to clean-up registrations
+            using (_fixture.Interceptor.BeginScope())
             {
-                new { id = 1, name = "foo" },
-                new { id = 2, name = "bar" },
-            };
+                // Setup an expected response from the GitHub API
+                var response = new[]
+                {
+                    new { id = 1, name = "foo" },
+                    new { id = 2, name = "bar" },
+                };
 
-            // Register a response for the expected HTTP request to the GitHub API
-            _fixture.Interceptor.RegisterGet("https://api.github.com/orgs/weyland-yutani/repos?per_page=2", response);
+                // Register a response for the expected HTTP request to the GitHub API
+                _fixture.Interceptor.RegisterGet("https://api.github.com/orgs/weyland-yutani/repos?per_page=2", response);
 
-            string[] actual;
+                string[] actual;
 
-            using (var httpClient = new HttpClient())
-            {
-                // Set up the HTTP client to use the self-hosted HTTP server for the application
-                httpClient.BaseAddress = new Uri(_fixture.ServerUrl);
+                using (var httpClient = new HttpClient())
+                {
+                    // Set up the HTTP client to use the self-hosted HTTP server for the application
+                    httpClient.BaseAddress = new Uri(_fixture.ServerUrl);
 
-                // Act - Perform the HTTP request against our application and deserialize the response
-                string json = await httpClient.GetStringAsync("api/repos?count=2");
-                actual = JsonConvert.DeserializeObject<string[]>(json);
+                    // Act - Perform the HTTP request against our application and deserialize the response
+                    string json = await httpClient.GetStringAsync("api/repos?count=2");
+                    actual = JsonConvert.DeserializeObject<string[]>(json);
+                }
+
+                // Assert - Our application should have parsed the stub-names
+                actual.ShouldBe(new[] { "bar", "foo" });
             }
-
-            // Assert - Our application should have parsed the stub-names
-            actual.ShouldBe(new[] { "bar", "foo" });
         }
     }
 }
