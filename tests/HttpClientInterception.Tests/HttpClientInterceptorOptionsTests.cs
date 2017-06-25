@@ -90,6 +90,103 @@ namespace JustEat.HttpClientInterception
             }
         }
 
+        [Fact]
+        public static async Task HttpClient_Requests_Can_Be_Intercepted_With_Scopes()
+        {
+            string url = "https://google.com/";
+
+            var payload = new MyObject()
+            {
+                Message = "Hello world!"
+            };
+
+            var options = new HttpClientInterceptorOptions();
+
+            options.RegisterGet(url, payload, statusCode: HttpStatusCode.NotFound);
+
+            using (var httpClient = options.CreateHttpClient())
+            {
+                using (var response = await httpClient.GetAsync(url))
+                {
+                    response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+                }
+
+                using (options.BeginScope())
+                {
+                    options.RegisterGet(url, payload, statusCode: HttpStatusCode.InternalServerError);
+
+                    using (var response = await httpClient.GetAsync(url))
+                    {
+                        response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+                    }
+
+                    using (options.BeginScope())
+                    {
+                        options.RegisterGet(url, payload, statusCode: HttpStatusCode.RequestTimeout);
+
+                        using (var response = await httpClient.GetAsync(url))
+                        {
+                            response.StatusCode.ShouldBe(HttpStatusCode.RequestTimeout);
+                        }
+                    }
+
+                    using (var response = await httpClient.GetAsync(url))
+                    {
+                        response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+                    }
+                }
+
+                using (var response = await httpClient.GetAsync(url))
+                {
+                    response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+                }
+            }
+        }
+
+        [Fact]
+        public static async Task HttpClientInterceptorOptions_Can_Be_Cloned()
+        {
+            string url = "https://google.com/";
+
+            var payload = new MyObject()
+            {
+                Message = "Hello world!"
+            };
+
+            var options = new HttpClientInterceptorOptions();
+
+            options.RegisterGet(url, payload, statusCode: HttpStatusCode.NotFound);
+
+            using (var httpClient = options.CreateHttpClient())
+            {
+                using (var response = await httpClient.GetAsync(url))
+                {
+                    response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+                }
+            }
+
+            var clone = options.Clone();
+            clone.RegisterGet(url, payload, statusCode: HttpStatusCode.InternalServerError);
+
+            using (var httpClient = options.CreateHttpClient())
+            {
+                using (var response = await httpClient.GetAsync(url))
+                {
+                    response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+                }
+            }
+
+            options.ThrowOnMissingRegistration = true;
+
+            using (var httpClient = clone.CreateHttpClient())
+            {
+                using (var response = await httpClient.GetAsync(url))
+                {
+                    response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+                }
+            }
+        }
+
         private sealed class MyObject
         {
             public string Message { get; set; }

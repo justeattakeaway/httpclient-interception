@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 
 namespace JustEat.HttpClientInterception
 {
@@ -21,14 +22,37 @@ namespace JustEat.HttpClientInterception
         internal const string JsonMediaType = "application/json";
 
         /// <summary>
-        /// The mapped HTTP request interceptors. This field is read-only.
+        /// The <see cref="StringComparer"/> to use to key registrations.
         /// </summary>
-        private readonly IDictionary<string, HttpInterceptionResponse> _mappings = new ConcurrentDictionary<string, HttpInterceptionResponse>(StringComparer.Ordinal);
+        private static readonly StringComparer _comparer = StringComparer.Ordinal;
+
+        /// <summary>
+        /// The mapped HTTP request interceptors.
+        /// </summary>
+        private IDictionary<string, HttpInterceptionResponse> _mappings;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpClientInterceptorOptions"/> class.
+        /// </summary>
+        public HttpClientInterceptorOptions()
+        {
+            _mappings = new ConcurrentDictionary<string, HttpInterceptionResponse>(_comparer);
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether to throw an exception if a response has not been registered for an HTTP request.
         /// </summary>
         public bool ThrowOnMissingRegistration { get; set; }
+
+        /// <summary>
+        /// Begins a new options scope where any changes to the
+        /// currently registered interceptions are only persisted
+        /// until the returned <see cref="IDisposable"/> is disposed.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IDisposable"/> that is used to end the registration scope.
+        /// </returns>
+        public IDisposable BeginScope() => new OptionsScope(this);
 
         /// <summary>
         /// Clears any and all existing registrations.
@@ -40,6 +64,24 @@ namespace JustEat.HttpClientInterception
         {
             _mappings.Clear();
             return this;
+        }
+
+        /// <summary>
+        /// Clones the existing <see cref="HttpClientInterceptorOptions"/>.
+        /// </summary>
+        /// <returns>
+        /// A new <see cref="HttpClientInterceptorOptions"/> cloned from the current instance.
+        /// </returns>
+        public HttpClientInterceptorOptions Clone()
+        {
+            var clone = new HttpClientInterceptorOptions()
+            {
+                ThrowOnMissingRegistration = ThrowOnMissingRegistration
+            };
+
+            clone._mappings = new ConcurrentDictionary<string, HttpInterceptionResponse>(_mappings, _comparer);
+
+            return clone;
         }
 
         /// <summary>
@@ -234,6 +276,28 @@ namespace JustEat.HttpClientInterception
             internal string ContentMediaType { get; set; }
 
             internal IReadOnlyDictionary<string, string> Headers { get; set; }
+        }
+
+        private sealed class OptionsScope : IDisposable
+        {
+            private readonly HttpClientInterceptorOptions _parent;
+            private readonly IDictionary<string, HttpInterceptionResponse> _old;
+            private readonly IDictionary<string, HttpInterceptionResponse> _new;
+
+            internal OptionsScope(HttpClientInterceptorOptions parent)
+            {
+                _parent = parent;
+
+                // TODO There might be a nicer way to do this so it's more atomic
+                _old = _parent._mappings;
+                _parent._mappings = _new = new ConcurrentDictionary<string, HttpInterceptionResponse>(_old, _comparer);
+            }
+
+            void IDisposable.Dispose()
+            {
+                Interlocked.CompareExchange(ref _parent._mappings, _old, _new);
+                _new.Clear();
+            }
         }
     }
 }
