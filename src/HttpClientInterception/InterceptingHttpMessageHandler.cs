@@ -12,7 +12,7 @@ namespace JustEat.HttpClientInterception
     /// A class representing an <see cref="HttpClientHandler"/> implementation that
     /// supports intercepting HTTP requests instead of performing an HTTP request.
     /// </summary>
-    internal class InterceptingHttpMessageHandler : DelegatingHandler
+    public class InterceptingHttpMessageHandler : DelegatingHandler
     {
         /// <summary>
         /// The <see cref="HttpClientInterceptorOptions"/> to use. This field is read-only.
