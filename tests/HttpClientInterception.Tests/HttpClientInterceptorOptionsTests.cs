@@ -129,10 +129,10 @@ namespace JustEat.HttpClientInterception
             var method = HttpMethod.Get;
             var uri = new Uri("https://google.com/");
 
-            var headers = new Dictionary<string, string>()
+            var headers = new Dictionary<string, IEnumerable<string>>()
             {
-                { "a", "b" },
-                { "c", "d" },
+                { "a", new[] { "b" } },
+                { "c", new[] { "d", "e" } },
             };
 
             var options = new HttpClientInterceptorOptions()
@@ -147,7 +147,7 @@ namespace JustEat.HttpClientInterception
             actual.ShouldBeTrue();
             response.ShouldNotBeNull();
             response.Headers.GetValues("a").ShouldBe(new[] { "b" });
-            response.Headers.GetValues("c").ShouldBe(new[] { "d" });
+            response.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
         }
 
         [Fact]

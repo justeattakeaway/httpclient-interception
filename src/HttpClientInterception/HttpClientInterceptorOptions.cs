@@ -134,7 +134,7 @@ namespace JustEat.HttpClientInterception
             Func<byte[]> contentFactory,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = JsonMediaType,
-            IReadOnlyDictionary<string, string> headers = null)
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers = null)
         {
             if (method == null)
             {
@@ -204,7 +204,7 @@ namespace JustEat.HttpClientInterception
                 result.Content = new ByteArrayContent(content);
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue(options.ContentMediaType);
 
-                if (options.Headers?.Count > 0)
+                if (options.Headers != null)
                 {
                     foreach (var pair in options.Headers)
                     {
@@ -265,7 +265,7 @@ namespace JustEat.HttpClientInterception
 
             internal string ContentMediaType { get; set; }
 
-            internal IReadOnlyDictionary<string, string> Headers { get; set; }
+            internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> Headers { get; set; }
         }
 
         private sealed class OptionsScope : IDisposable
