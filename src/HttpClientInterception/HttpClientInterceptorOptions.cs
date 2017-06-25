@@ -239,17 +239,7 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         public HttpClient CreateHttpClient(HttpMessageHandler innerHandler = null)
         {
-            var handler = CreateHttpMessageHandler();
-
-            try
-            {
-                handler.InnerHandler = innerHandler ?? new HttpClientHandler();
-            }
-            catch (Exception)
-            {
-                handler.Dispose();
-            }
-
+            var handler = new InterceptingHttpMessageHandler(this, innerHandler ?? new HttpClientHandler());
             return new HttpClient(handler, true);
         }
 
