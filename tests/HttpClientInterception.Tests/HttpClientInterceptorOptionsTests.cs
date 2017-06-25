@@ -421,6 +421,49 @@ namespace JustEat.HttpClientInterception
             Assert.Throws<InvalidOperationException>(() => options.Register(builder));
         }
 
+        [Fact]
+        public static void ToString_Returns_Correct_Value_If_Empty()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            // Act
+            string actual = options.ToString();
+
+            // Assert
+            actual.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public static async Task ToString_Returns_Correct_Value_If_Not_Empty()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions()
+                .RegisterGet("https://google.com/", new { })
+                .RegisterGet("https://google.co.ca/", new { })
+                .RegisterGet("https://google.co.uk/", new { })
+                .Register(HttpMethod.Post, new Uri("https://google.co.uk/"), Array.Empty<byte>);
+
+            for (int i = 0; i < 11; i++)
+            {
+                await HttpAssert.GetAsync(options, "https://google.com/");
+            }
+
+            await HttpAssert.GetAsync(options, "https://google.co.uk/");
+            await HttpAssert.PostAsync(options, "https://google.co.uk/", new { });
+
+            // Act
+            string actual = options.ToString();
+
+            // Assert
+            actual.ShouldBe(@"| Method | URI                   | Count |
+|--------|-----------------------|-------|
+| GET    | https://google.co.ca/ |     0 |
+| GET    | https://google.co.uk/ |     1 |
+| GET    | https://google.com/   |    11 |
+| POST   | https://google.co.uk/ |     1 |");
+        }
+
         private sealed class MyObject
         {
             public string Message { get; set; }

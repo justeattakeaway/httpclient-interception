@@ -4,9 +4,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 
 namespace JustEat.HttpClientInterception
@@ -246,6 +248,8 @@ namespace JustEat.HttpClientInterception
                 throw;
             }
 
+            options.IncrementUsage();
+
             response = result;
             return true;
         }
@@ -269,6 +273,68 @@ namespace JustEat.HttpClientInterception
         {
             var handler = new InterceptingHttpMessageHandler(this, innerHandler ?? new HttpClientHandler());
             return new HttpClient(handler, true);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="string"/> containing the currently registered
+        /// interceptions and the times each has been used, formatted as a table.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="string"/> containing information about the current registrations.
+        /// </returns>
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+
+            var formatted = _mappings
+                .Select((p) => Tuple.Create(p.Value.Method.Method, p.Value.RequestUri.ToString(), p.Value.UsageCount.ToString()))
+                .ToList();
+
+            if (formatted.Count > 0)
+            {
+                const string Method = "Method";
+                const string UriText = "URI";
+                const string Count = "Count";
+
+                int columnLength1 = Math.Max(formatted.Max((p) => p.Item1.Length), Method.Length);
+                int columnLength2 = Math.Max(formatted.Max((p) => p.Item2.Length), UriText.Length);
+                int columnLength3 = Math.Max(formatted.Max((p) => p.Item3.Length), Count.Length);
+
+                builder.Append("| ")
+                       .Append(Method)
+                       .Append(new string(' ', columnLength1 - Method.Length))
+                       .Append(" | ")
+                       .Append(UriText)
+                       .Append(new string(' ', columnLength2 - UriText.Length))
+                       .Append(" | ")
+                       .Append(new string(' ', columnLength3 - Count.Length))
+                       .Append(Count)
+                       .AppendLine(" |")
+                       .Append("|")
+                       .Append(new string('-', columnLength1 + 2))
+                       .Append("|")
+                       .Append(new string('-', columnLength2 + 2))
+                       .Append("|")
+                       .Append(new string('-', columnLength3 + 2))
+                       .Append("|");
+
+                foreach (var item in formatted.OrderBy((p) => p.Item1).ThenBy((p) => p.Item2))
+                {
+                    builder.AppendLine()
+                           .Append("| ")
+                           .Append(item.Item1)
+                           .Append(new string(' ', columnLength1 - item.Item1.Length))
+                           .Append(" | ")
+                           .Append(item.Item2)
+                           .Append(new string(' ', columnLength2 - item.Item2.Length))
+                           .Append(" | ")
+                           .Append(new string(' ', columnLength3 - item.Item3.Length))
+                           .Append(item.Item3)
+                           .Append(" |");
+                }
+            }
+
+            return builder.ToString();
         }
 
         /// <summary>
