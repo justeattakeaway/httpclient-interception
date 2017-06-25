@@ -72,13 +72,16 @@ namespace JustEat.HttpClientInterception
         public static async Task SendAsync_Calls_Inner_Handler_If_Registration_Missing()
         {
             // Arrange
-            var options = new HttpClientInterceptorOptions();
+            var options = new HttpClientInterceptorOptions()
+                .Register(HttpMethod.Get, new Uri("https://google.com/foo"), Array.Empty<byte>)
+                .Register(HttpMethod.Options, new Uri("http://google.com/foo"), Array.Empty<byte>)
+                .Register(HttpMethod.Options, new Uri("https://google.com/FOO"), Array.Empty<byte>);
 
             var mock = new Mock<HttpMessageHandler>();
 
             using (var expected = new HttpResponseMessage(System.Net.HttpStatusCode.OK))
             {
-                using (var request = new HttpRequestMessage(HttpMethod.Options, "https://google.com/"))
+                using (var request = new HttpRequestMessage(HttpMethod.Options, "https://google.com/foo"))
                 {
                     mock.Protected()
                         .Setup<Task<HttpResponseMessage>>("SendAsync", request, ItExpr.IsAny<CancellationToken>())
