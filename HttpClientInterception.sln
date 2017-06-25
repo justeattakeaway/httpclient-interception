@@ -31,6 +31,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustEat.HttpClientIntercept
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustEat.HttpClientInterception.Tests", "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj", "{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{58FB0A27-4361-45ED-BB97-FD836F5FEF24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "samples\SampleApp\SampleApp.csproj", "{A9B2AF56-BAD5-4099-AE88-37B71E72C20D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp.Tests", "samples\SampleApp.Tests\SampleApp.Tests.csproj", "{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +51,14 @@ Global
 		{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9B2AF56-BAD5-4099-AE88-37B71E72C20D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9B2AF56-BAD5-4099-AE88-37B71E72C20D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9B2AF56-BAD5-4099-AE88-37B71E72C20D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9B2AF56-BAD5-4099-AE88-37B71E72C20D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,5 +66,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{ED8F9445-5C18-48C1-B946-CBF8AC4A2C47} = {00F2B78C-D33E-4090-9888-C33435B02F1F}
 		{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07} = {6DC2A1B9-1D37-4062-A75D-6A03C7367A46}
+		{A9B2AF56-BAD5-4099-AE88-37B71E72C20D} = {58FB0A27-4361-45ED-BB97-FD836F5FEF24}
+		{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3} = {58FB0A27-4361-45ED-BB97-FD836F5FEF24}
 	EndGlobalSection
 EndGlobal
