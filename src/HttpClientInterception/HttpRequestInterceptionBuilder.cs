@@ -23,7 +23,117 @@ namespace JustEat.HttpClientInterception
 
         private HttpStatusCode _statusCode = HttpStatusCode.OK;
 
-        private Uri _requestUri;
+        private UriBuilder _uriBuilder = new UriBuilder();
+
+        /// <summary>
+        /// Sets the HTTP method to intercept a request for.
+        /// </summary>
+        /// <param name="method">The HTTP method to intercept.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="method"/> is <see langword="null"/>.
+        /// </exception>
+        public HttpRequestInterceptionBuilder ForMethod(HttpMethod method)
+        {
+            _method = method ?? throw new ArgumentNullException(nameof(method));
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the scheme of the request URI to intercept a request for.
+        /// </summary>
+        /// <param name="scheme">The request URI scheme to intercept.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder ForScheme(string scheme)
+        {
+            _uriBuilder.Scheme = scheme;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the host name of the request URI to intercept a request for.
+        /// </summary>
+        /// <param name="host">The request URI host name to intercept.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder ForHost(string host)
+        {
+            _uriBuilder.Host = host;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the port number of the request URI to intercept a request for.
+        /// </summary>
+        /// <param name="port">The request URI port number to intercept.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder ForPort(int port)
+        {
+            _uriBuilder.Port = port;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the path of the request URI to intercept a request for.
+        /// </summary>
+        /// <param name="path">The request URI path to intercept.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder ForPath(string path)
+        {
+            _uriBuilder.Path = path;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the query of the request URI to intercept a request for.
+        /// </summary>
+        /// <param name="query">The request URI query to intercept.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder ForQuery(string query)
+        {
+            _uriBuilder.Query = query;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the request URI to intercept a request for.
+        /// </summary>
+        /// <param name="uri">The request URI to intercept.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder ForUri(Uri uri)
+        {
+            _uriBuilder = new UriBuilder(uri);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets a builder for the request URI to intercept a request for.
+        /// </summary>
+        /// <param name="uriBuilder">The build for the request URI to intercept.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="uriBuilder"/> is <see langword="null"/>.
+        /// </exception>
+        public HttpRequestInterceptionBuilder ForUri(UriBuilder uriBuilder)
+        {
+            _uriBuilder = uriBuilder ?? throw new ArgumentNullException(nameof(uriBuilder));
+            return this;
+        }
 
         /// <summary>
         /// Sets the function to use to build the response content.
@@ -126,22 +236,6 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
-        /// Sets the HTTP method to use for the response.
-        /// </summary>
-        /// <param name="method">The HTTP method to use.</param>
-        /// <returns>
-        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="method"/> is <see langword="null"/>.
-        /// </exception>
-        public HttpRequestInterceptionBuilder WithMethod(HttpMethod method)
-        {
-            _method = method ?? throw new ArgumentNullException(nameof(method));
-            return this;
-        }
-
-        /// <summary>
         /// Sets media type for the response body content.
         /// </summary>
         /// <param name="mediaType">The media type for the content-type.</param>
@@ -176,32 +270,14 @@ namespace JustEat.HttpClientInterception
             return this;
         }
 
-        /// <summary>
-        /// Sets request URI to build the request for.
-        /// </summary>
-        /// <param name="requestUri">The request URI.</param>
-        /// <returns>
-        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
-        /// </returns>
-        public HttpRequestInterceptionBuilder WithUri(Uri requestUri)
-        {
-            _requestUri = requestUri;
-            return this;
-        }
-
         internal HttpInterceptionResponse Build()
         {
-            if (_requestUri == null)
-            {
-                throw new InvalidOperationException("No request URI has been specified.");
-            }
-
             var response = new HttpInterceptionResponse()
             {
                 ContentFactory = _contentFactory ?? Array.Empty<byte>,
                 ContentMediaType = _mediaType,
                 Method = _method,
-                RequestUri = _requestUri,
+                RequestUri = _uriBuilder.Uri,
                 StatusCode = _statusCode,
             };
 

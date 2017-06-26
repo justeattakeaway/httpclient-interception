@@ -14,6 +14,46 @@ namespace JustEat.HttpClientInterception
     public static class HttpRequestInterceptionBuilderExtensions
     {
         /// <summary>
+        /// Sets builder for an HTTP request.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <returns>
+        /// The value specified by <paramref name="builder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="builder"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpRequestInterceptionBuilder ForHttp(this HttpRequestInterceptionBuilder builder)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            return builder.ForScheme("http");
+        }
+
+        /// <summary>
+        /// Sets builder for an HTTPS request.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <returns>
+        /// The value specified by <paramref name="builder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="builder"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpRequestInterceptionBuilder ForHttps(this HttpRequestInterceptionBuilder builder)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            return builder.ForScheme("https");
+        }
+
+        /// <summary>
         /// Sets builder for an HTTP GET request.
         /// </summary>
         /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
@@ -30,7 +70,7 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            return builder.WithMethod(HttpMethod.Get);
+            return builder.ForMethod(HttpMethod.Get);
         }
 
         /// <summary>
@@ -50,7 +90,7 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            return builder.WithMethod(HttpMethod.Post);
+            return builder.ForMethod(HttpMethod.Post);
         }
 
         /// <summary>
@@ -113,7 +153,7 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
-        /// Sets request URL to build the request for.
+        /// Sets the request URL to intercept a request for.
         /// </summary>
         /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
         /// <param name="uriString">The request URL.</param>
@@ -123,14 +163,14 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="builder"/> is <see langword="null"/>.
         /// </exception>
-        public static HttpRequestInterceptionBuilder WithUrl(this HttpRequestInterceptionBuilder builder, string uriString)
+        public static HttpRequestInterceptionBuilder ForUrl(this HttpRequestInterceptionBuilder builder, string uriString)
         {
             if (builder == null)
             {
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            return builder.WithUri(new Uri(uriString));
+            return builder.ForUri(new Uri(uriString));
         }
     }
 }

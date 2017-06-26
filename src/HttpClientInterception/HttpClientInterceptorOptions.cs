@@ -179,9 +179,6 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="builder"/> is <see langword="null"/>.
         /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// No request URI has been setup for <paramref name="builder"/>.
-        /// </exception>
         public HttpClientInterceptorOptions Register(HttpRequestInterceptionBuilder builder)
         {
             if (builder == null)

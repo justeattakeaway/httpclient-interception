@@ -411,17 +411,6 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void Register_Throws_Builder_Has_Not_Set_RequestUri()
-        {
-            // Arrange
-            var options = new HttpClientInterceptorOptions();
-            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder();
-
-            // Act and Assert
-            Assert.Throws<InvalidOperationException>(() => options.Register(builder));
-        }
-
-        [Fact]
         public static void ToString_Returns_Correct_Value_If_Empty()
         {
             // Arrange

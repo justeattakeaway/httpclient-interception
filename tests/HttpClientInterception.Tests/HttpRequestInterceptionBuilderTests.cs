@@ -25,7 +25,7 @@ namespace JustEat.HttpClientInterception
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForGet()
-                .WithUrl(requestUri)
+                .ForUrl(requestUri)
                 .WithJsonContent(expected);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
@@ -51,7 +51,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var builder = new HttpRequestInterceptionBuilder()
-                .WithUrl(requestUri)
+                .ForUrl(requestUri)
                 .WithJsonContent(expected);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
@@ -90,7 +90,7 @@ namespace JustEat.HttpClientInterception
             var expected = new { mode = EventResetMode.ManualReset };
 
             var builder = new HttpRequestInterceptionBuilder()
-                .WithUrl(requestUri)
+                .ForUrl(requestUri)
                 .WithJsonContent(expected);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
@@ -114,7 +114,7 @@ namespace JustEat.HttpClientInterception
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForPost()
-                .WithUrl(requestUri)
+                .ForUrl(requestUri)
                 .WithJsonContent(expected, settings);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
@@ -134,7 +134,7 @@ namespace JustEat.HttpClientInterception
             var expected = "Not found";
 
             var builder = new HttpRequestInterceptionBuilder()
-                .WithUrl(requestUri)
+                .ForUrl(requestUri)
                 .WithStatus(404)
                 .WithContent(expected);
 
@@ -156,7 +156,7 @@ namespace JustEat.HttpClientInterception
             var expected = "<html>foo></html>";
 
             var builder = new HttpRequestInterceptionBuilder()
-                .WithUrl(requestUri)
+                .ForUrl(requestUri)
                 .WithMediaType(mediaType)
                 .WithContent(expected);
 
@@ -177,7 +177,7 @@ namespace JustEat.HttpClientInterception
             string expected = null;
 
             var builder = new HttpRequestInterceptionBuilder()
-                .WithUrl(requestUri)
+                .ForUrl(requestUri)
                 .WithContent(expected);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
@@ -196,7 +196,7 @@ namespace JustEat.HttpClientInterception
             string requestUri = "https://google.com/";
 
             var builder = new HttpRequestInterceptionBuilder()
-                .WithUrl(requestUri)
+                .ForUrl(requestUri)
                 .WithContent(() => new byte[] { 46, 78, 69, 84 });
 
             var options = new HttpClientInterceptorOptions().Register(builder);
@@ -221,7 +221,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var builder = new HttpRequestInterceptionBuilder()
-                .WithUrl(url)
+                .ForUrl(url)
                 .WithHeaders(headers);
 
             var options = new HttpClientInterceptorOptions()
@@ -252,7 +252,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var builder = new HttpRequestInterceptionBuilder()
-                .WithUrl(url)
+                .ForUrl(url)
                 .WithHeaders(headers);
 
             var options = new HttpClientInterceptorOptions()
@@ -277,7 +277,7 @@ namespace JustEat.HttpClientInterception
             string url = "https://google.com/";
 
             var builder = new HttpRequestInterceptionBuilder()
-                .WithUrl(url)
+                .ForUrl(url)
                 .WithHeader("a", "b")
                 .WithHeader("c", "d", "e", "f")
                 .WithHeader("c", "d", "e");
@@ -295,6 +295,76 @@ namespace JustEat.HttpClientInterception
             response.ShouldNotBeNull();
             response.Headers.GetValues("a").ShouldBe(new[] { "b" });
             response.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+        }
+
+        [Fact]
+        public static async Task Register_Uses_Defaults_For_Plain_Builder()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder();
+
+            // Act
+            options.Register(builder);
+
+            // Assert
+            (await HttpAssert.GetAsync(options, "http://localhost")).ShouldBeEmpty();
+        }
+
+        [Fact]
+        public static async Task Register_Builds_Uri_From_Components_From_Builder()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder()
+                .ForHttps()
+                .ForHost("something.com")
+                .ForPort(444)
+                .ForPath("my-path")
+                .ForQuery("q=1");
+
+            // Act
+            options.Register(builder);
+
+            // Assert
+            (await HttpAssert.GetAsync(options, "https://something.com:444/my-path?q=1")).ShouldBeEmpty();
+        }
+
+        [Fact]
+        public static async Task Register_Builds_Uri_From_Components_From_Builder_With_Http_And_Default_Port()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder()
+                .ForHttps()
+                .ForHttp()
+                .ForHost("something.com")
+                .ForPort(80);
+
+            // Act
+            options.Register(builder);
+
+            // Assert
+            (await HttpAssert.GetAsync(options, "http://something.com")).ShouldBeEmpty();
+        }
+
+        [Fact]
+        public static async Task Register_Builds_Uri_From_UriBuilder()
+        {
+            // Arrange
+            var uriBuilder = new UriBuilder("https://github.com/justeat");
+
+            var options = new HttpClientInterceptorOptions();
+
+            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder().ForUri(uriBuilder);
+
+            // Act
+            options.Register(builder);
+
+            // Assert
+            (await HttpAssert.GetAsync(options, "https://github.com/justeat")).ShouldBeEmpty();
         }
 
         [Fact]
@@ -317,13 +387,13 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void WithUrl_Validates_Parameters()
+        public static void ForUrl_Validates_Parameters()
         {
             // Arrange
             string uriString = "https://google.com/";
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).WithUrl(uriString));
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).ForUrl(uriString));
         }
 
         [Fact]
@@ -341,13 +411,38 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void WithMethod_Throws_If_Method_Is_Null()
+        public static void ForHttp_Validates_Parameters()
+        {
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).ForHttp());
+        }
+
+        [Fact]
+        public static void ForHttps_Validates_Parameters()
+        {
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).ForHttps());
+        }
+
+        [Fact]
+        public static void ForMethod_Throws_If_Method_Is_Null()
         {
             // Arrange
             HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("method", () => builder.WithMethod(null));
+            Assert.Throws<ArgumentNullException>("method", () => builder.ForMethod(null));
+        }
+
+        [Fact]
+        public static void ForUri_Throws_If_UriBuilder_Is_Null()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            UriBuilder uriBuilder = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("uriBuilder", () => builder.ForUri(uriBuilder));
         }
 
         private sealed class CustomObject
