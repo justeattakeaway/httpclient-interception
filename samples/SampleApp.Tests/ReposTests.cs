@@ -28,14 +28,19 @@ namespace SampleApp.Tests
             using (_fixture.Interceptor.BeginScope())
             {
                 // Setup an expected response from the GitHub API
-                var response = new[]
-                {
-                    new { id = 1, name = "foo" },
-                    new { id = 2, name = "bar" },
-                };
+                var builder = new HttpRequestInterceptionBuilder()
+                    .ForHttps()
+                    .ForHost("api.github.com")
+                    .ForPath("orgs/weyland-yutani/repos")
+                    .ForQuery("per_page=2")
+                    .WithJsonContent(
+                        new[]
+                        {
+                            new { id = 1, name = "foo" },
+                            new { id = 2, name = "bar" },
+                        });
 
-                // Register a response for the expected HTTP request to the GitHub API
-                _fixture.Interceptor.RegisterGet("https://api.github.com/orgs/weyland-yutani/repos?per_page=2", response);
+                _fixture.Interceptor.Register(builder);
 
                 string[] actual;
 
