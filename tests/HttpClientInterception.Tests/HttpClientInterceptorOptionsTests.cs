@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Shouldly;
 using Xunit;
@@ -453,9 +455,88 @@ namespace JustEat.HttpClientInterception
 | POST   | https://google.co.uk/ |     1 |");
         }
 
+        [Fact]
+        public static async Task Can_Use_Extensibility_For_Request_Header_Matching()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat/repos")
+                .ForQuery("type=private");
+
+            var options = new HeaderMatchingOptions(
+                (p) => p.Accept.FirstOrDefault()?.MediaType == "application/vnd.github.v3+json" &&
+                       p.Authorization?.Scheme == "token" &&
+                       p.Authorization?.Parameter == "my-token" &&
+                       p.UserAgent?.FirstOrDefault()?.Product.Name == "My-App" &&
+                       p.UserAgent?.FirstOrDefault()?.Product.Version == "1.0.0");
+
+            options.Register(builder);
+
+            var url = "https://api.github.com/orgs/justeat/repos?type=private";
+            var headers = new Dictionary<string, string>()
+            {
+                { "accept", "application/vnd.github.v3+json" },
+                { "authorization", "token my-token" },
+                { "user-agent", "My-App/1.0.0" },
+            };
+
+            // Act and Assert
+            await HttpAssert.GetAsync(options, url, headers: headers);
+            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url));
+
+            // Arrange
+            headers = new Dictionary<string, string>()
+            {
+                { "accept", "application/vnd.github.v3+json" },
+                { "authorization", "token my-token" },
+                { "user-agent", "My-App/2.0.0" },
+            };
+
+            // Act and Assert
+            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, headers: headers));
+
+            // Arrange
+            headers = new Dictionary<string, string>()
+            {
+                { "accept", "application/vnd.github.v3+json" },
+                { "user-agent", "My-App/1.0.0" },
+            };
+
+            // Act and Assert
+            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, headers: headers));
+        }
+
         private sealed class MyObject
         {
             public string Message { get; set; }
+        }
+
+        private sealed class HeaderMatchingOptions : HttpClientInterceptorOptions
+        {
+            private readonly Predicate<HttpRequestHeaders> _matchHeaders;
+
+            internal HeaderMatchingOptions(Predicate<HttpRequestHeaders> matchHeaders)
+            {
+                _matchHeaders = matchHeaders;
+            }
+
+            public override bool TryGetResponse(HttpRequestMessage request, out HttpResponseMessage response)
+            {
+                if (!base.TryGetResponse(request, out response))
+                {
+                    return false;
+                }
+
+                if (!_matchHeaders(request.Headers))
+                {
+                    response = null;
+                    return false;
+                }
+
+                return true;
+            }
         }
     }
 }

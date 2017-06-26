@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -26,9 +27,10 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions target,
             string requestUri,
             HttpStatusCode statusCode = HttpStatusCode.OK,
-            string mediaType = null)
+            string mediaType = null,
+            IDictionary<string, string> headers = null)
         {
-            return SendAsync(target, HttpMethod.Get, requestUri, null, statusCode, mediaType);
+            return SendAsync(target, HttpMethod.Get, requestUri, null, statusCode, mediaType, headers);
         }
 
         internal static async Task<string> PostAsync(
@@ -52,12 +54,21 @@ namespace JustEat.HttpClientInterception
             string requestUri,
             HttpContent content = null,
             HttpStatusCode statusCode = HttpStatusCode.OK,
-            string mediaType = null)
+            string mediaType = null,
+            IDictionary<string, string> headers = null)
         {
             using (var httpClient = target.CreateHttpClient(ErroringHandler.Handler))
             {
                 using (var request = new HttpRequestMessage(httpMethod, requestUri))
                 {
+                    if (headers != null)
+                    {
+                        foreach (var pair in headers)
+                        {
+                            request.Headers.Add(pair.Key, pair.Value);
+                        }
+                    }
+
                     using (var response = await httpClient.SendAsync(request))
                     {
                         response.StatusCode.ShouldBe(statusCode);

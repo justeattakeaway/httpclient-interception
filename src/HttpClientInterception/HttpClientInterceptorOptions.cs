@@ -207,7 +207,7 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <see langword="null"/>.
         /// </exception>
-        public bool TryGetResponse(HttpRequestMessage request, out HttpResponseMessage response)
+        public virtual bool TryGetResponse(HttpRequestMessage request, out HttpResponseMessage response)
         {
             if (request == null)
             {
@@ -257,7 +257,7 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The <see cref="DelegatingHandler"/> that uses the current <see cref="HttpClientInterceptorOptions"/>.
         /// </returns>
-        public DelegatingHandler CreateHttpMessageHandler() => new InterceptingHttpMessageHandler(this);
+        public virtual DelegatingHandler CreateHttpMessageHandler() => new InterceptingHttpMessageHandler(this);
 
         /// <summary>
         /// Creates an <see cref="HttpClient"/> that uses the interceptors registered for the current instance.
@@ -266,7 +266,7 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The <see cref="HttpClient"/> that uses the current <see cref="HttpClientInterceptorOptions"/>.
         /// </returns>
-        public HttpClient CreateHttpClient(HttpMessageHandler innerHandler = null)
+        public virtual HttpClient CreateHttpClient(HttpMessageHandler innerHandler = null)
         {
             var handler = new InterceptingHttpMessageHandler(this, innerHandler ?? new HttpClientHandler());
             return new HttpClient(handler, true);
