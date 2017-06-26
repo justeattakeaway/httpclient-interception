@@ -157,9 +157,9 @@ namespace JustEat.HttpClientInterception
             {
                 ContentFactory = contentFactory,
                 ContentMediaType = mediaType,
-                Headers = headers,
                 Method = method,
                 RequestUri = uri,
+                ResponseHeaders = headers,
                 StatusCode = statusCode
             };
 
@@ -231,9 +231,9 @@ namespace JustEat.HttpClientInterception
                 result.Content = new ByteArrayContent(content);
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue(options.ContentMediaType);
 
-                if (options.Headers != null)
+                if (options.ResponseHeaders != null)
                 {
-                    foreach (var pair in options.Headers)
+                    foreach (var pair in options.ResponseHeaders)
                     {
                         result.Headers.Add(pair.Key, pair.Value);
                     }

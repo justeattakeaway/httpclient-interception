@@ -290,7 +290,7 @@ namespace JustEat.HttpClientInterception
                     headers[pair.Key] = pair.Value;
                 }
 
-                response.Headers = headers;
+                response.ResponseHeaders = headers;
             }
 
             return response;

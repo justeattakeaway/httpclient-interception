@@ -23,7 +23,7 @@ namespace JustEat.HttpClientInterception
 
         internal string ContentMediaType { get; set; }
 
-        internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> Headers { get; set; }
+        internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ResponseHeaders { get; set; }
 
         internal int UsageCount => _usageCount;
 
