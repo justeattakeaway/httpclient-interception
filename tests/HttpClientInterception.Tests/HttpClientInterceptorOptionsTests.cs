@@ -524,12 +524,7 @@ namespace JustEat.HttpClientInterception
 
             public override bool TryGetResponse(HttpRequestMessage request, out HttpResponseMessage response)
             {
-                if (!base.TryGetResponse(request, out response))
-                {
-                    return false;
-                }
-
-                if (!_matchHeaders(request.Headers))
+                if (!base.TryGetResponse(request, out response) || !_matchHeaders(request.Headers))
                 {
                     response = null;
                     return false;
