@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -410,49 +410,6 @@ namespace JustEat.HttpClientInterception
 
             // Act and Assert
             Assert.Throws<NotImplementedException>(() => options.TryGetResponse(request, out HttpResponseMessage _));
-        }
-
-        [Fact]
-        public static void ToString_Returns_Correct_Value_If_Empty()
-        {
-            // Arrange
-            var options = new HttpClientInterceptorOptions();
-
-            // Act
-            string actual = options.ToString();
-
-            // Assert
-            actual.ShouldBeEmpty();
-        }
-
-        [Fact]
-        public static async Task ToString_Returns_Correct_Value_If_Not_Empty()
-        {
-            // Arrange
-            var options = new HttpClientInterceptorOptions()
-                .RegisterGet("https://google.com/", new { })
-                .RegisterGet("https://google.co.ca/", new { })
-                .RegisterGet("https://google.co.uk/", new { })
-                .Register(HttpMethod.Post, new Uri("https://google.co.uk/"), Array.Empty<byte>);
-
-            for (int i = 0; i < 11; i++)
-            {
-                await HttpAssert.GetAsync(options, "https://google.com/");
-            }
-
-            await HttpAssert.GetAsync(options, "https://google.co.uk/");
-            await HttpAssert.PostAsync(options, "https://google.co.uk/", new { });
-
-            // Act
-            string actual = options.ToString();
-
-            // Assert
-            actual.ShouldBe(@"| Method | URI                   | Count |
-|--------|-----------------------|-------|
-| GET    | https://google.co.ca/ |     0 |
-| GET    | https://google.co.uk/ |     1 |
-| GET    | https://google.com/   |    11 |
-| POST   | https://google.co.uk/ |     1 |");
         }
 
         [Fact]

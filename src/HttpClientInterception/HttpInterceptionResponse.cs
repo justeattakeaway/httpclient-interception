@@ -5,14 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 
 namespace JustEat.HttpClientInterception
 {
     internal sealed class HttpInterceptionResponse
     {
-        private int _usageCount;
-
         internal HttpMethod Method { get; set; }
 
         internal Uri RequestUri { get; set; }
@@ -25,10 +22,6 @@ namespace JustEat.HttpClientInterception
 
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ResponseHeaders { get; set; }
 
-        internal int UsageCount => _usageCount;
-
         internal Action<HttpRequestMessage> OnIntercepted { get; set; }
-
-        internal void IncrementUsage() => Interlocked.Increment(ref _usageCount);
     }
 }
