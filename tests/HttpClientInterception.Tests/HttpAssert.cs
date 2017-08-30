@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -61,6 +61,11 @@ namespace JustEat.HttpClientInterception
             {
                 using (var request = new HttpRequestMessage(httpMethod, requestUri))
                 {
+                    if (content != null)
+                    {
+                        request.Content = content;
+                    }
+
                     if (headers != null)
                     {
                         foreach (var pair in headers)
