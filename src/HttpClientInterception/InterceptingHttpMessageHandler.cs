@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -47,11 +47,16 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <inheritdoc />
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            if (_options.OnSend != null)
+            {
+                await _options.OnSend(request);
+            }
+
             if (_options.TryGetResponse(request, out HttpResponseMessage response))
             {
-                return Task.FromResult(response);
+                return response;
             }
 
             if (_options.ThrowOnMissingRegistration)
@@ -59,7 +64,7 @@ namespace JustEat.HttpClientInterception
                 throw new InvalidOperationException($"No HTTP response is configured for {request.Method.Method} {request.RequestUri}.");
             }
 
-            return base.SendAsync(request, cancellationToken);
+            return await base.SendAsync(request, cancellationToken);
         }
     }
 }

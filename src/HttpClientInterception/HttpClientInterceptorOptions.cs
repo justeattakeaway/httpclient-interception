@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace JustEat.HttpClientInterception
 {
@@ -38,6 +39,11 @@ namespace JustEat.HttpClientInterception
         {
             _mappings = new ConcurrentDictionary<string, HttpInterceptionResponse>(_comparer);
         }
+
+        /// <summary>
+        /// Gets or sets an optional delegate to invoke when an HTTP request is sent.
+        /// </summary>
+        public Func<HttpRequestMessage, Task> OnSend { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to throw an exception if a response has not been registered for an HTTP request.

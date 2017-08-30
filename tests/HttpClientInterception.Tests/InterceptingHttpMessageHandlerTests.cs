@@ -1,7 +1,11 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -97,6 +101,51 @@ namespace JustEat.HttpClientInterception
                     }
                 }
             }
+        }
+
+        [Fact]
+        public static async Task SendAsync_Calls_OnSend_With_RequestMessage()
+        {
+            // Arrange
+            var header = "x-request";
+            var requestUrl = "https://google.com/foo";
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(HttpMethod.Get, new Uri(requestUrl), Array.Empty<byte>);
+
+            int expected = 7;
+            int actual = 0;
+
+            var requestIds = new ConcurrentBag<string>();
+
+            options.OnSend = (p) =>
+            {
+                Interlocked.Increment(ref actual);
+                requestIds.Add(p.Headers.GetValues(header).FirstOrDefault());
+                return Task.CompletedTask;
+            };
+
+            Task GetAsync(int id)
+            {
+                var headers = new Dictionary<string, string>()
+                {
+                    [header] = id.ToString(CultureInfo.InvariantCulture)
+                };
+
+                return HttpAssert.GetAsync(options, requestUrl, headers: headers);
+            }
+
+            // Act
+            var tasks = Enumerable.Range(0, expected)
+                .Select(GetAsync)
+                .ToArray();
+
+            await Task.WhenAll(tasks);
+
+            // Assert
+            actual.ShouldBe(expected);
+            requestIds.Count.ShouldBe(expected);
+            requestIds.ShouldBeUnique();
         }
     }
 }
