@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -8,6 +8,7 @@ using JustEat.HttpClientInterception;
 using Newtonsoft.Json;
 using Shouldly;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace SampleApp.Tests
 {
@@ -15,15 +16,24 @@ namespace SampleApp.Tests
     public class ReposTests
     {
         private readonly HttpServerFixture _fixture;
+        private readonly ITestOutputHelper _outputHelper;
 
-        public ReposTests(HttpServerFixture fixture)
+        public ReposTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
         {
             _fixture = fixture;
+            _outputHelper = outputHelper;
         }
 
         [Fact]
         public async Task Can_Get_Organization_Repositories()
         {
+            // Add a callback to log any HTTP requests made
+            _fixture.Interceptor.OnSend = (request) =>
+                {
+                    _outputHelper.WriteLine($"HTTP {request.Method} {request.RequestUri}");
+                    return Task.CompletedTask;
+                };
+
             // Arrange - use a scope to clean-up registrations
             using (_fixture.Interceptor.BeginScope())
             {
@@ -39,6 +49,10 @@ namespace SampleApp.Tests
                             new { id = 1, name = "foo" },
                             new { id = 2, name = "bar" },
                         });
+
+                // Add a callback for when a request is intercepted
+                builder.WithInterceptionCallback(
+                    (request) => _outputHelper.WriteLine($"Intercepted HTTP {request.Method} {request.RequestUri}"));
 
                 _fixture.Interceptor.Register(builder);
 
