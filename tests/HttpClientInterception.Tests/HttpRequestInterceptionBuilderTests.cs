@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using Shouldly;
 using Xunit;
 
@@ -365,6 +366,44 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             (await HttpAssert.GetAsync(options, "https://github.com/justeat")).ShouldBeEmpty();
+        }
+
+        [Fact]
+        public static async Task Register_For_Callback_Invokes_Delegate_With_Message()
+        {
+            // Arrange
+            var requestUri = new Uri("https://api.just-eat.com/");
+            var content = new { foo = "bar" };
+
+            bool wasDelegateInvoked = false;
+
+            Action<HttpRequestMessage> onIntercepted = (request) =>
+            {
+                request.ShouldNotBeNull();
+                request.Method.ShouldBe(HttpMethod.Post);
+                request.RequestUri.ShouldBe(requestUri);
+
+                string json = request.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                var body = JObject.Parse(json);
+
+                body.Value<string>("foo").ShouldBe("bar");
+
+                wasDelegateInvoked = true;
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUri(requestUri)
+                .WithInterceptionCallback(onIntercepted);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            await HttpAssert.PostAsync(options, requestUri.ToString(), content);
+
+            // Assert
+            wasDelegateInvoked.ShouldBeTrue();
         }
 
         [Fact]

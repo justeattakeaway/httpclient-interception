@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -20,6 +20,8 @@ namespace JustEat.HttpClientInterception
         private string _mediaType = HttpClientInterceptorOptions.JsonMediaType;
 
         private HttpMethod _method = HttpMethod.Get;
+
+        private Action<HttpRequestMessage> _onIntercepted;
 
         private HttpStatusCode _statusCode = HttpStatusCode.OK;
 
@@ -270,6 +272,19 @@ namespace JustEat.HttpClientInterception
             return this;
         }
 
+        /// <summary>
+        /// Sets the callback to use to use when a request is intercepted.
+        /// </summary>
+        /// <param name="onIntercepted">A delegate to a method to call when a request is intercepted.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithInterceptionCallback(Action<HttpRequestMessage> onIntercepted)
+        {
+            _onIntercepted = onIntercepted;
+            return this;
+        }
+
         internal HttpInterceptionResponse Build()
         {
             var response = new HttpInterceptionResponse()
@@ -277,6 +292,7 @@ namespace JustEat.HttpClientInterception
                 ContentFactory = _contentFactory ?? Array.Empty<byte>,
                 ContentMediaType = _mediaType,
                 Method = _method,
+                OnIntercepted = _onIntercepted,
                 RequestUri = _uriBuilder.Uri,
                 StatusCode = _statusCode,
             };

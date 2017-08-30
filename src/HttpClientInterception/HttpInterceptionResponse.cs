@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -26,6 +26,8 @@ namespace JustEat.HttpClientInterception
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ResponseHeaders { get; set; }
 
         internal int UsageCount => _usageCount;
+
+        internal Action<HttpRequestMessage> OnIntercepted { get; set; }
 
         internal void IncrementUsage() => Interlocked.Increment(ref _usageCount);
     }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -124,6 +124,7 @@ namespace JustEat.HttpClientInterception
         /// <param name="statusCode">The optional HTTP status code to return.</param>
         /// <param name="mediaType">The optional media type for the content-type.</param>
         /// <param name="headers">The optional HTTP response headers.</param>
+        /// <param name="onIntercepted">An optional delegate to invoke when the HTTP message is intercepted.</param>
         /// <returns>
         /// The current <see cref="HttpClientInterceptorOptions"/>.
         /// </returns>
@@ -136,7 +137,8 @@ namespace JustEat.HttpClientInterception
             Func<byte[]> contentFactory,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = JsonMediaType,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers = null)
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers = null,
+            Action<HttpRequestMessage> onIntercepted = null)
         {
             if (method == null)
             {
@@ -158,6 +160,7 @@ namespace JustEat.HttpClientInterception
                 ContentFactory = contentFactory,
                 ContentMediaType = mediaType,
                 Method = method,
+                OnIntercepted = onIntercepted,
                 RequestUri = uri,
                 ResponseHeaders = headers,
                 StatusCode = statusCode
@@ -221,6 +224,8 @@ namespace JustEat.HttpClientInterception
                 response = null;
                 return false;
             }
+
+            options.OnIntercepted?.Invoke(request);
 
             var result = new HttpResponseMessage(options.StatusCode);
 
