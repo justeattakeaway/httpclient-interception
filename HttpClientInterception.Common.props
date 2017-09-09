@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
   </ItemGroup>
@@ -16,7 +16,7 @@
     <PackageLicenseUrl>$(PackageProjectUrl)/blob/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>http;httpclient;interception</PackageTags>
+    <PackageTags>http;httpclient;interception;testing</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>

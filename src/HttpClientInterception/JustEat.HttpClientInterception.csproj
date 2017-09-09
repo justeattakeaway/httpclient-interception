@@ -3,13 +3,13 @@
   <PropertyGroup>
     <AssemblyTitle>HttpClient Interception</AssemblyTitle>
     <DebugType>full</DebugType>
-    <Description>A .NET Standard library for intercepting server-side HTTP dependencies.</Description>
+    <Description>A .NET library for intercepting server-side HTTP dependencies.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <OutputType>Library</OutputType>
     <PackageId>JustEat.HttpClientInterception</PackageId>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
-    <Summary>A .NET Standard library for intercepting server-side HTTP dependencies.</Summary>
-    <TargetFrameworks>netstandard1.3</TargetFrameworks>
+    <Summary>A .NET library for intercepting server-side HTTP dependencies.</Summary>
+    <TargetFrameworks>netstandard1.3;net461</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugSymbols>True</DebugSymbols>
@@ -20,5 +20,8 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" PrivateAssets="All" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="System.Net.Http" Version="4.3.0" />
   </ItemGroup>
 </Project>
