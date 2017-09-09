@@ -15,7 +15,7 @@ $solutionFile = Join-Path $solutionPath "HttpClientInterception.sln"
 $libraryProject = Join-Path $solutionPath "src\HttpClientInterception\JustEat.HttpClientInterception.csproj"
 $testProject = Join-Path $solutionPath "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj"
 
-$dotnetVersion = "1.0.4"
+$dotnetVersion = "2.0.0"
 
 if ($OutputPath -eq "") {
     $OutputPath = Join-Path "$(Convert-Path "$PSScriptRoot")" "artifacts"
@@ -51,7 +51,7 @@ if ($installDotNetSdk -eq $true) {
     if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
         mkdir $env:DOTNET_INSTALL_DIR | Out-Null
         $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
-        Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1" -OutFile $installScript
+        Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/release/2.0.0/scripts/obtain/dotnet-install.ps1" -OutFile $installScript
         & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
     }
 
@@ -75,7 +75,8 @@ function DotNetPack {
 
     if ($VersionSuffix) {
         & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
-    } else {
+    }
+    else {
         & $dotnet pack $Project --output $OutputPath --configuration $Configuration --include-symbols --include-source
     }
     if ($LASTEXITCODE -ne 0) {
@@ -93,7 +94,8 @@ function DotNetTest {
 
         if ($installDotNetSdk -eq $true) {
             $dotnetPath = $dotnet
-        } else {
+        }
+        else {
             $dotnetPath = (Get-Command "dotnet.exe").Source
         }
 

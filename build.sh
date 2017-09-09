@@ -35,14 +35,14 @@ while :; do
     shift
 done
 
-export CLI_VERSION="1.0.4"
+export CLI_VERSION="2.0.0"
 export DOTNET_INSTALL_DIR="$root/.dotnetcli"
 export PATH="$DOTNET_INSTALL_DIR:$PATH"
 
 dotnet_version=$(dotnet --version)
 
 if [ "$dotnet_version" != "$CLI_VERSION" ]; then
-    curl -sSL https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
+    curl -sSL https://raw.githubusercontent.com/dotnet/cli/release/2.0.0/scripts/obtain/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
 fi
 
 if [ $restorePackages == 1 ]; then

@@ -1,11 +1,10 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SampleApp.Extensions;
 
 namespace SampleApp
@@ -24,11 +23,8 @@ namespace SampleApp
                 .AddJsonOptions((p) => p.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented);
         }
 
-        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment environment, ILoggerFactory loggerFactory)
+        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment environment)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
             if (environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

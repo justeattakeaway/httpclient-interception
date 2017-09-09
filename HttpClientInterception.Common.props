@@ -9,6 +9,7 @@
     <Copyright>Copyright (c) Just Eat 2015-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <LangVersion>latest</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageIconUrl>https://avatars3.githubusercontent.com/u/1516790?s=200</PackageIconUrl>
     <PackageProjectUrl>https://github.com/justeat/httpclient-interception</PackageProjectUrl>
