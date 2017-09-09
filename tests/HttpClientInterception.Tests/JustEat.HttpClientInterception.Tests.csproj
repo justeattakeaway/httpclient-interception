@@ -4,7 +4,7 @@
     <Description>Tests for JustEat.HttpClientInterception</Description>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Tests for JustEat.HttpClientInterception</Summary>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyVersion.cs;..\..\CommonAssemblyInfo.cs" />
