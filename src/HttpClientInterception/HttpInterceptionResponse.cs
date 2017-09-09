@@ -20,6 +20,8 @@ namespace JustEat.HttpClientInterception
 
         internal string ContentMediaType { get; set; }
 
+        internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ContentHeaders { get; set; }
+
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ResponseHeaders { get; set; }
 
         internal Action<HttpRequestMessage> OnIntercepted { get; set; }

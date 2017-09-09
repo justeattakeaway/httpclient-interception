@@ -15,7 +15,9 @@ namespace JustEat.HttpClientInterception
     {
         private Func<byte[]> _contentFactory;
 
-        private IDictionary<string, ICollection<string>> _headers;
+        private IDictionary<string, ICollection<string>> _contentHeaders;
+
+        private IDictionary<string, ICollection<string>> _responseHeaders;
 
         private string _mediaType = HttpClientInterceptorOptions.JsonMediaType;
 
@@ -151,46 +153,133 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
-        /// Sets a custom HTTP response header to use.
+        /// Sets a custom HTTP content header to use with a single value.
         /// </summary>
-        /// <param name="name">The name of the custom HTTP response header.</param>
-        /// <param name="value">The value for the header.</param>
+        /// <param name="name">The name of the custom HTTP content header.</param>
+        /// <param name="value">The value for the content header.</param>
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithHeader(string name, string value) => WithHeader(name, new[] { value });
+        public HttpRequestInterceptionBuilder WithContentHeader(string name, string value) => WithContentHeader(name, new[] { value });
 
         /// <summary>
-        /// Sets a custom HTTP response header to use.
+        /// Sets a custom HTTP content header to use with multiple values.
         /// </summary>
-        /// <param name="name">The name of the custom HTTP response header.</param>
-        /// <param name="values">The values for the header.</param>
+        /// <param name="name">The name of the custom HTTP content header.</param>
+        /// <param name="values">The values for the content header.</param>
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithHeader(string name, params string[] values)
+        public HttpRequestInterceptionBuilder WithContentHeader(string name, params string[] values)
         {
-            return WithHeader(name, values as IEnumerable<string>);
+            return WithContentHeader(name, values as IEnumerable<string>);
         }
 
         /// <summary>
-        /// Sets a custom HTTP response header to use.
+        /// Sets a custom HTTP content header to use with multiple values.
         /// </summary>
-        /// <param name="name">The name of the custom HTTP response header.</param>
-        /// <param name="values">The values for the header.</param>
+        /// <param name="name">The name of the custom HTTP content header.</param>
+        /// <param name="values">The values for the content header.</param>
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithHeader(string name, IEnumerable<string> values)
+        public HttpRequestInterceptionBuilder WithContentHeader(string name, IEnumerable<string> values)
         {
-            if (_headers == null)
+            if (_contentHeaders == null)
             {
-                _headers = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+                _contentHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
             }
 
-            if (!_headers.TryGetValue(name, out ICollection<string> current))
+            if (!_contentHeaders.TryGetValue(name, out ICollection<string> current))
             {
-                _headers[name] = current = new List<string>();
+                _contentHeaders[name] = current = new List<string>();
+            }
+
+            current.Clear();
+
+            foreach (string value in values)
+            {
+                current.Add(value);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets any custom HTTP content headers to use.
+        /// </summary>
+        /// <param name="headers">Any custom HTTP content headers to use.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithContentHeaders(IDictionary<string, ICollection<string>> headers)
+        {
+            _contentHeaders = new Dictionary<string, ICollection<string>>(headers, StringComparer.OrdinalIgnoreCase);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets any custom HTTP content headers to use.
+        /// </summary>
+        /// <param name="headers">Any custom HTTP content headers to use.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithContentHeaders(IDictionary<string, string> headers)
+        {
+            var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var pair in headers)
+            {
+                copy[pair.Key] = new[] { pair.Value };
+            }
+
+            _contentHeaders = copy;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets a custom HTTP response header to use with a single value.
+        /// </summary>
+        /// <param name="name">The name of the custom HTTP response header.</param>
+        /// <param name="value">The value for the response header.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithResponseHeader(string name, string value) => WithResponseHeader(name, new[] { value });
+
+        /// <summary>
+        /// Sets a custom HTTP response header to use with multiple values.
+        /// </summary>
+        /// <param name="name">The name of the custom HTTP response header.</param>
+        /// <param name="values">The values for the response header.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithResponseHeader(string name, params string[] values)
+        {
+            return WithResponseHeader(name, values as IEnumerable<string>);
+        }
+
+        /// <summary>
+        /// Sets a custom HTTP response header to use with multiple values.
+        /// </summary>
+        /// <param name="name">The name of the custom HTTP response header.</param>
+        /// <param name="values">The values for the response header.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithResponseHeader(string name, IEnumerable<string> values)
+        {
+            if (_responseHeaders == null)
+            {
+                _responseHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+            }
+
+            if (!_responseHeaders.TryGetValue(name, out ICollection<string> current))
+            {
+                _responseHeaders[name] = current = new List<string>();
             }
 
             current.Clear();
@@ -210,7 +299,7 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithHeaders(IDictionary<string, string> headers)
+        public HttpRequestInterceptionBuilder WithResponseHeaders(IDictionary<string, string> headers)
         {
             var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
 
@@ -219,7 +308,7 @@ namespace JustEat.HttpClientInterception
                 copy[pair.Key] = new[] { pair.Value };
             }
 
-            _headers = copy;
+            _responseHeaders = copy;
 
             return this;
         }
@@ -231,9 +320,9 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithHeaders(IDictionary<string, ICollection<string>> headers)
+        public HttpRequestInterceptionBuilder WithResponseHeaders(IDictionary<string, ICollection<string>> headers)
         {
-            _headers = new Dictionary<string, ICollection<string>>(headers, StringComparer.OrdinalIgnoreCase);
+            _responseHeaders = new Dictionary<string, ICollection<string>>(headers, StringComparer.OrdinalIgnoreCase);
             return this;
         }
 
@@ -297,16 +386,28 @@ namespace JustEat.HttpClientInterception
                 StatusCode = _statusCode,
             };
 
-            if (_headers?.Count > 0)
+            if (_responseHeaders?.Count > 0)
             {
                 var headers = new Dictionary<string, IEnumerable<string>>();
 
-                foreach (var pair in _headers)
+                foreach (var pair in _responseHeaders)
                 {
                     headers[pair.Key] = pair.Value;
                 }
 
                 response.ResponseHeaders = headers;
+            }
+
+            if (_contentHeaders?.Count > 0)
+            {
+                var headers = new Dictionary<string, IEnumerable<string>>();
+
+                foreach (var pair in _contentHeaders)
+                {
+                    headers[pair.Key] = pair.Value;
+                }
+
+                response.ContentHeaders = headers;
             }
 
             return response;

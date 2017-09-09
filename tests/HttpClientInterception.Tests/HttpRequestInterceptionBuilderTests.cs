@@ -223,7 +223,7 @@ namespace JustEat.HttpClientInterception
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForUrl(url)
-                .WithHeaders(headers);
+                .WithResponseHeaders(headers);
 
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
@@ -254,7 +254,7 @@ namespace JustEat.HttpClientInterception
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForUrl(url)
-                .WithHeaders(headers);
+                .WithResponseHeaders(headers);
 
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
@@ -279,9 +279,9 @@ namespace JustEat.HttpClientInterception
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForUrl(url)
-                .WithHeader("a", "b")
-                .WithHeader("c", "d", "e", "f")
-                .WithHeader("c", "d", "e");
+                .WithResponseHeader("a", "b")
+                .WithResponseHeader("c", "d", "e", "f")
+                .WithResponseHeader("c", "d", "e");
 
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
@@ -296,6 +296,95 @@ namespace JustEat.HttpClientInterception
             response.ShouldNotBeNull();
             response.Headers.GetValues("a").ShouldBe(new[] { "b" });
             response.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+        }
+
+        [Fact]
+        public static void TryGetResponse_Returns_Empty_Response_If_Custom_Content_Header()
+        {
+            // Arrange
+            string url = "https://google.com/";
+
+            var headers = new Dictionary<string, string>()
+            {
+                { "a", "b" },
+                { "c", "d" },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(url)
+                .WithContentHeaders(headers);
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            // Act
+            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+
+            // Assert
+            actual.ShouldBeTrue();
+            response.ShouldNotBeNull();
+            response.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
+            response.Content.Headers.GetValues("c").ShouldBe(new[] { "d" });
+        }
+
+        [Fact]
+        public static void TryGetResponse_Returns_Empty_Response_If_Custom_Content_Headers()
+        {
+            // Arrange
+            string url = "https://google.com/";
+
+            var headers = new Dictionary<string, ICollection<string>>()
+            {
+                { "a", new[] { "b" } },
+                { "c", new[] { "d", "e" } },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(url)
+                .WithContentHeaders(headers);
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            // Act
+            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+
+            // Assert
+            actual.ShouldBeTrue();
+            response.ShouldNotBeNull();
+            response.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
+            response.Content.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+        }
+
+        [Fact]
+        public static void TryGetResponse_Returns_Empty_Response_If_Individual_Custom_Content_Headers()
+        {
+            // Arrange
+            string url = "https://google.com/";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(url)
+                .WithContentHeader("a", "b")
+                .WithContentHeader("c", "d", "e", "f")
+                .WithContentHeader("c", "d", "e");
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            // Act
+            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+
+            // Assert
+            actual.ShouldBeTrue();
+            response.ShouldNotBeNull();
+            response.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
+            response.Content.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
         }
 
         [Fact]

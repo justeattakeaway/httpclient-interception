@@ -116,7 +116,7 @@ namespace JustEat.HttpClientInterception
             IEnumerable<KeyValuePair<string, string>> headers = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => options.Register(method, uri, Array.Empty<byte>, headers: headers));
+            Assert.Throws<ArgumentNullException>("options", () => options.Register(method, uri, Array.Empty<byte>, responseHeaders: headers));
         }
 
         private sealed class CustomObject

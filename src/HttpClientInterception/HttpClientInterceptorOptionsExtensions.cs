@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -24,7 +24,7 @@ namespace JustEat.HttpClientInterception
         /// <param name="contentFactory">A delegate to a method that returns the raw response content.</param>
         /// <param name="statusCode">The optional HTTP status code to return.</param>
         /// <param name="mediaType">The optional media type for the content-type.</param>
-        /// <param name="headers">The optional HTTP response headers.</param>
+        /// <param name="responseHeaders">The optional HTTP response headers.</param>
         /// <returns>
         /// The current <see cref="HttpClientInterceptorOptions"/>.
         /// </returns>
@@ -39,7 +39,7 @@ namespace JustEat.HttpClientInterception
             Func<byte[]> contentFactory,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = HttpClientInterceptorOptions.JsonMediaType,
-            IEnumerable<KeyValuePair<string, string>> headers = null)
+            IEnumerable<KeyValuePair<string, string>> responseHeaders = null)
         {
             if (options == null)
             {
@@ -48,11 +48,11 @@ namespace JustEat.HttpClientInterception
 
             IDictionary<string, IEnumerable<string>> multivalueHeaders = null;
 
-            if (headers != null)
+            if (responseHeaders != null)
             {
                 multivalueHeaders = new Dictionary<string, IEnumerable<string>>();
 
-                foreach (var pair in headers)
+                foreach (var pair in responseHeaders)
                 {
                     multivalueHeaders[pair.Key] = new[] { pair.Value };
                 }

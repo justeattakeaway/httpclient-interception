@@ -28,9 +28,9 @@ namespace JustEat.HttpClientInterception
             string requestUri,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = null,
-            IDictionary<string, string> headers = null)
+            IDictionary<string, string> responseHeaders = null)
         {
-            return SendAsync(target, HttpMethod.Get, requestUri, null, statusCode, mediaType, headers);
+            return SendAsync(target, HttpMethod.Get, requestUri, null, statusCode, mediaType, responseHeaders);
         }
 
         internal static async Task<string> PostAsync(

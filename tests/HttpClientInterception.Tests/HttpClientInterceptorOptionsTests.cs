@@ -138,7 +138,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, Array.Empty<byte>, headers: headers);
+                .Register(method, uri, Array.Empty<byte>, responseHeaders: headers);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -159,10 +159,10 @@ namespace JustEat.HttpClientInterception
             var method = HttpMethod.Get;
             var uri = new Uri("https://google.com/");
 
-            IDictionary<string, string> headers = null;
+            IDictionary<string, string> responseHeaders = null;
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, Array.Empty<byte>, headers: headers);
+                .Register(method, uri, Array.Empty<byte>, responseHeaders: responseHeaders);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -181,14 +181,14 @@ namespace JustEat.HttpClientInterception
             var method = HttpMethod.Get;
             var uri = new Uri("https://google.com/");
 
-            var headers = new Dictionary<string, IEnumerable<string>>()
+            var responseHeaders = new Dictionary<string, IEnumerable<string>>()
             {
                 { "a", new[] { "b" } },
                 { "c", new[] { "d", "e" } },
             };
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, Array.Empty<byte>, headers: headers);
+                .Register(method, uri, Array.Empty<byte>, responseHeaders: responseHeaders);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -440,7 +440,7 @@ namespace JustEat.HttpClientInterception
             };
 
             // Act and Assert
-            await HttpAssert.GetAsync(options, url, headers: headers);
+            await HttpAssert.GetAsync(options, url, responseHeaders: headers);
             await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url));
 
             // Arrange
@@ -452,7 +452,7 @@ namespace JustEat.HttpClientInterception
             };
 
             // Act and Assert
-            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, headers: headers));
+            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, responseHeaders: headers));
 
             // Arrange
             headers = new Dictionary<string, string>()
@@ -462,7 +462,7 @@ namespace JustEat.HttpClientInterception
             };
 
             // Act and Assert
-            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, headers: headers));
+            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, responseHeaders: headers));
         }
 
         private sealed class MyObject

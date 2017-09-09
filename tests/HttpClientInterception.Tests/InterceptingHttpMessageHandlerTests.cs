@@ -132,7 +132,7 @@ namespace JustEat.HttpClientInterception
                     [header] = id.ToString(CultureInfo.InvariantCulture)
                 };
 
-                return HttpAssert.GetAsync(options, requestUrl, headers: headers);
+                return HttpAssert.GetAsync(options, requestUrl, responseHeaders: headers);
             }
 
             // Act

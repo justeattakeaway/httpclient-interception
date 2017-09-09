@@ -127,7 +127,8 @@ namespace JustEat.HttpClientInterception
         /// <param name="contentFactory">A delegate to a method that returns the raw response content.</param>
         /// <param name="statusCode">The optional HTTP status code to return.</param>
         /// <param name="mediaType">The optional media type for the content-type.</param>
-        /// <param name="headers">The optional HTTP response headers.</param>
+        /// <param name="responseHeaders">The optional HTTP response headers for the response.</param>
+        /// <param name="contentHeaders">The optional HTTP response headers for the content.</param>
         /// <param name="onIntercepted">An optional delegate to invoke when the HTTP message is intercepted.</param>
         /// <returns>
         /// The current <see cref="HttpClientInterceptorOptions"/>.
@@ -141,7 +142,8 @@ namespace JustEat.HttpClientInterception
             Func<byte[]> contentFactory,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = JsonMediaType,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers = null,
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders = null,
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>> contentHeaders = null,
             Action<HttpRequestMessage> onIntercepted = null)
         {
             if (method == null)
@@ -162,11 +164,12 @@ namespace JustEat.HttpClientInterception
             var interceptor = new HttpInterceptionResponse()
             {
                 ContentFactory = contentFactory,
+                ContentHeaders = contentHeaders,
                 ContentMediaType = mediaType,
                 Method = method,
                 OnIntercepted = onIntercepted,
                 RequestUri = uri,
-                ResponseHeaders = headers,
+                ResponseHeaders = responseHeaders,
                 StatusCode = statusCode
             };
 
@@ -236,8 +239,16 @@ namespace JustEat.HttpClientInterception
             try
             {
                 byte[] content = options.ContentFactory() ?? Array.Empty<byte>();
-
                 result.Content = new ByteArrayContent(content);
+
+                if (options.ContentHeaders != null)
+                {
+                    foreach (var pair in options.ContentHeaders)
+                    {
+                        result.Content.Headers.Add(pair.Key, pair.Value);
+                    }
+                }
+
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue(options.ContentMediaType);
 
                 if (options.ResponseHeaders != null)
