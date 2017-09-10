@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -210,6 +211,33 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             stopwatch.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(50));
+        }
+
+        [Fact]
+        public static async Task Intercept_Http_Get_To_Stream_Content_From_Disk()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHost("xunit.github.io")
+                .ForPath("settings.json")
+                .WithContent(() => File.ReadAllBytesAsync("xunit.runner.json"));
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                json = await client.GetStringAsync("http://xunit.github.io/settings.json");
+            }
+
+            // Assert
+            json.ShouldNotBeNullOrWhiteSpace();
+
+            var config = JObject.Parse(json);
+            config.Value<string>("methodDisplay").ShouldBe("method");
         }
     }
 }
