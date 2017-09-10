@@ -1,6 +1,8 @@
 // Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -61,6 +63,7 @@ namespace JustEat.HttpClientInterception
 
             using (var client = options.CreateHttpClient())
             {
+                // Act
                 html = await client.GetStringAsync("http://www.google.co.uk/search?q=Just+Eat");
             }
 
@@ -161,6 +164,52 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             content.ShouldBe(new byte[] { 0, 1 });
+        }
+
+        [Fact]
+        public static async Task Inject_Fault_For_Http_Get()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHost("www.google.co.uk")
+                .WithStatus(HttpStatusCode.InternalServerError);
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act and Assert
+                await Should.ThrowAsync<HttpRequestException>(() => client.GetStringAsync("http://www.google.co.uk"));
+            }
+        }
+
+        [Fact]
+        public static async Task Inject_Latency_For_Http_Get()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHost("www.google.co.uk");
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            options.OnSend = (_) => Task.Delay(TimeSpan.FromMilliseconds(50));
+
+            var stopwatch = new Stopwatch();
+
+            using (var client = options.CreateHttpClient())
+            {
+                stopwatch.Start();
+
+                // Act
+                await client.GetStringAsync("http://www.google.co.uk");
+
+                stopwatch.Stop();
+            }
+
+            // Assert
+            stopwatch.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(50));
         }
     }
 }

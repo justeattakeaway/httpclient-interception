@@ -20,9 +20,11 @@ To install the library from [NuGet](https://www.nuget.org/packages/JustEat.HttpC
 dotnet add package JustEat.HttpClientInterception
 ```
 
-### Simple Example
+### Basic Examples
 
-Below is a minimal example of intercepting a request to an HTTP API for a JSON resource:
+#### Request Interception
+
+Below is a minimal example of intercepting a request to an HTTP API for a JSON resource to return a custom response:
 
 ```csharp
 // using JustEat.HttpClientInterception;
@@ -39,6 +41,26 @@ var client = options.CreateHttpClient();
 
 // The value of json will be "{\"Id\":1,\"Link\":\"https://www.just-eat.co.uk/privacy-policy\"}"
 var json = await client.GetStringAsync("http://public.je-apis.com/terms");
+```
+
+#### Fault Injection
+
+Below is a minimal example of intercepting a request to inject an HTTP fault:
+
+```csharp
+// using JustEat.HttpClientInterception;
+
+var builder = new HttpRequestInterceptionBuilder()
+    .ForHost("public.je-apis.com")
+    .WithStatus(HttpStatusCode.InternalServerError);
+
+var options = new HttpClientInterceptorOptions()
+    .Register(builder);
+
+var client = options.CreateHttpClient();
+
+// Throws an HttpRequestException
+await client.GetStringAsync("http://public.je-apis.com");
 ```
 
 ### Further Examples
