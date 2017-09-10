@@ -1,4 +1,4 @@
-﻿param(
+param(
     [Parameter(Mandatory = $false)][switch] $RestorePackages,
     [Parameter(Mandatory = $false)][string] $Configuration = "Release",
     [Parameter(Mandatory = $false)][string] $VersionSuffix = "",
@@ -100,9 +100,15 @@ function DotNetTest {
         }
 
         $nugetPath = Join-Path $env:USERPROFILE ".nuget\packages"
+
         $openCoverVersion = "4.6.519"
         $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
+
+        $reportGeneratorVersion = "2.5.11"
+        $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\ReportGenerator.exe"
+
         $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
+        $reportOutput = Join-Path $OutputPath "coverage"
 
         & $openCoverPath `
             `"-target:$dotnetPath`" `
@@ -114,6 +120,11 @@ function DotNetTest {
             -register:user `
             -skipautoprops `
             `"-filter:+[JustEat.HttpClientInterception]* -[JustEat.HttpClientInterception.Tests]*`"
+
+        & $reportGeneratorPath `
+            `"-reports:$coverageOutput`" `
+            `"-targetdir:$reportOutput`" `
+            -verbosity:Warning
     }
 
     if ($LASTEXITCODE -ne 0) {
