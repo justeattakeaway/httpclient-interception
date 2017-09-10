@@ -17,6 +17,50 @@ namespace JustEat.HttpClientInterception
     public static class HttpClientInterceptorOptionsExtensions
     {
         /// <summary>
+        /// Creates an <see cref="HttpClient"/> that uses the interceptors registered for the specified options and base address.
+        /// </summary>
+        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
+        /// <param name="baseAddress">The base address to use for the created HTTP client.</param>
+        /// <param name="innerHandler">The optional inner <see cref="HttpMessageHandler"/>.</param>
+        /// <returns>
+        /// The <see cref="HttpClient"/> that uses the specified <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="options"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, string baseAddress, HttpMessageHandler innerHandler = null)
+        {
+            Uri baseAddressUri = new Uri(baseAddress, UriKind.RelativeOrAbsolute);
+            return options.CreateHttpClient(baseAddressUri, innerHandler);
+        }
+
+        /// <summary>
+        /// Creates an <see cref="HttpClient"/> that uses the interceptors registered for the specified options and base address.
+        /// </summary>
+        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
+        /// <param name="baseAddress">The base address to use for the created HTTP client.</param>
+        /// <param name="innerHandler">The optional inner <see cref="HttpMessageHandler"/>.</param>
+        /// <returns>
+        /// The <see cref="HttpClient"/> that uses the specified <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="options"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, Uri baseAddress, HttpMessageHandler innerHandler = null)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            var client = options.CreateHttpClient(innerHandler);
+
+            client.BaseAddress = baseAddress;
+
+            return client;
+        }
+
+        /// <summary>
         /// Registers an HTTP request interception, replacing any existing registration.
         /// </summary>
         /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -117,6 +117,18 @@ namespace JustEat.HttpClientInterception
 
             // Act and Assert
             Assert.Throws<ArgumentNullException>("options", () => options.Register(method, uri, Array.Empty<byte>, responseHeaders: headers));
+        }
+
+        [Fact]
+        public static void CreateHttpClient_Throws_If_Options_Is_Null()
+        {
+            // Arrange
+            var baseAddress = new Uri("https://google.com");
+
+            HttpClientInterceptorOptions options = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("options", () => options.CreateHttpClient(baseAddress));
         }
 
         private sealed class CustomObject
