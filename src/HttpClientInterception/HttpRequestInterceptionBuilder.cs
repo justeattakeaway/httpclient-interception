@@ -36,6 +36,8 @@ namespace JustEat.HttpClientInterception
 
         private UriBuilder _uriBuilder = new UriBuilder();
 
+        private Version _version;
+
         /// <summary>
         /// Sets the HTTP method to intercept a request for.
         /// </summary>
@@ -382,7 +384,7 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
-        /// Sets reason phrase for the response.
+        /// Sets the reason phrase for the response.
         /// </summary>
         /// <param name="reasonPhrase">The reason phrase.</param>
         /// <returns>
@@ -391,6 +393,19 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder WithReason(string reasonPhrase)
         {
             _reasonPhrase = reasonPhrase;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the HTTP version for the response.
+        /// </summary>
+        /// <param name="version">The HTTP version.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithVersion(Version version)
+        {
+            _version = version;
             return this;
         }
 
@@ -436,6 +451,7 @@ namespace JustEat.HttpClientInterception
                 ReasonPhrase = _reasonPhrase,
                 RequestUri = _uriBuilder.Uri,
                 StatusCode = _statusCode,
+                Version = _version,
             };
 
             if (_responseHeaders?.Count > 0)

@@ -397,6 +397,7 @@ namespace JustEat.HttpClientInterception
             // Assert
             actual.ShouldNotBeNull();
             actual.ReasonPhrase.ShouldBe("OK");
+            actual.Version.ShouldBe(new Version(1, 1));
             actual.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
             actual.Content.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
         }
@@ -568,6 +569,29 @@ namespace JustEat.HttpClientInterception
             // Assert
             actual.ShouldNotBeNull();
             actual.ReasonPhrase.ShouldBe("My custom reason");
+        }
+
+        [Fact]
+        public static async Task GetResponseAsync_Uses_Version()
+        {
+            // Arrange
+            string url = "https://google.com/";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(url)
+                .WithVersion(new Version(2, 1));
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            // Act
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
+
+            // Assert
+            actual.ShouldNotBeNull();
+            actual.Version.ShouldBe(new Version(2, 1));
         }
 
         [Fact]
