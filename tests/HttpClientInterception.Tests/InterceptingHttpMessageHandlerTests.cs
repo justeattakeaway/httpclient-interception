@@ -77,9 +77,9 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-                .Register(HttpMethod.Get, new Uri("https://google.com/foo"), Array.Empty<byte>)
-                .Register(HttpMethod.Options, new Uri("http://google.com/foo"), Array.Empty<byte>)
-                .Register(HttpMethod.Options, new Uri("https://google.com/FOO"), Array.Empty<byte>);
+                .Register(HttpMethod.Get, new Uri("https://google.com/foo"), () => Array.Empty<byte>())
+                .Register(HttpMethod.Options, new Uri("http://google.com/foo"), () => Array.Empty<byte>())
+                .Register(HttpMethod.Options, new Uri("https://google.com/FOO"), () => Array.Empty<byte>());
 
             var mock = new Mock<HttpMessageHandler>();
 
@@ -111,7 +111,7 @@ namespace JustEat.HttpClientInterception
             var requestUrl = "https://google.com/foo";
 
             var options = new HttpClientInterceptorOptions()
-                .Register(HttpMethod.Get, new Uri(requestUrl), Array.Empty<byte>);
+                .Register(HttpMethod.Get, new Uri(requestUrl), () => Array.Empty<byte>());
 
             int expected = 7;
             int actual = 0;

@@ -139,12 +139,12 @@ namespace JustEat.HttpClientInterception
         public HttpClientInterceptorOptions Register(
             HttpMethod method,
             Uri uri,
-            Func<byte[]> contentFactory,
+            Func<Task<byte[]>> contentFactory,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = JsonMediaType,
             IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders = null,
             IEnumerable<KeyValuePair<string, IEnumerable<string>>> contentHeaders = null,
-            Action<HttpRequestMessage> onIntercepted = null)
+            Func<HttpRequestMessage, Task> onIntercepted = null)
         {
             if (method == null)
             {
@@ -205,19 +205,17 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
-        /// Tries to fetch the HTTP response, if any, set up for the specified HTTP request.
+        /// Gets the HTTP response, if any, set up for the specified HTTP request as an asynchronous operation.
         /// </summary>
         /// <param name="request">The HTTP request to try and get the intercepted response for.</param>
-        /// <param name="response">
-        /// When the method returns, contains the HTTP response to use, if any; otherwise <see langword="null"/>.
-        /// </param>
         /// <returns>
-        /// <see langword="true"/> if an HTTP response was registered for <paramref name="request"/>; otherwise <see langword="false"/>.
+        /// A <see cref="Task{TResult}"/> that returns the HTTP response to use, if any,
+        /// for <paramref name="request"/>; otherwise <see langword="null"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <see langword="null"/>.
         /// </exception>
-        public virtual bool TryGetResponse(HttpRequestMessage request, out HttpResponseMessage response)
+        public async virtual Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request)
         {
             if (request == null)
             {
@@ -228,17 +226,19 @@ namespace JustEat.HttpClientInterception
 
             if (!_mappings.TryGetValue(key, out HttpInterceptionResponse options))
             {
-                response = null;
-                return false;
+                return null;
             }
 
-            options.OnIntercepted?.Invoke(request);
+            if (options.OnIntercepted != null)
+            {
+                await options.OnIntercepted(request);
+            }
 
             var result = new HttpResponseMessage(options.StatusCode);
 
             try
             {
-                byte[] content = options.ContentFactory() ?? Array.Empty<byte>();
+                byte[] content = await options.ContentFactory() ?? Array.Empty<byte>();
                 result.Content = new ByteArrayContent(content);
 
                 if (options.ContentHeaders != null)
@@ -265,8 +265,7 @@ namespace JustEat.HttpClientInterception
                 throw;
             }
 
-            response = result;
-            return true;
+            return result;
         }
 
         /// <summary>

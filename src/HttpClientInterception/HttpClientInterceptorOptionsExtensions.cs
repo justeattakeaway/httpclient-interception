@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace JustEat.HttpClientInterception
@@ -46,6 +47,11 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(options));
             }
 
+            if (contentFactory == null)
+            {
+                throw new ArgumentNullException(nameof(contentFactory));
+            }
+
             IDictionary<string, IEnumerable<string>> multivalueHeaders = null;
 
             if (responseHeaders != null)
@@ -61,7 +67,7 @@ namespace JustEat.HttpClientInterception
             return options.Register(
                 method,
                 uri,
-                contentFactory,
+                () => Task.FromResult(contentFactory()),
                 statusCode,
                 mediaType,
                 multivalueHeaders);

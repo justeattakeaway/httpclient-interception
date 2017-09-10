@@ -191,7 +191,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task Builder_For_Raw_Bytes_Registers_Interception()
+        public static async Task Builder_For_Raw_Bytes_Registers_Interception_Synchronous()
         {
             // Arrange
             string requestUri = "https://google.com/";
@@ -210,7 +210,26 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void TryGetResponse_Returns_Empty_Response_If_Custom_Response_Header()
+        public static async Task Builder_For_Raw_Bytes_Registers_Interception_Asynchronous()
+        {
+            // Arrange
+            string requestUri = "https://google.com/";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(requestUri)
+                .WithContent(() => Task.FromResult(new byte[] { 46, 78, 69, 84 }));
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.GetAsync(options, requestUri);
+
+            // Assert
+            actual.ShouldBe(".NET");
+        }
+
+        [Fact]
+        public static async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Header()
         {
             // Arrange
             string url = "https://google.com/";
@@ -231,17 +250,16 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
-            actual.ShouldBeTrue();
-            response.ShouldNotBeNull();
-            response.Headers.GetValues("a").ShouldBe(new[] { "b" });
-            response.Headers.GetValues("c").ShouldBe(new[] { "d" });
+            actual.ShouldNotBeNull();
+            actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
+            actual.Headers.GetValues("c").ShouldBe(new[] { "d" });
         }
 
         [Fact]
-        public static void TryGetResponse_Returns_Empty_Response_If_Custom_Response_Headers()
+        public static async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Headers()
         {
             // Arrange
             string url = "https://google.com/";
@@ -262,17 +280,16 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
-            actual.ShouldBeTrue();
-            response.ShouldNotBeNull();
-            response.Headers.GetValues("a").ShouldBe(new[] { "b" });
-            response.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+            actual.ShouldNotBeNull();
+            actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
+            actual.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
         }
 
         [Fact]
-        public static void TryGetResponse_Returns_Empty_Response_If_Individual_Custom_Response_Headers()
+        public static async Task GetResponseAsync_Returns_Empty_Response_If_Individual_Custom_Response_Headers()
         {
             // Arrange
             string url = "https://google.com/";
@@ -289,17 +306,16 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
-            actual.ShouldBeTrue();
-            response.ShouldNotBeNull();
-            response.Headers.GetValues("a").ShouldBe(new[] { "b" });
-            response.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+            actual.ShouldNotBeNull();
+            actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
+            actual.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
         }
 
         [Fact]
-        public static void TryGetResponse_Returns_Empty_Response_If_Custom_Content_Header()
+        public static async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Content_Header()
         {
             // Arrange
             string url = "https://google.com/";
@@ -320,17 +336,16 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
-            actual.ShouldBeTrue();
-            response.ShouldNotBeNull();
-            response.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
-            response.Content.Headers.GetValues("c").ShouldBe(new[] { "d" });
+            actual.ShouldNotBeNull();
+            actual.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
+            actual.Content.Headers.GetValues("c").ShouldBe(new[] { "d" });
         }
 
         [Fact]
-        public static void TryGetResponse_Returns_Empty_Response_If_Custom_Content_Headers()
+        public static async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Content_Headers()
         {
             // Arrange
             string url = "https://google.com/";
@@ -351,17 +366,16 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
-            actual.ShouldBeTrue();
-            response.ShouldNotBeNull();
-            response.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
-            response.Content.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+            actual.ShouldNotBeNull();
+            actual.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
+            actual.Content.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
         }
 
         [Fact]
-        public static void TryGetResponse_Returns_Empty_Response_If_Individual_Custom_Content_Headers()
+        public static async Task GetResponseAsync_Returns_Empty_Response_If_Individual_Custom_Content_Headers()
         {
             // Arrange
             string url = "https://google.com/";
@@ -378,13 +392,12 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            bool actual = options.TryGetResponse(request, out HttpResponseMessage response);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
-            actual.ShouldBeTrue();
-            response.ShouldNotBeNull();
-            response.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
-            response.Content.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+            actual.ShouldNotBeNull();
+            actual.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
+            actual.Content.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
         }
 
         [Fact]
@@ -458,7 +471,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task Register_For_Callback_Invokes_Delegate_With_Message()
+        public static async Task Register_For_Callback_Invokes_Delegate_With_Message_Synchronous()
         {
             // Arrange
             var requestUri = new Uri("https://api.just-eat.com/");
@@ -473,6 +486,44 @@ namespace JustEat.HttpClientInterception
                 request.RequestUri.ShouldBe(requestUri);
 
                 string json = request.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                var body = JObject.Parse(json);
+
+                body.Value<string>("foo").ShouldBe("bar");
+
+                wasDelegateInvoked = true;
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUri(requestUri)
+                .WithInterceptionCallback(onIntercepted);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            await HttpAssert.PostAsync(options, requestUri.ToString(), content);
+
+            // Assert
+            wasDelegateInvoked.ShouldBeTrue();
+        }
+
+        [Fact]
+        public static async Task Register_For_Callback_Invokes_Delegate_With_Message_Asynchronous()
+        {
+            // Arrange
+            var requestUri = new Uri("https://api.just-eat.com/");
+            var content = new { foo = "bar" };
+
+            bool wasDelegateInvoked = false;
+
+            Func<HttpRequestMessage, Task> onIntercepted = async (request) =>
+            {
+                request.ShouldNotBeNull();
+                request.Method.ShouldBe(HttpMethod.Post);
+                request.RequestUri.ShouldBe(requestUri);
+
+                string json = await request.Content.ReadAsStringAsync();
 
                 var body = JObject.Parse(json);
 

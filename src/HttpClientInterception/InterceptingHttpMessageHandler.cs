@@ -54,7 +54,9 @@ namespace JustEat.HttpClientInterception
                 await _options.OnSend(request);
             }
 
-            if (_options.TryGetResponse(request, out HttpResponseMessage response))
+            HttpResponseMessage response = await _options.GetResponseAsync(request);
+
+            if (response != null)
             {
                 return response;
             }

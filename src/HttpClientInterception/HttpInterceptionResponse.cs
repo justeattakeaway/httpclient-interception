@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace JustEat.HttpClientInterception
 {
@@ -16,7 +17,7 @@ namespace JustEat.HttpClientInterception
 
         internal HttpStatusCode StatusCode { get; set; }
 
-        internal Func<byte[]> ContentFactory { get; set; }
+        internal Func<Task<byte[]>> ContentFactory { get; set; }
 
         internal string ContentMediaType { get; set; }
 
@@ -24,6 +25,6 @@ namespace JustEat.HttpClientInterception
 
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ResponseHeaders { get; set; }
 
-        internal Action<HttpRequestMessage> OnIntercepted { get; set; }
+        internal Func<HttpRequestMessage, Task> OnIntercepted { get; set; }
     }
 }

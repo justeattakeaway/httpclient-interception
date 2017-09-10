@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace JustEat.HttpClientInterception
 {
@@ -13,7 +14,11 @@ namespace JustEat.HttpClientInterception
     /// </summary>
     public class HttpRequestInterceptionBuilder
     {
-        private Func<byte[]> _contentFactory;
+        private static readonly Task<byte[]> EmptyContent = Task.FromResult(Array.Empty<byte>());
+
+        private static readonly Func<Task<byte[]>> EmptyContentFactory = () => EmptyContent;
+
+        private Func<Task<byte[]>> _contentFactory;
 
         private IDictionary<string, ICollection<string>> _contentHeaders;
 
@@ -23,7 +28,7 @@ namespace JustEat.HttpClientInterception
 
         private HttpMethod _method = HttpMethod.Get;
 
-        private Action<HttpRequestMessage> _onIntercepted;
+        private Func<HttpRequestMessage, Task> _onIntercepted;
 
         private HttpStatusCode _statusCode = HttpStatusCode.OK;
 
@@ -147,6 +152,19 @@ namespace JustEat.HttpClientInterception
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
         public HttpRequestInterceptionBuilder WithContent(Func<byte[]> contentFactory)
+        {
+            _contentFactory = () => Task.FromResult(contentFactory());
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the function to use to asynchronously build the response content.
+        /// </summary>
+        /// <param name="contentFactory">A delegate to a method that returns the raw response content asynchronously.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithContent(Func<Task<byte[]>> contentFactory)
         {
             _contentFactory = contentFactory;
             return this;
@@ -370,6 +388,24 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         public HttpRequestInterceptionBuilder WithInterceptionCallback(Action<HttpRequestMessage> onIntercepted)
         {
+            _onIntercepted = (request) =>
+            {
+                onIntercepted(request);
+                return Task.CompletedTask;
+            };
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the asynchronous callback to use to use when a request is intercepted.
+        /// </summary>
+        /// <param name="onIntercepted">A delegate to a method to await when a request is intercepted.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithInterceptionCallback(Func<HttpRequestMessage, Task> onIntercepted)
+        {
             _onIntercepted = onIntercepted;
             return this;
         }
@@ -378,7 +414,7 @@ namespace JustEat.HttpClientInterception
         {
             var response = new HttpInterceptionResponse()
             {
-                ContentFactory = _contentFactory ?? Array.Empty<byte>,
+                ContentFactory = _contentFactory ?? EmptyContentFactory,
                 ContentMediaType = _mediaType,
                 Method = _method,
                 OnIntercepted = _onIntercepted,
