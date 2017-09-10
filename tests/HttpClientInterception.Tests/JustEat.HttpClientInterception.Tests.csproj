@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="Moq" Version="4.7.63" />
     <PackageReference Include="OpenCover" Version="4.6.519" />
+    <PackageReference Include="Refit" Version="4.0.1" />
     <PackageReference Include="ReportGenerator" Version="2.5.11" />
     <PackageReference Include="Shouldly" Version="2.8.2" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.0" PrivateAssets="All" />

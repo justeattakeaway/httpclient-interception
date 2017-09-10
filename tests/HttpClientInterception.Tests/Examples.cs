@@ -7,7 +7,9 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using JustEat.HttpClientInterception.GitHub;
 using Newtonsoft.Json.Linq;
+using Refit;
 using Shouldly;
 using Xunit;
 
@@ -274,6 +276,29 @@ namespace JustEat.HttpClientInterception
             // Assert
             json1.ShouldNotBe(json2);
             json1.ShouldBe(json3);
+        }
+
+        [Fact]
+        public static async Task Use_With_Refit()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+            var service = RestService.For<IGitHub>(options.CreateHttpClient("https://api.github.com"));
+
+            // Act
+            Organization actual = await service.GetOrganizationAsync("justeat");
+
+            // Assert
+            actual.ShouldNotBeNull();
+            actual.Id.ShouldBe("1516790");
+            actual.Login.ShouldBe("justeat");
+            actual.Url.ShouldBe("https://api.github.com/orgs/justeat");
         }
     }
 }
