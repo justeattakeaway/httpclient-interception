@@ -30,6 +30,8 @@ namespace JustEat.HttpClientInterception
 
         private Func<HttpRequestMessage, Task> _onIntercepted;
 
+        private string _reasonPhrase;
+
         private HttpStatusCode _statusCode = HttpStatusCode.OK;
 
         private UriBuilder _uriBuilder = new UriBuilder();
@@ -380,6 +382,19 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
+        /// Sets reason phrase for the response.
+        /// </summary>
+        /// <param name="reasonPhrase">The reason phrase.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithReason(string reasonPhrase)
+        {
+            _reasonPhrase = reasonPhrase;
+            return this;
+        }
+
+        /// <summary>
         /// Sets the callback to use to use when a request is intercepted.
         /// </summary>
         /// <param name="onIntercepted">A delegate to a method to call when a request is intercepted.</param>
@@ -418,6 +433,7 @@ namespace JustEat.HttpClientInterception
                 ContentMediaType = _mediaType,
                 Method = _method,
                 OnIntercepted = _onIntercepted,
+                ReasonPhrase = _reasonPhrase,
                 RequestUri = _uriBuilder.Uri,
                 StatusCode = _statusCode,
             };

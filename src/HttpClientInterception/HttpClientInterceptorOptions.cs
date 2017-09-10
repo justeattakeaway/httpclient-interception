@@ -238,6 +238,11 @@ namespace JustEat.HttpClientInterception
 
             try
             {
+                if (options.ReasonPhrase != null)
+                {
+                    result.ReasonPhrase = options.ReasonPhrase;
+                }
+
                 byte[] content = await options.ContentFactory() ?? Array.Empty<byte>();
                 result.Content = new ByteArrayContent(content);
 

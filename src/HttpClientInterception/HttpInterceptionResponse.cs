@@ -13,6 +13,8 @@ namespace JustEat.HttpClientInterception
     {
         internal HttpMethod Method { get; set; }
 
+        internal string ReasonPhrase { get; set; }
+
         internal Uri RequestUri { get; set; }
 
         internal HttpStatusCode StatusCode { get; set; }
