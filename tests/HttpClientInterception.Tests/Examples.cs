@@ -189,13 +189,14 @@ namespace JustEat.HttpClientInterception
         public static async Task Inject_Latency_For_Http_Get()
         {
             // Arrange
+            var latency = TimeSpan.FromMilliseconds(50);
+
             var builder = new HttpRequestInterceptionBuilder()
-                .ForHost("www.google.co.uk");
+                .ForHost("www.google.co.uk")
+                .WithInterceptionCallback((_) => Task.Delay(latency));
 
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
-
-            options.OnSend = (_) => Task.Delay(TimeSpan.FromMilliseconds(50));
 
             var stopwatch = new Stopwatch();
 
@@ -210,7 +211,7 @@ namespace JustEat.HttpClientInterception
             }
 
             // Assert
-            stopwatch.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(50));
+            stopwatch.Elapsed.ShouldBeGreaterThanOrEqualTo(latency);
         }
 
         [Fact]
