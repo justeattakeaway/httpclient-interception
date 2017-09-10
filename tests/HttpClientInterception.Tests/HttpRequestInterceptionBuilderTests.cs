@@ -18,6 +18,25 @@ namespace JustEat.HttpClientInterception
     public static class HttpRequestInterceptionBuilderTests
     {
         [Fact]
+        public static async Task Register_For_Builder_With_All_Defaults_Registers_Interception()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            string actual;
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                actual = await client.GetStringAsync("http://localhost");
+            }
+
+            // Assert
+            actual.ShouldBe(string.Empty);
+        }
+
+        [Fact]
         public static async Task Register_For_Builder_With_Defaults_Registers_Interception()
         {
             // Arrange
