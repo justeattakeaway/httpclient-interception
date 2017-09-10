@@ -240,5 +240,40 @@ namespace JustEat.HttpClientInterception
             var config = JObject.Parse(json);
             config.Value<string>("methodDisplay").ShouldBe("method");
         }
+
+        [Fact]
+        public static async Task Use_Scopes_To_Change_And_Then_Restore_Behavior()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHost("public.je-apis.com")
+                .WithJsonContent(new { value = 1 });
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            string json1;
+            string json2;
+            string json3;
+
+            // Act
+            using (var client = options.CreateHttpClient())
+            {
+                json1 = await client.GetStringAsync("http://public.je-apis.com");
+
+                using (options.BeginScope())
+                {
+                    options.Register(builder.WithJsonContent(new { value = 2 }));
+
+                    json2 = await client.GetStringAsync("http://public.je-apis.com");
+                }
+
+                json3 = await client.GetStringAsync("http://public.je-apis.com");
+            }
+
+            // Assert
+            json1.ShouldNotBe(json2);
+            json1.ShouldBe(json3);
+        }
     }
 }
