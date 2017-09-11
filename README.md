@@ -68,7 +68,7 @@ await client.GetStringAsync("http://public.je-apis.com");
 Further examples of using the library can be found by following the links below:
 
   1. [Example tests](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Tests/Examples.cs)
-  1. [Sample application with tests](https://github.com/justeat/httpclient-interception/tree/master/samples)
+  1. [Sample application with tests](https://github.com/justeat/httpclient-interception/blob/master/samples/README.md)
   1. This library's [own tests](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Tests/HttpClientInterceptorOptionsTests.cs)
 
 ## Feedback
