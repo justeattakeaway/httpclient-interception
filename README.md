@@ -8,13 +8,13 @@ This library provides functionality for intercepting HTTP requests made using th
 
 The primary use-case is for providing stub responses for use in tests for applications, such as an ASP.NET Core application, to drive your functional test scenarios.
 
-The library is based around an implementation of [`DelegatingHandler`](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.delegatinghandler), which can either be used directly as an implementation of `HttpMessageHandler`, or can be provided to instances of `HttpClient`. This also allows it to be registered via Dependency Injection to make it available for use in code under test without the application itself requiring any references to `JustEat.HttpClientInterception` or any custom abstractions of `HttpClient`.
+The library is based around an implementation of [`DelegatingHandler`](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.delegatinghandler "DelegatingHandler documentation"), which can either be used directly as an implementation of `HttpMessageHandler`, or can be provided to instances of `HttpClient`. This also allows it to be registered via Dependency Injection to make it available for use in code under test without the application itself requiring any references to `JustEat.HttpClientInterception` or any custom abstractions of `HttpClient`.
 
 This design means that no HTTP server needs to be hosted to proxy traffic to/from, so does not consume any additional system resources, such as needing to bind a port for HTTP traffic, making it lightweight to use.
 
 ### Installation
 
-To install the library from [NuGet](https://www.nuget.org/packages/JustEat.HttpClientInterception/) using the .NET SDK run:
+To install the library from [NuGet](https://www.nuget.org/packages/JustEat.HttpClientInterception/ "JustEat.HttpClientInterception on NuGet.org") using the .NET SDK run:
 
 ```
 dotnet add package JustEat.HttpClientInterception
@@ -67,13 +67,13 @@ await client.GetStringAsync("http://public.je-apis.com");
 
 Further examples of using the library can be found by following the links below:
 
-  1. [Example tests](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Tests/Examples.cs)
-  1. [Sample application with tests](https://github.com/justeat/httpclient-interception/blob/master/samples/README.md)
-  1. This library's [own tests](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Tests/HttpClientInterceptorOptionsTests.cs)
+  1. [Example tests](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Tests/Examples.cs "Sample tests using JustEat.HttpClientInterception")
+  1. [Sample application with tests](https://github.com/justeat/httpclient-interception/blob/master/samples/README.md "Sample application that uses JustEat.HttpClientInterception")
+  1. This library's [own tests](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Tests/HttpClientInterceptorOptionsTests.cs "Tests for JustEat.HttpClientInterception itself")
 
 ### Benchmarks
 
-Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit b8f69850d4c3005e7e9e12dda6c42d3ba932de13 on 17/09/2017.
+Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [b8f6985](https://github.com/justeat/httpclient-interception/commit/b8f69850d4c3005e7e9e12dda6c42d3ba932de13 "Benchmark commit") on 17/09/2017.
 
 ``` ini
 BenchmarkDotNet=v0.10.9, OS=Windows 10 Redstone 2 (10.0.15063)
@@ -93,15 +93,15 @@ Frequency=2531249 Hz, Resolution=395.0619 ns, Timer=TSC
 
 ## Feedback
 
-Any feedback or issues can be added to the issues for this project in [GitHub](https://github.com/justeat/httpclient-interception/issues).
+Any feedback or issues can be added to the issues for this project in [GitHub](https://github.com/justeat/httpclient-interception/issues "This project's issues on GitHub.com").
 
 ## Repository
 
-The repository is hosted in [GitHub](https://github.com/justeat/httpclient-interception): https://github.com/justeat/httpclient-interception.git
+The repository is hosted in [GitHub](https://github.com/justeat/httpclient-interception "This project on GitHub.com"): https://github.com/justeat/httpclient-interception.git
 
 ## Building and Testing
 
-Compiling the library yourself requires Git and the [.NET Core SDK](https://www.microsoft.com/net/download/core) to be installed (version 2.0.0 or later).
+Compiling the library yourself requires Git and the [.NET Core SDK](https://www.microsoft.com/net/download/core "Download the .NET Core SDK") to be installed (version 2.0.0 or later).
 
 To build and test the library locally from a terminal/command-line, run one of the following set of commands:
 
@@ -123,4 +123,4 @@ cd httpclient-interception
 
 ## License
 
-This project is licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) license.
+This project is licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html "The Apache 2.0 license") license.
