@@ -71,6 +71,26 @@ Further examples of using the library can be found by following the links below:
   1. [Sample application with tests](https://github.com/justeat/httpclient-interception/blob/master/samples/README.md)
   1. This library's [own tests](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Tests/HttpClientInterceptorOptionsTests.cs)
 
+### Benchmarks
+
+Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit b8f69850d4c3005e7e9e12dda6c42d3ba932de13 on 17/09/2017.
+
+``` ini
+BenchmarkDotNet=v0.10.9, OS=Windows 10 Redstone 2 (10.0.15063)
+Processor=Intel Core i7-6500U CPU 2.50GHz (Skylake), ProcessorCount=4
+Frequency=2531249 Hz, Resolution=395.0619 ns, Timer=TSC
+.NET Core SDK=2.0.0
+  [Host]     : .NET Core 2.0.0 (Framework 4.6.00001.0), 64bit RyuJIT
+  DefaultJob : .NET Core 2.0.0 (Framework 4.6.00001.0), 64bit RyuJIT
+```
+
+|  Method  |   Mean    |   Error   |   StdDev  |   Median  |
+|----------|----------:|----------:|----------:|----------:|
+| GetBytes |  3.519 μs | 0.0744 μs | 0.2133 μs |  3.463 μs |
+|  GetHtml |  4.365 μs | 0.1141 μs | 0.3238 μs |  4.200 μs |
+|  GetJson | 11.150 μs | 0.2215 μs | 0.5758 μs | 10.892 μs |
+|    Refit | 32.203 μs | 0.3286 μs | 0.2913 μs | 32.176 μs |
+
 ## Feedback
 
 Any feedback or issues can be added to the issues for this project in [GitHub](https://github.com/justeat/httpclient-interception/issues).
