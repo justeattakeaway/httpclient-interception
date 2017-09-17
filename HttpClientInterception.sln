@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{00F2B78C-D33E-4090-9888-C33435B02F1F}"
 EndProject
@@ -33,9 +33,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustEat.HttpClientIntercept
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{58FB0A27-4361-45ED-BB97-FD836F5FEF24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "samples\SampleApp\SampleApp.csproj", "{A9B2AF56-BAD5-4099-AE88-37B71E72C20D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "samples\SampleApp\SampleApp.csproj", "{A9B2AF56-BAD5-4099-AE88-37B71E72C20D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp.Tests", "samples\SampleApp.Tests\SampleApp.Tests.csproj", "{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp.Tests", "samples\SampleApp.Tests\SampleApp.Tests.csproj", "{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustEat.HttpClientInterception.Benchmarks", "tests\HttpClientInterception.Benchmarks\JustEat.HttpClientInterception.Benchmarks.csproj", "{E2EC0ECB-DA6E-4A03-85D2-1625475B4EA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2EC0ECB-DA6E-4A03-85D2-1625475B4EA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2EC0ECB-DA6E-4A03-85D2-1625475B4EA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2EC0ECB-DA6E-4A03-85D2-1625475B4EA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2EC0ECB-DA6E-4A03-85D2-1625475B4EA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,5 +74,9 @@ Global
 		{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07} = {6DC2A1B9-1D37-4062-A75D-6A03C7367A46}
 		{A9B2AF56-BAD5-4099-AE88-37B71E72C20D} = {58FB0A27-4361-45ED-BB97-FD836F5FEF24}
 		{F02ABFCA-0CAB-4A99-A9F5-B9AC8FADE8C3} = {58FB0A27-4361-45ED-BB97-FD836F5FEF24}
+		{E2EC0ECB-DA6E-4A03-85D2-1625475B4EA8} = {6DC2A1B9-1D37-4062-A75D-6A03C7367A46}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E4BC3B24-A96F-46C5-9405-CBE87A972881}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\HttpClientInterception.Common.props" />
+  <PropertyGroup>    
+    <Description>Benchmarks for JustEat.HttpClientInterception</Description>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
+    <Summary>Benchmarks for JustEat.HttpClientInterception</Summary>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyVersion.cs;..\..\CommonAssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\HttpClientInterception\JustEat.HttpClientInterception.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.9" />
+    <PackageReference Include="Refit" Version="4.0.1" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+</Project>

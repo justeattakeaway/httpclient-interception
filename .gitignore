@@ -1,4 +1,4 @@
-﻿.DS_Store
+.DS_Store
 .dotnetcli
 .metadata
 .settings
@@ -9,6 +9,7 @@ _reports
 _UpgradeReport_Files/
 artifacts/
 Backup*/
+BenchmarkDotNet.Artifacts/
 bin
 Bin
 BuildOutput
