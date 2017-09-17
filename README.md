@@ -65,7 +65,7 @@ await client.GetStringAsync("http://public.je-apis.com");
 
 #### Setting Up HttpClient for Dependency Injection
 
-Below is an example of setting up `IServiceCollection` to register `HttpClient` for Dependency Injection in a manner that allows tests to use `HttpClientInterceptorOptions` to intercept HTTP requests.
+Below is an example of setting up `IServiceCollection` to register `HttpClient` for Dependency Injection in a manner that allows tests to use `HttpClientInterceptorOptions` to intercept HTTP requests:
 
 ```csharp
 services.AddTransient(
@@ -137,10 +137,10 @@ Frequency=2531249 Hz, Resolution=395.0619 ns, Timer=TSC
 
 |  Method  |   Mean    |   Error   |   StdDev  |   Median  |
 |----------|----------:|----------:|----------:|----------:|
-| GetBytes |  3.519 μs | 0.0744 μs | 0.2133 μs |  3.463 μs |
-|  GetHtml |  4.365 μs | 0.1141 μs | 0.3238 μs |  4.200 μs |
-|  GetJson | 11.150 μs | 0.2215 μs | 0.5758 μs | 10.892 μs |
-|    Refit | 32.203 μs | 0.3286 μs | 0.2913 μs | 32.176 μs |
+| [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/aa96cbeae9397e983b73c09d9a3d2f0b7ed4859c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L51-L55 "Benchmark using a byte array") |  3.519 μs | 0.0744 μs | 0.2133 μs |  3.463 μs |
+|  [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/aa96cbeae9397e983b73c09d9a3d2f0b7ed4859c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L57-L61 "Benchmark using HTML") |  4.365 μs | 0.1141 μs | 0.3238 μs |  4.200 μs |
+|  [`GetJson`](https://github.com/justeat/httpclient-interception/blob/aa96cbeae9397e983b73c09d9a3d2f0b7ed4859c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L63-L68 "Benchmark using JSON") | 11.150 μs | 0.2215 μs | 0.5758 μs | 10.892 μs |
+|    [`Refit`](https://github.com/justeat/httpclient-interception/blob/aa96cbeae9397e983b73c09d9a3d2f0b7ed4859c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L70-L74 "Benchmark using Refit") | 32.203 μs | 0.3286 μs | 0.2913 μs | 32.176 μs |
 
 ## Feedback
 
