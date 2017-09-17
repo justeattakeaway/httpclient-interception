@@ -63,6 +63,57 @@ var client = options.CreateHttpClient();
 await client.GetStringAsync("http://public.je-apis.com");
 ```
 
+#### Setting Up HttpClient for Dependency Injection
+
+Below is an example of setting up `IServiceCollection` to register `HttpClient` for Dependency Injection in a manner that allows tests to use `HttpClientInterceptorOptions` to intercept HTTP requests.
+
+```csharp
+services.AddTransient(
+    (serviceProvider) =>
+    {
+        // Create a handler that makes actual HTTP calls
+        HttpMessageHandler handler = new HttpClientHandler();
+
+        // Have any delegating handlers been registered?
+        var handlers = serviceProvider
+            .GetServices<DelegatingHandler>()
+            .ToList();
+
+        if (handlers.Count > 0)
+        {
+            // Attach the initial handler to the first delegating handler
+            DelegatingHandler previous = handlers.First();
+            previous.InnerHandler = handler;
+
+            // Chain any remaining handlers to each other
+            foreach (DelegatingHandler next in handlers.Skip(1))
+            {
+                next.InnerHandler = previous;
+                previous = next;
+            }
+
+            // Replace the initial handler with the last delegating handler
+            handler = previous;
+        }
+
+        // Create the HttpClient using the inner HttpMessageHandler
+        return new HttpClient(handler);
+    });
+```
+
+Then in the test project register `HttpClientInterceptorOptions` to provide an implementation of `DelegatingHandler`:
+
+```csharp
+var options = new HttpClientInterceptorOptions();
+
+var server = new WebHostBuilder()
+    .UseStartup<Startup>()
+    .ConfigureServices((services) => services.AddTransient((_) => options.CreateHttpMessageHandler()))
+    .Build();
+
+server.Start();
+```
+
 ### Further Examples
 
 Further examples of using the library can be found by following the links below:
