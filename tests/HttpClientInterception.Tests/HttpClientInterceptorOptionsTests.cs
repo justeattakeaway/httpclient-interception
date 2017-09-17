@@ -62,7 +62,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_False_If_Request_Uri_Does_Not_Match_Blank_Request()
+        public static async Task GetResponseAsync_Returns_Null_If_Request_Uri_Does_Not_Match_Blank_Request()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
@@ -78,7 +78,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_True_If_Request_Matches()
+        public static async Task GetResponseAsync_Returns_Response_If_Request_Matches_Default_Constructor()
         {
             // Arrange
             var method = HttpMethod.Get;
@@ -94,6 +94,28 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldNotBeNull();
+        }
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, true)]
+        public static async Task GetResponseAsync_Returns_Response_If_Request_Matches(bool caseSensitive, bool expectNull)
+        {
+            // Arrange
+            var method = HttpMethod.Get;
+            var uriToRegister = new Uri("https://google.com/uk");
+            var uriToRequest = new Uri("https://google.com/UK");
+
+            var options = new HttpClientInterceptorOptions(caseSensitive)
+                .Register(method, uriToRegister, EmptyContent);
+
+            var request = new HttpRequestMessage(method, uriToRequest);
+
+            // Act
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
+
+            // Assert
+            (actual == null).ShouldBe(expectNull);
         }
 
         [Fact]

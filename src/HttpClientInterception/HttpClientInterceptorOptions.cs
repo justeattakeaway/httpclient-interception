@@ -23,9 +23,9 @@ namespace JustEat.HttpClientInterception
         internal const string JsonMediaType = "application/json";
 
         /// <summary>
-        /// The <see cref="StringComparer"/> to use to key registrations.
+        /// The <see cref="StringComparer"/> to use to key registrations. This field is read-only.
         /// </summary>
-        private static readonly StringComparer _comparer = StringComparer.Ordinal;
+        private readonly StringComparer _comparer;
 
         /// <summary>
         /// The mapped HTTP request interceptors.
@@ -35,8 +35,21 @@ namespace JustEat.HttpClientInterception
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpClientInterceptorOptions"/> class.
         /// </summary>
+        /// <remarks>
+        /// The path and query string of URIs which are registered are case-sensitive.
+        /// </remarks>
         public HttpClientInterceptorOptions()
+            : this(caseSensitive: true)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpClientInterceptorOptions"/> class.
+        /// </summary>
+        /// <param name="caseSensitive">Whether registered URIs paths and queries are case-sensitive.</param>
+        public HttpClientInterceptorOptions(bool caseSensitive)
+        {
+            _comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
             _mappings = new ConcurrentDictionary<string, HttpInterceptionResponse>(_comparer);
         }
 
@@ -321,7 +334,7 @@ namespace JustEat.HttpClientInterception
 
                 // TODO There might be a nicer way to do this so it's more atomic
                 _old = _parent._mappings;
-                _parent._mappings = _new = new ConcurrentDictionary<string, HttpInterceptionResponse>(_old, _comparer);
+                _parent._mappings = _new = new ConcurrentDictionary<string, HttpInterceptionResponse>(_old, parent._comparer);
             }
 
             void IDisposable.Dispose()
