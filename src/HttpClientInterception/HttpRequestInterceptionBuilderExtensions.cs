@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -54,6 +54,26 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
+        /// Sets builder for an HTTP DELETE request.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <returns>
+        /// The value specified by <paramref name="builder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="builder"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpRequestInterceptionBuilder ForDelete(this HttpRequestInterceptionBuilder builder)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            return builder.ForMethod(HttpMethod.Delete);
+        }
+
+        /// <summary>
         /// Sets builder for an HTTP GET request.
         /// </summary>
         /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
@@ -91,6 +111,26 @@ namespace JustEat.HttpClientInterception
             }
 
             return builder.ForMethod(HttpMethod.Post);
+        }
+
+        /// <summary>
+        /// Sets builder for an HTTP PUT request.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <returns>
+        /// The value specified by <paramref name="builder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="builder"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpRequestInterceptionBuilder ForPut(this HttpRequestInterceptionBuilder builder)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            return builder.ForMethod(HttpMethod.Put);
         }
 
         /// <summary>

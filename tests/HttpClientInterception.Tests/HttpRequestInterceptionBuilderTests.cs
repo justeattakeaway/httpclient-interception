@@ -643,6 +643,13 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static void ForDelete_Validates_Parameters()
+        {
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).ForDelete());
+        }
+
+        [Fact]
         public static void ForGet_Validates_Parameters()
         {
             // Act and Assert
@@ -654,6 +661,13 @@ namespace JustEat.HttpClientInterception
         {
             // Act and Assert
             Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).ForPost());
+        }
+
+        [Fact]
+        public static void ForPut_Validates_Parameters()
+        {
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).ForPut());
         }
 
         [Fact]

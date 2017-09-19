@@ -139,6 +139,69 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static async Task Intercept_Http_Put_For_Json_String()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPut()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("baskets/123/user")
+                .WithStatus(HttpStatusCode.Created)
+                .WithContent(@"{ ""id"": 123 }");
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            HttpStatusCode status;
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                using (var body = new StringContent(@"{ ""User"": { ""DisplayName"": ""John"" } }"))
+                {
+                    // Act
+                    using (var response = await client.PutAsync("https://public.je-apis.com/baskets/123/user", body))
+                    {
+                        status = response.StatusCode;
+                        json = await response.Content.ReadAsStringAsync();
+                    }
+                }
+            }
+
+            // Assert
+            status.ShouldBe(HttpStatusCode.Created);
+
+            var content = JObject.Parse(json);
+            content.Value<int>("id").ShouldBe(123);
+        }
+
+        [Fact]
+        public static async Task Intercept_Http_Delete()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForDelete()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("baskets/123/orderitems/456")
+                .WithStatus(HttpStatusCode.NoContent);
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                using (var response = await client.DeleteAsync("https://public.je-apis.com/baskets/123/orderitems/456"))
+                {
+                    // Assert
+                    response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
+                }
+            }
+        }
+
+        [Fact]
         public static async Task Intercept_Custom_Http_Method()
         {
             // Arrange
