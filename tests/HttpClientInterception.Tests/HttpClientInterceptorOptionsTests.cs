@@ -94,6 +94,7 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldNotBeNull();
+            actual.RequestMessage.ShouldBe(request);
         }
 
         [Theory]
@@ -135,6 +136,7 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldNotBeNull();
+            actual.RequestMessage.ShouldBe(request);
             actual.Content.ShouldNotBeNull();
             actual.Content.Headers?.ContentLength.ShouldBe(0);
             actual.Content.Headers?.ContentType?.MediaType.ShouldBe("application/json");
@@ -157,6 +159,7 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldNotBeNull();
+            actual.RequestMessage.ShouldBe(request);
             actual.Content.ShouldNotBeNull();
             actual.Content.Headers?.ContentLength.ShouldBe(0);
             actual.Content.Headers?.ContentType?.MediaType.ShouldBe("application/json");
@@ -185,6 +188,7 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldNotBeNull();
+            actual.RequestMessage.ShouldBe(request);
             actual.Content.ShouldNotBeNull();
             actual.Content.Headers.ContentLength.ShouldBe(0);
             actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
@@ -210,6 +214,7 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldNotBeNull();
+            actual.RequestMessage.ShouldBe(request);
             actual.Content.ShouldNotBeNull();
             actual.Content.Headers.ContentLength.ShouldBe(0);
         }
@@ -237,6 +242,7 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldNotBeNull();
+            actual.RequestMessage.ShouldBe(request);
             actual.Content.ShouldNotBeNull();
             actual.Content.Headers.ContentLength.ShouldBe(0);
             actual.Headers.GetValues("a").ShouldBe(new[] { "b" });

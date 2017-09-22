@@ -251,6 +251,8 @@ namespace JustEat.HttpClientInterception
 
             try
             {
+                result.RequestMessage = request;
+
                 if (options.ReasonPhrase != null)
                 {
                     result.ReasonPhrase = options.ReasonPhrase;
