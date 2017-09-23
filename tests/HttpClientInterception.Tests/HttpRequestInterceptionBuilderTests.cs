@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -229,6 +230,26 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static async Task Builder_For_Raw_Bytes_Clears_Content()
+        {
+            // Arrange
+            string requestUri = "https://google.com/";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(requestUri)
+                .WithContent(() => new byte[] { 46, 78, 69, 84 })
+                .WithContent(null as Func<byte[]>);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.GetAsync(options, requestUri);
+
+            // Assert
+            actual.ShouldBe(string.Empty);
+        }
+
+        [Fact]
         public static async Task Builder_For_Raw_Bytes_Registers_Interception_Asynchronous()
         {
             // Arrange
@@ -237,6 +258,64 @@ namespace JustEat.HttpClientInterception
             var builder = new HttpRequestInterceptionBuilder()
                 .ForUrl(requestUri)
                 .WithContent(() => Task.FromResult(new byte[] { 46, 78, 69, 84 }));
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.GetAsync(options, requestUri);
+
+            // Assert
+            actual.ShouldBe(".NET");
+        }
+
+        [Fact]
+        public static async Task Builder_For_Stream_Registers_Interception_Synchronous()
+        {
+            // Arrange
+            string requestUri = "https://google.com/";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(requestUri)
+                .WithContentStream(() => new MemoryStream(new byte[] { 46, 78, 69, 84 }));
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.GetAsync(options, requestUri);
+
+            // Assert
+            actual.ShouldBe(".NET");
+        }
+
+        [Fact]
+        public static async Task Builder_For_Stream_Clears_Stream()
+        {
+            // Arrange
+            string requestUri = "https://google.com/";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(requestUri)
+                .WithContentStream(() => new MemoryStream(new byte[] { 46, 78, 69, 84 }))
+                .WithContentStream(null as Func<Stream>);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.GetAsync(options, requestUri);
+
+            // Assert
+            actual.ShouldBe(string.Empty);
+        }
+
+        [Fact]
+        public static async Task Builder_For_Stream_Registers_Interception_Asynchronous()
+        {
+            // Arrange
+            string requestUri = "https://google.com/";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(requestUri)
+                .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(new byte[] { 46, 78, 69, 84 })));
 
             var options = new HttpClientInterceptorOptions().Register(builder);
 

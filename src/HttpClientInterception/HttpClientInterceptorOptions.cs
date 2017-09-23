@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -195,6 +196,66 @@ namespace JustEat.HttpClientInterception
         /// <summary>
         /// Registers an HTTP request interception, replacing any existing registration.
         /// </summary>
+        /// <param name="method">The HTTP method to register an interception for.</param>
+        /// <param name="uri">The request URI to register an interception for.</param>
+        /// <param name="contentStream">A delegate to a method that returns the response stream.</param>
+        /// <param name="statusCode">The optional HTTP status code to return.</param>
+        /// <param name="mediaType">The optional media type for the content-type.</param>
+        /// <param name="responseHeaders">The optional HTTP response headers for the response.</param>
+        /// <param name="contentHeaders">The optional HTTP response headers for the content.</param>
+        /// <param name="onIntercepted">An optional delegate to invoke when the HTTP message is intercepted.</param>
+        /// <returns>
+        /// The current <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="method"/>, <paramref name="uri"/> or <paramref name="contentStream"/> is <see langword="null"/>.
+        /// </exception>
+        public HttpClientInterceptorOptions Register(
+            HttpMethod method,
+            Uri uri,
+            Func<Task<Stream>> contentStream,
+            HttpStatusCode statusCode = HttpStatusCode.OK,
+            string mediaType = JsonMediaType,
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders = null,
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>> contentHeaders = null,
+            Func<HttpRequestMessage, Task> onIntercepted = null)
+        {
+            if (method == null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            if (uri == null)
+            {
+                throw new ArgumentNullException(nameof(uri));
+            }
+
+            if (contentStream == null)
+            {
+                throw new ArgumentNullException(nameof(contentStream));
+            }
+
+            var interceptor = new HttpInterceptionResponse()
+            {
+                ContentStream = contentStream,
+                ContentHeaders = contentHeaders,
+                ContentMediaType = mediaType,
+                Method = method,
+                OnIntercepted = onIntercepted,
+                RequestUri = uri,
+                ResponseHeaders = responseHeaders,
+                StatusCode = statusCode
+            };
+
+            string key = BuildKey(method, uri);
+            _mappings[key] = interceptor;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Registers an HTTP request interception, replacing any existing registration.
+        /// </summary>
         /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use to create the registration.</param>
         /// <returns>
         /// The current <see cref="HttpClientInterceptorOptions"/>.
@@ -263,8 +324,15 @@ namespace JustEat.HttpClientInterception
                     result.Version = options.Version;
                 }
 
-                byte[] content = await options.ContentFactory() ?? Array.Empty<byte>();
-                result.Content = new ByteArrayContent(content);
+                if (options.ContentStream != null)
+                {
+                    result.Content = new StreamContent(await options.ContentStream() ?? Stream.Null);
+                }
+                else
+                {
+                    byte[] content = await options.ContentFactory() ?? Array.Empty<byte>();
+                    result.Content = new ByteArrayContent(content);
+                }
 
                 if (options.ContentHeaders != null)
                 {

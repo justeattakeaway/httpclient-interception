@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Shouldly;
@@ -116,7 +117,13 @@ namespace JustEat.HttpClientInterception
             IEnumerable<KeyValuePair<string, string>> headers = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => options.Register(method, uri, Array.Empty<byte>, responseHeaders: headers));
+            Assert.Throws<ArgumentNullException>(
+                "options",
+                () => options.Register(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: headers));
+
+            Assert.Throws<ArgumentNullException>(
+                "options",
+                () => options.Register(method, uri, contentStream: () => Stream.Null, responseHeaders: headers));
         }
 
         [Fact]

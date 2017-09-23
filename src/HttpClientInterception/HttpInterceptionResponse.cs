@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace JustEat.HttpClientInterception
         internal HttpStatusCode StatusCode { get; set; }
 
         internal Func<Task<byte[]>> ContentFactory { get; set; }
+
+        internal Func<Task<Stream>> ContentStream { get; set; }
 
         internal string ContentMediaType { get; set; }
 

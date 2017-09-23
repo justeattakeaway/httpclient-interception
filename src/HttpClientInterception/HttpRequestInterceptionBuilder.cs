@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace JustEat.HttpClientInterception
         private static readonly Func<Task<byte[]>> EmptyContentFactory = () => EmptyContent;
 
         private Func<Task<byte[]>> _contentFactory;
+
+        private Func<Task<Stream>> _contentStream;
 
         private IDictionary<string, ICollection<string>> _contentHeaders;
 
@@ -157,7 +160,15 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         public HttpRequestInterceptionBuilder WithContent(Func<byte[]> contentFactory)
         {
-            _contentFactory = () => Task.FromResult(contentFactory());
+            if (contentFactory == null)
+            {
+                _contentFactory = null;
+            }
+            else
+            {
+                _contentFactory = () => Task.FromResult(contentFactory());
+            }
+
             return this;
         }
 
@@ -171,6 +182,40 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder WithContent(Func<Task<byte[]>> contentFactory)
         {
             _contentFactory = contentFactory;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the function to use to build the response stream.
+        /// </summary>
+        /// <param name="contentStream">A delegate to a method that returns the response stream for the content.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithContentStream(Func<Stream> contentStream)
+        {
+            if (contentStream == null)
+            {
+                _contentStream = null;
+            }
+            else
+            {
+                _contentStream = () => Task.FromResult(contentStream());
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the function to use to asynchronously build the response stream.
+        /// </summary>
+        /// <param name="contentStream">A delegate to a method that returns the response stream for the content asynchronously.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithContentStream(Func<Task<Stream>> contentStream)
+        {
+            _contentStream = contentStream;
             return this;
         }
 
@@ -445,6 +490,7 @@ namespace JustEat.HttpClientInterception
             var response = new HttpInterceptionResponse()
             {
                 ContentFactory = _contentFactory ?? EmptyContentFactory,
+                ContentStream = _contentStream,
                 ContentMediaType = _mediaType,
                 Method = _method,
                 OnIntercepted = _onIntercepted,

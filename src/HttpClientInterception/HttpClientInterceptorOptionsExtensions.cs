@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -112,6 +113,63 @@ namespace JustEat.HttpClientInterception
                 method,
                 uri,
                 () => Task.FromResult(contentFactory()),
+                statusCode,
+                mediaType,
+                multivalueHeaders);
+        }
+
+        /// <summary>
+        /// Registers an HTTP request interception, replacing any existing registration.
+        /// </summary>
+        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
+        /// <param name="method">The HTTP method to register an interception for.</param>
+        /// <param name="uri">The request URI to register an interception for.</param>
+        /// <param name="contentStream">A delegate to a method that returns the response stream.</param>
+        /// <param name="statusCode">The optional HTTP status code to return.</param>
+        /// <param name="mediaType">The optional media type for the content-type.</param>
+        /// <param name="responseHeaders">The optional HTTP response headers.</param>
+        /// <returns>
+        /// The current <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="options"/>, <paramref name="method"/>, <paramref name="uri"/> or
+        /// <paramref name="contentStream"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpClientInterceptorOptions Register(
+            this HttpClientInterceptorOptions options,
+            HttpMethod method,
+            Uri uri,
+            Func<Stream> contentStream,
+            HttpStatusCode statusCode = HttpStatusCode.OK,
+            string mediaType = HttpClientInterceptorOptions.JsonMediaType,
+            IEnumerable<KeyValuePair<string, string>> responseHeaders = null)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (contentStream == null)
+            {
+                throw new ArgumentNullException(nameof(contentStream));
+            }
+
+            IDictionary<string, IEnumerable<string>> multivalueHeaders = null;
+
+            if (responseHeaders != null)
+            {
+                multivalueHeaders = new Dictionary<string, IEnumerable<string>>();
+
+                foreach (var pair in responseHeaders)
+                {
+                    multivalueHeaders[pair.Key] = new[] { pair.Value };
+                }
+            }
+
+            return options.Register(
+                method,
+                uri,
+                () => Task.FromResult(contentStream()),
                 statusCode,
                 mediaType,
                 multivalueHeaders);

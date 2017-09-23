@@ -286,7 +286,7 @@ namespace JustEat.HttpClientInterception
             var builder = new HttpRequestInterceptionBuilder()
                 .ForHost("xunit.github.io")
                 .ForPath("settings.json")
-                .WithContent(() => File.ReadAllBytesAsync("xunit.runner.json"));
+                .WithContentStream(() => File.OpenRead("xunit.runner.json"));
 
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
