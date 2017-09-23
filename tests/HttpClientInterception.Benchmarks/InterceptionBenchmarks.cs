@@ -1,6 +1,7 @@
 // Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
@@ -39,10 +40,19 @@ namespace JustEat.HttpClientInterception
                 .WithMediaType("application/json")
                 .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
 
+            var builderForStream = new HttpRequestInterceptionBuilder()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .ForQuery("page=1")
+                .WithMediaType("application/json")
+                .WithContentStream(() => File.OpenRead("organization.json"));
+
             _options = new HttpClientInterceptorOptions()
                 .Register(builderForBytes)
                 .Register(builderForHtml)
-                .Register(builderForJson);
+                .Register(builderForJson)
+                .Register(builderForStream);
 
             _client = _options.CreateHttpClient();
             _service = RestService.For<IGitHub>(_options.CreateHttpClient("https://api.github.com"));
@@ -65,6 +75,14 @@ namespace JustEat.HttpClientInterception
         {
             string json = await _client.GetStringAsync("https://api.github.com/orgs/justeat");
             JObject.Parse(json);
+        }
+
+        [Benchmark]
+        public async Task GetStream()
+        {
+            using (await _client.GetStreamAsync("https://api.github.com/orgs/justeat?page=1"))
+            {
+            }
         }
 
         [Benchmark]
