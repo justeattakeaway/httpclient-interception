@@ -238,7 +238,8 @@ namespace JustEat.HttpClientInterception
             var builder = new HttpRequestInterceptionBuilder()
                 .ForUrl(requestUri)
                 .WithContent(() => new byte[] { 46, 78, 69, 84 })
-                .WithContent(null as Func<byte[]>);
+                .WithContent(null as Func<byte[]>)
+                .WithContent(null as Func<Task<byte[]>>);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -257,6 +258,7 @@ namespace JustEat.HttpClientInterception
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForUrl(requestUri)
+                .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(new byte[] { 84, 69, 78, 46 })))
                 .WithContent(() => Task.FromResult(new byte[] { 46, 78, 69, 84 }));
 
             var options = new HttpClientInterceptorOptions().Register(builder);
@@ -296,7 +298,8 @@ namespace JustEat.HttpClientInterception
             var builder = new HttpRequestInterceptionBuilder()
                 .ForUrl(requestUri)
                 .WithContentStream(() => new MemoryStream(new byte[] { 46, 78, 69, 84 }))
-                .WithContentStream(null as Func<Stream>);
+                .WithContentStream(null as Func<Stream>)
+                .WithContentStream(null as Func<Task<Stream>>);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -315,6 +318,7 @@ namespace JustEat.HttpClientInterception
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForUrl(requestUri)
+                .WithContent(() => Task.FromResult(new byte[] { 84, 69, 78, 46 }))
                 .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(new byte[] { 46, 78, 69, 84 })));
 
             var options = new HttpClientInterceptorOptions().Register(builder);

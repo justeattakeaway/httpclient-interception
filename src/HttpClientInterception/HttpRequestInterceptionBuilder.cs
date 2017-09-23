@@ -167,6 +167,7 @@ namespace JustEat.HttpClientInterception
             else
             {
                 _contentFactory = () => Task.FromResult(contentFactory());
+                _contentStream = null;
             }
 
             return this;
@@ -182,6 +183,13 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder WithContent(Func<Task<byte[]>> contentFactory)
         {
             _contentFactory = contentFactory;
+
+            // Remove the stream if setting the factory
+            if (_contentFactory != null)
+            {
+                _contentStream = null;
+            }
+
             return this;
         }
 
@@ -201,6 +209,7 @@ namespace JustEat.HttpClientInterception
             else
             {
                 _contentStream = () => Task.FromResult(contentStream());
+                _contentFactory = null;
             }
 
             return this;
@@ -216,6 +225,13 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder WithContentStream(Func<Task<Stream>> contentStream)
         {
             _contentStream = contentStream;
+
+            // Remove the factory if setting the stream
+            if (_contentStream != null)
+            {
+                _contentFactory = null;
+            }
+
             return this;
         }
 
