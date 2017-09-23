@@ -124,7 +124,7 @@ Further examples of using the library can be found by following the links below:
 
 ### Benchmarks
 
-Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [b8f6985](https://github.com/justeat/httpclient-interception/commit/b8f69850d4c3005e7e9e12dda6c42d3ba932de13 "Benchmark commit") on 17/09/2017.
+Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [a442f1d](https://github.com/justeat/httpclient-interception/commit/a442f1d72701bedd5920be23561c1e12a05fb43f "Benchmark commit") on 23/09/2017.
 
 ``` ini
 BenchmarkDotNet=v0.10.9, OS=Windows 10 Redstone 2 (10.0.15063)
@@ -135,12 +135,13 @@ Frequency=2531249 Hz, Resolution=395.0619 ns, Timer=TSC
   DefaultJob : .NET Core 2.0.0 (Framework 4.6.00001.0), 64bit RyuJIT
 ```
 
-|  Method  |   Mean    |   Error   |   StdDev  |   Median  |
-|----------|----------:|----------:|----------:|----------:|
-| [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/aa96cbeae9397e983b73c09d9a3d2f0b7ed4859c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L51-L55 "Benchmark using a byte array") |  3.519 μs | 0.0744 μs | 0.2133 μs |  3.463 μs |
-|  [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/aa96cbeae9397e983b73c09d9a3d2f0b7ed4859c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L57-L61 "Benchmark using HTML") |  4.365 μs | 0.1141 μs | 0.3238 μs |  4.200 μs |
-|  [`GetJson`](https://github.com/justeat/httpclient-interception/blob/aa96cbeae9397e983b73c09d9a3d2f0b7ed4859c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L63-L68 "Benchmark using JSON") | 11.150 μs | 0.2215 μs | 0.5758 μs | 10.892 μs |
-|    [`Refit`](https://github.com/justeat/httpclient-interception/blob/aa96cbeae9397e983b73c09d9a3d2f0b7ed4859c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L70-L74 "Benchmark using Refit") | 32.203 μs | 0.3286 μs | 0.2913 μs | 32.176 μs |
+ |    Method |      Mean |     Error |    StdDev |
+ |---------- |----------:|----------:|----------:|
+ | [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/a442f1d72701bedd5920be23561c1e12a05fb43f/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L61-L65 "Benchmark using a byte array") |  3.604 us | 0.0639 us | 0.0567 us |
+ | [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/a442f1d72701bedd5920be23561c1e12a05fb43f/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L67-L71 "Benchmark using HTML") |  4.674 us | 0.0881 us | 0.0781 us |
+ | [`GetJson`](https://github.com/justeat/httpclient-interception/blob/a442f1d72701bedd5920be23561c1e12a05fb43f/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L73-L78 "Benchmark using JSON") | 12.295 us | 0.2015 us | 0.1683 us |
+ | [`GetStream`](https://github.com/justeat/httpclient-interception/blob/a442f1d72701bedd5920be23561c1e12a05fb43f/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L80-L86 "Benchmark using a stream") | 99.040 us | 1.9611 us | 3.0531 us |
+ | [`Refit`](https://github.com/justeat/httpclient-interception/blob/a442f1d72701bedd5920be23561c1e12a05fb43f/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L88-L92 "Benchmark using Refit") | 33.651 us | 0.5165 us | 0.4831 us |
 
 ## Feedback
 
