@@ -22,6 +22,6 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <PackageReference Include="System.Net.Http" Version="4.3.0" />
+    <PackageReference Include="System.Net.Http" Version="4.0.0" />
   </ItemGroup>
 </Project>
