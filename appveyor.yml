@@ -1,4 +1,4 @@
-﻿os: Visual Studio 2017
+os: Visual Studio 2017
 version: 1.0.{build}
 
 environment:
@@ -18,10 +18,20 @@ after_build:
     - codecov -f "artifacts\code-coverage.xml"
 
 artifacts:
-  - path: artifacts
+  - path: artifacts\*.nupkg
 
 nuget:
   disable_publish_on_pr: true
 
 skip_tags: false
 test: off
+
+deploy:
+
+  - provider: NuGet
+    api_key:
+      secure: 6MzbzEs4YdJKS67Gio5gEO8mNKmwfC4UHTCmECZ1KOutI6ndm4vAECazmVNB6an7
+    artifact: /.*\.nupkg/
+    skip_symbols: false
+    on:
+      appveyor_repo_tag: true
