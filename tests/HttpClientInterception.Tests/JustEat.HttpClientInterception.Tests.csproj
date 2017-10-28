@@ -1,13 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\HttpClientInterception.Common.props" />
-  <PropertyGroup>    
+  <PropertyGroup>
     <Description>Tests for JustEat.HttpClientInterception</Description>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Tests for JustEat.HttpClientInterception</Summary>
     <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\AssemblyVersion.cs;..\..\CommonAssemblyInfo.cs" />
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
@@ -20,7 +18,6 @@
     <PackageReference Include="Refit" Version="4.0.1" />
     <PackageReference Include="ReportGenerator" Version="2.5.11" />
     <PackageReference Include="Shouldly" Version="2.8.2" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
