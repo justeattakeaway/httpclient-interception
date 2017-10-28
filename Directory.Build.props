@@ -8,7 +8,7 @@
     <Authors>Just Eat</Authors>
     <CodeAnalysisRuleSet>../../HttpClientInterception.ruleset</CodeAnalysisRuleSet>
     <Company>Just Eat</Company>
-    <Copyright>Copyright (c) Just Eat 2015-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
+    <Copyright>Copyright (c) Just Eat $([System.DateTime]::Now.ToString(yyyy))</Copyright>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <LangVersion>latest</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
