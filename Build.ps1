@@ -15,7 +15,7 @@ $solutionFile = Join-Path $solutionPath "HttpClientInterception.sln"
 $libraryProject = Join-Path $solutionPath "src\HttpClientInterception\JustEat.HttpClientInterception.csproj"
 $testProject = Join-Path $solutionPath "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj"
 
-$dotnetVersion = "2.0.0"
+$dotnetVersion = "2.0.2"
 
 if ($OutputPath -eq "") {
     $OutputPath = Join-Path "$(Convert-Path "$PSScriptRoot")" "artifacts"
@@ -104,7 +104,7 @@ function DotNetTest {
         $openCoverVersion = "4.6.519"
         $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
 
-        $reportGeneratorVersion = "2.5.11"
+        $reportGeneratorVersion = "3.0.2"
         $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\ReportGenerator.exe"
 
         $coverageOutput = Join-Path $OutputPath "code-coverage.xml"

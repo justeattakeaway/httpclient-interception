@@ -1,12 +1,14 @@
 <Project>
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyVersion.cs;$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
   </ItemGroup>
   <PropertyGroup>
     <Authors>Just Eat</Authors>
     <CodeAnalysisRuleSet>../../HttpClientInterception.ruleset</CodeAnalysisRuleSet>
     <Company>Just Eat</Company>
-    <Copyright>Copyright (c) Just Eat 2015-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
+    <Copyright>Copyright (c) Just Eat $([System.DateTime]::Now.ToString(yyyy))</Copyright>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <LangVersion>latest</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
