@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 
 namespace SampleApp.Tests
 {
-    [Collection(HttpServerCollection.Name)] // Use the shared HTTP server fixture 
+    [Collection(HttpServerCollection.Name)] // Use the shared HTTP server fixture
     public class ReposTests
     {
         private readonly HttpServerFixture _fixture;
