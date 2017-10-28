@@ -1,7 +1,7 @@
 <Project>
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
-    <Compile Include="..\..\AssemblyVersion.cs;..\..\CommonAssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyVersion.cs;$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
   </ItemGroup>
   <PropertyGroup>
