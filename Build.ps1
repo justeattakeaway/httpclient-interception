@@ -15,7 +15,7 @@ $solutionFile = Join-Path $solutionPath "HttpClientInterception.sln"
 $libraryProject = Join-Path $solutionPath "src\HttpClientInterception\JustEat.HttpClientInterception.csproj"
 $testProject = Join-Path $solutionPath "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj"
 
-$dotnetVersion = "2.0.0"
+$dotnetVersion = "2.0.2"
 
 if ($OutputPath -eq "") {
     $OutputPath = Join-Path "$(Convert-Path "$PSScriptRoot")" "artifacts"
