@@ -1,7 +1,9 @@
 <Project>
   <PropertyGroup>
+    <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH)</CommitBranch>
     <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(APPVEYOR_REPO_BRANCH)</CommitBranch>
     <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(BUILD_SOURCEBRANCHNAME)</CommitBranch>
+    <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(TRAVIS_PULL_REQUEST_BRANCH)</CommitBranch>
     <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(TRAVIS_BRANCH)</CommitBranch>
   </PropertyGroup>
   <Target Name="AddGitMetadaAssemblyAttributes"
