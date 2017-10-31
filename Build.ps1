@@ -3,7 +3,6 @@ param(
     [Parameter(Mandatory = $false)][string] $Configuration = "Release",
     [Parameter(Mandatory = $false)][string] $VersionSuffix = "",
     [Parameter(Mandatory = $false)][string] $OutputPath = "",
-    [Parameter(Mandatory = $false)][switch] $PatchVersion,
     [Parameter(Mandatory = $false)][switch] $SkipTests,
     [Parameter(Mandatory = $false)][switch] $DisableCodeCoverage
 )
@@ -22,9 +21,6 @@ if ($OutputPath -eq "") {
 }
 
 if ($env:CI -ne $null) {
-
-    $PatchVersion = $true
-
     if (($VersionSuffix -eq "" -and $env:APPVEYOR_REPO_TAG -eq "false" -and $env:APPVEYOR_BUILD_NUMBER -ne "") -eq $true) {
         $ThisVersion = $env:APPVEYOR_BUILD_NUMBER -as [int]
         $VersionSuffix = "beta" + $ThisVersion.ToString("0000")
@@ -132,23 +128,6 @@ function DotNetTest {
     }
 }
 
-if ($PatchVersion -eq $true) {
-
-    $gitBranch = $env:BUILD_SOURCEBRANCHNAME
-
-    if ([string]::IsNullOrEmpty($gitBranch)) {
-        $gitBranch = (git rev-parse --abbrev-ref HEAD | Out-String).Trim()
-    }
-
-    $gitRevision = (git rev-parse HEAD | Out-String).Trim()
-    $timestamp = [DateTime]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ssK")
-
-    $assemblyVersion = Get-Content ".\AssemblyVersion.cs" -Raw
-    $assemblyVersionWithMetadata = "{0}using System.Reflection;`r`n`r`n[assembly: AssemblyMetadata(""CommitHash"", ""{1}"")]`r`n[assembly: AssemblyMetadata(""CommitBranch"", ""{2}"")]`r`n[assembly: AssemblyMetadata(""BuildTimestamp"", ""{3}"")]" -f $assemblyVersion, $gitRevision, $gitBranch, $timestamp
-
-    Set-Content ".\AssemblyVersion.cs" $assemblyVersionWithMetadata -Encoding utf8
-}
-
 if ($RestorePackages -eq $true) {
     Write-Host "Restoring NuGet packages for solution..." -ForegroundColor Green
     DotNetRestore $solutionFile
@@ -161,8 +140,4 @@ DotNetPack $libraryProject
 if ($SkipTests -eq $false) {
     Write-Host "Running tests..." -ForegroundColor Green
     DotNetTest $testProject
-}
-
-if ($PatchVersion -eq $true) {
-    Set-Content ".\AssemblyVersion.cs" $assemblyVersion -Encoding utf8
 }
