@@ -72,7 +72,9 @@ await client.GetStringAsync("http://public.je-apis.com");
 
 #### Setting Up HttpClient for Dependency Injection
 
-Below is an example of setting up `IServiceCollection` to register `HttpClient` for Dependency Injection in a manner that allows tests to use `HttpClientInterceptorOptions` to intercept HTTP requests:
+Below is an example of setting up `IServiceCollection` to register `HttpClient` for Dependency Injection in a manner that allows tests to use `HttpClientInterceptorOptions` to intercept HTTP requests.
+
+You may wish to consider registering `HttpClient` as a singleton, rather than as transient, if you do not use properties such as `BaseAddress` on instances of `HttpClient`. This allows the same instance to be used throughout the application, which improves performance and resource utilisation under heavy server load. If using a singleton instance, ensure that you manage the lifetime of your message handlers appropriately so they are not disposed of incorrectly and update the registration for your `HttpClient` instance appropriately.
 
 ```csharp
 services.AddTransient(
@@ -108,7 +110,7 @@ services.AddTransient(
     });
 ```
 
-Then in the test project register `HttpClientInterceptorOptions` to provide an implementation of `DelegatingHandler`:
+Then in the test project register `HttpClientInterceptorOptions` to provide an implementation of `DelegatingHandler`. If using a singleton for `HttpClient` as described above, update the registration for the tests appropriately so that the message handler is shared.
 
 ```csharp
 var options = new HttpClientInterceptorOptions();

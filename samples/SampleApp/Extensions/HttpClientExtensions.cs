@@ -16,6 +16,10 @@ namespace SampleApp.Extensions
             services.AddTransient<DelegatingHandler, TimingHandler>();
             services.AddTransient<DelegatingHandler, AddRequestIdHandler>();
 
+            // Consider registering HttpClient as a singleton, rather than as transient,
+            // if you do not use properties such as BaseAddress on instances of HttpClient.
+            // This allows the same instance to be used throughout the application, which
+            // improves performance and resource utilisation under heavy server load.
             return services.AddTransient(
                 (p) =>
                 {
