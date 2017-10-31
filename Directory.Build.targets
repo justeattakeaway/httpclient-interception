@@ -1,6 +1,8 @@
 <Project>
   <PropertyGroup>
+    <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(APPVEYOR_REPO_BRANCH)</CommitBranch>
     <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(BUILD_SOURCEBRANCHNAME)</CommitBranch>
+    <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(TRAVIS_BRANCH)</CommitBranch>
   </PropertyGroup>
   <Target Name="AddGitMetadaAssemblyAttributes"
           BeforeTargets="CoreGenerateAssemblyInfo"
