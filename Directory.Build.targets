@@ -1,4 +1,7 @@
 <Project>
+  <PropertyGroup>
+    <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(BUILD_SOURCEBRANCHNAME)</CommitBranch>
+  </PropertyGroup>
   <Target Name="AddGitMetadaAssemblyAttributes"
           BeforeTargets="CoreGenerateAssemblyInfo"
           Condition=" '$(GenerateGitMetadata)' == 'true' ">
@@ -9,6 +12,10 @@
       <Output TaskParameter="ConsoleOutput" PropertyName="CommitBranch" />
     </Exec>
     <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>BuildTimestamp</_Parameter1>
+        <_Parameter2>$([System.DateTime]::Now.ToString(yyyy-MM-ddTHH:mm:ssK))</_Parameter2>
+      </AssemblyAttribute>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition=" $(CommitHash) != '' ">
         <_Parameter1>CommitHash</_Parameter1>
         <_Parameter2>$(CommitHash)</_Parameter2>
