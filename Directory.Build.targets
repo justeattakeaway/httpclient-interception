@@ -1,2 +1,38 @@
 <Project>
+  <Target Name="AddGitMetadaAssemblyAttributes"
+          BeforeTargets="CoreGenerateAssemblyInfo"
+          Condition=" '$(GenerateGitMetadata)' == 'true' ">
+    <Exec Command="git rev-parse HEAD" ConsoleToMSBuild="true" StandardOutputImportance="low" IgnoreExitCode="true" Condition=" '$(CommitHash)' == '' ">
+      <Output TaskParameter="ConsoleOutput" PropertyName="CommitHash" />
+    </Exec>
+    <Exec Command="git rev-parse --abbrev-ref HEAD" ConsoleToMSBuild="true" StandardOutputImportance="low" IgnoreExitCode="true" Condition=" '$(CommitBranch)' == '' ">
+      <Output TaskParameter="ConsoleOutput" PropertyName="CommitBranch" />
+    </Exec>
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition=" $(CommitHash) != '' ">
+        <_Parameter1>CommitHash</_Parameter1>
+        <_Parameter2>$(CommitHash)</_Parameter2>
+      </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition=" $(CommitBranch) != '' ">
+        <_Parameter1>CommitBranch</_Parameter1>
+        <_Parameter2>$(CommitBranch)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+  <Target Name="GitMetadataAssemblyInfoCacheFileFix"
+          BeforeTargets="CreateGeneratedAssemblyInfoInputsCacheFile"
+          Condition=" '$(GenerateGitMetadata)' == 'true' ">
+    <ItemGroup>
+      <AssemblyAttribute Include="TemporaryAdditionalHashItem" Condition=" $(CommitHash) != '' or $(CommitBranch) != '' ">
+        <_Parameter1>$(CommitHash);$(CommitBranch)</_Parameter1>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+  <Target Name="CleanupTemporaryAdditionalHashItem"
+          AfterTargets="CreateGeneratedAssemblyInfoInputsCacheFile;AddGitMetadaAssemblyAttributes"
+          Condition=" '$(GenerateGitMetadata)' == 'true' ">
+    <ItemGroup>
+      <AssemblyAttribute Remove="TemporaryAdditionalHashItem" />
+    </ItemGroup>
+  </Target>
 </Project>
