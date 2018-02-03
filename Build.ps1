@@ -1,5 +1,4 @@
 param(
-    [Parameter(Mandatory = $false)][switch] $RestorePackages,
     [Parameter(Mandatory = $false)][string] $Configuration = "Release",
     [Parameter(Mandatory = $false)][string] $VersionSuffix = "",
     [Parameter(Mandatory = $false)][string] $OutputPath = "",
@@ -56,14 +55,6 @@ if ($installDotNetSdk -eq $true) {
 }
 else {
     $dotnet = "dotnet"
-}
-
-function DotNetRestore {
-    param([string]$Project)
-    & $dotnet restore $Project --verbosity minimal
-    if ($LASTEXITCODE -ne 0) {
-        throw "dotnet restore failed with exit code $LASTEXITCODE"
-    }
 }
 
 function DotNetPack {
@@ -126,11 +117,6 @@ function DotNetTest {
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet test failed with exit code $LASTEXITCODE"
     }
-}
-
-if ($RestorePackages -eq $true) {
-    Write-Host "Restoring NuGet packages for solution..." -ForegroundColor Green
-    DotNetRestore $solutionFile
 }
 
 Write-Host "Packaging solution..." -ForegroundColor Green

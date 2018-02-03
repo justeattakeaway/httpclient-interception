@@ -171,7 +171,7 @@ To build and test the library locally from a terminal/command-line, run one of t
 ```sh
 git clone https://github.com/justeat/httpclient-interception.git
 cd httpclient-interception
-./build.sh  --restore-packages
+./build.sh
 ```
 
 **Windows**
@@ -179,7 +179,7 @@ cd httpclient-interception
 ```powershell
 git clone https://github.com/justeat/httpclient-interception.git
 cd httpclient-interception
-.\Build.ps1 -RestorePackages
+.\Build.ps1
 ```
 
 ## License

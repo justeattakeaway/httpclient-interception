@@ -24,4 +24,4 @@ addons:
     - libunwind8
 
 script:
-  - ./build.sh --restore-packages
+  - ./build.sh

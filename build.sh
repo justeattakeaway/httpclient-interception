@@ -4,7 +4,6 @@ root=$(cd "$(dirname "$0")"; pwd -P)
 artifacts=$root/artifacts
 configuration=Release
 
-restorePackages=0
 skipTests=0
 
 while :; do
@@ -15,12 +14,8 @@ while :; do
     lowerI="$(echo $1 | awk '{print tolower($0)}')"
     case $lowerI in
         -\?|-h|--help)
-            echo "./build.sh [--restore-packages] [--skip-tests]"
+            echo "./build.sh [--skip-tests]"
             exit 1
-            ;;
-
-        --restore-packages)
-            restorePackages=1
             ;;
 
         --skip-tests)
@@ -43,10 +38,6 @@ dotnet_version=$(dotnet --version)
 
 if [ "$dotnet_version" != "$CLI_VERSION" ]; then
     curl -sSL https://raw.githubusercontent.com/dotnet/cli/v$CLI_VERSION/scripts/obtain/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
-fi
-
-if [ $restorePackages == 1 ]; then
-    dotnet restore ./HttpClientInterception.sln --verbosity minimal || exit 1
 fi
 
 dotnet build ./src/HttpClientInterception/JustEat.HttpClientInterception.csproj --output $artifacts --configuration $configuration --framework "netstandard1.3" || exit 1
