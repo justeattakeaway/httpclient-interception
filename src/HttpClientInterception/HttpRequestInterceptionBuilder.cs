@@ -31,7 +31,7 @@ namespace JustEat.HttpClientInterception
 
         private HttpMethod _method = HttpMethod.Get;
 
-        private Func<HttpRequestMessage, Task> _onIntercepted;
+        private Func<HttpRequestMessage, Task<bool>> _onIntercepted;
 
         private string _reasonPhrase;
 
@@ -471,7 +471,7 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
-        /// Sets the callback to use to use when a request is intercepted.
+        /// Sets an callback to use to use when a request is intercepted.
         /// </summary>
         /// <param name="onIntercepted">A delegate to a method to call when a request is intercepted.</param>
         /// <returns>
@@ -479,23 +479,36 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         public HttpRequestInterceptionBuilder WithInterceptionCallback(Action<HttpRequestMessage> onIntercepted)
         {
-            _onIntercepted = (request) =>
-            {
-                onIntercepted(request);
-                return Task.CompletedTask;
-            };
-
+            _onIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted);
             return this;
         }
 
         /// <summary>
-        /// Sets the asynchronous callback to use to use when a request is intercepted.
+        /// Sets an asynchronous callback to use to use when a request is intercepted.
         /// </summary>
         /// <param name="onIntercepted">A delegate to a method to await when a request is intercepted.</param>
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
         public HttpRequestInterceptionBuilder WithInterceptionCallback(Func<HttpRequestMessage, Task> onIntercepted)
+        {
+            _onIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets an asynchronous callback to use to use when a request is intercepted that returns
+        /// <see langword="true"/> if the request should be intercepted or <see langword="false"/>
+        /// if the request should not be intercepted.
+        /// </summary>
+        /// <param name="onIntercepted">
+        /// A delegate to a method to await when a request is intercepted which returns a <see langword="bool"/>
+        /// indicating whether the request should be intercepted or not.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithInterceptionCallback(Func<HttpRequestMessage, Task<bool>> onIntercepted)
         {
             _onIntercepted = onIntercepted;
             return this;

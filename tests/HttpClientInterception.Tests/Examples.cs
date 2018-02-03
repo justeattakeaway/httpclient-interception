@@ -139,6 +139,53 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static async Task Conditionally_Intercept_Http_Post_For_Json_Object()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer")
+                .WithStatus(HttpStatusCode.Created)
+                .WithContent(@"{ ""id"": 123 }")
+                .WithInterceptionCallback(
+                    async (request) =>
+                    {
+                        string requestBody = await request.Content.ReadAsStringAsync();
+
+                        var body = JObject.Parse(requestBody);
+
+                        return body.Value<string>("FirstName") == "John";
+                    });
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+            options.ThrowOnMissingRegistration = true;
+
+            HttpStatusCode status;
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                using (var body = new StringContent(@"{ ""FirstName"": ""John"" }"))
+                {
+                    // Act
+                    using (var response = await client.PostAsync("https://public.je-apis.com/consumer", body))
+                    {
+                        status = response.StatusCode;
+                        json = await response.Content.ReadAsStringAsync();
+                    }
+                }
+            }
+
+            // Assert
+            status.ShouldBe(HttpStatusCode.Created);
+
+            var content = JObject.Parse(json);
+            content.Value<int>("id").ShouldBe(123);
+        }
+
+        [Fact]
         public static async Task Intercept_Http_Put_For_Json_String()
         {
             // Arrange

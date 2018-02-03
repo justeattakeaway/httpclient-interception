@@ -30,7 +30,7 @@ namespace JustEat.HttpClientInterception
 
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ResponseHeaders { get; set; }
 
-        internal Func<HttpRequestMessage, Task> OnIntercepted { get; set; }
+        internal Func<HttpRequestMessage, Task<bool>> OnIntercepted { get; set; }
 
         internal Version Version { get; set; }
     }
