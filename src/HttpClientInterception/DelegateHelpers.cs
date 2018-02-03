@@ -40,6 +40,24 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
+        /// Converts an action delegate for an intercepted message to return a
+        /// <see cref="Task{TResult}"/> which returns <see langword="true"/>.
+        /// </summary>
+        /// <param name="onIntercepted">An optional delegate to convert.</param>
+        /// <returns>
+        /// The converted delegate if <paramref name="onIntercepted"/> has a value; otherwise <see langword="null"/>.
+        /// </returns>
+        internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(Predicate<HttpRequestMessage> onIntercepted)
+        {
+            if (onIntercepted == null)
+            {
+                return null;
+            }
+
+            return (message) => Task.FromResult(onIntercepted(message));
+        }
+
+        /// <summary>
         /// Converts a function delegate for an intercepted message to return a
         /// <see cref="Task{TResult}"/> which returns <see langword="true"/>.
         /// </summary>

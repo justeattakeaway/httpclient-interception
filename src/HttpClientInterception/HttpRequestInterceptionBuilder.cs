@@ -471,13 +471,31 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
-        /// Sets an callback to use to use when a request is intercepted.
+        /// Sets a callback to use to use when a request is intercepted.
         /// </summary>
         /// <param name="onIntercepted">A delegate to a method to call when a request is intercepted.</param>
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
         public HttpRequestInterceptionBuilder WithInterceptionCallback(Action<HttpRequestMessage> onIntercepted)
+        {
+            _onIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets an callback to use to use when a request is intercepted that returns
+        /// <see langword="true"/> if the request should be intercepted or <see langword="false"/>
+        /// if the request should not be intercepted.
+        /// </summary>
+        /// <param name="onIntercepted">
+        /// A delegate to a method to call when a request is intercepted which returns a <see langword="bool"/>
+        /// indicating whether the request should be intercepted or not.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder WithInterceptionCallback(Predicate<HttpRequestMessage> onIntercepted)
         {
             _onIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted);
             return this;
