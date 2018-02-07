@@ -1,5 +1,5 @@
 os: Visual Studio 2017
-version: 1.0.{build}
+version: 1.1.{build}
 
 environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
@@ -10,7 +10,7 @@ branches:
     - master
 
 build_script:
-  - ps: .\Build.ps1 -RestorePackages
+  - ps: .\Build.ps1
 
 after_build:
     - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"

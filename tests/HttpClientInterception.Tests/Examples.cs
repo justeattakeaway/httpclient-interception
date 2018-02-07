@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -114,6 +115,84 @@ namespace JustEat.HttpClientInterception
 
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
+
+            HttpStatusCode status;
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                using (var body = new StringContent(@"{ ""FirstName"": ""John"" }"))
+                {
+                    // Act
+                    using (var response = await client.PostAsync("https://public.je-apis.com/consumer", body))
+                    {
+                        status = response.StatusCode;
+                        json = await response.Content.ReadAsStringAsync();
+                    }
+                }
+            }
+
+            // Assert
+            status.ShouldBe(HttpStatusCode.Created);
+
+            var content = JObject.Parse(json);
+            content.Value<int>("id").ShouldBe(123);
+        }
+
+        [Fact]
+        public static async Task Intercept_Http_Get_For_Json_Object_Based_On_Request_Headers()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("terms")
+                .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
+                .WithInterceptionCallback((request) => request.Headers.GetValues("Accept-Tenant").FirstOrDefault() == "uk");
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
+
+                // Act
+                json = await client.GetStringAsync("https://public.je-apis.com/terms");
+            }
+
+            // Assert
+            var content = JObject.Parse(json);
+            content.Value<int>("Id").ShouldBe(1);
+            content.Value<string>("Link").ShouldBe("https://www.just-eat.co.uk/privacy-policy");
+        }
+
+        [Fact]
+        public static async Task Conditionally_Intercept_Http_Post_For_Json_Object()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer")
+                .WithStatus(HttpStatusCode.Created)
+                .WithContent(@"{ ""id"": 123 }")
+                .WithInterceptionCallback(
+                    async (request) =>
+                    {
+                        string requestBody = await request.Content.ReadAsStringAsync();
+
+                        var body = JObject.Parse(requestBody);
+
+                        return body.Value<string>("FirstName") == "John";
+                    });
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+            options.ThrowOnMissingRegistration = true;
 
             HttpStatusCode status;
             string json;

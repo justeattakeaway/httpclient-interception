@@ -2,13 +2,15 @@
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
     <Compile Include="$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" />
+    <PackageReference Include="OpenCover" Version="4.6.519" PrivateAssets="All" />
+    <PackageReference Include="ReportGenerator" Version="3.1.2" PrivateAssets="All" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
   </ItemGroup>
   <PropertyGroup>
     <Authors>Just Eat</Authors>
     <CodeAnalysisRuleSet>../../HttpClientInterception.ruleset</CodeAnalysisRuleSet>
     <Company>Just Eat</Company>
-    <Copyright>Copyright (c) Just Eat $([System.DateTime]::Now.ToString(yyyy))</Copyright>
+    <Copyright>Copyright (c) Just Eat 2017-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateGitMetadata Condition=" '$(CI)' == 'true' and '$(GenerateGitMetadata)' == '' ">true</GenerateGitMetadata>
     <LangVersion>latest</LangVersion>
@@ -22,7 +24,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionPrefix>1.1.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
   </PropertyGroup>
 </Project>

@@ -788,6 +788,115 @@ namespace JustEat.HttpClientInterception
             Assert.Throws<ArgumentNullException>("uriBuilder", () => builder.ForUri(uriBuilder));
         }
 
+        [Fact]
+        public static async Task Register_For_Callback_Invokes_Delegate_And_Intercepts_If_Returns_True()
+        {
+            // Arrange
+            var requestUri = new Uri("https://api.just-eat.com/");
+            var content = new { foo = "bar" };
+
+            bool wasDelegateInvoked = false;
+
+            Func<HttpRequestMessage, Task<bool>> onIntercepted = (request) =>
+            {
+                wasDelegateInvoked = true;
+                return Task.FromResult(true);
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUri(requestUri)
+                .WithInterceptionCallback(onIntercepted);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            await HttpAssert.PostAsync(options, requestUri.ToString(), content);
+
+            // Assert
+            wasDelegateInvoked.ShouldBeTrue();
+        }
+
+        [Fact]
+        public static async Task Register_For_Callback_Invokes_Delegate_And_Does_Not_Intercept_If_Returns_False()
+        {
+            // Arrange
+            var requestUri = new Uri("https://api.just-eat.com/");
+            var content = new { foo = "bar" };
+
+            bool wasDelegateInvoked = false;
+
+            Func<HttpRequestMessage, Task<bool>> onIntercepted = (request) =>
+            {
+                wasDelegateInvoked = true;
+                return Task.FromResult(false);
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUri(requestUri)
+                .WithInterceptionCallback(onIntercepted);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+            options.ThrowOnMissingRegistration = true;
+
+            // Act
+            InvalidOperationException exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => HttpAssert.PostAsync(options, requestUri.ToString(), content));
+
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
+            wasDelegateInvoked.ShouldBeTrue();
+        }
+
+        [Fact]
+        public static async Task Register_For_Callback_Clears_Delegate_For_Action_If_Set_To_Null()
+        {
+            // Arrange
+            var requestUri = new Uri("https://api.just-eat.com/");
+            var content = new { foo = "bar" };
+
+            bool wasDelegateInvoked = false;
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUri(requestUri)
+                .WithInterceptionCallback((request) => wasDelegateInvoked = true)
+                .WithInterceptionCallback(null as Action<HttpRequestMessage>);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            await HttpAssert.PostAsync(options, requestUri.ToString(), content);
+
+            // Assert
+            wasDelegateInvoked.ShouldBeFalse();
+        }
+
+        [Fact]
+        public static async Task Register_For_Callback_Clears_Delegate_For_Predicate_If_Set_To_Null()
+        {
+            // Arrange
+            var requestUri = new Uri("https://api.just-eat.com/");
+            var content = new { foo = "bar" };
+
+            bool wasDelegateInvoked = false;
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUri(requestUri)
+                .WithInterceptionCallback((request) => wasDelegateInvoked = true)
+                .WithInterceptionCallback(null as Predicate<HttpRequestMessage>);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            await HttpAssert.PostAsync(options, requestUri.ToString(), content);
+
+            // Assert
+            wasDelegateInvoked.ShouldBeFalse();
+        }
+
         private sealed class CustomObject
         {
             internal enum Color

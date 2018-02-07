@@ -181,7 +181,7 @@ namespace JustEat.HttpClientInterception
                 ContentHeaders = contentHeaders,
                 ContentMediaType = mediaType,
                 Method = method,
-                OnIntercepted = onIntercepted,
+                OnIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted),
                 RequestUri = uri,
                 ResponseHeaders = responseHeaders,
                 StatusCode = statusCode
@@ -241,7 +241,7 @@ namespace JustEat.HttpClientInterception
                 ContentHeaders = contentHeaders,
                 ContentMediaType = mediaType,
                 Method = method,
-                OnIntercepted = onIntercepted,
+                OnIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted),
                 RequestUri = uri,
                 ResponseHeaders = responseHeaders,
                 StatusCode = statusCode
@@ -303,9 +303,9 @@ namespace JustEat.HttpClientInterception
                 return null;
             }
 
-            if (options.OnIntercepted != null)
+            if (options.OnIntercepted != null && !await options.OnIntercepted(request))
             {
-                await options.OnIntercepted(request);
+                return null;
             }
 
             var result = new HttpResponseMessage(options.StatusCode);
