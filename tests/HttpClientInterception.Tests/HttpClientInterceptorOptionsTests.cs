@@ -21,7 +21,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
-            var request = new HttpRequestMessage();
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
             // Act
             HttpResponseMessage actual = await options.GetResponseAsync(request);

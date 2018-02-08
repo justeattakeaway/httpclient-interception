@@ -272,7 +272,7 @@ namespace JustEat.HttpClientInterception
 
             HttpInterceptionResponse interceptor = builder.Build();
 
-            string key = BuildKey(interceptor.Method, interceptor.RequestUri);
+            string key = BuildKey(interceptor.Method, interceptor.RequestUri, interceptor.IgnoreQuery);
             _mappings[key] = interceptor;
 
             return this;
@@ -296,11 +296,16 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(request));
             }
 
-            string key = BuildKey(request.Method, request.RequestUri);
+            string key = BuildKey(request.Method, request.RequestUri, ignoreQueryString: false);
 
             if (!_mappings.TryGetValue(key, out HttpInterceptionResponse options))
             {
-                return null;
+                string keyWithoutQueryString = BuildKey(request.Method, request.RequestUri, ignoreQueryString: true);
+
+                if (!_mappings.TryGetValue(keyWithoutQueryString, out options))
+                {
+                    return null;
+                }
             }
 
             if (options.OnIntercepted != null && !await options.OnIntercepted(request))
@@ -387,10 +392,23 @@ namespace JustEat.HttpClientInterception
         /// </summary>
         /// <param name="method">The HTTP method.</param>
         /// <param name="uri">The HTTP request URI.</param>
+        /// <param name="ignoreQueryString">If true create a key without any query string but with an extra string to disambiguate.</param>
         /// <returns>
         /// A <see cref="string"/> to use as the key for the interceptor registration.
         /// </returns>
-        private static string BuildKey(HttpMethod method, Uri uri) => $"{method.Method}:{uri}";
+        private static string BuildKey(HttpMethod method, Uri uri, bool ignoreQueryString = false)
+        {
+            if (ignoreQueryString)
+            {
+                var uriWithoutQueryString = uri == null ? null : new UriBuilder(uri) { Query = string.Empty }.Uri;
+
+                return $"{method.Method}:IGNOREQUERY:{uriWithoutQueryString}";
+            }
+            else
+            {
+                return $"{method.Method}:{uri}";
+            }
+        }
 
         private sealed class OptionsScope : IDisposable
         {

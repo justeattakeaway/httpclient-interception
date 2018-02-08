@@ -40,6 +40,7 @@ namespace JustEat.HttpClientInterception
         private UriBuilder _uriBuilder = new UriBuilder();
 
         private Version _version;
+        private bool _ignoreQuery;
 
         /// <summary>
         /// Sets the HTTP method to intercept a request for.
@@ -119,6 +120,17 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder ForQuery(string query)
         {
             _uriBuilder.Query = query;
+            return this;
+        }
+
+        /// <summary>
+        /// If true query strings will be ignored when testing request URIs.
+        /// </summary>
+        /// <param name="ignoreQuery">Whether to ignore query strings or not; defaults to true.</param>
+        /// <returns>The current <see cref="HttpRequestInterceptionBuilder"/>.</returns>
+        public HttpRequestInterceptionBuilder IgnoringQuery(bool ignoreQuery = true)
+        {
+            _ignoreQuery = ignoreQuery;
             return this;
         }
 
@@ -539,6 +551,7 @@ namespace JustEat.HttpClientInterception
                 ContentFactory = _contentFactory ?? EmptyContentFactory,
                 ContentStream = _contentStream,
                 ContentMediaType = _mediaType,
+                IgnoreQuery = _ignoreQuery,
                 Method = _method,
                 OnIntercepted = _onIntercepted,
                 ReasonPhrase = _reasonPhrase,

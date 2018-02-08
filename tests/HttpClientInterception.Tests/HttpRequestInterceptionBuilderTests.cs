@@ -558,6 +558,42 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static async Task Register_Builds_Ignore_Query_Key()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder()
+                .ForHost("something.com")
+                .IgnoringQuery();
+
+            // Act
+            options.Register(builder);
+
+            // Assert
+            (await HttpAssert.GetAsync(options, "http://something.com?query=1234")).ShouldBeEmpty();
+        }
+
+        [Fact]
+        public static async Task Register_Builds_Without_Ignore_Query_Key()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder()
+                .ForHost("something.com")
+                .IgnoringQuery()
+                .IgnoringQuery(false);
+
+            // Act
+            options.Register(builder);
+
+            // Assert
+            await Assert.ThrowsAsync<HttpRequestException>(() =>
+                HttpAssert.GetAsync(options, "http://something.com?query=1234"));
+        }
+
+        [Fact]
         public static async Task Register_Builds_Uri_From_UriBuilder()
         {
             // Arrange
