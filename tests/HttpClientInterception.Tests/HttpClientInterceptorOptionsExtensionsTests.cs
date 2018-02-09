@@ -138,6 +138,120 @@ namespace JustEat.HttpClientInterception
             Assert.Throws<ArgumentNullException>("options", () => options.CreateHttpClient(baseAddress));
         }
 
+        [Fact]
+        public static void Register_For_Collection_Throws_If_Options_Is_Null()
+        {
+            // Arrange
+            var baseAddress = new Uri("https://google.com");
+
+            HttpClientInterceptorOptions options = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("options", () => options.Register(new List<HttpRequestInterceptionBuilder>()));
+        }
+
+        [Fact]
+        public static void Register_For_Collection_Throws_If_Collection_Is_Null()
+        {
+            // Arrange
+            var baseAddress = new Uri("https://google.com");
+
+            var options = new HttpClientInterceptorOptions();
+            IEnumerable<HttpRequestInterceptionBuilder> collection = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("collection", () => options.Register(collection));
+        }
+
+        [Fact]
+        public static async Task Register_For_Collection_Registers_Interceptions()
+        {
+            // Arrange
+            var builder1 = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForUrl("https://google.com/")
+                .WithContent("foo");
+
+            var builder2 = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForUrl("https://bing.com/")
+                .WithContent("bar");
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(new[] { builder1, builder2 });
+
+            string actual1;
+            string actual2;
+
+            // Act
+            using (var httpClient = options.CreateHttpClient())
+            {
+                actual1 = await httpClient.GetStringAsync("https://google.com/");
+                actual2 = await httpClient.GetStringAsync("https://bing.com/");
+            }
+
+            // Assert
+            actual1.ShouldBe("foo");
+            actual2.ShouldBe("bar");
+        }
+
+        [Fact]
+        public static void Register_For_Array_Throws_If_Options_Is_Null()
+        {
+            // Arrange
+            var baseAddress = new Uri("https://google.com");
+
+            HttpClientInterceptorOptions options = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("options", () => options.Register(Array.Empty<HttpRequestInterceptionBuilder>()));
+        }
+
+        [Fact]
+        public static void Register_For_Array_Throws_If_Collection_Is_Null()
+        {
+            // Arrange
+            var baseAddress = new Uri("https://google.com");
+
+            var options = new HttpClientInterceptorOptions();
+            HttpRequestInterceptionBuilder[] collection = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("collection", () => options.Register(collection));
+        }
+
+        [Fact]
+        public static async Task Register_For_Array_Registers_Interceptions()
+        {
+            // Arrange
+            var builder1 = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForUrl("https://google.com/")
+                .WithContent("foo");
+
+            var builder2 = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForUrl("https://bing.com/")
+                .WithContent("bar");
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder1, builder2);
+
+            string actual1;
+            string actual2;
+
+            // Act
+            using (var httpClient = options.CreateHttpClient())
+            {
+                actual1 = await httpClient.GetStringAsync("https://google.com/");
+                actual2 = await httpClient.GetStringAsync("https://bing.com/");
+            }
+
+            // Assert
+            actual1.ShouldBe("foo");
+            actual2.ShouldBe("bar");
+        }
+
         private sealed class CustomObject
         {
             internal enum Color
