@@ -453,9 +453,8 @@ namespace JustEat.HttpClientInterception
                 .ForPath("orgs/justeat")
                 .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
 
-            var dotnet = new HttpRequestInterceptionBuilder()
-                .ForHttps()
-                .ForHost("api.github.com")
+            var dotnet = justEat
+                .Clone()
                 .ForPath("orgs/dotnet")
                 .WithJsonContent(new { id = 9141961, login = "dotnet", url = "https://api.github.com/orgs/dotnet" });
 
