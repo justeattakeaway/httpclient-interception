@@ -262,5 +262,56 @@ namespace JustEat.HttpClientInterception
 
             return options.Deregister(HttpMethod.Get, new Uri(uriString));
         }
+
+        /// <summary>
+        /// Registers one or more HTTP request interceptions, replacing any existing registrations.
+        /// </summary>
+        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
+        /// <param name="collection">A collection of <see cref="HttpRequestInterceptionBuilder"/> instances to use to create the registration(s).</param>
+        /// <returns>
+        /// The current <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="options"/> or <paramref name="collection"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpClientInterceptorOptions Register(
+            this HttpClientInterceptorOptions options,
+            IEnumerable<HttpRequestInterceptionBuilder> collection)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
+            foreach (var builder in collection)
+            {
+                options.Register(builder);
+            }
+
+            return options;
+        }
+
+        /// <summary>
+        /// Registers one or more HTTP request interceptions, replacing any existing registrations.
+        /// </summary>
+        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
+        /// <param name="collection">An array of one or more <see cref="HttpRequestInterceptionBuilder"/> instances to use to create the registration(s).</param>
+        /// <returns>
+        /// The current <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="options"/> or <paramref name="collection"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpClientInterceptorOptions Register(
+            this HttpClientInterceptorOptions options,
+            params HttpRequestInterceptionBuilder[] collection)
+        {
+            return options.Register(collection as IEnumerable<HttpRequestInterceptionBuilder>);
+        }
     }
 }
