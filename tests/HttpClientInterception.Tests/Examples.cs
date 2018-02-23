@@ -480,5 +480,45 @@ namespace JustEat.HttpClientInterception
             dotnetOrg.Login.ShouldBe("dotnet");
             dotnetOrg.Url.ShouldBe("https://api.github.com/orgs/dotnet");
         }
+
+        [Fact]
+        public static async Task Use_The_Same_Builder_For_Multiple_Registrations_On_The_Same_Host()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            // Configure a response for https://api.github.com/orgs/justeat
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
+
+            options.Register(builder);
+
+            // Update the same builder to configure a response for https://api.github.com/orgs/dotnet
+            builder.ForPath("orgs/dotnet")
+                   .WithJsonContent(new { id = 9141961, login = "dotnet", url = "https://api.github.com/orgs/dotnet" });
+
+            options.Register(builder);
+
+            var service = RestService.For<IGitHub>(options.CreateHttpClient("https://api.github.com"));
+
+            // Act
+            Organization justEatOrg = await service.GetOrganizationAsync("justeat");
+            Organization dotnetOrg = await service.GetOrganizationAsync("dotnet");
+
+            // Assert
+            justEatOrg.ShouldNotBeNull();
+            justEatOrg.Id.ShouldBe("1516790");
+            justEatOrg.Login.ShouldBe("justeat");
+            justEatOrg.Url.ShouldBe("https://api.github.com/orgs/justeat");
+
+            // Assert
+            dotnetOrg.ShouldNotBeNull();
+            dotnetOrg.Id.ShouldBe("9141961");
+            dotnetOrg.Login.ShouldBe("dotnet");
+            dotnetOrg.Url.ShouldBe("https://api.github.com/orgs/dotnet");
+        }
     }
 }

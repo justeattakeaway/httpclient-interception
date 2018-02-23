@@ -50,6 +50,8 @@ var client = options.CreateHttpClient();
 var json = await client.GetStringAsync("http://public.je-apis.com/terms");
 ```
 
+`HttpRequestInterceptionBuilder` objects are mutable, so properties can be freely changed once a particular setup has been registered with an instance of `HttpClientInterceptorOptions` as the state is captured at the point of registration. This allows multiple responses and paths to be configured from a single `HttpRequestInterceptionBuilder` instance where multiple registrations against a common hostname.
+
 #### Fault Injection
 
 Below is a minimal example of intercepting a request to inject an HTTP fault:
