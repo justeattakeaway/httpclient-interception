@@ -40,6 +40,7 @@ namespace JustEat.HttpClientInterception
         private UriBuilder _uriBuilder = new UriBuilder();
 
         private Version _version;
+
         private bool _ignoreQuery;
 
         /// <summary>
@@ -282,7 +283,7 @@ namespace JustEat.HttpClientInterception
         {
             if (_contentHeaders == null)
             {
-                _contentHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+                _contentHeaders = CreateDictionary();
             }
 
             if (!_contentHeaders.TryGetValue(name, out ICollection<string> current))
@@ -322,7 +323,7 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         public HttpRequestInterceptionBuilder WithContentHeaders(IDictionary<string, string> headers)
         {
-            var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+            IDictionary<string, ICollection<string>> copy = CreateDictionary();
 
             foreach (var pair in headers)
             {
@@ -369,7 +370,7 @@ namespace JustEat.HttpClientInterception
         {
             if (_responseHeaders == null)
             {
-                _responseHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+                _responseHeaders = CreateDictionary();
             }
 
             if (!_responseHeaders.TryGetValue(name, out ICollection<string> current))
@@ -396,7 +397,7 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         public HttpRequestInterceptionBuilder WithResponseHeaders(IDictionary<string, string> headers)
         {
-            var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+            IDictionary<string, ICollection<string>> copy = CreateDictionary();
 
             foreach (var pair in headers)
             {
@@ -544,6 +545,49 @@ namespace JustEat.HttpClientInterception
             return this;
         }
 
+        /// <summary>
+        /// Creates a clone of the current instance.
+        /// </summary>
+        /// <returns>
+        /// A new instance of <see cref="HttpRequestInterceptionBuilder"/> that is a clone of the current instance.
+        /// </returns>
+        /// <remarks>
+        /// The clone operation will include properties such as the current HTTP method, path etc.,
+        /// but as it is not a deep clone, references to members such as any registered delegates will
+        /// be the same. As such, any changes to object references associated with the cloned builder
+        /// will also apply to clones unless such registrations are changed in the clone directly.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder Clone()
+        {
+            var clone = MemberwiseClone() as HttpRequestInterceptionBuilder;
+
+            // Copy private object members that would otherwise create references
+            // between the parent and clones that are non-trivial to copy (i.e. not delegates)
+            if (_contentHeaders?.Count > 0)
+            {
+                clone._contentHeaders = CreateDictionary();
+
+                foreach (var pair in _contentHeaders)
+                {
+                    clone._contentHeaders.Add(pair);
+                }
+            }
+
+            if (_responseHeaders?.Count > 0)
+            {
+                clone._responseHeaders = CreateDictionary();
+
+                foreach (var pair in _responseHeaders)
+                {
+                    clone._responseHeaders.Add(pair);
+                }
+            }
+
+            clone._uriBuilder = new UriBuilder(_uriBuilder.Uri);
+
+            return clone;
+        }
+
         internal HttpInterceptionResponse Build()
         {
             var response = new HttpInterceptionResponse()
@@ -585,6 +629,11 @@ namespace JustEat.HttpClientInterception
             }
 
             return response;
+        }
+
+        private static IDictionary<string, ICollection<string>> CreateDictionary()
+        {
+            return new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
         }
     }
 }

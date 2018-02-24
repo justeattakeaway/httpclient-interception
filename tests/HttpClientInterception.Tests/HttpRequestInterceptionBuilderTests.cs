@@ -933,6 +933,55 @@ namespace JustEat.HttpClientInterception
             wasDelegateInvoked.ShouldBeFalse();
         }
 
+        [Fact]
+        public static void Can_Clone_New_Builder()
+        {
+            // Arrange
+            var original = new HttpRequestInterceptionBuilder();
+
+            // Act
+            var clone = original.Clone();
+
+            // Assert
+            clone.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public static async Task Can_Clone_Used_Builder()
+        {
+            // Arrange
+            var original = new HttpRequestInterceptionBuilder()
+                .ForHttps()
+                .ForGet()
+                .ForHost("www.just-eat.co.uk")
+                .ForPath("/")
+                .WithContentHeader("content-type", "text/html")
+                .WithResponseHeader("cache-control", "private")
+                .WithContent("Just Eat");
+
+            // Act
+            var cloned = original.Clone();
+
+            // Assert
+            cloned.ShouldNotBeNull();
+
+            // Arrange
+            cloned
+                .ForHost("www.just-eat.ie")
+                .WithContentHeader("content-type", "text/plain");
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(original, cloned);
+
+            // Act
+            string result1 = await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/");
+            string result2 = await HttpAssert.GetAsync(options, "https://www.just-eat.ie/");
+
+            // Assert
+            result1.ShouldBe("Just Eat");
+            result1.ShouldBe(result2);
+        }
+
         private sealed class CustomObject
         {
             internal enum Color
