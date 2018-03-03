@@ -28,6 +28,8 @@ namespace JustEat.HttpClientInterception
 
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ContentHeaders { get; set; }
 
+        internal bool IgnoreHost { get; set; }
+
         internal bool IgnoreQuery { get; set; }
 
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ResponseHeaders { get; set; }

@@ -40,7 +40,22 @@ namespace JustEat.HttpClientInterception
         private UriBuilder _uriBuilder = new UriBuilder();
 
         private Version _version;
+
+        private bool _ignoreHost;
+
         private bool _ignoreQuery;
+
+        /// <summary>
+        /// Configures the builder to match any host name.
+        /// </summary>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder ForAnyHost()
+        {
+            _ignoreHost = true;
+            return this;
+        }
 
         /// <summary>
         /// Sets the HTTP method to intercept a request for.
@@ -81,6 +96,7 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder ForHost(string host)
         {
             _uriBuilder.Host = host;
+            _ignoreHost = false;
             return this;
         }
 
@@ -144,6 +160,7 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder ForUri(Uri uri)
         {
             _uriBuilder = new UriBuilder(uri);
+            _ignoreHost = false;
             return this;
         }
 
@@ -160,6 +177,7 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder ForUri(UriBuilder uriBuilder)
         {
             _uriBuilder = uriBuilder ?? throw new ArgumentNullException(nameof(uriBuilder));
+            _ignoreHost = false;
             return this;
         }
 
@@ -551,6 +569,7 @@ namespace JustEat.HttpClientInterception
                 ContentFactory = _contentFactory ?? EmptyContentFactory,
                 ContentStream = _contentStream,
                 ContentMediaType = _mediaType,
+                IgnoreHost = _ignoreHost,
                 IgnoreQuery = _ignoreQuery,
                 Method = _method,
                 OnIntercepted = _onIntercepted,

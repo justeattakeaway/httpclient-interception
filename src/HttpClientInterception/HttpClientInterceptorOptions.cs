@@ -272,7 +272,7 @@ namespace JustEat.HttpClientInterception
 
             HttpInterceptionResponse interceptor = builder.Build();
 
-            string key = BuildKey(interceptor.Method, interceptor.RequestUri, interceptor.IgnoreQuery);
+            string key = BuildKey(interceptor);
             _mappings[key] = interceptor;
 
             return this;
@@ -296,62 +296,55 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(request));
             }
 
-            string key = BuildKey(request.Method, request.RequestUri, ignoreQueryString: false);
-
-            if (!_mappings.TryGetValue(key, out HttpInterceptionResponse options))
-            {
-                string keyWithoutQueryString = BuildKey(request.Method, request.RequestUri, ignoreQueryString: true);
-
-                if (!_mappings.TryGetValue(keyWithoutQueryString, out options))
-                {
-                    return null;
-                }
-            }
-
-            if (options.OnIntercepted != null && !await options.OnIntercepted(request))
+            if (!TryGetResponse(request, out HttpInterceptionResponse response))
             {
                 return null;
             }
 
-            var result = new HttpResponseMessage(options.StatusCode);
+            if (response.OnIntercepted != null && !await response.OnIntercepted(request))
+            {
+                return null;
+            }
+
+            var result = new HttpResponseMessage(response.StatusCode);
 
             try
             {
                 result.RequestMessage = request;
 
-                if (options.ReasonPhrase != null)
+                if (response.ReasonPhrase != null)
                 {
-                    result.ReasonPhrase = options.ReasonPhrase;
+                    result.ReasonPhrase = response.ReasonPhrase;
                 }
 
-                if (options.Version != null)
+                if (response.Version != null)
                 {
-                    result.Version = options.Version;
+                    result.Version = response.Version;
                 }
 
-                if (options.ContentStream != null)
+                if (response.ContentStream != null)
                 {
-                    result.Content = new StreamContent(await options.ContentStream() ?? Stream.Null);
+                    result.Content = new StreamContent(await response.ContentStream() ?? Stream.Null);
                 }
                 else
                 {
-                    byte[] content = await options.ContentFactory() ?? Array.Empty<byte>();
+                    byte[] content = await response.ContentFactory() ?? Array.Empty<byte>();
                     result.Content = new ByteArrayContent(content);
                 }
 
-                if (options.ContentHeaders != null)
+                if (response.ContentHeaders != null)
                 {
-                    foreach (var pair in options.ContentHeaders)
+                    foreach (var pair in response.ContentHeaders)
                     {
                         result.Content.Headers.Add(pair.Key, pair.Value);
                     }
                 }
 
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue(options.ContentMediaType);
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue(response.ContentMediaType);
 
-                if (options.ResponseHeaders != null)
+                if (response.ResponseHeaders != null)
                 {
-                    foreach (var pair in options.ResponseHeaders)
+                    foreach (var pair in response.ResponseHeaders)
                     {
                         result.Headers.Add(pair.Key, pair.Value);
                     }
@@ -388,26 +381,82 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
+        /// Builds the mapping key to use for the specified intercepted HTTP request.
+        /// </summary>
+        /// <param name="interceptor">The configured HTTP interceptor.</param>
+        /// <returns>
+        /// A <see cref="string"/> to use as the key for the interceptor registration.
+        /// </returns>
+        private static string BuildKey(HttpInterceptionResponse interceptor)
+        {
+            return BuildKey(
+                interceptor.Method,
+                interceptor.RequestUri,
+                interceptor.IgnoreQuery,
+                interceptor.IgnoreHost);
+        }
+
+        /// <summary>
         /// Builds the mapping key to use for the specified HTTP request.
         /// </summary>
         /// <param name="method">The HTTP method.</param>
         /// <param name="uri">The HTTP request URI.</param>
-        /// <param name="ignoreQueryString">If true create a key without any query string but with an extra string to disambiguate.</param>
+        /// <param name="ignoreQueryString">If true, creates a key without any query string but with an extra string to disambiguate.</param>
+        /// <param name="ignoreHostName">If true, creates a key that will match for any hostname.</param>
         /// <returns>
         /// A <see cref="string"/> to use as the key for the interceptor registration.
         /// </returns>
-        private static string BuildKey(HttpMethod method, Uri uri, bool ignoreQueryString = false)
+        private static string BuildKey(
+            HttpMethod method,
+            Uri uri,
+            bool ignoreQueryString = false,
+            bool ignoreHostName = false)
         {
+            if (uri == null)
+            {
+                return string.Empty;
+            }
+
+            var builderForKey = new UriBuilder(uri);
+            string keyPrefix = string.Empty;
+
+            if (ignoreHostName)
+            {
+                builderForKey.Host = "*";
+                keyPrefix = "IGNOREHOST;";
+            }
+
             if (ignoreQueryString)
             {
-                var uriWithoutQueryString = uri == null ? null : new UriBuilder(uri) { Query = string.Empty }.Uri;
+                builderForKey.Query = string.Empty;
+                keyPrefix += "IGNOREQUERY;";
+            }
 
-                return $"{method.Method}:IGNOREQUERY:{uriWithoutQueryString}";
-            }
-            else
+            return $"{keyPrefix};{method.Method}:{builderForKey}";
+        }
+
+        private bool TryGetResponse(HttpRequestMessage request, out HttpInterceptionResponse response)
+        {
+            var candidateKeyGenerators = new Func<string>[]
             {
-                return $"{method.Method}:{uri}";
+                () => BuildKey(request.Method, request.RequestUri),
+                () => BuildKey(request.Method, request.RequestUri, ignoreQueryString: true),
+                () => BuildKey(request.Method, request.RequestUri, ignoreHostName: true),
+                () => BuildKey(request.Method, request.RequestUri, ignoreQueryString: true, ignoreHostName: true),
+            };
+
+            foreach (var keyGenerator in candidateKeyGenerators)
+            {
+                string key = keyGenerator();
+
+                if (_mappings.TryGetValue(key, out response))
+                {
+                    return true;
+                }
             }
+
+            response = null;
+            return false;
         }
 
         private sealed class OptionsScope : IDisposable

@@ -933,6 +933,49 @@ namespace JustEat.HttpClientInterception
             wasDelegateInvoked.ShouldBeFalse();
         }
 
+        [Fact]
+        public static async Task Builder_For_Any_Host_Registers_Interception()
+        {
+            // Arrange
+            string expected = "<html>foo></html>";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForAnyHost()
+                .WithContent(expected);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual1 = await HttpAssert.GetAsync(options, "http://google.com/");
+            string actual2 = await HttpAssert.GetAsync(options, "http://bing.com/");
+
+            // Assert
+            actual1.ShouldBe(expected);
+            actual2.ShouldBe(actual1);
+        }
+
+        [Fact]
+        public static async Task Builder_For_Any_Host_And_Query_Registers_Interception()
+        {
+            // Arrange
+            string expected = "<html>foo></html>";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForAnyHost()
+                .IgnoringQuery()
+                .WithContent(expected);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual1 = await HttpAssert.GetAsync(options, "http://google.com/?foo=bar");
+            string actual2 = await HttpAssert.GetAsync(options, "http://bing.com/?foo=baz");
+
+            // Assert
+            actual1.ShouldBe(expected);
+            actual2.ShouldBe(actual1);
+        }
+
         private sealed class CustomObject
         {
             internal enum Color

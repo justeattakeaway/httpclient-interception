@@ -520,5 +520,41 @@ namespace JustEat.HttpClientInterception
             dotnetOrg.Login.ShouldBe("dotnet");
             dotnetOrg.Url.ShouldBe("https://api.github.com/orgs/dotnet");
         }
+
+        [Fact]
+        public static async Task Match_Any_Host_Name()
+        {
+            // Arrange
+            string expected = @"{""id"":12}";
+            string actual;
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHttp()
+                .ForAnyHost()
+                .ForPath("orders")
+                .ForQuery("id=12")
+                .WithStatus(HttpStatusCode.OK)
+                .WithContent(expected);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                actual = await client.GetStringAsync("http://myhost.net/orders?id=12");
+            }
+
+            // Assert
+            actual.ShouldBe(expected);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                actual = await client.GetStringAsync("http://myotherhost.net/orders?id=12");
+            }
+
+            // Assert
+            actual.ShouldBe(expected);
+        }
     }
 }
