@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -81,9 +82,11 @@ namespace JustEat.HttpClientInterception
                 .Register(HttpMethod.Options, new Uri("http://google.com/foo"), () => Array.Empty<byte>())
                 .Register(HttpMethod.Options, new Uri("https://google.com/FOO"), () => Array.Empty<byte>());
 
+            options.OnMissingRegistration = (request) => Task.FromResult<HttpResponseMessage>(null);
+
             var mock = new Mock<HttpMessageHandler>();
 
-            using (var expected = new HttpResponseMessage(System.Net.HttpStatusCode.OK))
+            using (var expected = new HttpResponseMessage(HttpStatusCode.OK))
             {
                 using (var request = new HttpRequestMessage(HttpMethod.Options, "https://google.com/foo"))
                 {
@@ -133,6 +136,56 @@ namespace JustEat.HttpClientInterception
                 };
 
                 return HttpAssert.GetAsync(options, requestUrl, responseHeaders: headers);
+            }
+
+            // Act
+            var tasks = Enumerable.Range(0, expected)
+                .Select(GetAsync)
+                .ToArray();
+
+            await Task.WhenAll(tasks);
+
+            // Assert
+            actual.ShouldBe(expected);
+            requestIds.Count.ShouldBe(expected);
+            requestIds.ShouldBeUnique();
+        }
+
+        [Fact]
+        public static async Task SendAsync_Calls_OnMissingRegistration_With_RequestMessage()
+        {
+            // Arrange
+            var header = "x-request";
+            var requestUrl = "https://google.com/foo";
+
+            var options = new HttpClientInterceptorOptions();
+
+            int expected = 7;
+            int actual = 0;
+
+            var requestIds = new ConcurrentBag<string>();
+
+            options.OnMissingRegistration = (p) =>
+            {
+                Interlocked.Increment(ref actual);
+                requestIds.Add(p.Headers.GetValues(header).FirstOrDefault());
+
+                var response = new HttpResponseMessage(HttpStatusCode.Accepted)
+                {
+                    Content = new StringContent(string.Empty)
+                };
+
+                return Task.FromResult(response);
+            };
+
+            Task GetAsync(int id)
+            {
+                var headers = new Dictionary<string, string>()
+                {
+                    [header] = id.ToString(CultureInfo.InvariantCulture)
+                };
+
+                return HttpAssert.GetAsync(options, requestUrl, HttpStatusCode.Accepted, responseHeaders: headers);
             }
 
             // Act

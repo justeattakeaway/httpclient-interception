@@ -556,5 +556,25 @@ namespace JustEat.HttpClientInterception
             // Assert
             actual.ShouldBe(expected);
         }
+
+        [Fact]
+        public static async Task Use_Default_Response_For_Unmatched_Requests()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions()
+            {
+                OnMissingRegistration = (request) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound))
+            };
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                using (var response = await client.GetAsync("https://google.com/"))
+                {
+                    // Assert
+                    response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+                }
+            }
+        }
     }
 }

@@ -976,6 +976,23 @@ namespace JustEat.HttpClientInterception
             actual2.ShouldBe(actual1);
         }
 
+        [Fact]
+        public static async Task Builder_Returns_Fallback_For_Missing_Registration()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHost("google.com")
+                .WithStatus(HttpStatusCode.BadRequest);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            options.OnMissingRegistration = (request) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.BadGateway));
+
+            // Act and Assert
+            await HttpAssert.GetAsync(options, "http://google.com/", HttpStatusCode.BadRequest);
+            await HttpAssert.GetAsync(options, "http://bing.com/", HttpStatusCode.BadGateway);
+        }
+
         private sealed class CustomObject
         {
             internal enum Color

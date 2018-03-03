@@ -55,6 +55,12 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
+        /// Gets or sets an optional delegate to invoke when an HTTP request does not match an existing
+        /// registration, which optionally returns an <see cref="HttpResponseMessage"/> to use.
+        /// </summary>
+        public Func<HttpRequestMessage, Task<HttpResponseMessage>> OnMissingRegistration { get; set; }
+
+        /// <summary>
         /// Gets or sets an optional delegate to invoke when an HTTP request is sent.
         /// </summary>
         public Func<HttpRequestMessage, Task> OnSend { get; set; }
