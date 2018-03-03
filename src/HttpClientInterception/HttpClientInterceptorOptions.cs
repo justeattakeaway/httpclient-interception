@@ -349,57 +349,7 @@ namespace JustEat.HttpClientInterception
                 return null;
             }
 
-            var result = new HttpResponseMessage(response.StatusCode);
-
-            try
-            {
-                result.RequestMessage = request;
-
-                if (response.ReasonPhrase != null)
-                {
-                    result.ReasonPhrase = response.ReasonPhrase;
-                }
-
-                if (response.Version != null)
-                {
-                    result.Version = response.Version;
-                }
-
-                if (response.ContentStream != null)
-                {
-                    result.Content = new StreamContent(await response.ContentStream() ?? Stream.Null);
-                }
-                else
-                {
-                    byte[] content = await response.ContentFactory() ?? Array.Empty<byte>();
-                    result.Content = new ByteArrayContent(content);
-                }
-
-                if (response.ContentHeaders != null)
-                {
-                    foreach (var pair in response.ContentHeaders)
-                    {
-                        result.Content.Headers.Add(pair.Key, pair.Value);
-                    }
-                }
-
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue(response.ContentMediaType);
-
-                if (response.ResponseHeaders != null)
-                {
-                    foreach (var pair in response.ResponseHeaders)
-                    {
-                        result.Headers.Add(pair.Key, pair.Value);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                result.Dispose();
-                throw;
-            }
-
-            return result;
+            return await BuildResponseAsync(request, response);
         }
 
         /// <summary>
@@ -455,6 +405,17 @@ namespace JustEat.HttpClientInterception
             return $"{keyPrefix};{interceptor.Method.Method}:{builderForKey}";
         }
 
+        private static void PopulateHeaders(HttpHeaders headers, IEnumerable<KeyValuePair<string, IEnumerable<string>>> values)
+        {
+            if (values != null)
+            {
+                foreach (var pair in values)
+                {
+                    headers.Add(pair.Key, pair.Value);
+                }
+            }
+        }
+
         private bool TryGetResponse(HttpRequestMessage request, out HttpInterceptionResponse response)
         {
             response = _mappings.Values
@@ -481,6 +442,49 @@ namespace JustEat.HttpClientInterception
 
             string key = BuildKey(registration);
             _mappings[key] = registration;
+        }
+
+        private async Task<HttpResponseMessage> BuildResponseAsync(HttpRequestMessage request, HttpInterceptionResponse response)
+        {
+            var result = new HttpResponseMessage(response.StatusCode);
+
+            try
+            {
+                result.RequestMessage = request;
+
+                if (response.ReasonPhrase != null)
+                {
+                    result.ReasonPhrase = response.ReasonPhrase;
+                }
+
+                if (response.Version != null)
+                {
+                    result.Version = response.Version;
+                }
+
+                if (response.ContentStream != null)
+                {
+                    result.Content = new StreamContent(await response.ContentStream() ?? Stream.Null);
+                }
+                else
+                {
+                    byte[] content = await response.ContentFactory() ?? Array.Empty<byte>();
+                    result.Content = new ByteArrayContent(content);
+                }
+
+                PopulateHeaders(result.Content.Headers, response.ContentHeaders);
+
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue(response.ContentMediaType);
+
+                PopulateHeaders(result.Headers, response.ResponseHeaders);
+            }
+            catch (Exception)
+            {
+                result.Dispose();
+                throw;
+            }
+
+            return result;
         }
 
         private sealed class OptionsScope : IDisposable
