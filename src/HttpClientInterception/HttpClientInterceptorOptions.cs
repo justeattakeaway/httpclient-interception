@@ -4,12 +4,15 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using JustEat.HttpClientInterception.Matching;
 
 namespace JustEat.HttpClientInterception
 {
@@ -24,9 +27,9 @@ namespace JustEat.HttpClientInterception
         internal const string JsonMediaType = "application/json";
 
         /// <summary>
-        /// The <see cref="StringComparer"/> to use to key registrations. This field is read-only.
+        /// The <see cref="StringComparer"/> to use for key registrations.
         /// </summary>
-        private readonly StringComparer _comparer;
+        private StringComparer _comparer;
 
         /// <summary>
         /// The mapped HTTP request interceptors.
@@ -47,7 +50,7 @@ namespace JustEat.HttpClientInterception
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpClientInterceptorOptions"/> class.
         /// </summary>
-        /// <param name="caseSensitive">Whether registered URIs paths and queries are case-sensitive.</param>
+        /// <param name="caseSensitive">Whether registered URIs' paths and queries are case-sensitive.</param>
         public HttpClientInterceptorOptions(bool caseSensitive)
         {
             _comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
@@ -105,6 +108,7 @@ namespace JustEat.HttpClientInterception
                 ThrowOnMissingRegistration = ThrowOnMissingRegistration
             };
 
+            clone._comparer = _comparer;
             clone._mappings = new ConcurrentDictionary<string, HttpInterceptionResponse>(_mappings, _comparer);
 
             return clone;
@@ -133,7 +137,43 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(uri));
             }
 
-            string key = BuildKey(method, uri);
+            var interceptor = new HttpInterceptionResponse()
+            {
+                Method = method,
+                RequestUri = uri,
+            };
+
+            string key = BuildKey(interceptor);
+            _mappings.Remove(key);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Deregisters an existing HTTP request interception, if it exists.
+        /// </summary>
+        /// <param name="builder">The HTTP interception to deregister.</param>
+        /// <returns>
+        /// The current <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="builder"/> is <see langword="null"/>.
+        /// </exception>
+        /// <remarks>
+        /// If <paramref name="builder"/> has been reconfigured since it was used
+        /// to register a previous HTTP request interception it will not remove that
+        /// registration. In such cases, use <see cref="Clear"/>.
+        /// </remarks>
+        public HttpClientInterceptorOptions Deregister(HttpRequestInterceptionBuilder builder)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            HttpInterceptionResponse interceptor = builder.Build();
+
+            string key = BuildKey(interceptor);
             _mappings.Remove(key);
 
             return this;
@@ -193,8 +233,7 @@ namespace JustEat.HttpClientInterception
                 StatusCode = statusCode
             };
 
-            string key = BuildKey(method, uri);
-            _mappings[key] = interceptor;
+            ConfigureMatcherAndRegister(interceptor);
 
             return this;
         }
@@ -253,8 +292,7 @@ namespace JustEat.HttpClientInterception
                 StatusCode = statusCode
             };
 
-            string key = BuildKey(method, uri);
-            _mappings[key] = interceptor;
+            ConfigureMatcherAndRegister(interceptor);
 
             return this;
         }
@@ -278,8 +316,7 @@ namespace JustEat.HttpClientInterception
 
             HttpInterceptionResponse interceptor = builder.Build();
 
-            string key = BuildKey(interceptor);
-            _mappings[key] = interceptor;
+            ConfigureMatcherAndRegister(interceptor);
 
             return this;
         }
@@ -395,74 +432,55 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         private static string BuildKey(HttpInterceptionResponse interceptor)
         {
-            return BuildKey(
-                interceptor.Method,
-                interceptor.RequestUri,
-                interceptor.IgnoreQuery,
-                interceptor.IgnoreHost);
-        }
-
-        /// <summary>
-        /// Builds the mapping key to use for the specified HTTP request.
-        /// </summary>
-        /// <param name="method">The HTTP method.</param>
-        /// <param name="uri">The HTTP request URI.</param>
-        /// <param name="ignoreQueryString">If true, creates a key without any query string but with an extra string to disambiguate.</param>
-        /// <param name="ignoreHostName">If true, creates a key that will match for any hostname.</param>
-        /// <returns>
-        /// A <see cref="string"/> to use as the key for the interceptor registration.
-        /// </returns>
-        private static string BuildKey(
-            HttpMethod method,
-            Uri uri,
-            bool ignoreQueryString = false,
-            bool ignoreHostName = false)
-        {
-            if (uri == null)
+            if (interceptor.UserMatcher != null)
             {
-                return string.Empty;
+                return $"CUSTOM:{interceptor.UserMatcher.GetHashCode().ToString(CultureInfo.InvariantCulture)}";
             }
 
-            var builderForKey = new UriBuilder(uri);
+            var builderForKey = new UriBuilder(interceptor.RequestUri);
             string keyPrefix = string.Empty;
 
-            if (ignoreHostName)
+            if (interceptor.IgnoreHost)
             {
                 builderForKey.Host = "*";
                 keyPrefix = "IGNOREHOST;";
             }
 
-            if (ignoreQueryString)
+            if (interceptor.IgnoreQuery)
             {
                 builderForKey.Query = string.Empty;
                 keyPrefix += "IGNOREQUERY;";
             }
 
-            return $"{keyPrefix};{method.Method}:{builderForKey}";
+            return $"{keyPrefix};{interceptor.Method.Method}:{builderForKey}";
         }
 
         private bool TryGetResponse(HttpRequestMessage request, out HttpInterceptionResponse response)
         {
-            var candidateKeyGenerators = new Func<string>[]
-            {
-                () => BuildKey(request.Method, request.RequestUri),
-                () => BuildKey(request.Method, request.RequestUri, ignoreQueryString: true),
-                () => BuildKey(request.Method, request.RequestUri, ignoreHostName: true),
-                () => BuildKey(request.Method, request.RequestUri, ignoreQueryString: true, ignoreHostName: true),
-            };
+            response = _mappings.Values
+                .Where((p) => p.InternalMatcher.IsMatch(request))
+                .FirstOrDefault();
 
-            foreach (var keyGenerator in candidateKeyGenerators)
-            {
-                string key = keyGenerator();
+            return response != null;
+        }
 
-                if (_mappings.TryGetValue(key, out response))
-                {
-                    return true;
-                }
+        private void ConfigureMatcherAndRegister(HttpInterceptionResponse registration)
+        {
+            RequestMatcher matcher;
+
+            if (registration.UserMatcher != null)
+            {
+                matcher = new DelegatingMatcher(registration.UserMatcher);
+            }
+            else
+            {
+                matcher = new RegistrationMatcher(registration, _comparer);
             }
 
-            response = null;
-            return false;
+            registration.InternalMatcher = matcher;
+
+            string key = BuildKey(registration);
+            _mappings[key] = registration;
         }
 
         private sealed class OptionsScope : IDisposable

@@ -576,5 +576,25 @@ namespace JustEat.HttpClientInterception
                 }
             }
         }
+
+        [Fact]
+        public static async Task Use_Custom_Request_Matching()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForRequest((request) => request.RequestUri.Host == "google.com")
+                .WithMediaType("text/html")
+                .WithContent(@"<!DOCTYPE html><html dir=""ltr"" lang=""en""><head><title>Google Search</title></head></html>");
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act and Assert
+                (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
+                (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
+                (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
+            }
+        }
     }
 }

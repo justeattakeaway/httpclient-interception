@@ -12,6 +12,10 @@ namespace JustEat.HttpClientInterception
 {
     internal sealed class HttpInterceptionResponse
     {
+        internal Predicate<HttpRequestMessage> UserMatcher { get; set; }
+
+        internal Matching.RequestMatcher InternalMatcher { get; set; }
+
         internal HttpMethod Method { get; set; }
 
         internal string ReasonPhrase { get; set; }
