@@ -212,5 +212,23 @@ namespace JustEat.HttpClientInterception
 
             return builder.ForUri(new Uri(uriString));
         }
+
+        /// <summary>
+        /// A convenience method that can be used to signify the start of request method calls for fluent registrations.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <returns>
+        /// The value specified by <paramref name="builder"/>.
+        /// </returns>
+        public static HttpRequestInterceptionBuilder Requests(this HttpRequestInterceptionBuilder builder) => builder;
+
+        /// <summary>
+        /// A convenience method that can be used to signify the start of response method calls for fluent registrations.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <returns>
+        /// The value specified by <paramref name="builder"/>.
+        /// </returns>
+        public static HttpRequestInterceptionBuilder Responds(this HttpRequestInterceptionBuilder builder) => builder;
     }
 }

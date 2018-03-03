@@ -26,11 +26,8 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var builder = new HttpRequestInterceptionBuilder()
-                .ForGet()
-                .ForHttps()
-                .ForHost("public.je-apis.com")
-                .ForPath("terms")
-                .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" });
+                .Requests().ForGet().ForHttps().ForHost("public.je-apis.com").ForPath("terms")
+                .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" });
 
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
@@ -582,9 +579,8 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var builder = new HttpRequestInterceptionBuilder()
-                .ForRequest((request) => request.RequestUri.Host == "google.com")
-                .WithMediaType("text/html")
-                .WithContent(@"<!DOCTYPE html><html dir=""ltr"" lang=""en""><head><title>Google Search</title></head></html>");
+                .Requests().For((request) => request.RequestUri.Host == "google.com")
+                .Responds().WithContent(@"<!DOCTYPE html><html dir=""ltr"" lang=""en""><head><title>Google Search</title></head></html>");
 
             var options = new HttpClientInterceptorOptions().Register(builder);
 

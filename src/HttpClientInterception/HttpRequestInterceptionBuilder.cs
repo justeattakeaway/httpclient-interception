@@ -50,14 +50,17 @@ namespace JustEat.HttpClientInterception
         /// <summary>
         /// Configures the builder to match any request that meets the criteria defined by the specified predicate.
         /// </summary>
-        /// <param name="predicate">A delgate to a method which returns <see langword="true"/> if the request is considered a match.</param>
+        /// <param name="predicate">
+        /// A delegate to a method which returns <see langword="true"/> if the
+        /// request is considered a match; otherwise <see langword="false"/>.
+        /// </param>
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
         /// <remarks>
         /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
         /// </remarks>
-        public HttpRequestInterceptionBuilder ForRequest(Predicate<HttpRequestMessage> predicate)
+        public HttpRequestInterceptionBuilder For(Predicate<HttpRequestMessage> predicate)
         {
             _requestMatcher = predicate;
             return this;
