@@ -384,7 +384,9 @@ namespace JustEat.HttpClientInterception
         {
             if (interceptor.UserMatcher != null)
             {
-                return $"CUSTOM:{interceptor.UserMatcher.GetHashCode().ToString(CultureInfo.InvariantCulture)}";
+                // Use the internal matcher's hash code as UserMatcher (a delegate)
+                // will always return the hash code. See https://stackoverflow.com/q/6624151/1064169
+                return $"CUSTOM:{interceptor.InternalMatcher.GetHashCode().ToString(CultureInfo.InvariantCulture)}";
             }
 
             var builderForKey = new UriBuilder(interceptor.RequestUri);
