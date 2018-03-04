@@ -993,6 +993,16 @@ namespace JustEat.HttpClientInterception
             await HttpAssert.GetAsync(options, "http://bing.com/", HttpStatusCode.BadGateway);
         }
 
+        [Fact]
+        public static void RegisterWith_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("options", () => builder.RegisterWith(null));
+        }
+
         private sealed class CustomObject
         {
             internal enum Color

@@ -592,5 +592,38 @@ namespace JustEat.HttpClientInterception
                 (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
             }
         }
+
+        [Fact]
+        public static async Task Use_Custom_Request_Matching_With_Priorities()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions()
+            {
+                ThrowOnMissingRegistration = true,
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests().For((request) => request.RequestUri.Host == "google.com").HavingPriority(1)
+                .Responds().WithContent(@"First")
+                .RegisterWith(options)
+                .Requests().For((request) => request.RequestUri.Host.Contains("google")).HavingPriority(2)
+                .Responds().WithContent(@"Second")
+                .RegisterWith(options)
+                .Requests().For((request) => request.RequestUri.PathAndQuery.Contains("html")).HavingPriority(3)
+                .Responds().WithContent(@"Third")
+                .RegisterWith(options)
+                .Requests().For((request) => true).HavingPriority(null)
+                .Responds().WithContent(@"Fourth")
+                .RegisterWith(options);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act and Assert
+                (await client.GetStringAsync("https://google.com/")).ShouldBe("First");
+                (await client.GetStringAsync("https://google.co.uk")).ShouldContain("Second");
+                (await client.GetStringAsync("https://example.org/index.html")).ShouldContain("Third");
+                (await client.GetStringAsync("https://www.just-eat.co.uk/")).ShouldContain("Fourth");
+            }
+        }
     }
 }

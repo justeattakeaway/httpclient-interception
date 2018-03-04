@@ -421,6 +421,8 @@ namespace JustEat.HttpClientInterception
         private bool TryGetResponse(HttpRequestMessage request, out HttpInterceptionResponse response)
         {
             response = _mappings.Values
+                .OrderByDescending((p) => p.Priority.HasValue)
+                .ThenBy((p) => p.Priority)
                 .Where((p) => p.InternalMatcher.IsMatch(request))
                 .FirstOrDefault();
 

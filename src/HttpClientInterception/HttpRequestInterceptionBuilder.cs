@@ -47,6 +47,8 @@ namespace JustEat.HttpClientInterception
 
         private bool _ignoreQuery;
 
+        private int? _priority;
+
         /// <summary>
         /// Configures the builder to match any request that meets the criteria defined by the specified predicate.
         /// </summary>
@@ -583,6 +585,30 @@ namespace JustEat.HttpClientInterception
             return this;
         }
 
+        /// <summary>
+        /// Sets the priority for matching against HTTP requests.
+        /// </summary>
+        /// <param name="priority">The priority of the HTTP interception.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// The priority is used to establish a hierarchy for matching of intercepted
+        /// HTTP requests, particularly when <see cref="For"/> is used. This allows
+        /// registered requests to establish an order of precedence when an HTTP request
+        /// could match against multiple predicates, where the matching predicate with
+        /// the lowest value for <paramref name="priority"/> dictates the HTTP response
+        /// that is used for the intercepted request.
+        /// <para />
+        /// By default an interception has no priority, so the first arbitrary registration
+        /// that matches which does not have a priority will be used to provide the response.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder HavingPriority(int? priority)
+        {
+            _priority = priority;
+            return this;
+        }
+
         internal HttpInterceptionResponse Build()
         {
             var response = new HttpInterceptionResponse()
@@ -594,6 +620,7 @@ namespace JustEat.HttpClientInterception
                 IgnoreQuery = _ignoreQuery,
                 Method = _method,
                 OnIntercepted = _onIntercepted,
+                Priority = _priority,
                 ReasonPhrase = _reasonPhrase,
                 RequestUri = _uriBuilder.Uri,
                 StatusCode = _statusCode,
