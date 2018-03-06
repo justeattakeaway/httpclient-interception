@@ -70,6 +70,11 @@ namespace JustEat.HttpClientInterception.Matching
                 builder.Host = "*";
             }
 
+            if (registration.IgnorePath)
+            {
+                builder.Path = string.Empty;
+            }
+
             if (registration.IgnoreQuery)
             {
                 builder.Query = string.Empty;

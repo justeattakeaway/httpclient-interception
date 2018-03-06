@@ -45,6 +45,8 @@ namespace JustEat.HttpClientInterception
 
         private bool _ignoreHost;
 
+        private bool _ignorePath;
+
         private bool _ignoreQuery;
 
         private int? _priority;
@@ -159,6 +161,17 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder ForQuery(string query)
         {
             _uriBuilder.Query = query;
+            return this;
+        }
+
+        /// <summary>
+        /// If true URI paths will be ignored when testing request URIs.
+        /// </summary>
+        /// <param name="ignorePath">Whether to ignore paths or not; defaults to true.</param>
+        /// <returns>The current <see cref="HttpRequestInterceptionBuilder"/>.</returns>
+        public HttpRequestInterceptionBuilder IgnoringPath(bool ignorePath = true)
+        {
+            _ignorePath = ignorePath;
             return this;
         }
 
@@ -617,6 +630,7 @@ namespace JustEat.HttpClientInterception
                 ContentStream = _contentStream,
                 ContentMediaType = _mediaType,
                 IgnoreHost = _ignoreHost,
+                IgnorePath = _ignorePath,
                 IgnoreQuery = _ignoreQuery,
                 Method = _method,
                 OnIntercepted = _onIntercepted,

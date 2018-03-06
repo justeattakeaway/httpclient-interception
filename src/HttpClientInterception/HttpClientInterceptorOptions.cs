@@ -398,6 +398,12 @@ namespace JustEat.HttpClientInterception
                 keyPrefix = "IGNOREHOST;";
             }
 
+            if (interceptor.IgnorePath)
+            {
+                builderForKey.Path = string.Empty;
+                keyPrefix += "IGNOREPATH;";
+            }
+
             if (interceptor.IgnoreQuery)
             {
                 builderForKey.Query = string.Empty;

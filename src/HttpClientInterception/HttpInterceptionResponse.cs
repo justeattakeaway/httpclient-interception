@@ -36,6 +36,8 @@ namespace JustEat.HttpClientInterception
 
         internal bool IgnoreHost { get; set; }
 
+        internal bool IgnorePath { get; set; }
+
         internal bool IgnoreQuery { get; set; }
 
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ResponseHeaders { get; set; }
