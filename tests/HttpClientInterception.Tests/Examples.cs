@@ -25,12 +25,12 @@ namespace JustEat.HttpClientInterception
         public static async Task Intercept_Http_Get_For_Json_Object()
         {
             // Arrange
+            var options = new HttpClientInterceptorOptions();
+
             var builder = new HttpRequestInterceptionBuilder()
                 .Requests().ForGet().ForHttps().ForHost("public.je-apis.com").ForPath("terms")
-                .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" });
-
-            var options = new HttpClientInterceptorOptions()
-                .Register(builder);
+                .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
+                .RegisterWith(options);
 
             string json;
 

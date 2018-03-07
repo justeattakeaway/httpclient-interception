@@ -36,13 +36,15 @@ Below is a minimal example of intercepting a request to an HTTP API for a JSON r
 ```csharp
 // using JustEat.HttpClientInterception;
 
+var options = new HttpClientInterceptorOptions();
+
 var builder = new HttpRequestInterceptionBuilder()
+    .Requests()
     .ForHost("public.je-apis.com")
     .ForPath("terms")
-    .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" });
-
-var options = new HttpClientInterceptorOptions()
-    .Register(builder);
+    .Responds()
+    .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
+    .RegisterWith(options);
 
 var client = options.CreateHttpClient();
 
@@ -59,12 +61,13 @@ Below is a minimal example of intercepting a request to inject an HTTP fault:
 ```csharp
 // using JustEat.HttpClientInterception;
 
-var builder = new HttpRequestInterceptionBuilder()
-    .ForHost("public.je-apis.com")
-    .WithStatus(HttpStatusCode.InternalServerError);
+var options = new HttpClientInterceptorOptions();
 
-var options = new HttpClientInterceptorOptions()
-    .Register(builder);
+var builder = new HttpRequestInterceptionBuilder()
+    .Requests()
+    .ForHost("public.je-apis.com")
+    .WithStatus(HttpStatusCode.InternalServerError)
+    .RegisterWith(options);
 
 var client = options.CreateHttpClient();
 
@@ -119,7 +122,8 @@ var options = new HttpClientInterceptorOptions();
 
 var server = new WebHostBuilder()
     .UseStartup<Startup>()
-    .ConfigureServices((services) => services.AddTransient((_) => options.CreateHttpMessageHandler()))
+    .ConfigureServices(
+        (services) => services.AddTransient((_) => options.CreateHttpMessageHandler()))
     .Build();
 
 server.Start();

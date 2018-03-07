@@ -39,22 +39,19 @@ namespace SampleApp.Tests
             {
                 // Setup an expected response from the GitHub API
                 var builder = new HttpRequestInterceptionBuilder()
+                    .Requests()
                     .ForHttps()
                     .ForHost("api.github.com")
                     .ForPath("orgs/weyland-yutani/repos")
                     .ForQuery("per_page=2")
+                    .Responds()
                     .WithJsonContent(
                         new[]
                         {
                             new { id = 1, name = "foo" },
                             new { id = 2, name = "bar" },
-                        });
-
-                // Add a callback for when a request is intercepted
-                builder.WithInterceptionCallback(
-                    (request) => _outputHelper.WriteLine($"Intercepted HTTP {request.Method} {request.RequestUri}"));
-
-                _fixture.Interceptor.Register(builder);
+                        })
+                    .RegisterWith(_fixture.Interceptor);
 
                 string[] actual;
 
