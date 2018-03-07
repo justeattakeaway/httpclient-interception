@@ -212,5 +212,46 @@ namespace JustEat.HttpClientInterception
 
             return builder.ForUri(new Uri(uriString));
         }
+
+        /// <summary>
+        /// A convenience method that can be used to signify the start of request method calls for fluent registrations.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <returns>
+        /// The value specified by <paramref name="builder"/>.
+        /// </returns>
+        public static HttpRequestInterceptionBuilder Requests(this HttpRequestInterceptionBuilder builder) => builder;
+
+        /// <summary>
+        /// A convenience method that can be used to signify the start of response method calls for fluent registrations.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <returns>
+        /// The value specified by <paramref name="builder"/>.
+        /// </returns>
+        public static HttpRequestInterceptionBuilder Responds(this HttpRequestInterceptionBuilder builder) => builder;
+
+        /// <summary>
+        /// Registers the builder with the specified <see cref="HttpClientInterceptorOptions"/> instance.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use to create the registration.</param>
+        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to register the builder with.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpRequestInterceptionBuilder RegisterWith(this HttpRequestInterceptionBuilder builder, HttpClientInterceptorOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            options.Register(builder);
+
+            return builder;
+        }
     }
 }

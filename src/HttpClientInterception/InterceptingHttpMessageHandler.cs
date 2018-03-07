@@ -56,6 +56,11 @@ namespace JustEat.HttpClientInterception
 
             HttpResponseMessage response = await _options.GetResponseAsync(request);
 
+            if (response == null && _options.OnMissingRegistration != null)
+            {
+                response = await _options.OnMissingRegistration(request);
+            }
+
             if (response != null)
             {
                 return response;

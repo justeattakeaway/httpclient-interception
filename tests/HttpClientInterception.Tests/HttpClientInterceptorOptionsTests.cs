@@ -63,6 +63,22 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static async Task GetResponseAsync_Returns_Null_If_Http_Method_Does_Not_Match()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions()
+                .Register(HttpMethod.Get, new Uri("https://google.com/"), contentFactory: EmptyContent);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://google.com/");
+
+            // Act
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
+
+            // Assert
+            actual.ShouldBeNull();
+        }
+
+        [Fact]
         public static async Task GetResponseAsync_Returns_Null_If_Request_Uri_Does_Not_Match_Blank_Request()
         {
             // Arrange
@@ -379,6 +395,21 @@ namespace JustEat.HttpClientInterception
             await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, "https://google.com/"));
             await HttpAssert.GetAsync(options, "https://google.co.uk/");
             await HttpAssert.GetAsync(options, "https://google.co.uk/");
+
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHttps()
+                .ForGet()
+                .ForHost("bing.com");
+
+            options.ThrowOnMissingRegistration = true;
+            options.Register(builder);
+
+            await HttpAssert.GetAsync(options, "https://bing.com/");
+
+            options.Deregister(builder);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => HttpAssert.GetAsync(options, "https://bing.com/"));
         }
 
         [Fact]
@@ -486,6 +517,18 @@ namespace JustEat.HttpClientInterception
 
             // Act and Assert
             Assert.Throws<ArgumentNullException>("uri", () => options.Deregister(method, uri));
+        }
+
+        [Fact]
+        public static void Deregister_Throws_If_Builder_Is_Null()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            HttpRequestInterceptionBuilder builder = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => options.Deregister(builder));
         }
 
         [Fact]

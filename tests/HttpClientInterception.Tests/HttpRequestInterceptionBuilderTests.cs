@@ -558,6 +558,42 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static async Task Register_Builds_Ignore_Path_Key()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder()
+                .ForHost("something.com")
+                .IgnoringPath();
+
+            // Act
+            options.Register(builder);
+
+            // Assert
+            (await HttpAssert.GetAsync(options, "http://something.com/path/1234")).ShouldBeEmpty();
+        }
+
+        [Fact]
+        public static async Task Register_Builds_Without_Ignore_Path_Key()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder()
+                .ForHost("something.com")
+                .IgnoringPath()
+                .IgnoringPath(false);
+
+            // Act
+            options.Register(builder);
+
+            // Assert
+            await Assert.ThrowsAsync<HttpRequestException>(() =>
+                HttpAssert.GetAsync(options, "http://something.com/path/1234"));
+        }
+
+        [Fact]
         public static async Task Register_Builds_Ignore_Query_Key()
         {
             // Arrange
@@ -931,6 +967,77 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             wasDelegateInvoked.ShouldBeFalse();
+        }
+
+        [Fact]
+        public static async Task Builder_For_Any_Host_Registers_Interception()
+        {
+            // Arrange
+            string expected = "<html>foo></html>";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForAnyHost()
+                .WithContent(expected);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual1 = await HttpAssert.GetAsync(options, "http://google.com/");
+            string actual2 = await HttpAssert.GetAsync(options, "http://bing.com/");
+
+            // Assert
+            actual1.ShouldBe(expected);
+            actual2.ShouldBe(actual1);
+        }
+
+        [Fact]
+        public static async Task Builder_For_Any_Host_Path_And_Query_Registers_Interception()
+        {
+            // Arrange
+            string expected = "<html>foo></html>";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForAnyHost()
+                .IgnoringPath()
+                .IgnoringQuery()
+                .WithContent(expected);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual1 = await HttpAssert.GetAsync(options, "http://google.com/blah/?foo=bar");
+            string actual2 = await HttpAssert.GetAsync(options, "http://bing.com/qux/?foo=baz");
+
+            // Assert
+            actual1.ShouldBe(expected);
+            actual2.ShouldBe(actual1);
+        }
+
+        [Fact]
+        public static async Task Builder_Returns_Fallback_For_Missing_Registration()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHost("google.com")
+                .WithStatus(HttpStatusCode.BadRequest);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            options.OnMissingRegistration = (request) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.BadGateway));
+
+            // Act and Assert
+            await HttpAssert.GetAsync(options, "http://google.com/", HttpStatusCode.BadRequest);
+            await HttpAssert.GetAsync(options, "http://bing.com/", HttpStatusCode.BadGateway);
+        }
+
+        [Fact]
+        public static void RegisterWith_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("options", () => builder.RegisterWith(null));
         }
 
         private sealed class CustomObject

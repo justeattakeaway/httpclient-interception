@@ -33,6 +33,8 @@ namespace JustEat.HttpClientInterception
 
         private Func<HttpRequestMessage, Task<bool>> _onIntercepted;
 
+        private Predicate<HttpRequestMessage> _requestMatcher;
+
         private string _reasonPhrase;
 
         private HttpStatusCode _statusCode = HttpStatusCode.OK;
@@ -40,7 +42,45 @@ namespace JustEat.HttpClientInterception
         private UriBuilder _uriBuilder = new UriBuilder();
 
         private Version _version;
+
+        private bool _ignoreHost;
+
+        private bool _ignorePath;
+
         private bool _ignoreQuery;
+
+        private int? _priority;
+
+        /// <summary>
+        /// Configures the builder to match any request that meets the criteria defined by the specified predicate.
+        /// </summary>
+        /// <param name="predicate">
+        /// A delegate to a method which returns <see langword="true"/> if the
+        /// request is considered a match; otherwise <see langword="false"/>.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder For(Predicate<HttpRequestMessage> predicate)
+        {
+            _requestMatcher = predicate;
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the builder to match any host name.
+        /// </summary>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        public HttpRequestInterceptionBuilder ForAnyHost()
+        {
+            _ignoreHost = true;
+            return this;
+        }
 
         /// <summary>
         /// Sets the HTTP method to intercept a request for.
@@ -81,6 +121,7 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder ForHost(string host)
         {
             _uriBuilder.Host = host;
+            _ignoreHost = false;
             return this;
         }
 
@@ -124,6 +165,17 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
+        /// If true URI paths will be ignored when testing request URIs.
+        /// </summary>
+        /// <param name="ignorePath">Whether to ignore paths or not; defaults to true.</param>
+        /// <returns>The current <see cref="HttpRequestInterceptionBuilder"/>.</returns>
+        public HttpRequestInterceptionBuilder IgnoringPath(bool ignorePath = true)
+        {
+            _ignorePath = ignorePath;
+            return this;
+        }
+
+        /// <summary>
         /// If true query strings will be ignored when testing request URIs.
         /// </summary>
         /// <param name="ignoreQuery">Whether to ignore query strings or not; defaults to true.</param>
@@ -144,6 +196,7 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder ForUri(Uri uri)
         {
             _uriBuilder = new UriBuilder(uri);
+            _ignoreHost = false;
             return this;
         }
 
@@ -160,6 +213,7 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder ForUri(UriBuilder uriBuilder)
         {
             _uriBuilder = uriBuilder ?? throw new ArgumentNullException(nameof(uriBuilder));
+            _ignoreHost = false;
             return this;
         }
 
@@ -544,6 +598,30 @@ namespace JustEat.HttpClientInterception
             return this;
         }
 
+        /// <summary>
+        /// Sets the priority for matching against HTTP requests.
+        /// </summary>
+        /// <param name="priority">The priority of the HTTP interception.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// The priority is used to establish a hierarchy for matching of intercepted
+        /// HTTP requests, particularly when <see cref="For"/> is used. This allows
+        /// registered requests to establish an order of precedence when an HTTP request
+        /// could match against multiple predicates, where the matching predicate with
+        /// the lowest value for <paramref name="priority"/> dictates the HTTP response
+        /// that is used for the intercepted request.
+        /// <para />
+        /// By default an interception has no priority, so the first arbitrary registration
+        /// that matches which does not have a priority will be used to provide the response.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder HavingPriority(int? priority)
+        {
+            _priority = priority;
+            return this;
+        }
+
         internal HttpInterceptionResponse Build()
         {
             var response = new HttpInterceptionResponse()
@@ -551,12 +629,16 @@ namespace JustEat.HttpClientInterception
                 ContentFactory = _contentFactory ?? EmptyContentFactory,
                 ContentStream = _contentStream,
                 ContentMediaType = _mediaType,
+                IgnoreHost = _ignoreHost,
+                IgnorePath = _ignorePath,
                 IgnoreQuery = _ignoreQuery,
                 Method = _method,
                 OnIntercepted = _onIntercepted,
+                Priority = _priority,
                 ReasonPhrase = _reasonPhrase,
                 RequestUri = _uriBuilder.Uri,
                 StatusCode = _statusCode,
+                UserMatcher = _requestMatcher,
                 Version = _version,
             };
 

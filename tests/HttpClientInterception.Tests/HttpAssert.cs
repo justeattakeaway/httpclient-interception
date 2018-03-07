@@ -83,6 +83,11 @@ namespace JustEat.HttpClientInterception
                             response.Content.Headers.ContentType.MediaType.ShouldBe(mediaType);
                         }
 
+                        if (response.Content == null)
+                        {
+                            return null;
+                        }
+
                         return await response.Content.ReadAsStringAsync();
                     }
                 }

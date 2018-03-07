@@ -26,11 +26,8 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var builder = new HttpRequestInterceptionBuilder()
-                .ForGet()
-                .ForHttps()
-                .ForHost("public.je-apis.com")
-                .ForPath("terms")
-                .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" });
+                .Requests().ForGet().ForHttps().ForHost("public.je-apis.com").ForPath("terms")
+                .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" });
 
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
@@ -519,6 +516,114 @@ namespace JustEat.HttpClientInterception
             dotnetOrg.Id.ShouldBe("9141961");
             dotnetOrg.Login.ShouldBe("dotnet");
             dotnetOrg.Url.ShouldBe("https://api.github.com/orgs/dotnet");
+        }
+
+        [Fact]
+        public static async Task Match_Any_Host_Name()
+        {
+            // Arrange
+            string expected = @"{""id"":12}";
+            string actual;
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHttp()
+                .ForAnyHost()
+                .ForPath("orders")
+                .ForQuery("id=12")
+                .WithStatus(HttpStatusCode.OK)
+                .WithContent(expected);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                actual = await client.GetStringAsync("http://myhost.net/orders?id=12");
+            }
+
+            // Assert
+            actual.ShouldBe(expected);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                actual = await client.GetStringAsync("http://myotherhost.net/orders?id=12");
+            }
+
+            // Assert
+            actual.ShouldBe(expected);
+        }
+
+        [Fact]
+        public static async Task Use_Default_Response_For_Unmatched_Requests()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions()
+            {
+                OnMissingRegistration = (request) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound))
+            };
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                using (var response = await client.GetAsync("https://google.com/"))
+                {
+                    // Assert
+                    response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+                }
+            }
+        }
+
+        [Fact]
+        public static async Task Use_Custom_Request_Matching()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests().For((request) => request.RequestUri.Host == "google.com")
+                .Responds().WithContent(@"<!DOCTYPE html><html dir=""ltr"" lang=""en""><head><title>Google Search</title></head></html>");
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act and Assert
+                (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
+                (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
+                (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
+            }
+        }
+
+        [Fact]
+        public static async Task Use_Custom_Request_Matching_With_Priorities()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions()
+            {
+                ThrowOnMissingRegistration = true,
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests().For((request) => request.RequestUri.Host == "google.com").HavingPriority(1)
+                .Responds().WithContent(@"First")
+                .RegisterWith(options)
+                .Requests().For((request) => request.RequestUri.Host.Contains("google")).HavingPriority(2)
+                .Responds().WithContent(@"Second")
+                .RegisterWith(options)
+                .Requests().For((request) => request.RequestUri.PathAndQuery.Contains("html")).HavingPriority(3)
+                .Responds().WithContent(@"Third")
+                .RegisterWith(options)
+                .Requests().For((request) => true).HavingPriority(null)
+                .Responds().WithContent(@"Fourth")
+                .RegisterWith(options);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act and Assert
+                (await client.GetStringAsync("https://google.com/")).ShouldBe("First");
+                (await client.GetStringAsync("https://google.co.uk")).ShouldContain("Second");
+                (await client.GetStringAsync("https://example.org/index.html")).ShouldContain("Third");
+                (await client.GetStringAsync("https://www.just-eat.co.uk/")).ShouldContain("Fourth");
+            }
         }
     }
 }

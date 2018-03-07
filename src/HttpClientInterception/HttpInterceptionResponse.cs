@@ -12,7 +12,13 @@ namespace JustEat.HttpClientInterception
 {
     internal sealed class HttpInterceptionResponse
     {
+        internal Predicate<HttpRequestMessage> UserMatcher { get; set; }
+
+        internal Matching.RequestMatcher InternalMatcher { get; set; }
+
         internal HttpMethod Method { get; set; }
+
+        internal int? Priority { get; set; }
 
         internal string ReasonPhrase { get; set; }
 
@@ -27,6 +33,10 @@ namespace JustEat.HttpClientInterception
         internal string ContentMediaType { get; set; }
 
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ContentHeaders { get; set; }
+
+        internal bool IgnoreHost { get; set; }
+
+        internal bool IgnorePath { get; set; }
 
         internal bool IgnoreQuery { get; set; }
 
