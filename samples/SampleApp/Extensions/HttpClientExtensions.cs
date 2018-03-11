@@ -15,7 +15,7 @@ namespace SampleApp.Extensions
 {
     public static class HttpClientExtensions
     {
-        public static IHttpClientBuilder AddHttpClients(this IServiceCollection services, IConfiguration configuration)
+        public static IHttpClientBuilder AddHttpClients(this IServiceCollection services)
         {
             // Register a Refit-based typed client for use in the controller.
             // It also adds two custom delegating handlers and configures the
@@ -26,12 +26,13 @@ namespace SampleApp.Extensions
                 .AddHttpClient<IGitHub>("github")
                 .AddHttpMessageHandler(() => new AddRequestIdHandler())
                 .AddHttpMessageHandler(() => new TimingHandler())
-                .AddTypedClient((client) => RestService.For<IGitHub>(client))
-                .ConfigureHttpClient((client) => ConfigureGitHub(client, configuration));
+                .AddTypedClient(AddGitHub);
         }
 
-        private static void ConfigureGitHub(HttpClient client, IConfiguration configuration)
+        private static IGitHub AddGitHub(HttpClient client, IServiceProvider provider)
         {
+            IConfiguration configuration = provider.GetRequiredService<IConfiguration>();
+
             client.BaseAddress = new Uri("https://api.github.com");
 
             string productName = configuration["UserAgent"];
@@ -39,6 +40,8 @@ namespace SampleApp.Extensions
 
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
             client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(productName, productVersion));
+
+            return RestService.For<IGitHub>(client);
         }
     }
 }

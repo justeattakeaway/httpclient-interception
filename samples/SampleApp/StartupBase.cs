@@ -17,7 +17,7 @@ namespace SampleApp
         public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddHttpClients(Configuration);
+            services.AddHttpClients();
 
             services
                 .AddMvc()
