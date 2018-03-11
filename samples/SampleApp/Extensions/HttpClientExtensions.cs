@@ -1,53 +1,44 @@
 // Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using System.Linq;
+using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Refit;
 using SampleApp.Handlers;
+using SampleApp.Services;
 
 namespace SampleApp.Extensions
 {
     public static class HttpClientExtensions
     {
-        public static IServiceCollection AddHttpClient(this IServiceCollection services)
+        public static IHttpClientBuilder AddHttpClients(this IServiceCollection services, IConfiguration configuration)
         {
-            // Register some message handlers
-            services.AddTransient<DelegatingHandler, TimingHandler>();
-            services.AddTransient<DelegatingHandler, AddRequestIdHandler>();
+            // Register a Refit-based typed client for use in the controller.
+            // It also adds two custom delegating handlers and configures the
+            // HttpClient with the appropriate base URL and HTTP request headers.
+            // The client is named so that the builder can be accessed from the
+            // test project to adjust the configuration of the builder.
+            return services
+                .AddHttpClient<IGitHub>("github")
+                .AddHttpMessageHandler(() => new AddRequestIdHandler())
+                .AddHttpMessageHandler(() => new TimingHandler())
+                .AddTypedClient((client) => RestService.For<IGitHub>(client))
+                .ConfigureHttpClient((client) => ConfigureGitHub(client, configuration));
+        }
 
-            // Consider registering HttpClient as a singleton, rather than as transient,
-            // if you do not use properties such as BaseAddress on instances of HttpClient.
-            // This allows the same instance to be used throughout the application, which
-            // improves performance and resource utilisation under heavy server load.
-            return services.AddTransient(
-                (p) =>
-                {
-                    // Create a handler that makes actual HTTP calls
-                    HttpMessageHandler handler = new HttpClientHandler();
+        private static void ConfigureGitHub(HttpClient client, IConfiguration configuration)
+        {
+            client.BaseAddress = new Uri("https://api.github.com");
 
-                    // Have any delegating handlers been registered?
-                    var handlers = p.GetServices<DelegatingHandler>().ToList();
+            string productName = configuration["UserAgent"];
+            string productVersion = typeof(StartupBase).GetTypeInfo().Assembly.GetName().Version.ToString(3);
 
-                    if (handlers.Count > 0)
-                    {
-                        // Attach the initial handler to the first delegating handler
-                        DelegatingHandler previous = handlers.First();
-                        previous.InnerHandler = handler;
-
-                        // Chain any remaining handlers to each other
-                        foreach (DelegatingHandler next in handlers.Skip(1))
-                        {
-                            next.InnerHandler = previous;
-                            previous = next;
-                        }
-
-                        // Replace the initial handler with the last delegating handler
-                        handler = previous;
-                    }
-
-                    return new HttpClient(handler);
-                });
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(productName, productVersion));
         }
     }
 }

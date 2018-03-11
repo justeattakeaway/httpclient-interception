@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -19,12 +19,33 @@ namespace SampleApp.Tests
         {
             _interceptor = new HttpClientInterceptorOptions() { ThrowOnMissingRegistration = true };
 
+            void ConfigureInterception(IServiceCollection services)
+            {
+                services
+                    .AddHttpClient("github")
+                    .ConfigureHttpMessageHandlerBuilder((builder) =>
+                    {
+                        // Create the intercepting DelegatingHandler
+                        var interceptor = _interceptor.CreateHttpMessageHandler();
+
+                        // Configure it to use the current primary handler of the
+                        // HttpMessageHandlerBuilder as its inner handler. This sets things
+                        // up so that any other delegating handlers are called before the
+                        // interceptor and so that the interceptor is immediately before
+                        // the handler that actually makes the HTTP requests.
+                        interceptor.InnerHandler = builder.PrimaryHandler;
+
+                        // Replace the primary handler with the intercepting handler
+                        builder.PrimaryHandler = interceptor;
+                    });
+            }
+
             // Self-host the application, configuring the use of HTTP interception
             _server = new WebHostBuilder()
                 .UseStartup<TestStartup>()
-                .ConfigureServices((p) => p.AddTransient((_) => _interceptor.CreateHttpMessageHandler()))
                 .UseKestrel()
                 .UseUrls(ServerUrl)
+                .ConfigureServices(ConfigureInterception)
                 .Build();
 
             _server.Start();
