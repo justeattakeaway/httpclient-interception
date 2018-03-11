@@ -21,23 +21,9 @@ namespace SampleApp.Tests
 
             void ConfigureInterception(IServiceCollection services)
             {
-                services
-                    .AddHttpClient("github")
-                    .ConfigureHttpMessageHandlerBuilder((builder) =>
-                    {
-                        // Create the intercepting DelegatingHandler
-                        var interceptor = _interceptor.CreateHttpMessageHandler();
-
-                        // Configure it to use the current primary handler of the
-                        // HttpMessageHandlerBuilder as its inner handler. This sets things
-                        // up so that any other delegating handlers are called before the
-                        // interceptor and so that the interceptor is immediately before
-                        // the handler that actually makes the HTTP requests.
-                        interceptor.InnerHandler = builder.PrimaryHandler;
-
-                        // Replace the primary handler with the intercepting handler
-                        builder.PrimaryHandler = interceptor;
-                    });
+                // If using multiple named clients, you must register an intercepting handler for each one
+                services.AddHttpClient("github")
+                        .AddHttpMessageHandler(() => _interceptor.CreateHttpMessageHandler());
             }
 
             // Self-host the application, configuring the use of HTTP interception

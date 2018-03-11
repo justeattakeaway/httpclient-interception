@@ -17,16 +17,22 @@ namespace SampleApp.Extensions
     {
         public static IHttpClientBuilder AddHttpClients(this IServiceCollection services)
         {
-            // Register a Refit-based typed client for use in the controller.
-            // It also adds two custom delegating handlers and configures the
-            // HttpClient with the appropriate base URL and HTTP request headers.
-            // The client is named so that the builder can be accessed from the
-            // test project to adjust the configuration of the builder.
+            // Register a Refit-based typed client for use in the controller, which
+            // configures the HttpClient with the appropriate base URL and HTTP request
+            // headers. It also adds two custom delegating handlers. The client is named
+            // so that the builder can be accessed from the test project to adjust the
+            // configuration of the builder when self-hosting the application.
             return services
                 .AddHttpClient<IGitHub>("github")
-                .AddHttpMessageHandler(() => new AddRequestIdHandler())
-                .AddHttpMessageHandler(() => new TimingHandler())
-                .AddTypedClient(AddGitHub);
+                .AddTypedClient(AddGitHub)
+                .ConfigureHttpMessageHandlerBuilder(
+                    (builder) =>
+                    {
+                        // Adding handlers in this manner ensures they are placed in the
+                        // pipeline of message handlers before the intercepting handler.
+                        builder.AdditionalHandlers.Insert(0, new TimingHandler());
+                        builder.AdditionalHandlers.Insert(0, new AddRequestIdHandler());
+                    });
         }
 
         private static IGitHub AddGitHub(HttpClient client, IServiceProvider provider)
