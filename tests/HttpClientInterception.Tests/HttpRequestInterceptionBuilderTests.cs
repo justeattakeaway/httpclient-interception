@@ -1040,6 +1040,33 @@ namespace JustEat.HttpClientInterception
             Assert.Throws<ArgumentNullException>("options", () => builder.RegisterWith(null));
         }
 
+        [Fact]
+        public static async Task Using_The_Same_Builder_For_Multiple_Registrations_On_The_Same_Host_Retains_Default_Port()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions()
+            {
+                ThrowOnMissingRegistration = true
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .RegisterWith(options);
+
+            // Change to a different scheme without an explicit port
+            builder = builder
+                .ForHttp()
+                .RegisterWith(options);
+
+            // Act and Assert
+            await HttpAssert.GetAsync(options, "http://api.github.com/orgs/justeat");
+            await HttpAssert.GetAsync(options, "http://api.github.com:80/orgs/justeat");
+            await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat");
+            await HttpAssert.GetAsync(options, "https://api.github.com:443/orgs/justeat");
+        }
+
         private sealed class CustomObject
         {
             internal enum Color
