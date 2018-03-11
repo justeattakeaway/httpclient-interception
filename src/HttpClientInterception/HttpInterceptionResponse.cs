@@ -34,6 +34,8 @@ namespace JustEat.HttpClientInterception
 
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ContentHeaders { get; set; }
 
+        internal bool HasCustomPort { get; set; }
+
         internal bool IgnoreHost { get; set; }
 
         internal bool IgnorePath { get; set; }

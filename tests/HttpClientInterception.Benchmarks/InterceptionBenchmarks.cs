@@ -39,7 +39,6 @@ namespace JustEat.HttpClientInterception
             builder
                 .Requests()
                 .ForHttps()
-                .ForPort(443)
                 .ForHost("files.domain.com")
                 .ForPath("setup.exe")
                 .ForQuery(string.Empty)

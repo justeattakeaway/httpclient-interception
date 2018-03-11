@@ -410,6 +410,11 @@ namespace JustEat.HttpClientInterception
                 keyPrefix += "IGNOREQUERY;";
             }
 
+            if (!interceptor.HasCustomPort)
+            {
+                builderForKey.Port = -1;
+            }
+
             return $"{keyPrefix};{interceptor.Method.Method}:{builderForKey}";
         }
 
