@@ -139,7 +139,7 @@ Further examples of using the library can be found by following the links below:
 
 ### Benchmarks
 
-Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [a442f1d](https://github.com/justeat/httpclient-interception/commit/a442f1d72701bedd5920be23561c1e12a05fb43f "Benchmark commit") on 23/09/2017.
+Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [c09c38b](https://github.com/justeat/httpclient-interception/commit/c09c38bad3ed5db6cfffdbaebeac33c2d286764f "Benchmark commit") on 11/03/2018.
 
 ``` ini
 BenchmarkDotNet=v0.10.12, OS=Windows 10 Redstone 3 [1709, Fall Creators Update] (10.0.16299.248)
