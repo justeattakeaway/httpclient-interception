@@ -8,10 +8,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$solutionPath = Split-Path $MyInvocation.MyCommand.Definition
-$solutionFile = Join-Path $solutionPath "HttpClientInterception.sln"
+$solutionPath   = Split-Path $MyInvocation.MyCommand.Definition
+$solutionFile   = Join-Path $solutionPath "HttpClientInterception.sln"
+$sdkFile        = Join-Path $solutionPath "global.json"
 $libraryProject = Join-Path $solutionPath "src\HttpClientInterception\JustEat.HttpClientInterception.csproj"
-$testProject = Join-Path $solutionPath "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj"
+$testProject    = Join-Path $solutionPath "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj"
 
 $dotnetVersion = (Get-Content $sdkFile | ConvertFrom-Json).sdk.version
 
