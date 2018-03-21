@@ -172,7 +172,7 @@ Compiling the library yourself requires Git and the [.NET Core SDK](https://www.
 
 To build and test the library locally from a terminal/command-line, run one of the following set of commands:
 
-**Linux/OS X**
+**Linux/macOS**
 
 ```sh
 git clone https://github.com/justeat/httpclient-interception.git
