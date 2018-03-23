@@ -1,8 +1,6 @@
 // Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using JustEat.HttpClientInterception;
 using Newtonsoft.Json;
@@ -53,17 +51,9 @@ namespace SampleApp.Tests
                         })
                     .RegisterWith(_fixture.Interceptor);
 
-                string[] actual;
-
-                using (var httpClient = new HttpClient())
-                {
-                    // Set up the HTTP client to use the self-hosted HTTP server for the application
-                    httpClient.BaseAddress = new Uri(_fixture.ServerUrl);
-
-                    // Act - Perform the HTTP request against our application and deserialize the response
-                    string json = await httpClient.GetStringAsync("api/repos?count=2");
-                    actual = JsonConvert.DeserializeObject<string[]>(json);
-                }
+                // Act - Perform the HTTP request against our application and deserialize the response
+                string json = await _fixture.Client.GetStringAsync("api/repos?count=2");
+                string[] actual = JsonConvert.DeserializeObject<string[]>(json);
 
                 // Assert - Our application should have parsed the stub-names
                 actual.ShouldBe(new[] { "bar", "foo" });

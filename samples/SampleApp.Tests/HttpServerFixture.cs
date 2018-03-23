@@ -4,56 +4,29 @@
 using System;
 using JustEat.HttpClientInterception;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 
 namespace SampleApp.Tests
 {
-    public class HttpServerFixture : IDisposable
+    public class HttpServerFixture : WebApplicationTestFixture<TestStartup>
     {
         private readonly HttpClientInterceptorOptions _interceptor;
-        private readonly IWebHost _server;
-
-        private bool _disposed;
 
         public HttpServerFixture()
+            : base("samples/SampleApp")
         {
             _interceptor = new HttpClientInterceptorOptions() { ThrowOnMissingRegistration = true };
-
-            // Self-host the application, configuring the use of HTTP interception
-            _server = new WebHostBuilder()
-                .UseStartup<TestStartup>()
-                .UseKestrel()
-                .UseUrls(ServerUrl)
-                .ConfigureServices((services) => services.AddSingleton<IHttpMessageHandlerBuilderFilter, InterceptionFilter>((_) => new InterceptionFilter(_interceptor)))
-                .Build();
-
-            _server.Start();
         }
-
-        ~HttpServerFixture() => Dispose(false);
 
         public HttpClientInterceptorOptions Interceptor => _interceptor;
 
-        public string ServerUrl => "http://localhost:5050";
-
-        public void Dispose()
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    _server?.Dispose();
-                }
-
-                _disposed = true;
-            }
+            builder.ConfigureServices(
+                (services) => services.AddSingleton<IHttpMessageHandlerBuilderFilter, InterceptionFilter>(
+                    (_) => new InterceptionFilter(_interceptor)));
         }
 
         /// <summary>
