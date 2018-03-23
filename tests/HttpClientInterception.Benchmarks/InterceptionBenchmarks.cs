@@ -18,41 +18,52 @@ namespace JustEat.HttpClientInterception
 
         public InterceptionBenchmarks()
         {
-            var builderForBytes = new HttpRequestInterceptionBuilder()
-                .ForHttps()
-                .ForHost("files.domain.com")
-                .ForPath("setup.exe")
-                .WithMediaType("application/octet-stream")
-                .WithContent(() => new byte[] { 0, 1, 2, 3, 4 });
+            _options = new HttpClientInterceptorOptions()
+            {
+                ThrowOnMissingRegistration = true,
+            };
 
-            var builderForHtml = new HttpRequestInterceptionBuilder()
+            var builder = new HttpRequestInterceptionBuilder();
+
+            builder
+                .Requests()
                 .ForHttp()
                 .ForHost("www.google.co.uk")
                 .ForPath("search")
                 .ForQuery("q=Just+Eat")
+                .Responds()
                 .WithMediaType("text/html")
-                .WithContent(@"<!DOCTYPE html><html dir=""ltr"" lang=""en""><head><title>Just Eat</title></head></html>");
+                .WithContent(@"<!DOCTYPE html><html dir=""ltr"" lang=""en""><head><title>Just Eat</title></head></html>")
+                .RegisterWith(_options);
 
-            var builderForJson = new HttpRequestInterceptionBuilder()
+            builder
+                .Requests()
+                .ForHttps()
+                .ForHost("files.domain.com")
+                .ForPath("setup.exe")
+                .ForQuery(string.Empty)
+                .Responds()
+                .WithMediaType("application/octet-stream")
+                .WithContent(() => new byte[] { 0, 1, 2, 3, 4 })
+                .RegisterWith(_options);
+
+            builder
+                .Requests()
                 .ForHttps()
                 .ForHost("api.github.com")
                 .ForPath("orgs/justeat")
+                .ForQuery(string.Empty)
+                .Responds()
                 .WithMediaType("application/json")
-                .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
+                .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" })
+                .RegisterWith(_options);
 
-            var builderForStream = new HttpRequestInterceptionBuilder()
-                .ForHttps()
-                .ForHost("api.github.com")
-                .ForPath("orgs/justeat")
+           builder
+                .Requests()
                 .ForQuery("page=1")
-                .WithMediaType("application/json")
-                .WithContentStream(() => File.OpenRead("organization.json"));
-
-            _options = new HttpClientInterceptorOptions()
-                .Register(builderForBytes)
-                .Register(builderForHtml)
-                .Register(builderForJson)
-                .Register(builderForStream);
+                .Responds()
+                .WithContentStream(() => File.OpenRead("organization.json"))
+                .RegisterWith(_options);
 
             _client = _options.CreateHttpClient();
             _service = RestService.For<IGitHub>(_options.CreateHttpClient("https://api.github.com"));

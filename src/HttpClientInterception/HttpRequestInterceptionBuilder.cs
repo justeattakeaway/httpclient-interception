@@ -43,6 +43,8 @@ namespace JustEat.HttpClientInterception
 
         private Version _version;
 
+        private bool _hasCustomPort;
+
         private bool _ignoreHost;
 
         private bool _ignorePath;
@@ -135,6 +137,7 @@ namespace JustEat.HttpClientInterception
         public HttpRequestInterceptionBuilder ForPort(int port)
         {
             _uriBuilder.Port = port;
+            _hasCustomPort = port != -1;
             return this;
         }
 
@@ -629,6 +632,7 @@ namespace JustEat.HttpClientInterception
                 ContentFactory = _contentFactory ?? EmptyContentFactory,
                 ContentStream = _contentStream,
                 ContentMediaType = _mediaType,
+                HasCustomPort = _hasCustomPort,
                 IgnoreHost = _ignoreHost,
                 IgnorePath = _ignorePath,
                 IgnoreQuery = _ignoreQuery,

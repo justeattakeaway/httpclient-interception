@@ -65,6 +65,11 @@ namespace JustEat.HttpClientInterception.Matching
         {
             var builder = new UriBuilder(uri ?? registration.RequestUri);
 
+            if (!registration.HasCustomPort)
+            {
+                builder.Port = -1;
+            }
+
             if (registration.IgnoreHost)
             {
                 builder.Host = "*";
