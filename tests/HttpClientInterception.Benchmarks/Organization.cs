@@ -3,7 +3,7 @@
 
 namespace JustEat.HttpClientInterception
 {
-    internal sealed class Organization
+    public sealed class Organization
     {
         public string Login { get; set; }
 

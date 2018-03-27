@@ -344,12 +344,12 @@ namespace JustEat.HttpClientInterception
                 return null;
             }
 
-            if (response.OnIntercepted != null && !await response.OnIntercepted(request))
+            if (response.OnIntercepted != null && !await response.OnIntercepted(request).ConfigureAwait(false))
             {
                 return null;
             }
 
-            return await BuildResponseAsync(request, response);
+            return await BuildResponseAsync(request, response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -429,6 +429,49 @@ namespace JustEat.HttpClientInterception
             }
         }
 
+        private static async Task<HttpResponseMessage> BuildResponseAsync(HttpRequestMessage request, HttpInterceptionResponse response)
+        {
+            var result = new HttpResponseMessage(response.StatusCode);
+
+            try
+            {
+                result.RequestMessage = request;
+
+                if (response.ReasonPhrase != null)
+                {
+                    result.ReasonPhrase = response.ReasonPhrase;
+                }
+
+                if (response.Version != null)
+                {
+                    result.Version = response.Version;
+                }
+
+                if (response.ContentStream != null)
+                {
+                    result.Content = new StreamContent(await response.ContentStream().ConfigureAwait(false) ?? Stream.Null);
+                }
+                else
+                {
+                    byte[] content = await response.ContentFactory().ConfigureAwait(false) ?? Array.Empty<byte>();
+                    result.Content = new ByteArrayContent(content);
+                }
+
+                PopulateHeaders(result.Content.Headers, response.ContentHeaders);
+
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue(response.ContentMediaType);
+
+                PopulateHeaders(result.Headers, response.ResponseHeaders);
+            }
+            catch (Exception)
+            {
+                result.Dispose();
+                throw;
+            }
+
+            return result;
+        }
+
         private bool TryGetResponse(HttpRequestMessage request, out HttpInterceptionResponse response)
         {
             response = _mappings.Values
@@ -457,49 +500,6 @@ namespace JustEat.HttpClientInterception
 
             string key = BuildKey(registration);
             _mappings[key] = registration;
-        }
-
-        private async Task<HttpResponseMessage> BuildResponseAsync(HttpRequestMessage request, HttpInterceptionResponse response)
-        {
-            var result = new HttpResponseMessage(response.StatusCode);
-
-            try
-            {
-                result.RequestMessage = request;
-
-                if (response.ReasonPhrase != null)
-                {
-                    result.ReasonPhrase = response.ReasonPhrase;
-                }
-
-                if (response.Version != null)
-                {
-                    result.Version = response.Version;
-                }
-
-                if (response.ContentStream != null)
-                {
-                    result.Content = new StreamContent(await response.ContentStream() ?? Stream.Null);
-                }
-                else
-                {
-                    byte[] content = await response.ContentFactory() ?? Array.Empty<byte>();
-                    result.Content = new ByteArrayContent(content);
-                }
-
-                PopulateHeaders(result.Content.Headers, response.ContentHeaders);
-
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue(response.ContentMediaType);
-
-                PopulateHeaders(result.Headers, response.ResponseHeaders);
-            }
-            catch (Exception)
-            {
-                result.Dispose();
-                throw;
-            }
-
-            return result;
         }
 
         private sealed class OptionsScope : IDisposable

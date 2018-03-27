@@ -51,14 +51,14 @@ namespace JustEat.HttpClientInterception
         {
             if (_options.OnSend != null)
             {
-                await _options.OnSend(request);
+                await _options.OnSend(request).ConfigureAwait(false);
             }
 
-            HttpResponseMessage response = await _options.GetResponseAsync(request);
+            HttpResponseMessage response = await _options.GetResponseAsync(request).ConfigureAwait(false);
 
             if (response == null && _options.OnMissingRegistration != null)
             {
-                response = await _options.OnMissingRegistration(request);
+                response = await _options.OnMissingRegistration(request).ConfigureAwait(false);
             }
 
             if (response != null)
@@ -71,7 +71,7 @@ namespace JustEat.HttpClientInterception
                 throw new InvalidOperationException($"No HTTP response is configured for {request.Method.Method} {request.RequestUri}.");
             }
 
-            return await base.SendAsync(request, cancellationToken);
+            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }
 }
