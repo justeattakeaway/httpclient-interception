@@ -1,4 +1,4 @@
-﻿// Copyright (c) Just Eat, 2017. All rights reserved.
+// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -19,6 +19,8 @@ namespace SampleApp.Tests
         {
             _interceptor = new HttpClientInterceptorOptions() { ThrowOnMissingRegistration = true };
 
+            ServerUrl = "http://localhost:5050";
+
             // Self-host the application, configuring the use of HTTP interception
             _server = new WebHostBuilder()
                 .UseStartup<TestStartup>()
@@ -34,7 +36,7 @@ namespace SampleApp.Tests
 
         public HttpClientInterceptorOptions Interceptor => _interceptor;
 
-        public string ServerUrl => "http://localhost:5050";
+        public string ServerUrl { get; }
 
         public void Dispose()
         {
