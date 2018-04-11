@@ -120,7 +120,7 @@ namespace JustEat.HttpClientInterception
             string actual = await HttpAssert.GetAsync(options, requestUri);
 
             // Assert
-            actual.Equals(@"{""mode"":1}");
+            actual.ShouldBe(@"{""mode"":1}");
         }
 
         [Fact]
@@ -144,7 +144,7 @@ namespace JustEat.HttpClientInterception
             string actual = await HttpAssert.PostAsync(options, requestUri, new { });
 
             // Assert
-            actual.Equals(@"{""mode"":""ManualReset""}");
+            actual.ShouldBe(@"{""mode"":""ManualReset""}");
         }
 
         [Fact]

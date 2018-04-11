@@ -14,7 +14,7 @@ namespace SampleApp.Handlers
         {
             var stopwatch = Stopwatch.StartNew();
 
-            var response = await base.SendAsync(request, cancellationToken);
+            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             stopwatch.Stop();
 

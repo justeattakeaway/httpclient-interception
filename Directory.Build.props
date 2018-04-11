@@ -2,9 +2,13 @@
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
     <Compile Include="$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.6.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="2.6.0" PrivateAssets="All" />
     <PackageReference Include="OpenCover" Version="4.6.519" PrivateAssets="All" />
     <PackageReference Include="ReportGenerator" Version="3.1.2" PrivateAssets="All" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
+    <PackageReference Include="Text.Analyzers" Version="2.6.0" PrivateAssets="All" />
   </ItemGroup>
   <PropertyGroup>
     <Authors>Just Eat</Authors>
@@ -15,6 +19,7 @@
     <GenerateGitMetadata Condition=" '$(CI)' == 'true' and '$(GenerateGitMetadata)' == '' ">true</GenerateGitMetadata>
     <LangVersion>latest</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <NoWarn>$(NoWarn);CA1054;CA2234</NoWarn>
     <PackageIconUrl>https://avatars3.githubusercontent.com/u/1516790?s=200</PackageIconUrl>
     <PackageProjectUrl>https://github.com/justeat/httpclient-interception</PackageProjectUrl>
     <PackageLicenseUrl>$(PackageProjectUrl)/blob/master/LICENSE</PackageLicenseUrl>
