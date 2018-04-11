@@ -51,9 +51,14 @@ namespace SampleApp.Tests
                         })
                     .RegisterWith(_fixture.Interceptor);
 
+                string[] actual;
+
                 // Act - Perform the HTTP request against our application and deserialize the response
-                string json = await _fixture.Client.GetStringAsync("api/repos?count=2");
-                string[] actual = JsonConvert.DeserializeObject<string[]>(json);
+                using (var httpClient = _fixture.CreateClient())
+                {
+                    string json = await httpClient.GetStringAsync("api/repos?count=2");
+                    actual = JsonConvert.DeserializeObject<string[]>(json);
+                }
 
                 // Assert - Our application should have parsed the stub-names
                 actual.ShouldBe(new[] { "bar", "foo" });

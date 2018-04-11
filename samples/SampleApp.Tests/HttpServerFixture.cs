@@ -10,17 +10,22 @@ using Microsoft.Extensions.Http;
 
 namespace SampleApp.Tests
 {
-    public class HttpServerFixture : WebApplicationTestFixture<TestStartup>
+    public class HttpServerFixture : WebApplicationFactory<Startup>
     {
         private readonly HttpClientInterceptorOptions _interceptor;
 
         public HttpServerFixture()
-            : base("samples/SampleApp")
+            : base()
         {
             _interceptor = new HttpClientInterceptorOptions() { ThrowOnMissingRegistration = true };
         }
 
         public HttpClientInterceptorOptions Interceptor => _interceptor;
+
+        protected override IWebHostBuilder CreateWebHostBuilder()
+        {
+            return base.CreateWebHostBuilder().UseStartup<TestStartup>();
+        }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
