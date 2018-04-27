@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup>
     <Authors>Just Eat</Authors>
-    <CodeAnalysisRuleSet>../../HttpClientInterception.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)HttpClientInterception.ruleset</CodeAnalysisRuleSet>
     <Company>Just Eat</Company>
     <Copyright>Copyright (c) Just Eat 2017-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
