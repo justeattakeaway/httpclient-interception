@@ -5,7 +5,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Benchmarks for JustEat.HttpClientInterception</Summary>
-    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="organization.json" CopyToOutputDirectory="PreserveNewest" />
