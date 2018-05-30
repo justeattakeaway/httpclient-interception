@@ -2,9 +2,11 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using JustEat.HttpClientInterception;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 
@@ -12,26 +14,27 @@ namespace SampleApp.Tests
 {
     public class HttpServerFixture : WebApplicationFactory<Startup>
     {
-        private readonly HttpClientInterceptorOptions _interceptor;
-
         public HttpServerFixture()
             : base()
         {
-            _interceptor = new HttpClientInterceptorOptions() { ThrowOnMissingRegistration = true };
+            Interceptor = new HttpClientInterceptorOptions() { ThrowOnMissingRegistration = true };
         }
 
-        public HttpClientInterceptorOptions Interceptor => _interceptor;
-
-        protected override IWebHostBuilder CreateWebHostBuilder()
-        {
-            return base.CreateWebHostBuilder().UseStartup<TestStartup>();
-        }
+        public HttpClientInterceptorOptions Interceptor { get; }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            // Configure filter that makes JustEat.HttpClientInterception available
             builder.ConfigureServices(
                 (services) => services.AddSingleton<IHttpMessageHandlerBuilderFilter, InterceptionFilter>(
-                    (_) => new InterceptionFilter(_interceptor)));
+                    (_) => new InterceptionFilter(Interceptor)));
+
+            // Add the test configuration file to override the application configuration
+            string directory = Path.GetDirectoryName(typeof(HttpServerFixture).Assembly.Location);
+            string fullPath = Path.Combine(directory, "testsettings.json");
+
+            builder.ConfigureAppConfiguration(
+                (_, config) => config.AddJsonFile(fullPath));
         }
 
         /// <summary>

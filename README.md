@@ -75,9 +75,47 @@ var client = options.CreateHttpClient();
 await client.GetStringAsync("http://public.je-apis.com");
 ```
 
-#### Setting Up HttpClient for Dependency Injection
+#### Registering Request Interception When Using IHttpClientFactory
 
-Below is an example of setting up `IServiceCollection` to register `HttpClient` for Dependency Injection in a manner that allows tests to use `HttpClientInterceptorOptions` to intercept HTTP requests.
+If you are using [`IHttpClientFactory`](https://github.com/aspnet/HttpClientFactory "ASP.NET Core HttpClientFactory") to register `HttpClient` for Dependency Injection in a .NET Core 2.1 application (or later), you can implement a custom `IHttpMessageHandlerBuilderFilter` to register during test setup, which makes an instance of `HttpClientInterceptorOptions` available to inject an HTTP handler.
+
+A working example of this approach can be found in the [sample application](https://github.com/justeat/httpclient-interception/blob/master/samples/README.md "Sample application that uses JustEat.HttpClientInterception").
+
+```csharp
+using Microsoft.Extensions.Http;
+
+public class InterceptionFilter : IHttpMessageHandlerBuilderFilter
+{
+    private readonly HttpClientInterceptorOptions _options;
+
+    internal InterceptionFilter(HttpClientInterceptorOptions options)
+    {
+        _options = options;
+    }
+
+    public Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next)
+    {
+        return (builder) =>
+        {
+            // Run any actions the application has configured for itself
+            next(builder);
+
+            // Add the interceptor as the last message handler
+            builder.AdditionalHandlers.Add(_options.CreateHttpMessageHandler());
+        };
+    }
+}
+```
+
+```csharp
+var options = new HttpClientInterceptorOptions();
+services.AddSingleton<IHttpMessageHandlerBuilderFilter, InterceptionFilter>(
+    (_) => new InterceptionFilter(options));
+```
+
+#### Setting Up HttpClient for Dependency Injection Manually
+
+Below is an example of setting up `IServiceCollection` to register `HttpClient` for Dependency Injection in a manner that allows tests to use `HttpClientInterceptorOptions` to intercept HTTP requests. Similar approaches can be used with other IoC containers.
 
 You may wish to consider registering `HttpClient` as a singleton, rather than as transient, if you do not use properties such as `BaseAddress` on instances of `HttpClient`. This allows the same instance to be used throughout the application, which improves performance and resource utilisation under heavy server load. If using a singleton instance, ensure that you manage the lifetime of your message handlers appropriately so they are not disposed of incorrectly and update the registration for your `HttpClient` instance appropriately.
 

@@ -34,7 +34,7 @@ namespace SampleApp.Extensions
             client.BaseAddress = new Uri("https://api.github.com");
 
             string productName = configuration["UserAgent"];
-            string productVersion = typeof(StartupBase).GetTypeInfo().Assembly.GetName().Version.ToString(3);
+            string productVersion = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString(3);
 
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
             client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(productName, productVersion));
