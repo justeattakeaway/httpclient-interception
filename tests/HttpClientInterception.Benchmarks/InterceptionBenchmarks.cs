@@ -10,6 +10,7 @@ using Refit;
 
 namespace JustEat.HttpClientInterception
 {
+    [MemoryDiagnoser]
     public class InterceptionBenchmarks
     {
         private readonly HttpClientInterceptorOptions _options;

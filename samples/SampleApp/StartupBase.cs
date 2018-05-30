@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SampleApp.Extensions;
@@ -16,10 +17,11 @@ namespace SampleApp
         public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddHttpClient();
+            services.AddHttpClients();
 
             services
                 .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions((p) => p.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented);
         }
 

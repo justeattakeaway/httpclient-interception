@@ -4,56 +4,60 @@
 using System;
 using JustEat.HttpClientInterception;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http;
 
 namespace SampleApp.Tests
 {
-    public class HttpServerFixture : IDisposable
+    public class HttpServerFixture : WebApplicationFactory<Startup>
     {
         private readonly HttpClientInterceptorOptions _interceptor;
-        private readonly IWebHost _server;
-
-        private bool _disposed;
 
         public HttpServerFixture()
+            : base()
         {
             _interceptor = new HttpClientInterceptorOptions() { ThrowOnMissingRegistration = true };
-
-            ServerUrl = "http://localhost:5050";
-
-            // Self-host the application, configuring the use of HTTP interception
-            _server = new WebHostBuilder()
-                .UseStartup<TestStartup>()
-                .ConfigureServices((p) => p.AddTransient((_) => _interceptor.CreateHttpMessageHandler()))
-                .UseKestrel()
-                .UseUrls(ServerUrl)
-                .Build();
-
-            _server.Start();
         }
-
-        ~HttpServerFixture() => Dispose(false);
 
         public HttpClientInterceptorOptions Interceptor => _interceptor;
 
-        public string ServerUrl { get; }
-
-        public void Dispose()
+        protected override IWebHostBuilder CreateWebHostBuilder()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            return base.CreateWebHostBuilder().UseStartup<TestStartup>();
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    _server?.Dispose();
-                }
+            builder.ConfigureServices(
+                (services) => services.AddSingleton<IHttpMessageHandlerBuilderFilter, InterceptionFilter>(
+                    (_) => new InterceptionFilter(_interceptor)));
+        }
 
-                _disposed = true;
+        /// <summary>
+        /// A class that registers an intercepting HTTP message handler at the end of
+        /// the message handler pipeline when an <see cref="HttpClient"/> is created.
+        /// </summary>
+        private sealed class InterceptionFilter : IHttpMessageHandlerBuilderFilter
+        {
+            private readonly HttpClientInterceptorOptions _options;
+
+            internal InterceptionFilter(HttpClientInterceptorOptions options)
+            {
+                _options = options;
+            }
+
+            /// <inheritdoc/>
+            public Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next)
+            {
+                return (builder) =>
+                {
+                    // Run any actions the application has configured for itself
+                    next(builder);
+
+                    // Add the interceptor as the last message handler
+                    builder.AdditionalHandlers.Add(_options.CreateHttpMessageHandler());
+                };
             }
         }
     }

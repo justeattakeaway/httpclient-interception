@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Benchmarks for JustEat.HttpClientInterception</Description>
     <NoWarn>$(NoWarn);CA1056;CA2007</NoWarn>
     <OutputType>Exe</OutputType>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Benchmarks for JustEat.HttpClientInterception</Summary>
-    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="organization.json" CopyToOutputDirectory="PreserveNewest" />
@@ -14,7 +14,7 @@
     <ProjectReference Include="..\..\src\HttpClientInterception\JustEat.HttpClientInterception.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.13" />
-    <PackageReference Include="Refit" Version="4.3.0" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.14" />
+    <PackageReference Include="Refit" Version="4.5.6" />
   </ItemGroup>
 </Project>

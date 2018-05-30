@@ -32,6 +32,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustEat.HttpClientInterception.Tests", "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj", "{F9CCB17C-1E8E-4197-BC6A-ABB350F41F07}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{58FB0A27-4361-45ED-BB97-FD836F5FEF24}"
+	ProjectSection(SolutionItems) = preProject
+		samples\README.md = samples\README.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "samples\SampleApp\SampleApp.csproj", "{A9B2AF56-BAD5-4099-AE88-37B71E72C20D}"
 EndProject

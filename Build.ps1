@@ -8,11 +8,14 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$solutionPath   = Split-Path $MyInvocation.MyCommand.Definition
-$solutionFile   = Join-Path $solutionPath "HttpClientInterception.sln"
-$sdkFile        = Join-Path $solutionPath "global.json"
+$solutionPath = Split-Path $MyInvocation.MyCommand.Definition
+$sdkFile = Join-Path $solutionPath "global.json"
 $libraryProject = Join-Path $solutionPath "src\HttpClientInterception\JustEat.HttpClientInterception.csproj"
-$testProject    = Join-Path $solutionPath "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj"
+
+$testProjects = @(
+    (Join-Path $solutionPath "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj"),
+    (Join-Path $solutionPath "samples\SampleApp.Tests\SampleApp.Tests.csproj")
+)
 
 $dotnetVersion = (Get-Content $sdkFile | ConvertFrom-Json).sdk.version
 
@@ -104,6 +107,7 @@ function DotNetTest {
             -output:$coverageOutput `
             -hideskipped:All `
             -mergebyhash `
+            -mergeoutput `
             -oldstyle `
             -register:user `
             -skipautoprops `
@@ -126,5 +130,7 @@ DotNetPack $libraryProject
 
 if ($SkipTests -eq $false) {
     Write-Host "Running tests..." -ForegroundColor Green
-    DotNetTest $testProject
+    ForEach ($testProject in $testProjects) {
+        DotNetTest $testProject
+    }
 }
