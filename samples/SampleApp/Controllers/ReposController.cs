@@ -9,6 +9,7 @@ using SampleApp.Services;
 
 namespace SampleApp.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class ReposController : Controller
     {
