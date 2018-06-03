@@ -22,6 +22,11 @@ namespace JustEat.HttpClientInterception
     public class HttpClientInterceptorOptions
     {
         /// <summary>
+        /// The media type to use for a URL-encoded form.
+        /// </summary>
+        internal const string FormMediaType = "application/x-www-form-urlencoded";
+
+        /// <summary>
         /// The media type to use for JSON.
         /// </summary>
         internal const string JsonMediaType = "application/json";
