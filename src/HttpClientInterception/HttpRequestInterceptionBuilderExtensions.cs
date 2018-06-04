@@ -2,8 +2,10 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace JustEat.HttpClientInterception
@@ -152,6 +154,44 @@ namespace JustEat.HttpClientInterception
             }
 
             return builder.WithContent(() => Encoding.UTF8.GetBytes(content ?? string.Empty));
+        }
+
+        /// <summary>
+        /// Sets the parameters to use as the form URL-encoded response content.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <param name="parameters">The parameters to use for the form URL-encoded content.</param>
+        /// <returns>
+        /// The value specified by <paramref name="builder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="builder"/> or <paramref name="parameters"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpRequestInterceptionBuilder WithFormContent(
+            this HttpRequestInterceptionBuilder builder,
+            IEnumerable<KeyValuePair<string, string>> parameters)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            Func<Task<byte[]>> contentFactory = async () =>
+            {
+                using (var content = new FormUrlEncodedContent(parameters))
+                {
+                    return await content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                }
+            };
+
+            return builder
+                .WithMediaType(HttpClientInterceptorOptions.FormMediaType)
+                .WithContent(contentFactory);
         }
 
         /// <summary>

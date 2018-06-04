@@ -776,6 +776,43 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static void WithFormContent_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            IEnumerable<KeyValuePair<string, string>> parameters = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).WithFormContent(parameters));
+            Assert.Throws<ArgumentNullException>("parameters", () => builder.WithFormContent(parameters));
+        }
+
+        [Fact]
+        public static async Task WithFormContent_Returns_Correct_Response()
+        {
+            // Arrange
+            var requestUri = "https://api.twitter.com/oauth/request_token";
+            var parameters = new Dictionary<string, string>()
+            {
+                { "oauth_callback_confirmed", "true" },
+                { "oauth_token", "a b c" },
+                { "oauth_token_secret", "U5LJUL3eS+fl9bj9xqHKXyHpBc8=" },
+            };
+
+            var options = new HttpClientInterceptorOptions();
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests().ForPost().ForUrl(requestUri)
+                .Responds().WithFormContent(parameters)
+                .RegisterWith(options);
+
+            // Act
+            string actual = await HttpAssert.PostAsync(options, requestUri, new { }, mediaType: "application/x-www-form-urlencoded");
+
+            // Assert
+            actual.ShouldBe("oauth_callback_confirmed=true&oauth_token=a+b+c&oauth_token_secret=U5LJUL3eS%2Bfl9bj9xqHKXyHpBc8%3D");
+        }
+
+        [Fact]
         public static void WithJsonContent_Validates_Parameters()
         {
             // Arrange
