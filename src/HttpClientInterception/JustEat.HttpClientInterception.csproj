@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyTitle>HttpClient Interception</AssemblyTitle>
     <DebugType>full</DebugType>
@@ -8,7 +8,7 @@
     <PackageId>JustEat.HttpClientInterception</PackageId>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>A .NET library for intercepting server-side HTTP dependencies.</Summary>
-    <TargetFrameworks>netstandard1.3;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;net461</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugSymbols>True</DebugSymbols>

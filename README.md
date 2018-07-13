@@ -11,7 +11,7 @@ A .NET Standard library for intercepting server-side HTTP dependencies.
 
 ## Introduction
 
-This library provides functionality for intercepting HTTP requests made using the `HttpClient` class in code targeting .NET Standard  1.3 and later and .NET Framework 4.6.1 and later.
+This library provides functionality for intercepting HTTP requests made using the `HttpClient` class in code targeting .NET Standard 1.3 and 2.0 (and later), and .NET Framework 4.6.1 and later.
 
 The primary use-case is for providing stub responses for use in tests for applications, such as an ASP.NET Core application, to drive your functional test scenarios.
 
