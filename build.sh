@@ -41,6 +41,7 @@ if [ "$dotnet_version" != "$CLI_VERSION" ]; then
 fi
 
 dotnet build ./src/HttpClientInterception/JustEat.HttpClientInterception.csproj --output $artifacts --configuration $configuration --framework "netstandard1.3" || exit 1
+dotnet build ./src/HttpClientInterception/JustEat.HttpClientInterception.csproj --output $artifacts --configuration $configuration --framework "netstandard2.0" || exit 1
 
 if [ $skipTests == 0 ]; then
     dotnet test ./tests/HttpClientInterception.Tests/JustEat.HttpClientInterception.Tests.csproj --output $artifacts --configuration $configuration || exit 1
