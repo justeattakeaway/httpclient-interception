@@ -15,6 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.10.14" />
-    <PackageReference Include="Refit" Version="4.5.6" />
+    <PackageReference Include="Refit" Version="4.6.16" />
   </ItemGroup>
 </Project>
