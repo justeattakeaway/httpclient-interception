@@ -17,7 +17,7 @@ $testProjects = @(
     (Join-Path $solutionPath "samples\SampleApp.Tests\SampleApp.Tests.csproj")
 )
 
-$dotnetVersion = (Get-Content $sdkFile | ConvertFrom-Json).sdk.version
+$dotnetVersion = (Get-Content $sdkFile | Out-String | ConvertFrom-Json).sdk.version
 
 if ($OutputPath -eq "") {
     $OutputPath = Join-Path "$(Convert-Path "$PSScriptRoot")" "artifacts"
@@ -37,9 +37,15 @@ if (((Get-Command "dotnet.exe" -ErrorAction SilentlyContinue) -eq $null) -and ((
     $installDotNetSdk = $true
 }
 else {
-    $installedDotNetVersion = (dotnet --version | Out-String).Trim()
+    Try {
+        $installedDotNetVersion = (dotnet --version 2>&1 | Out-String).Trim()
+    }
+    Catch {
+        $installedDotNetVersion = "?"
+    }
+
     if ($installedDotNetVersion -ne $dotnetVersion) {
-        Write-Host "The required version of the .NET Core SDK is not installed. Expected $dotnetVersion but $installedDotNetVersion was found."
+        Write-Host "The required version of the .NET Core SDK is not installed. Expected $dotnetVersion."
         $installDotNetSdk = $true
     }
 }
