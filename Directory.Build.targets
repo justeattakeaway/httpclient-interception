@@ -30,20 +30,4 @@
       </AssemblyAttribute>
     </ItemGroup>
   </Target>
-  <Target Name="GitMetadataAssemblyInfoCacheFileFix"
-          BeforeTargets="CreateGeneratedAssemblyInfoInputsCacheFile"
-          Condition=" '$(GenerateGitMetadata)' == 'true' ">
-    <ItemGroup>
-      <AssemblyAttribute Include="TemporaryAdditionalHashItem" Condition=" $(CommitHash) != '' or $(CommitBranch) != '' ">
-        <_Parameter1>$(CommitHash);$(CommitBranch)</_Parameter1>
-      </AssemblyAttribute>
-    </ItemGroup>
-  </Target>
-  <Target Name="CleanupTemporaryAdditionalHashItem"
-          AfterTargets="CreateGeneratedAssemblyInfoInputsCacheFile;AddGitMetadaAssemblyAttributes"
-          Condition=" '$(GenerateGitMetadata)' == 'true' ">
-    <ItemGroup>
-      <AssemblyAttribute Remove="TemporaryAdditionalHashItem" />
-    </ItemGroup>
-  </Target>
 </Project>
