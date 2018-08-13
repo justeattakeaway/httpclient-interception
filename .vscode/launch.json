@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceRoot}/samples/SampleApp/bin/Debug/netcoreapp2.0/SampleApp.dll",
+      "program": "${workspaceRoot}/samples/SampleApp/bin/Debug/netcoreapp2.1/SampleApp.dll",
       "args": [],
       "cwd": "${workspaceRoot}/samples/SampleApp",
       "stopAtEntry": false,
@@ -30,6 +30,20 @@
       "sourceFileMap": {
         "/Views": "${workspaceRoot}//samples/SampleApp/Views"
       }
+    },
+    {
+      "name": "Run tests",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "dotnet",
+      "args": [
+        "test"
+      ],
+      "cwd": "${workspaceRoot}/tests/HttpClientInterception.Tests",
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "internalConsoleOptions": "openOnSessionStart"
     }
   ]
 }
