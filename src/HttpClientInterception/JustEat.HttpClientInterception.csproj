@@ -9,6 +9,7 @@
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>A .NET library for intercepting server-side HTTP dependencies.</Summary>
     <TargetFrameworks>netstandard1.3;netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netstandard1.3;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugSymbols>True</DebugSymbols>
