@@ -9,6 +9,13 @@
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>A .NET library for intercepting server-side HTTP dependencies.</Summary>
     <TargetFrameworks>netstandard1.3;netstandard2.0;net461</TargetFrameworks>
+    <IsUnix Condition=" '$(OS)' != 'Windows_NT' ">true</IsUnix>
+    <RestoreAdditionalProjectSources Condition=" '$(IsUnix)' == 'true' ">
+      https://dotnet.myget.org/F/dotnet-core/api/v3/index.json
+    </RestoreAdditionalProjectSources>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(IsUnix)' == 'true' And '$(TargetFramework)'== 'net461'">
+      <FrameworkPathOverride>$(NuGetPackageRoot)microsoft.targetingpack.netframework.v4.6.1/1.0.1/lib/net461/</FrameworkPathOverride>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugSymbols>True</DebugSymbols>
@@ -18,5 +25,9 @@
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <PackageReference Include="System.Net.Http" Version="4.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(IsUnix)' == 'true' And '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.6.1"
+                        Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" />
   </ItemGroup>
 </Project>
