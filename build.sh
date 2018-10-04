@@ -40,7 +40,7 @@ if [ "$dotnet_version" != "$CLI_VERSION" ]; then
     curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
 fi
 
-dotnet build ./src/HttpClientInterception/JustEat.HttpClientInterception.csproj --output $artifacts --configuration $configuration || exit 1
+dotnet build ./HttpClientInterception.sln --output $artifacts --configuration $configuration || exit 1
 
 if [ $skipTests == 0 ]; then
     dotnet test ./tests/HttpClientInterception.Tests/JustEat.HttpClientInterception.Tests.csproj --output $artifacts --configuration $configuration --framework netcoreapp2.1 || exit 1
