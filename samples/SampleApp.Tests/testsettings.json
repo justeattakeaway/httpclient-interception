@@ -1,4 +1,12 @@
-﻿{
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "System": "Warning",
+      "System.Net.Http.HttpClient": "Information",
+      "Microsoft": "Warning"
+    }
+  },
   "Organization": "weyland-yutani",
   "UserAgent": "JustEat-SampleApp-Tests"
 }

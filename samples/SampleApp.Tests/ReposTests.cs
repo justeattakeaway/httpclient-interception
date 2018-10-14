@@ -1,6 +1,7 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Threading.Tasks;
 using JustEat.HttpClientInterception;
 using Newtonsoft.Json;
@@ -11,29 +12,31 @@ using Xunit.Abstractions;
 namespace SampleApp.Tests
 {
     [Collection(HttpServerCollection.Name)] // Use the shared HTTP server fixture
-    public class ReposTests
+    public sealed class ReposTests : IDisposable
     {
-        private readonly HttpServerFixture _fixture;
-        private readonly ITestOutputHelper _outputHelper;
-
         public ReposTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
         {
-            _fixture = fixture;
-            _outputHelper = outputHelper;
+            Fixture = fixture;
+            Fixture.SetOutputHelper(outputHelper);
+            OutputHelper = outputHelper;
         }
+
+        private HttpServerFixture Fixture { get; }
+
+        private ITestOutputHelper OutputHelper { get; }
 
         [Fact]
         public async Task Can_Get_Organization_Repositories()
         {
             // Add a callback to log any HTTP requests made
-            _fixture.Interceptor.OnSend = (request) =>
+            Fixture.Interceptor.OnSend = (request) =>
                 {
-                    _outputHelper.WriteLine($"HTTP {request.Method} {request.RequestUri}");
+                    OutputHelper.WriteLine($"HTTP {request.Method} {request.RequestUri}");
                     return Task.CompletedTask;
                 };
 
             // Arrange - use a scope to clean-up registrations
-            using (_fixture.Interceptor.BeginScope())
+            using (Fixture.Interceptor.BeginScope())
             {
                 // Setup an expected response from the GitHub API
                 var builder = new HttpRequestInterceptionBuilder()
@@ -49,12 +52,12 @@ namespace SampleApp.Tests
                             new { id = 1, name = "foo" },
                             new { id = 2, name = "bar" },
                         })
-                    .RegisterWith(_fixture.Interceptor);
+                    .RegisterWith(Fixture.Interceptor);
 
                 string[] actual;
 
                 // Act - Perform the HTTP request against our application and deserialize the response
-                using (var httpClient = _fixture.CreateClient())
+                using (var httpClient = Fixture.CreateClient())
                 {
                     string json = await httpClient.GetStringAsync("api/repos?count=2");
                     actual = JsonConvert.DeserializeObject<string[]>(json);
@@ -63,6 +66,11 @@ namespace SampleApp.Tests
                 // Assert - Our application should have parsed the stub-names
                 actual.ShouldBe(new[] { "bar", "foo" });
             }
+        }
+
+        public void Dispose()
+        {
+            Fixture.ClearOutputHelper();
         }
     }
 }
