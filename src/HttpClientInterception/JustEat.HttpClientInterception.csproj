@@ -6,7 +6,9 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <OutputType>Library</OutputType>
     <PackageId>JustEat.HttpClientInterception</PackageId>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
+    <SignAssembly>true</SignAssembly>
     <Summary>A .NET library for intercepting server-side HTTP dependencies.</Summary>
     <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461</TargetFrameworks>

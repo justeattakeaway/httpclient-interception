@@ -13,7 +13,8 @@
   </ItemGroup>
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <Authors>Just Eat</Authors>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)justeat-oss.snk</AssemblyOriginatorKeyFile>
+    <Authors>JUSTEAT_OSS</Authors>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)HttpClientInterception.ruleset</CodeAnalysisRuleSet>
     <Company>Just Eat</Company>
     <Copyright>Copyright (c) Just Eat 2017-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
@@ -23,17 +24,19 @@
     <LangVersion>latest</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <NoWarn>$(NoWarn);CA1054;CA2234</NoWarn>
-    <PackageIconUrl>https://avatars3.githubusercontent.com/u/1516790?s=200</PackageIconUrl>
+    <PackageIconUrl>https://avatars3.githubusercontent.com/u/1516790?s=64</PackageIconUrl>
     <PackageProjectUrl>https://github.com/justeat/httpclient-interception</PackageProjectUrl>
     <PackageLicenseUrl>$(PackageProjectUrl)/blob/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>http;httpclient;interception;testing</PackageTags>
+    <PackageTags>http,httpclient,interception,testing</PackageTags>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <VersionPrefix>1.2.3</VersionPrefix>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <VersionPrefix>2.0.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
+    <FileVersion Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' ">$(VersionPrefix).$(APPVEYOR_BUILD_NUMBER)</FileVersion>
   </PropertyGroup>
 </Project>
