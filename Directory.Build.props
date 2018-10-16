@@ -13,6 +13,7 @@
   </ItemGroup>
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)justeat-oss.snk</AssemblyOriginatorKeyFile>
     <Authors>JUSTEAT_OSS</Authors>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)HttpClientInterception.ruleset</CodeAnalysisRuleSet>
     <Company>Just Eat</Company>
@@ -33,7 +34,9 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <VersionPrefix>1.2.3</VersionPrefix>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <VersionPrefix>2.0.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
+    <FileVersion Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' ">$(VersionPrefix).$(APPVEYOR_BUILD_NUMBER)</FileVersion>
   </PropertyGroup>
 </Project>
