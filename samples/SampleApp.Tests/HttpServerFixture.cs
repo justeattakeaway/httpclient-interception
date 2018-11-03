@@ -21,7 +21,8 @@ namespace SampleApp.Tests
         public HttpServerFixture()
             : base()
         {
-            Interceptor = new HttpClientInterceptorOptions() { ThrowOnMissingRegistration = true };
+            Interceptor = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration();
 
             // HACK Force HTTP server startup
             using (CreateDefaultClient())

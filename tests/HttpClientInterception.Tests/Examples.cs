@@ -187,8 +187,9 @@ namespace JustEat.HttpClientInterception
                         return body.Value<string>("FirstName") == "John";
                     });
 
-            var options = new HttpClientInterceptorOptions().Register(builder);
-            options.ThrowOnMissingRegistration = true;
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
 
             HttpStatusCode status;
             string json;
@@ -597,9 +598,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-            {
-                ThrowOnMissingRegistration = true,
-            };
+                .ThrowsOnMissingRegistration();
 
             var builder = new HttpRequestInterceptionBuilder()
                 .Requests().For((request) => request.RequestUri.Host == "google.com").HavingPriority(1)

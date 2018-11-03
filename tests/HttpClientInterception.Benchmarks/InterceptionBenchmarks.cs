@@ -1,4 +1,4 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.IO;
@@ -19,10 +19,7 @@ namespace JustEat.HttpClientInterception
 
         public InterceptionBenchmarks()
         {
-            _options = new HttpClientInterceptorOptions()
-            {
-                ThrowOnMissingRegistration = true,
-            };
+            _options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
 
             var builder = new HttpRequestInterceptionBuilder();
 

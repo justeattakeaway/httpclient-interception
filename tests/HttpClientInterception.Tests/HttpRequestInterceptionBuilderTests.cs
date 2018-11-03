@@ -947,8 +947,9 @@ namespace JustEat.HttpClientInterception
                 .ForUri(requestUri)
                 .WithInterceptionCallback(OnInterceptedAsync);
 
-            var options = new HttpClientInterceptorOptions().Register(builder);
-            options.ThrowOnMissingRegistration = true;
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
 
             // Act
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
@@ -1083,9 +1084,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-            {
-                ThrowOnMissingRegistration = true
-            };
+                .ThrowsOnMissingRegistration();
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForHttps()
@@ -1110,9 +1109,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-            {
-                ThrowOnMissingRegistration = true
-            };
+                .ThrowsOnMissingRegistration();
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForPort(123)
@@ -1197,9 +1194,8 @@ namespace JustEat.HttpClientInterception
                 .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
 
             var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
                 .Register(builder);
-
-            options.ThrowOnMissingRegistration = true;
 
             string json;
 
@@ -1236,9 +1232,8 @@ namespace JustEat.HttpClientInterception
                 .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
 
             var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
                 .Register(builder);
-
-            options.ThrowOnMissingRegistration = true;
 
             string json;
 
@@ -1269,9 +1264,8 @@ namespace JustEat.HttpClientInterception
                 .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
 
             var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
                 .Register(builder);
-
-            options.ThrowOnMissingRegistration = true;
 
             string json;
 
@@ -1302,9 +1296,8 @@ namespace JustEat.HttpClientInterception
                 .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
 
             var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
                 .Register(builder);
-
-            options.ThrowOnMissingRegistration = true;
 
             string json;
 
@@ -1341,9 +1334,8 @@ namespace JustEat.HttpClientInterception
                 .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
 
             var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
                 .Register(builder);
-
-            options.ThrowOnMissingRegistration = true;
 
             string json;
 
@@ -1373,8 +1365,9 @@ namespace JustEat.HttpClientInterception
                 .ForRequestHeader("Accept-Tenant", "uk")
                 .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
 
-            var options = new HttpClientInterceptorOptions().Register(builder);
-            options.ThrowOnMissingRegistration = true;
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
 
             // Act
             using (var client = options.CreateHttpClient())
@@ -1400,8 +1393,9 @@ namespace JustEat.HttpClientInterception
                 .ForRequestHeader("Accept-Tenant", "uk")
                 .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
 
-            var options = new HttpClientInterceptorOptions().Register(builder);
-            options.ThrowOnMissingRegistration = true;
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
 
             // Act
             using (var client = options.CreateHttpClient())
@@ -1431,8 +1425,9 @@ namespace JustEat.HttpClientInterception
                 .ForRequestHeader("Authorization", "basic my-key")
                 .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
 
-            var options = new HttpClientInterceptorOptions().Register(builder);
-            options.ThrowOnMissingRegistration = true;
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
 
             // Act
             using (var client = options.CreateHttpClient())
@@ -1461,8 +1456,9 @@ namespace JustEat.HttpClientInterception
                 .ForRequestHeader("Authorization", "basic my-key")
                 .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
 
-            var options = new HttpClientInterceptorOptions().Register(builder);
-            options.ThrowOnMissingRegistration = true;
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
 
             // Act
             using (var client = options.CreateHttpClient())
