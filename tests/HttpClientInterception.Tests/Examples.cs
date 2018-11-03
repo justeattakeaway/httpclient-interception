@@ -1,10 +1,9 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -145,8 +144,8 @@ namespace JustEat.HttpClientInterception
                 .ForHttps()
                 .ForHost("public.je-apis.com")
                 .ForPath("terms")
-                .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
-                .WithInterceptionCallback((request) => request.Headers.GetValues("Accept-Tenant").FirstOrDefault() == "uk");
+                .ForRequestHeader("Accept-Tenant", "uk")
+                .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" });
 
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);

@@ -1,9 +1,10 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -509,7 +510,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
-            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder();
+            var builder = new HttpRequestInterceptionBuilder();
 
             // Act
             options.Register(builder);
@@ -524,7 +525,7 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var options = new HttpClientInterceptorOptions();
 
-            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder()
+            var builder = new HttpRequestInterceptionBuilder()
                 .ForHttps()
                 .ForHost("something.com")
                 .ForPort(444)
@@ -563,7 +564,7 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var options = new HttpClientInterceptorOptions();
 
-            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder()
+            var builder = new HttpRequestInterceptionBuilder()
                 .ForHost("something.com")
                 .IgnoringPath();
 
@@ -580,7 +581,7 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var options = new HttpClientInterceptorOptions();
 
-            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder()
+            var builder = new HttpRequestInterceptionBuilder()
                 .ForHost("something.com")
                 .IgnoringPath()
                 .IgnoringPath(false);
@@ -637,7 +638,7 @@ namespace JustEat.HttpClientInterception
 
             var options = new HttpClientInterceptorOptions();
 
-            HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder().ForUri(uriBuilder);
+            var builder = new HttpRequestInterceptionBuilder().ForUri(uriBuilder);
 
             // Act
             options.Register(builder);
@@ -950,7 +951,7 @@ namespace JustEat.HttpClientInterception
             options.ThrowOnMissingRegistration = true;
 
             // Act
-            InvalidOperationException exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => HttpAssert.PostAsync(options, requestUri.ToString(), content));
 
             // Assert
@@ -1150,6 +1151,332 @@ namespace JustEat.HttpClientInterception
             await HttpAssert.GetAsync(options, "https://api.github.com:443/orgs/justeat");
             await HttpAssert.GetAsync(options, "http://api.github.com/orgs/justeat");
             await HttpAssert.GetAsync(options, "http://api.github.com:80/orgs/justeat");
+        }
+
+        [Fact]
+        public static async Task Builder_With_Header_To_Match_Intercepts_Request()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer/order-history")
+                .ForRequestHeader("Accept-Tenant", "uk")
+                .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
+
+                // Act
+                json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            }
+
+            // Assert
+            var content = JObject.Parse(json);
+            content["History"].First().Value<string>("Id").ShouldBe("abc123");
+        }
+
+        [Fact]
+        public static async Task Builder_With_Headers_To_Match_Intercepts_Request()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer/order-history")
+                .ForRequestHeader("Accept-Tenant", "uk")
+                .ForRequestHeader("Authorization", "basic my-key")
+                .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            options.ThrowOnMissingRegistration = true;
+
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
+                client.DefaultRequestHeaders.Add("Authorization", "basic my-key");
+
+                // Act
+                json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            }
+
+            // Assert
+            var content = JObject.Parse(json);
+            content["History"].First().Value<string>("Id").ShouldBe("abc123");
+        }
+
+        [Fact]
+        public static async Task Builder_With_Headers_From_Dictionary_To_Match_Intercepts_Request()
+        {
+            // Arrange
+            var headers = new Dictionary<string, string>()
+            {
+                { "Accept-Tenant", "uk" },
+                { "Authorization", "basic my-key" },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer/order-history")
+                .ForRequestHeaders(headers)
+                .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            options.ThrowOnMissingRegistration = true;
+
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
+                client.DefaultRequestHeaders.Add("Authorization", "basic my-key");
+
+                // Act
+                json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            }
+
+            // Assert
+            var content = JObject.Parse(json);
+            content["History"].First().Value<string>("Id").ShouldBe("abc123");
+        }
+
+        [Fact]
+        public static async Task Builder_With_One_Multivalue_Header_To_Match_Intercepts_Request()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer/order-history")
+                .ForRequestHeader("x-forwarded-for", "192.168.1.1", "192.168.1.2")
+                .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            options.ThrowOnMissingRegistration = true;
+
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("x-forwarded-for", new[] { "192.168.1.1", "192.168.1.2" });
+
+                // Act
+                json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            }
+
+            // Assert
+            var content = JObject.Parse(json);
+            content["History"].First().Value<string>("Id").ShouldBe("abc123");
+        }
+
+        [Fact]
+        public static async Task Builder_With_Many_Multivalue_Headers_To_Match_Intercepts_Request()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer/order-history")
+                .ForRequestHeader("x-forwarded-for", "192.168.1.1", "192.168.1.2")
+                .ForRequestHeader("x-forwarded-proto", "http", "https")
+                .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            options.ThrowOnMissingRegistration = true;
+
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("x-forwarded-for", new[] { "192.168.1.1", "192.168.1.2" });
+                client.DefaultRequestHeaders.Add("x-forwarded-proto", new[] { "http", "https" });
+
+                // Act
+                json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            }
+
+            // Assert
+            var content = JObject.Parse(json);
+            content["History"].First().Value<string>("Id").ShouldBe("abc123");
+        }
+
+        [Fact]
+        public static async Task Builder_With_Many_Multivalue_Headers_From_Dictionary_To_Match_Intercepts_Request()
+        {
+            // Arrange
+            var headers = new Dictionary<string, ICollection<string>>()
+            {
+                { "x-forwarded-for", new[] { "192.168.1.1", "192.168.1.2" } },
+                { "x-forwarded-proto", new[] { "http", "https" } },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer/order-history")
+                .ForRequestHeaders(headers)
+                .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            options.ThrowOnMissingRegistration = true;
+
+            string json;
+
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("x-forwarded-for", new[] { "192.168.1.1", "192.168.1.2" });
+                client.DefaultRequestHeaders.Add("x-forwarded-proto", new[] { "http", "https" });
+
+                // Act
+                json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            }
+
+            // Assert
+            var content = JObject.Parse(json);
+            content["History"].First().Value<string>("Id").ShouldBe("abc123");
+        }
+
+        [Fact]
+        public static async Task Builder_With_Header_To_Match_Does_Not_Intercept_Request_If_Header_Missing()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer/order-history")
+                .ForRequestHeader("Accept-Tenant", "uk")
+                .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+            options.ThrowOnMissingRegistration = true;
+
+            // Act
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
+
+                // Assert
+                exception.Message.ShouldStartWith("No HTTP response is configured for ");
+            }
+        }
+
+        [Fact]
+        public static async Task Builder_With_Header_To_Match_Does_Not_Intercept_Request_If_Header_Not_Equal()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer/order-history")
+                .ForRequestHeader("Accept-Tenant", "uk")
+                .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+            options.ThrowOnMissingRegistration = true;
+
+            // Act
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept-Tenant", new[] { "ie" });
+
+                // Act
+                var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
+
+                // Assert
+                exception.Message.ShouldStartWith("No HTTP response is configured for ");
+            }
+        }
+
+        [Fact]
+        public static async Task Builder_With_Header_To_Match_Does_Not_Intercept_Request_If_Any_Header_Missing()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer/order-history")
+                .ForRequestHeader("Accept-Tenant", string.Empty)
+                .ForRequestHeader("Accept-Tenant", "uk")
+                .ForRequestHeader("Authorization", "basic my-key")
+                .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+            options.ThrowOnMissingRegistration = true;
+
+            // Act
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept-Tenant", new[] { "uk" });
+
+                // Act
+                var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
+
+                // Assert
+                exception.Message.ShouldStartWith("No HTTP response is configured for ");
+            }
+        }
+
+        [Fact]
+        public static async Task Builder_With_Header_To_Match_Does_Not_Intercept_Request_If_Any_Header_Not_Equal()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("consumer/order-history")
+                .ForRequestHeader("Accept-Tenant", "uk")
+                .ForRequestHeader("Authorization", "basic my-key")
+                .WithJsonContent(new { History = new[] { new { Id = "abc123" } } });
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+            options.ThrowOnMissingRegistration = true;
+
+            // Act
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept-Tenant", new[] { "uk" });
+                client.DefaultRequestHeaders.Add("Authorization", "basic my-other-key");
+
+                // Act
+                var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
+
+                // Assert
+                exception.Message.ShouldStartWith("No HTTP response is configured for ");
+            }
         }
 
         private sealed class CustomObject
