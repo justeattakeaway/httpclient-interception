@@ -105,8 +105,8 @@ function DotNetTest {
         $openCoverVersion = "4.6.519"
         $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
 
-        $reportGeneratorVersion = "3.1.2"
-        $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\ReportGenerator.exe"
+        $reportGeneratorVersion = "4.0.2"
+        $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
 
         $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
         $reportOutput = Join-Path $OutputPath "coverage"
@@ -123,7 +123,7 @@ function DotNetTest {
             -skipautoprops `
             `"-filter:+[JustEat.HttpClientInterception]* -[JustEat.HttpClientInterception.Tests]*`"
 
-        & $reportGeneratorPath `
+        & $dotnet $reportGeneratorPath `
             `"-reports:$coverageOutput`" `
             `"-targetdir:$reportOutput`" `
             -verbosity:Warning
