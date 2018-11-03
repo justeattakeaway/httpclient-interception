@@ -7,6 +7,7 @@ using JustEat.HttpClientInterception;
 using MartinCostello.Logging.XUnit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
@@ -52,6 +53,12 @@ namespace SampleApp.Tests
 
             // Route logs to xunit test output
             builder.ConfigureLogging((p) => p.AddXUnit());
+        }
+
+        protected override IWebHostBuilder CreateWebHostBuilder()
+        {
+            return base.CreateWebHostBuilder()
+                .UseSolutionRelativeContentRoot("samples/SampleApp");
         }
 
         /// <summary>
