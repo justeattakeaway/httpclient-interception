@@ -1,9 +1,10 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace JustEat.HttpClientInterception.Matching
 {
@@ -50,7 +51,17 @@ namespace JustEat.HttpClientInterception.Matching
 
             string actual = GetUriStringForMatch(_registration, request.RequestUri);
 
-            return _comparer.Equals(_expected, actual);
+            if (!_comparer.Equals(_expected, actual))
+            {
+                return false;
+            }
+
+            if (_registration.RequestHeaders != null)
+            {
+                return IsMatchForHeaders(request.Headers);
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -86,6 +97,27 @@ namespace JustEat.HttpClientInterception.Matching
             }
 
             return builder.ToString();
+        }
+
+        private bool IsMatchForHeaders(HttpHeaders requestHeaders)
+        {
+            foreach (var headerToMatch in _registration.RequestHeaders)
+            {
+                if (!requestHeaders.TryGetValues(headerToMatch.Key, out IEnumerable<string> values))
+                {
+                    return false;
+                }
+
+                string expectedValues = string.Join(";", headerToMatch.Value);
+                string actualValues = string.Join(";", values);
+
+                if (!string.Equals(expectedValues, actualValues, StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

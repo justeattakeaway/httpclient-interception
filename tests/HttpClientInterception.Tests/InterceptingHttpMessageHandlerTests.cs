@@ -1,4 +1,4 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -32,9 +32,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-            {
-                ThrowOnMissingRegistration = true,
-            };
+                .ThrowsOnMissingRegistration();
 
             using (var target = options.CreateHttpClient())
             {
@@ -51,9 +49,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-            {
-                ThrowOnMissingRegistration = true,
-            };
+                .ThrowsOnMissingRegistration();
 
             var mock = new Mock<HttpMessageHandler>();
 

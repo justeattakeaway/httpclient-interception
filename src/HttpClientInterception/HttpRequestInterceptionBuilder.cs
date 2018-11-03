@@ -1,4 +1,4 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -24,6 +24,8 @@ namespace JustEat.HttpClientInterception
         private Func<Task<Stream>> _contentStream;
 
         private IDictionary<string, ICollection<string>> _contentHeaders;
+
+        private IDictionary<string, ICollection<string>> _requestHeaders;
 
         private IDictionary<string, ICollection<string>> _responseHeaders;
 
@@ -625,6 +627,108 @@ namespace JustEat.HttpClientInterception
             return this;
         }
 
+        /// <summary>
+        /// Sets an HTTP request header to intercept a request for.
+        /// </summary>
+        /// <param name="name">The name of the HTTP request header.</param>
+        /// <param name="value">The value of the request header.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder ForRequestHeader(string name, string value) => ForRequestHeader(name, new[] { value });
+
+        /// <summary>
+        /// Sets an HTTP request header to intercept with multiple values.
+        /// </summary>
+        /// <param name="name">The name of the HTTP request header.</param>
+        /// <param name="values">The values for the request header.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder ForRequestHeader(string name, params string[] values)
+        {
+            return ForRequestHeader(name, values as IEnumerable<string>);
+        }
+
+        /// <summary>
+        /// Sets an HTTP request header to intercept with multiple values.
+        /// </summary>
+        /// <param name="name">The name of the HTTP request header.</param>
+        /// <param name="values">The values for the request header.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder ForRequestHeader(string name, IEnumerable<string> values)
+        {
+            if (_requestHeaders == null)
+            {
+                _requestHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+            }
+
+            if (!_requestHeaders.TryGetValue(name, out ICollection<string> current))
+            {
+                _requestHeaders[name] = current = new List<string>();
+            }
+
+            current.Clear();
+
+            foreach (string value in values)
+            {
+                current.Add(value);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets any custom HTTP request headers to intercept.
+        /// </summary>
+        /// <param name="headers">Any HTTP request headers to intercept.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder ForRequestHeaders(IDictionary<string, string> headers)
+        {
+            var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var pair in headers)
+            {
+                copy[pair.Key] = new[] { pair.Value };
+            }
+
+            _requestHeaders = copy;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the HTTP request headers to intercept.
+        /// </summary>
+        /// <param name="headers">Any HTTP request headers to intercept.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder ForRequestHeaders(IDictionary<string, ICollection<string>> headers)
+        {
+            _requestHeaders = new Dictionary<string, ICollection<string>>(headers, StringComparer.OrdinalIgnoreCase);
+            return this;
+        }
+
         internal HttpInterceptionResponse Build()
         {
             var response = new HttpInterceptionResponse()
@@ -645,6 +749,18 @@ namespace JustEat.HttpClientInterception
                 UserMatcher = _requestMatcher,
                 Version = _version,
             };
+
+            if (_requestHeaders?.Count > 0)
+            {
+                var headers = new Dictionary<string, IEnumerable<string>>();
+
+                foreach (var pair in _requestHeaders)
+                {
+                    headers[pair.Key] = pair.Value;
+                }
+
+                response.RequestHeaders = headers;
+            }
 
             if (_responseHeaders?.Count > 0)
             {

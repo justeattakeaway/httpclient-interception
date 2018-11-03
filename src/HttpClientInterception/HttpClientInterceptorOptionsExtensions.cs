@@ -1,4 +1,4 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -312,6 +312,27 @@ namespace JustEat.HttpClientInterception
             params HttpRequestInterceptionBuilder[] collection)
         {
             return options.Register(collection as IEnumerable<HttpRequestInterceptionBuilder>);
+        }
+
+        /// <summary>
+        /// Configures the <see cref="HttpClientInterceptorOptions"/> to throw an exception if a response has not been registered for an HTTP request.
+        /// </summary>
+        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to configure.</param>
+        /// <returns>
+        /// The current <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="options"/> is <see langword="null"/>.
+        /// </exception>
+        public static HttpClientInterceptorOptions ThrowsOnMissingRegistration(this HttpClientInterceptorOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            options.ThrowOnMissingRegistration = true;
+            return options;
         }
     }
 }
