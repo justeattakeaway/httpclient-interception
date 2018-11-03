@@ -656,7 +656,7 @@ namespace JustEat.HttpClientInterception
 
             bool wasDelegateInvoked = false;
 
-            Action<HttpRequestMessage> onIntercepted = (request) =>
+            void OnIntercepted(HttpRequestMessage request)
             {
                 request.ShouldNotBeNull();
                 request.Method.ShouldBe(HttpMethod.Post);
@@ -669,12 +669,12 @@ namespace JustEat.HttpClientInterception
                 body.Value<string>("foo").ShouldBe("bar");
 
                 wasDelegateInvoked = true;
-            };
+            }
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForPost()
                 .ForUri(requestUri)
-                .WithInterceptionCallback(onIntercepted);
+                .WithInterceptionCallback(OnIntercepted);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -694,7 +694,7 @@ namespace JustEat.HttpClientInterception
 
             bool wasDelegateInvoked = false;
 
-            Func<HttpRequestMessage, Task> onIntercepted = async (request) =>
+            async Task OnInterceptedAsync(HttpRequestMessage request)
             {
                 request.ShouldNotBeNull();
                 request.Method.ShouldBe(HttpMethod.Post);
@@ -707,12 +707,12 @@ namespace JustEat.HttpClientInterception
                 body.Value<string>("foo").ShouldBe("bar");
 
                 wasDelegateInvoked = true;
-            };
+            }
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForPost()
                 .ForUri(requestUri)
-                .WithInterceptionCallback(onIntercepted);
+                .WithInterceptionCallback(OnInterceptedAsync);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -907,16 +907,16 @@ namespace JustEat.HttpClientInterception
 
             bool wasDelegateInvoked = false;
 
-            Func<HttpRequestMessage, Task<bool>> onIntercepted = (request) =>
+            Task<bool> OnInterceptedAsync(HttpRequestMessage request)
             {
                 wasDelegateInvoked = true;
                 return Task.FromResult(true);
-            };
+            }
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForPost()
                 .ForUri(requestUri)
-                .WithInterceptionCallback(onIntercepted);
+                .WithInterceptionCallback(OnInterceptedAsync);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -936,16 +936,16 @@ namespace JustEat.HttpClientInterception
 
             bool wasDelegateInvoked = false;
 
-            Func<HttpRequestMessage, Task<bool>> onIntercepted = (request) =>
+            Task<bool> OnInterceptedAsync(HttpRequestMessage request)
             {
                 wasDelegateInvoked = true;
                 return Task.FromResult(false);
-            };
+            }
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForPost()
                 .ForUri(requestUri)
-                .WithInterceptionCallback(onIntercepted);
+                .WithInterceptionCallback(OnInterceptedAsync);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
             options.ThrowOnMissingRegistration = true;

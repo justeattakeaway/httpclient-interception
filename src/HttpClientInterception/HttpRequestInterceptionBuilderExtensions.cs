@@ -1,4 +1,4 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
@@ -181,17 +181,17 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            Func<Task<byte[]>> contentFactory = async () =>
+            async Task<byte[]> ContentFactoryAsync()
             {
                 using (var content = new FormUrlEncodedContent(parameters))
                 {
                     return await content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 }
-            };
+            }
 
             return builder
                 .WithMediaType(HttpClientInterceptorOptions.FormMediaType)
-                .WithContent(contentFactory);
+                .WithContent(ContentFactoryAsync);
         }
 
         /// <summary>
@@ -221,15 +221,15 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(content));
             }
 
-            Func<byte[]> contentFactory = () =>
+            byte[] ContentFactory()
             {
                 string json = JsonConvert.SerializeObject(content, settings ?? new JsonSerializerSettings());
                 return Encoding.UTF8.GetBytes(json);
-            };
+            }
 
             return builder
                 .WithMediaType(HttpClientInterceptorOptions.JsonMediaType)
-                .WithContent(contentFactory);
+                .WithContent(ContentFactory);
         }
 
         /// <summary>
