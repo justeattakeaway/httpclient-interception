@@ -7,7 +7,7 @@
     <PackageReference Include="Microsoft.NetCore.Analyzers" Version="2.6.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
     <PackageReference Include="OpenCover" Version="4.6.519" PrivateAssets="All" />
-    <PackageReference Include="ReportGenerator" Version="4.0.2" PrivateAssets="All" />
+    <PackageReference Include="ReportGenerator" Version="4.0.3" PrivateAssets="All" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
     <PackageReference Include="Text.Analyzers" Version="2.6.2" PrivateAssets="All" />
   </ItemGroup>
@@ -25,8 +25,8 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <NoWarn>$(NoWarn);CA1054;CA2234</NoWarn>
     <PackageIconUrl>https://avatars3.githubusercontent.com/u/1516790?s=64</PackageIconUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/justeat/httpclient-interception</PackageProjectUrl>
-    <PackageLicenseUrl>$(PackageProjectUrl)/blob/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>http,httpclient,interception,testing</PackageTags>
