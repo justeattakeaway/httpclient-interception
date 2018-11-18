@@ -1,18 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <NoWarn>$(NoWarn);CA1056;CA1707;CA2007</NoWarn>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="testsettings.json;xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.1.3" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="Shouldly" Version="3.0.1" />
+    <PackageReference Include="Shouldly" Version="3.0.2" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
