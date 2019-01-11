@@ -105,7 +105,7 @@ function DotNetTest {
         $openCoverVersion = "4.6.519"
         $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
 
-        $reportGeneratorVersion = "4.0.4"
+        $reportGeneratorVersion = "4.0.5"
         $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
 
         $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
