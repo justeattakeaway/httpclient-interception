@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyTitle>HttpClient Interception</AssemblyTitle>
-    <DebugType>full</DebugType>
     <Description>A .NET library for intercepting server-side HTTP dependencies.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <OutputType>Library</OutputType>
@@ -12,9 +11,6 @@
     <Summary>A .NET library for intercepting server-side HTTP dependencies.</Summary>
     <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461</TargetFrameworks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />

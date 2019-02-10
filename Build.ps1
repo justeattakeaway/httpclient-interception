@@ -7,6 +7,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$ProgressPreference = "SilentlyContinue"
 
 $solutionPath = Split-Path $MyInvocation.MyCommand.Definition
 $sdkFile = Join-Path $solutionPath "global.json"
@@ -102,10 +103,10 @@ function DotNetTest {
 
         $nugetPath = Join-Path $env:USERPROFILE ".nuget\packages"
 
-        $openCoverVersion = "4.6.519"
+        $openCoverVersion = "4.7.922"
         $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
 
-        $reportGeneratorVersion = "4.0.5"
+        $reportGeneratorVersion = "4.0.11"
         $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
 
         $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
