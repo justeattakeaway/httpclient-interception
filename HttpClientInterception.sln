@@ -62,6 +62,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{D8A6
 		.vscode\tasks.json = .vscode\tasks.json
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".azure-pipelines", ".azure-pipelines", "{573F5CC6-B76E-4993-802F-E6141C7FAA46}"
+	ProjectSection(SolutionItems) = preProject
+		.azure-pipelines\build-template.yml = .azure-pipelines\build-template.yml
+		.azure-pipelines\build.yml = .azure-pipelines\build.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +107,7 @@ Global
 		{F258F815-A7C5-44F7-AF55-E12C0F1FB023} = {1A2A0990-94DE-4F14-850B-39BA7183BC63}
 		{9071A217-7882-4C3D-A7F6-3D7A56D6177D} = {F258F815-A7C5-44F7-AF55-E12C0F1FB023}
 		{D8A60EDB-E535-4DE2-9284-E758F1FDA350} = {1A2A0990-94DE-4F14-850B-39BA7183BC63}
+		{573F5CC6-B76E-4993-802F-E6141C7FAA46} = {1A2A0990-94DE-4F14-850B-39BA7183BC63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4BC3B24-A96F-46C5-9405-CBE87A972881}

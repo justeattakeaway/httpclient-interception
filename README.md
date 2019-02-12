@@ -4,10 +4,10 @@ A .NET Standard library for intercepting server-side HTTP dependencies.
 
 [![NuGet version](https://buildstats.info/nuget/JustEat.HttpClientInterception?includePreReleases=false)](http://www.nuget.org/packages/JustEat.HttpClientInterception/)
 
-| | Linux | Windows |
-|:-:|:-:|:-:|
-| **Build Status** | [![Build status](https://img.shields.io/travis/justeat/httpclient-interception/master.svg)](https://travis-ci.org/justeat/httpclient-interception) | [![Build status](https://img.shields.io/appveyor/ci/justeattech/httpclient-interception/master.svg)](https://ci.appveyor.com/project/justeattech/httpclient-interception) [![codecov](https://codecov.io/gh/justeat/httpclient-interception/branch/master/graph/badge.svg)](https://codecov.io/gh/justeat/httpclient-interception) |
-| **Build History** | [![Build history](https://buildstats.info/travisci/chart/justeat/httpclient-interception?branch=master&includeBuildsFromPullRequest=false)](https://travis-ci.org/justeat/httpclient-interception) |  [![Build history](https://buildstats.info/appveyor/chart/justeattech/httpclient-interception?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/justeattech/httpclient-interception) |
+| | Linux | Windows | Linux/macOS/Windows |
+|:-:|:-:|:-:|:-:|
+| **Build Status** | [![Build status](https://img.shields.io/travis/justeat/httpclient-interception/master.svg)](https://travis-ci.org/justeat/httpclient-interception) | [![Build status](https://img.shields.io/appveyor/ci/justeattech/httpclient-interception/master.svg)](https://ci.appveyor.com/project/justeattech/httpclient-interception) [![codecov](https://codecov.io/gh/justeat/httpclient-interception/branch/master/graph/badge.svg)](https://codecov.io/gh/justeat/httpclient-interception) | [![Azure Pipelines build status](https://dev.azure.com/justeatoss/httpclient-interception/_apis/build/status/justeat.httpclient-interception)](https://dev.azure.com/justeatoss/httpclient-interception/_build?definitionId=1) |
+| **Build History** | [![Build history](https://buildstats.info/travisci/chart/justeat/httpclient-interception?branch=master&includeBuildsFromPullRequest=false)](https://travis-ci.org/justeat/httpclient-interception) | [![Build history](https://buildstats.info/appveyor/chart/justeattech/httpclient-interception?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/justeattech/httpclient-interception) | [![Build history](https://buildstats.info/azurepipelines/chart/justeatoss/httpclient-interception/1?branch=master&includeBuildsFromPullRequest=false)](https://dev.azure.com/justeatoss/httpclient-interception/_build?definitionId=1) |
 
 ## Introduction
 

@@ -90,7 +90,12 @@ function DotNetTest {
     param([string]$Project)
 
     if ($DisableCodeCoverage -eq $true) {
-        & $dotnet test $Project --output $OutputPath --framework $framework
+        if ($null -ne $env:TF_BUILD) {
+            & $dotnet test $Project --output $OutputPath --logger trx
+        }
+        else {
+            & $dotnet test $Project --output $OutputPath
+        }
     }
     else {
 
@@ -112,26 +117,47 @@ function DotNetTest {
         $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
         $reportOutput = Join-Path $OutputPath "coverage"
 
-        & $openCoverPath `
-            `"-target:$dotnetPath`" `
-            `"-targetargs:test $Project --output $OutputPath`" `
-            -output:$coverageOutput `
-            -hideskipped:All `
-            -mergebyhash `
-            -mergeoutput `
-            -oldstyle `
-            -register:user `
-            -skipautoprops `
-            `"-filter:+[JustEat.HttpClientInterception]* -[JustEat.HttpClientInterception.Tests]*`"
+        if ($null -ne $env:TF_BUILD) {
+            & $openCoverPath `
+                `"-target:$dotnetPath`" `
+                `"-targetargs:test $Project --output $OutputPath --logger trx`" `
+                -output:$coverageOutput `
+                `"-excludebyattribute:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage*`" `
+                -hideskipped:All `
+                -mergebyhash `
+                -mergeoutput `
+                -oldstyle `
+                -register:user `
+                -skipautoprops `
+                `"-filter:+[JustEat.HttpClientInterception]* -[JustEat.HttpClientInterception.Tests]*`"
+        }
+        else {
+            & $openCoverPath `
+                `"-target:$dotnetPath`" `
+                `"-targetargs:test $Project --output $OutputPath`" `
+                -output:$coverageOutput `
+                `"-excludebyattribute:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage*`" `
+                -hideskipped:All `
+                -mergebyhash `
+                -mergeoutput `
+                -oldstyle `
+                -register:user `
+                -skipautoprops `
+                `"-filter:+[JustEat.HttpClientInterception]* -[JustEat.HttpClientInterception.Tests]*`"
+        }
 
-        & $dotnet $reportGeneratorPath `
+        $dotNetTestExitCode = $LASTEXITCODE
+
+        & $dotnet `
+            $reportGeneratorPath `
             `"-reports:$coverageOutput`" `
             `"-targetdir:$reportOutput`" `
+            -reporttypes:HTML`;Cobertura `
             -verbosity:Warning
     }
 
-    if ($LASTEXITCODE -ne 0) {
-        throw "dotnet test failed with exit code $LASTEXITCODE"
+    if ($dotNetTestExitCode -ne 0) {
+        throw "dotnet test failed with exit code $dotNetTestExitCode"
     }
 }
 
