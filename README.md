@@ -205,7 +205,7 @@ The repository is hosted in [GitHub](https://github.com/justeat/httpclient-inter
 
 ## Building and Testing
 
-Compiling the library yourself requires Git and the [.NET Core SDK](https://www.microsoft.com/net/download/core "Download the .NET Core SDK") to be installed (version 2.1.500 or later).
+Compiling the library yourself requires Git and the [.NET Core SDK](https://www.microsoft.com/net/download/core "Download the .NET Core SDK") to be installed (version 2.2.104 or later).
 
 To build and test the library locally from a terminal/command-line, run one of the following set of commands:
 
