@@ -7,6 +7,14 @@
     <Content Include="testsettings.json;xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
+    <WebApplicationFactoryContentRootAttribute
+      Include="SampleApp"
+      AssemblyName="SampleApp"
+      ContentRootPath="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../SampleApp'))"
+      ContentRootTest="SampleApp.csproj"
+      Priority="-1" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.0" />
