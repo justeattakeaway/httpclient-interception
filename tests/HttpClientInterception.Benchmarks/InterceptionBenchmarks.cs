@@ -56,7 +56,7 @@ namespace JustEat.HttpClientInterception
                 .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" })
                 .RegisterWith(_options);
 
-           builder
+            builder
                 .Requests()
                 .ForQuery("page=1")
                 .Responds()
