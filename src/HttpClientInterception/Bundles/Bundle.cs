@@ -29,7 +29,7 @@ namespace JustEat.HttpClientInterception.Bundles
         /// Gets or sets the bundle version.
         /// </summary>
         [JsonProperty("version")]
-        public int Version { get; set; }
+        public int Version { get; set; } = 1;
 
         /// <summary>
         /// Gets or sets the items in the bundle.
