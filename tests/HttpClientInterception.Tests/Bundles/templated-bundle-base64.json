@@ -1,0 +1,17 @@
+{
+  "$schema": "",
+  "id": "templated-base64-string-bundle",
+  "comment": "An HTTP request bundle that uses templating for a Base64-encoded string.",
+  "version": 1,
+  "items": [
+    {
+      "comment": "An HTTP request for a Base64-encoded string that uses templating.",
+      "uri": "https://www.just-eat.co.uk/",
+      "contentFormat": "base64",
+      "contentString": "PGh0bWw+PGhlYWQ+PHRpdGxlPiR7Q29tcGFueU5hbWV9PC90aXRsZT48L2hlYWQ+PC9odG1sPg==",
+      "templateValues": {
+        "CompanyName": "Just Eat"
+      }
+    }
+  ]
+}

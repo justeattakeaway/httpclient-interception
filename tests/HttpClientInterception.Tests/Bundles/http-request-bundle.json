@@ -22,7 +22,8 @@
       "responseHeaders": {},
       "contentHeaders": {},
       "contentFormat": "base64",
-      "contentString": "PGh0bWw+PGhlYWQ+PHRpdGxlPkp1c3QgRWF0PC90aXRsZT48L2hlYWQ+PC9odG1sPg=="
+      "contentString": "PGh0bWw+PGhlYWQ+PHRpdGxlPkp1c3QgRWF0PC90aXRsZT48L2hlYWQ+PC9odG1sPg==",
+      "templateValues": {}
     },
     {
       "id": "JSON",

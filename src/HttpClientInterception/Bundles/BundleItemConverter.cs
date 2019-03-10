@@ -2,6 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
@@ -25,7 +26,7 @@ namespace JustEat.HttpClientInterception.Bundles
 
             if (item.RequestHeaders?.Count > 0)
             {
-                builder.ForRequestHeaders(item.RequestHeaders);
+                builder.ForRequestHeaders(TemplateHeaders(item.RequestHeaders, item.TemplateValues));
             }
 
             if (version != null)
@@ -45,12 +46,12 @@ namespace JustEat.HttpClientInterception.Bundles
 
             if (item.ResponseHeaders?.Count > 0)
             {
-                builder.WithResponseHeaders(item.ResponseHeaders);
+                builder.WithResponseHeaders(TemplateHeaders(item.ResponseHeaders, item.TemplateValues));
             }
 
             if (item.ContentHeaders?.Count > 0)
             {
-                builder.WithContentHeaders(item.ContentHeaders);
+                builder.WithContentHeaders(TemplateHeaders(item.ContentHeaders, item.TemplateValues));
             }
 
             if (item.Priority.HasValue)
@@ -63,17 +64,17 @@ namespace JustEat.HttpClientInterception.Bundles
 
         private static HttpRequestInterceptionBuilder SetContent(this HttpRequestInterceptionBuilder builder, BundleItem item)
         {
-            string content = GetContentString(item) ?? string.Empty;
+            string content = GetRawContentString(item) ?? string.Empty;
 
             if (item.TemplateValues?.Count > 0)
             {
-                // TODO Apply templating to the content
+                content = TemplateString(content, item.TemplateValues);
             }
 
             return builder.WithContent(content);
         }
 
-        private static string GetContentString(BundleItem item)
+        private static string GetRawContentString(BundleItem item)
         {
             switch (item.ContentFormat?.ToUpperInvariant())
             {
@@ -103,7 +104,9 @@ namespace JustEat.HttpClientInterception.Bundles
                 throw new InvalidOperationException($"Bundle item with Id '{item.Id}' has no URI configured.");
             }
 
-            if (!Uri.TryCreate(item.Uri, UriKind.Absolute, out uri))
+            string templated = TemplateString(item.Uri, item.TemplateValues);
+
+            if (!Uri.TryCreate(templated, UriKind.Absolute, out uri))
             {
                 throw new InvalidOperationException($"Bundle item with Id '{item.Id}' has an invalid absolute URI '{item.Uri}' configured.");
             }
@@ -112,6 +115,54 @@ namespace JustEat.HttpClientInterception.Bundles
             {
                 throw new InvalidOperationException($"Bundle item with Id '{item.Id}' has an invalid version '{item.Version}' configured.");
             }
+        }
+
+        private static IDictionary<string, ICollection<string>> TemplateHeaders(
+            IDictionary<string, ICollection<string>> headers,
+            IDictionary<string, string> parameters)
+        {
+            var result = headers;
+
+            if (parameters?.Count > 0)
+            {
+                result = new Dictionary<string, ICollection<string>>(headers);
+
+                foreach (var header in headers)
+                {
+                    if (header.Value?.Count > 0)
+                    {
+                        var copy = new List<string>(header.Value);
+
+                        for (int i = 0; i < copy.Count; i++)
+                        {
+                            copy[i] = TemplateString(copy[i], parameters);
+                        }
+
+                        result[header.Key] = copy;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private static string TemplateString(string content, IDictionary<string, string> parameters)
+        {
+            if (parameters == null || parameters.Count < 1)
+            {
+                return content;
+            }
+
+            var builder = new StringBuilder(content);
+
+            foreach (var pair in parameters)
+            {
+                // Template references use the format "${MyKey}"
+                string key = $"${{{pair.Key}}}";
+                builder.Replace(key, pair.Value);
+            }
+
+            return builder.ToString();
         }
     }
 }

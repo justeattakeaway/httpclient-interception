@@ -1,0 +1,21 @@
+{
+  "$schema": "",
+  "id": "templated-json-bundle",
+  "comment": "An HTTP request bundle that uses templating for JSON.",
+  "version": 1,
+  "items": [
+    {
+      "comment": "An HTTP request for a JSON response that uses templating.",
+      "uri": "https://api.github.com/orgs/${CompanyName}",
+      "contentFormat": "json",
+      "contentJson": {
+        "id": 1516790,
+        "login": "justeat",
+        "url": "https://api.github.com/orgs/${CompanyName}"
+      },
+      "templateValues": {
+        "CompanyName": "justeat"
+      }
+    }
+  ]
+}

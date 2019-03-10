@@ -151,6 +151,57 @@ namespace JustEat.HttpClientInterception.Bundles
         }
 
         [Fact]
+        public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Templated_String()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+            var headers = new Dictionary<string, string>()
+            {
+                { "user-agent", "My-App/1.0.0" },
+            };
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "templated-bundle-string.json"));
+
+            // Assert
+            string content = await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", headers: headers);
+            content.ShouldBe("<html><head><title>Just Eat</title></head></html>");
+        }
+
+        [Fact]
+        public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Templated_Base64()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "templated-bundle-base64.json"));
+
+            // Assert
+            string content = await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/");
+            content.ShouldBe("<html><head><title>Just Eat</title></head></html>");
+        }
+
+        [Fact]
+        public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Templated_Json()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "templated-bundle-json.json"));
+
+            // Assert
+            string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat");
+            content
+                .Replace(" ", string.Empty, StringComparison.Ordinal)
+                .Replace("\n", string.Empty, StringComparison.Ordinal)
+                .Replace("\r", string.Empty, StringComparison.Ordinal)
+                .ShouldBe(@"{""id"":1516790,""login"":""justeat"",""url"":""https://api.github.com/orgs/justeat""}");
+        }
+
+        [Fact]
         public static void RegisterBundle_Validates_Parameters()
         {
             // Arrange
