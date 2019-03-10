@@ -1,9 +1,12 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
+using Shouldly;
 using Xunit;
 
 namespace JustEat.HttpClientInterception.Bundles
@@ -30,6 +33,128 @@ namespace JustEat.HttpClientInterception.Bundles
             await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/");
             await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/order-history");
             await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat", headers: headers);
+        }
+
+        [Fact]
+        public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Non_Default_Status_Codes()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "http-status-codes.json"));
+
+            // Assert
+            await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/1", HttpStatusCode.NotFound);
+            await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/2", HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public static void RegisterBundle_Validates_Parameters()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            string path = "foo.bar";
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("options", () => (null as HttpClientInterceptorOptions).RegisterBundle(path));
+            Assert.Throws<ArgumentNullException>("path", () => options.RegisterBundle(null));
+        }
+
+        [Fact]
+        public static void RegisterBundle_Throws_If_Bundle_Version_Is_Not_Supported()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            string path = Path.Join("Bundles", "invalid-bundle-version.json");
+
+            // Act and Assert
+            Assert.Throws<NotSupportedException>(() => options.RegisterBundle(path));
+        }
+
+        [Fact]
+        public static void RegisterBundle_Does_Not_Throw_If_Bundle_Items_Is_Null()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            string path = Path.Join("Bundles", "null-items.json");
+
+            // Act and Assert
+            options.RegisterBundle(path);
+        }
+
+        [Fact]
+        public static void RegisterBundle_Throws_If_Invalid_Content_Format_Configured()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            string path = Path.Join("Bundles", "invalid-content-format.json");
+
+            // Act and Assert
+            var exception = Assert.Throws<NotSupportedException>(() => options.RegisterBundle(path));
+            exception.Message.ShouldBe("Content format 'foo' for bundle item with Id 'invalid-content-format' is not supported.");
+        }
+
+        [Fact]
+        public static void RegisterBundle_Throws_If_Invalid_Status_Code_Configured()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            string path = Path.Join("Bundles", "invalid-status-code.json");
+
+            // Act and Assert
+            var exception = Assert.Throws<InvalidOperationException>(() => options.RegisterBundle(path));
+            exception.Message.ShouldBe("Bundle item with Id 'invalid-status' has an invalid HTTP status code 'foo' configured.");
+        }
+
+        [Fact]
+        public static void RegisterBundle_Throws_If_Invalid_Uri_Configured()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            string path = Path.Join("Bundles", "invalid-uri.json");
+
+            // Act and Assert
+            var exception = Assert.Throws<InvalidOperationException>(() => options.RegisterBundle(path));
+            exception.Message.ShouldBe("Bundle item with Id 'invalid-uri' has an invalid absolute URI '::invalid' configured.");
+        }
+
+        [Fact]
+        public static void RegisterBundle_Throws_If_Invalid_Version_Configured()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            string path = Path.Join("Bundles", "invalid-version.json");
+
+            // Act and Assert
+            var exception = Assert.Throws<InvalidOperationException>(() => options.RegisterBundle(path));
+            exception.Message.ShouldBe("Bundle item with Id 'invalid-version' has an invalid version 'foo' configured.");
+        }
+
+        [Fact]
+        public static void RegisterBundle_Throws_If_No_Uri_Configured()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            string path = Path.Join("Bundles", "no-uri.json");
+
+            // Act and Assert
+            var exception = Assert.Throws<InvalidOperationException>(() => options.RegisterBundle(path));
+            exception.Message.ShouldBe("Bundle item with Id 'no-uri' has no URI configured.");
+        }
+
+        [Fact]
+        public static async Task Can_Intercept_Http_Requests_From_Bundle_File_If_No_Content()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "no-content.json"));
+
+            // Assert
+            string content = await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/");
+            content.ShouldBe(string.Empty);
         }
     }
 }

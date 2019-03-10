@@ -1,0 +1,23 @@
+{
+  "$schema": "",
+  "id": "non-default-http-statuses-bundle",
+  "comment": "An HTTP request bundle for non-default HTTP status codes.",
+  "items": [
+    {
+      "uri": "https://www.just-eat.co.uk/1",
+      "status": "404",
+      "contentHeaders": {
+        "content-type": [ "text/html" ]
+      },
+      "contentString": "<html><head><title>Just Eat</title></head></html>"
+    },
+    {
+      "uri": "https://www.just-eat.co.uk/2",
+      "status": "NotFound",
+      "contentHeaders": {
+        "content-type": [ "text/html" ]
+      },
+      "contentString": "<html><head><title>Just Eat</title></head></html>"
+    }
+  ]
+}

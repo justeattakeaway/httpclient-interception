@@ -1,0 +1,6 @@
+{
+  "id": "invalid-bundle-version-bundle",
+  "comment": "An HTTP request bundle with an invalid bundle version.",
+  "version": -1,
+  "items": []
+}
