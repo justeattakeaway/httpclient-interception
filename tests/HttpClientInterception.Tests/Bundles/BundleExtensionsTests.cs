@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using Shouldly;
 using Xunit;
 
@@ -234,6 +236,24 @@ namespace JustEat.HttpClientInterception.Bundles
             // Assert
             string content = await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/");
             content.ShouldBe(string.Empty);
+        }
+
+        [Fact]
+        public static async Task Bundle_Schema_Is_Valid()
+        {
+            // Arrange
+            string schemaPath = Path.Join(".", "http-request-bundle-schema.json");
+            string bundlePath = Path.Join("Bundles", "http-request-bundle.json");
+
+            var schema = JSchema.Parse(await File.ReadAllTextAsync(schemaPath), new JSchemaReaderSettings() { ValidateVersion = true });
+            var json = JToken.Parse(await File.ReadAllTextAsync(bundlePath));
+
+            // Act
+            bool actual = json.IsValid(schema, out IList<string> errors);
+
+            // Assert
+            actual.ShouldBeTrue();
+            errors.Count.ShouldBe(0);
         }
     }
 }
