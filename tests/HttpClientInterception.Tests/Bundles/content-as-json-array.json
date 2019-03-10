@@ -1,0 +1,14 @@
+{
+  "$schema": "",
+  "id": "content-as-json-array-bundle",
+  "comment": "An HTTP request bundle with content as a JSON array.",
+  "version": 1,
+  "items": [
+    {
+      "comment": "An HTTP request that returns a JSON array.",
+      "uri": "https://api.github.com/orgs/justeat/repos",
+      "contentFormat": "json",
+      "contentJson": [ "httpclient-interception" ]
+    }
+  ]
+}
