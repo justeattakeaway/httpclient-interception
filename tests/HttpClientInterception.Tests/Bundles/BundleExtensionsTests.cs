@@ -333,24 +333,6 @@ namespace JustEat.HttpClientInterception.Bundles
             content.ShouldBe(string.Empty);
         }
 
-        [Fact]
-        public static async Task Bundle_Schema_Is_Valid()
-        {
-            // Arrange
-            string schemaPath = Path.Join(".", "http-request-bundle-schema.json");
-            string bundlePath = Path.Join("Bundles", "http-request-bundle.json");
-
-            var schema = JSchema.Parse(await File.ReadAllTextAsync(schemaPath), new JSchemaReaderSettings() { ValidateVersion = true });
-            var json = JToken.Parse(await File.ReadAllTextAsync(bundlePath));
-
-            // Act
-            bool actual = json.IsValid(schema, out IList<string> errors);
-
-            // Assert
-            actual.ShouldBeTrue();
-            errors.Count.ShouldBe(0);
-        }
-
         [Theory]
         [MemberData(nameof(BundleFiles))]
         public static async Task Bundle_Schema_Is_Valid_From_Test(string bundlePath)
@@ -358,8 +340,11 @@ namespace JustEat.HttpClientInterception.Bundles
             // Arrange
             string schemaPath = Path.Join(".", "http-request-bundle-schema.json");
 
-            var schema = JSchema.Parse(await File.ReadAllTextAsync(schemaPath), new JSchemaReaderSettings() { ValidateVersion = true });
             var json = JToken.Parse(await File.ReadAllTextAsync(bundlePath));
+
+            var schema = JSchema.Parse(
+                await File.ReadAllTextAsync(schemaPath),
+                new JSchemaReaderSettings() { ValidateVersion = true });
 
             // Act
             bool actual = json.IsValid(schema, out IList<string> errors);
