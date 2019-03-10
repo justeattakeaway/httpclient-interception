@@ -49,11 +49,14 @@ namespace JustEat.HttpClientInterception
 
             var builders = new List<HttpRequestInterceptionBuilder>(bundle.Items?.Count ?? 0);
 
-            foreach (var item in bundle?.Items)
+            if (bundle.Items != null)
             {
-                if (item != null)
+                foreach (var item in bundle.Items)
                 {
-                    builders.Add(BundleItemConverter.FromItem(item));
+                    if (item != null)
+                    {
+                        builders.Add(BundleItemConverter.FromItem(item));
+                    }
                 }
             }
 
