@@ -116,6 +116,19 @@ namespace JustEat.HttpClientInterception.Bundles
         }
 
         [Fact]
+        public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Non_Default_Method_And_Version()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "http-methods-versions.json"));
+
+            // Assert
+            await HttpAssert.PostAsync(options, "https://public.je-apis.com/consumer", new { }, HttpStatusCode.NoContent);
+        }
+
+        [Fact]
         public static void RegisterBundle_Validates_Parameters()
         {
             // Arrange
