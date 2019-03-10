@@ -92,8 +92,15 @@
             "default": "string"
           },
           "contentJson": {
-            "type": "object",
-            "description": "The response's content body expressed as JSON."
+            "description": "The response's content body expressed as JSON.",
+            "oneOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "array"
+              }
+            ]
           },
           "contentString": {
             "type": "string",
