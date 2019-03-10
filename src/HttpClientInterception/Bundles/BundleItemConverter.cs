@@ -13,8 +13,19 @@ namespace JustEat.HttpClientInterception.Bundles
     /// </summary>
     internal static class BundleItemConverter
     {
-        public static HttpRequestInterceptionBuilder FromItem(BundleItem item)
+        public static HttpRequestInterceptionBuilder FromItem(
+            BundleItem item,
+            IEnumerable<KeyValuePair<string, string>> templateValues)
         {
+            // Override the template values in the JSON with any user-specified values
+            if (item.TemplateValues?.Count > 0)
+            {
+                foreach (var pair in templateValues)
+                {
+                    item.TemplateValues[pair.Key] = pair.Value;
+                }
+            }
+
             ValidateItem(item, out Uri uri, out Version version);
 
             var builder = new HttpRequestInterceptionBuilder().ForUri(uri);

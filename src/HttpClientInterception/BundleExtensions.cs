@@ -30,6 +30,29 @@ namespace JustEat.HttpClientInterception
         /// </exception>
         public static HttpClientInterceptorOptions RegisterBundle(this HttpClientInterceptorOptions options, string path)
         {
+            return options.RegisterBundle(path, Array.Empty<KeyValuePair<string, string>>());
+        }
+
+        /// <summary>
+        /// Registers a bundle of HTTP request interceptions from a specified JSON file.
+        /// </summary>
+        /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to register the bundle with.</param>
+        /// <param name="path">The path of the JSON file containing the serialized bundle.</param>
+        /// <param name="templateValues">The optional template values to specify.</param>
+        /// <returns>
+        /// The value specified by <paramref name="options"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="options"/>, <paramref name="path"/> or <paramref name="templateValues"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="NotSupportedException">
+        /// The version of the serialized bundle is not supported.
+        /// </exception>
+        public static HttpClientInterceptorOptions RegisterBundle(
+            this HttpClientInterceptorOptions options,
+            string path,
+            IEnumerable<KeyValuePair<string, string>> templateValues)
+        {
             if (options == null)
             {
                 throw new ArgumentNullException(nameof(options));
@@ -55,7 +78,7 @@ namespace JustEat.HttpClientInterception
                 {
                     if (item != null)
                     {
-                        builders.Add(BundleItemConverter.FromItem(item));
+                        builders.Add(BundleItemConverter.FromItem(item, templateValues));
                     }
                 }
             }
