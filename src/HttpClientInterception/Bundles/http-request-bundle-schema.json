@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft-04/schema#",
   "$id": "https://github.com/justeat/httpclient-interception/bundles",
-  "title": "JSON Schema HTTP request interception bundles for JustEat.HttpClientInterception.",
+  "title": "JSON Schema for HTTP request interception bundles for use with JustEat.HttpClientInterception.",
   "type": "object",
   "properties": {
     "id": {
