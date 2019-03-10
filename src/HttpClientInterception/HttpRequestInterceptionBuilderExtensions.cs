@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace JustEat.HttpClientInterception
     /// <summary>
     /// A class containing extenion methods for the <see cref="HttpRequestInterceptionBuilder"/> class. This class cannot be inherited.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class HttpRequestInterceptionBuilderExtensions
     {
         /// <summary>
