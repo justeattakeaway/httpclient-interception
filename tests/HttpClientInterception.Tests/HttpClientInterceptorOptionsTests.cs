@@ -695,7 +695,7 @@ namespace JustEat.HttpClientInterception
             };
 
             // Act and Assert
-            await HttpAssert.GetAsync(options, url, responseHeaders: headers);
+            await HttpAssert.GetAsync(options, url, headers: headers);
             await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url));
 
             // Arrange
@@ -707,7 +707,7 @@ namespace JustEat.HttpClientInterception
             };
 
             // Act and Assert
-            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, responseHeaders: headers));
+            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, headers: headers));
 
             // Arrange
             headers = new Dictionary<string, string>()
@@ -717,7 +717,7 @@ namespace JustEat.HttpClientInterception
             };
 
             // Act and Assert
-            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, responseHeaders: headers));
+            await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, headers: headers));
         }
 
         private static Task<byte[]> EmptyContent() => Task.FromResult(Array.Empty<byte>());

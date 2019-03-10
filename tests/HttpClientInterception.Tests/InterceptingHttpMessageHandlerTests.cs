@@ -131,7 +131,7 @@ namespace JustEat.HttpClientInterception
                     [header] = id.ToString(CultureInfo.InvariantCulture)
                 };
 
-                return HttpAssert.GetAsync(options, requestUrl, responseHeaders: headers);
+                return HttpAssert.GetAsync(options, requestUrl, headers: headers);
             }
 
             // Act
@@ -181,7 +181,7 @@ namespace JustEat.HttpClientInterception
                     [header] = id.ToString(CultureInfo.InvariantCulture)
                 };
 
-                return HttpAssert.GetAsync(options, requestUrl, HttpStatusCode.Accepted, responseHeaders: headers);
+                return HttpAssert.GetAsync(options, requestUrl, HttpStatusCode.Accepted, headers: headers);
             }
 
             // Act
