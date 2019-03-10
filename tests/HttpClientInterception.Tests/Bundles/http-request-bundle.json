@@ -1,0 +1,53 @@
+{
+  "$schema": "",
+  "id": "test-http-request-bundle",
+  "comment": "An HTTP request bundle for testing purposes.",
+  "version": 1,
+  "items": [
+    {
+      "id": "html",
+      "comment": "A simple HTTP request that returns HTML.",
+      "uri": "https://www.just-eat.co.uk/",
+      "contentHeaders": {
+        "content-type": [ "text/html; charset=utf-8" ]
+      },
+      "contentString": "<html><head><title>Just Eat</title></head></html>"
+    },
+    {
+      "id": "Base64",
+      "comment": "A simple HTTP request where the content is encoded as a Base64 string.",
+      "method": "GET",
+      "uri": "https://www.just-eat.co.uk/order-history",
+      "contentHeaders": {
+        "content-type": [ "text/html" ]
+      },
+      "contentFormat": "base64",
+      "contentString": "PGh0bWw+PGhlYWQ+PHRpdGxlPkp1c3QgRWF0PC90aXRsZT48L2hlYWQ+PC9odG1sPg=="
+    },
+    {
+      "id": "JSON",
+      "comment": "An HTTP request that returns JSON.",
+      "uri": "https://api.github.com/orgs/justeat",
+      "requestHeaders": {
+        "Accept": [ "application/vnd.github.v3+json" ],
+        "Authorization": [ "token my-token" ],
+        "User-Agent": [ "My-App/1.0.0" ]
+      },
+      "responseHeaders": {
+        "Access-Control-Allow-Origin": [ "*" ],
+        "Server": [ "GitHub.com" ],
+        "X-RateLimit-Limit": [ "60" ]
+      },
+      "status": "OK",
+      "contentHeaders": {
+        "Content-Type": [ "application/json; charset=utf-8" ]
+      },
+      "contentFormat": "json",
+      "contentJson": {
+        "id": 1516790,
+        "login": "justeat",
+        "url": "https://api.github.com/orgs/justeat"
+      }
+    }
+  ]
+}
