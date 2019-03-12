@@ -7,12 +7,7 @@
     <Content Include="testsettings.json;xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
-    <WebApplicationFactoryContentRootAttribute
-      Include="SampleApp"
-      AssemblyName="SampleApp"
-      ContentRootPath="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../SampleApp'))"
-      ContentRootTest="SampleApp.csproj"
-      Priority="-1" />
+    <WebApplicationFactoryContentRootAttribute Include="SampleApp" AssemblyName="SampleApp" ContentRootPath="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../SampleApp'))" ContentRootTest="SampleApp.csproj" Priority="-1" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.1.0" />
@@ -21,7 +16,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
