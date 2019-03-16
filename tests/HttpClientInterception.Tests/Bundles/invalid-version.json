@@ -1,0 +1,12 @@
+{
+  "$schema": "",
+  "id": "invalid-version-bundle",
+  "comment": "An HTTP request bundle with an invalid HTTP version.",
+  "items": [
+    {
+      "id": "invalid-version",
+      "uri": "https://www.just-eat.co.uk/",
+      "version": "foo"
+    }
+  ]
+}

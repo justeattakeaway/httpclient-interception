@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -15,6 +16,7 @@ namespace JustEat.HttpClientInterception
     /// <summary>
     /// A class containing extenion methods for the <see cref="HttpClientInterceptorOptions"/> class. This class cannot be inherited.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class HttpClientInterceptorOptionsExtensions
     {
         /// <summary>

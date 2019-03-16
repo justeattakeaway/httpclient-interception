@@ -1,0 +1,12 @@
+{
+  "$schema": "",
+  "id": "invalid-content-format-bundle",
+  "comment": "An HTTP request bundle with an invalid content format.",
+  "items": [
+    {
+      "id": "invalid-content-format",
+      "uri": "https://www.just-eat.co.uk/",
+      "contentFormat": "foo"
+    }
+  ]
+}

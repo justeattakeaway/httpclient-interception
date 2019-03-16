@@ -1,0 +1,10 @@
+{
+  "$schema": "",
+  "id": "no-uri-bundle",
+  "comment": "An HTTP request bundle with no URI.",
+  "items": [
+    {
+      "id": "no-uri"
+    }
+  ]
+}

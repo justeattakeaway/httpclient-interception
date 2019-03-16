@@ -1,0 +1,12 @@
+{
+  "$schema": "",
+  "id": "no-content-bundle",
+  "comment": "An HTTP request bundle with no response content.",
+  "items": [
+    null,
+    {
+      "id": "no-content",
+      "uri": "https://www.just-eat.co.uk/"
+    }
+  ]
+}

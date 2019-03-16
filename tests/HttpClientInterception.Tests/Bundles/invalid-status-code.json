@@ -1,0 +1,12 @@
+{
+  "$schema": "",
+  "id": "invalid-status-bundle",
+  "comment": "An HTTP request bundle with an invalid HTTP status code.",
+  "items": [
+    {
+      "id": "invalid-status",
+      "uri": "https://www.just-eat.co.uk/",
+      "status": "foo"
+    }
+  ]
+}

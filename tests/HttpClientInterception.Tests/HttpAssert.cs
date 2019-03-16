@@ -1,4 +1,4 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -28,9 +28,9 @@ namespace JustEat.HttpClientInterception
             string requestUri,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = null,
-            IDictionary<string, string> responseHeaders = null)
+            IDictionary<string, string> headers = null)
         {
-            return SendAsync(target, HttpMethod.Get, requestUri, null, statusCode, mediaType, responseHeaders);
+            return SendAsync(target, HttpMethod.Get, requestUri, null, statusCode, mediaType, headers);
         }
 
         internal static async Task<string> PostAsync(

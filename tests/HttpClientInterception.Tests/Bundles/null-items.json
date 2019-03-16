@@ -1,0 +1,5 @@
+{
+  "id": "null-items-bundle",
+  "comment": "An HTTP request bundle with null items.",
+  "items": null
+}

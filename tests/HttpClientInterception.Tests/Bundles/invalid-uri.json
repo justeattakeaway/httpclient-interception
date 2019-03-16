@@ -1,0 +1,11 @@
+{
+  "$schema": "",
+  "id": "invalid-uri-bundle",
+  "comment": "An HTTP request bundle with an invalid URI.",
+  "items": [
+    {
+      "id": "invalid-uri",
+      "uri": "::invalid"
+    }
+  ]
+}

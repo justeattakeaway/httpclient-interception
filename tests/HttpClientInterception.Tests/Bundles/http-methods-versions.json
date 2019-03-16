@@ -1,0 +1,13 @@
+{
+  "$schema": "",
+  "id": "custom-method-and-version-bundle",
+  "comment": "An HTTP request bundle for a non-default HTTP method and version.",
+  "items": [
+    {
+      "uri": "https://public.je-apis.com/consumer",
+      "method": "POST",
+      "version": "2.0",
+      "status": "NoContent"
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "title": "JSON Schema for HTTP request interception bundles for use with JustEat.HttpClientInterception.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The bundle's optional ID."
+    },
+    "comment": {
+      "type": "string",
+      "description": "An optional comment describing the bundle."
+    },
+    "version": {
+      "type": "number",
+      "description": "The bundle version.",
+      "default": 1,
+      "minimum": 1
+    },
+    "items": {
+      "type": "array",
+      "description": "An array of HTTP request interceptions.",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The item's optional ID."
+          },
+          "comment": {
+            "type": "string",
+            "description": "An optional comment describing the item."
+          },
+          "version": {
+            "type": "string",
+            "description": "The optional HTTP version for the request."
+          },
+          "method": {
+            "type": "string",
+            "description": "The optional HTTP version for the request.",
+            "default": "GET"
+          },
+          "uri": {
+            "type": "string",
+            "description": "The absolute URI for the HTTP request."
+          },
+          "priority": {
+            "type": "integer",
+            "description": "The optional priority value for the item."
+          },
+          "status": {
+            "type": "string",
+            "description": "The optional HTTP status code for the request. This can be either an integer or an HttpStatusCode enum value.",
+            "default": "200"
+          },
+          "requestHeaders": {
+            "type": "object",
+            "description": "The optional HTTP request headers to specify for the interception to match.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "responseHeaders": {
+            "type": "object",
+            "description": "The optional HTTP response headers to return for the interception.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "contentHeaders": {
+            "type": "object",
+            "description": "The optional response content headers for the interception.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "contentFormat": {
+            "type": "string",
+            "enum": [ "base64", "json", "string" ],
+            "description": "The format of the response's content body.",
+            "default": "string"
+          },
+          "contentJson": {
+            "description": "The response's content body expressed as JSON.",
+            "oneOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "array"
+              }
+            ]
+          },
+          "contentString": {
+            "type": "string",
+            "description": "The response's content expressed as a string or Base64 encoded string.",
+            "default": ""
+          },
+          "templateValues": {
+            "type": "object",
+            "description": "The optional template key-value pairs to apply to the URI, headers or content.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [ "uri" ]
+      },
+      "additionalItems": false,
+      "uniqueItems": true
+    }
+  },
+  "required": [ "items" ]
+}

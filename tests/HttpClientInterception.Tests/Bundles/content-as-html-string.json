@@ -1,0 +1,14 @@
+{
+  "$schema": "",
+  "id": "content-as-html-string-bundle",
+  "comment": "An HTTP request bundle with content as a string.",
+  "version": 1,
+  "items": [
+    {
+      "id": "html",
+      "comment": "An HTTP request that returns an HTML string.",
+      "uri": "https://www.just-eat.co.uk/",
+      "contentString": "<html><head><title>Just Eat</title></head></html>"
+    }
+  ]
+}
