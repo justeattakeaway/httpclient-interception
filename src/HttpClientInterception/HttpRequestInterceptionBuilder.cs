@@ -314,7 +314,8 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithContentHeader(string name, string value) => WithContentHeader(name, new[] { value });
+        public HttpRequestInterceptionBuilder WithContentHeader(string name, string value)
+            => WithContentHeader(name, new[] { value });
 
         /// <summary>
         /// Sets a custom HTTP content header to use with multiple values.
@@ -325,9 +326,7 @@ namespace JustEat.HttpClientInterception
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
         public HttpRequestInterceptionBuilder WithContentHeader(string name, params string[] values)
-        {
-            return WithContentHeader(name, values as IEnumerable<string>);
-        }
+            => WithContentHeader(name, values as IEnumerable<string>);
 
         /// <summary>
         /// Sets a custom HTTP content header to use with multiple values.
@@ -401,7 +400,8 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithResponseHeader(string name, string value) => WithResponseHeader(name, new[] { value });
+        public HttpRequestInterceptionBuilder WithResponseHeader(string name, string value)
+            => WithResponseHeader(name, new[] { value });
 
         /// <summary>
         /// Sets a custom HTTP response header to use with multiple values.
@@ -412,9 +412,7 @@ namespace JustEat.HttpClientInterception
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
         public HttpRequestInterceptionBuilder WithResponseHeader(string name, params string[] values)
-        {
-            return WithResponseHeader(name, values as IEnumerable<string>);
-        }
+            => WithResponseHeader(name, values as IEnumerable<string>);
 
         /// <summary>
         /// Sets a custom HTTP response header to use with multiple values.
@@ -500,7 +498,8 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithStatus(int statusCode) => WithStatus((HttpStatusCode)statusCode);
+        public HttpRequestInterceptionBuilder WithStatus(int statusCode)
+            => WithStatus((HttpStatusCode)statusCode);
 
         /// <summary>
         /// Sets HTTP status code for the response.
@@ -638,7 +637,8 @@ namespace JustEat.HttpClientInterception
         /// <remarks>
         /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
         /// </remarks>
-        public HttpRequestInterceptionBuilder ForRequestHeader(string name, string value) => ForRequestHeader(name, new[] { value });
+        public HttpRequestInterceptionBuilder ForRequestHeader(string name, string value)
+            => ForRequestHeader(name, new[] { value });
 
         /// <summary>
         /// Sets an HTTP request header to intercept with multiple values.
@@ -652,9 +652,7 @@ namespace JustEat.HttpClientInterception
         /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
         /// </remarks>
         public HttpRequestInterceptionBuilder ForRequestHeader(string name, params string[] values)
-        {
-            return ForRequestHeader(name, values as IEnumerable<string>);
-        }
+            => ForRequestHeader(name, values as IEnumerable<string>);
 
         /// <summary>
         /// Sets an HTTP request header to intercept with multiple values.
