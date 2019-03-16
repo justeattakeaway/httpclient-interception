@@ -1,5 +1,5 @@
 {
-  "$schema": "",
+  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "test-http-request-bundle",
   "comment": "An HTTP request bundle for testing purposes.",
   "version": 1,
@@ -9,7 +9,9 @@
       "comment": "A simple HTTP request that returns HTML.",
       "uri": "https://www.just-eat.co.uk/",
       "contentHeaders": {
-        "content-type": [ "text/html; charset=utf-8" ]
+        "content-type": [
+          "text/html; charset=utf-8"
+        ]
       },
       "contentString": "<html><head><title>Just Eat</title></head></html>"
     },
@@ -32,14 +34,26 @@
       "version": "1.1",
       "uri": "https://api.github.com/orgs/justeat",
       "requestHeaders": {
-        "Accept": [ "application/vnd.github.v3+json" ],
-        "Authorization": [ "token my-token" ],
-        "User-Agent": [ "My-App/1.0.0" ]
+        "Accept": [
+          "application/vnd.github.v3+json"
+        ],
+        "Authorization": [
+          "token my-token"
+        ],
+        "User-Agent": [
+          "My-App/1.0.0"
+        ]
       },
       "responseHeaders": {
-        "Access-Control-Allow-Origin": [ "*" ],
-        "Server": [ "GitHub.com" ],
-        "X-RateLimit-Limit": [ "60" ]
+        "Access-Control-Allow-Origin": [
+          "*"
+        ],
+        "Server": [
+          "GitHub.com"
+        ],
+        "X-RateLimit-Limit": [
+          "60"
+        ]
       },
       "contentFormat": "json",
       "contentJson": {
