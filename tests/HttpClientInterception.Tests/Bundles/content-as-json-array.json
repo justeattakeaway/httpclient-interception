@@ -1,5 +1,5 @@
 {
-  "$schema": "",
+  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "content-as-json-array-bundle",
   "comment": "An HTTP request bundle with content as a JSON array.",
   "version": 1,
@@ -8,7 +8,9 @@
       "comment": "An HTTP request that returns a JSON array.",
       "uri": "https://api.github.com/orgs/justeat/repos",
       "contentFormat": "json",
-      "contentJson": [ "httpclient-interception" ]
+      "contentJson": [
+        "httpclient-interception"
+      ]
     }
   ]
 }

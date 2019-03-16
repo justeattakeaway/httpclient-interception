@@ -1,5 +1,5 @@
 {
-  "$schema": "",
+  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "templated-base64-string-bundle",
   "comment": "An HTTP request bundle that uses templating for a Base64-encoded string.",
   "version": 1,
