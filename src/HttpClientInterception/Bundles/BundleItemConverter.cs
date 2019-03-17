@@ -70,6 +70,16 @@ namespace JustEat.HttpClientInterception.Bundles
                 builder.HavingPriority(item.Priority.Value);
             }
 
+            if (item.IgnorePath)
+            {
+                builder.IgnoringPath(ignorePath: true);
+            }
+
+            if (item.IgnoreQuery)
+            {
+                builder.IgnoringQuery(ignoreQuery: true);
+            }
+
             return builder.SetContent(item);
         }
 

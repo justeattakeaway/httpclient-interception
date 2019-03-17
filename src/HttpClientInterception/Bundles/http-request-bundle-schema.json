@@ -46,6 +46,16 @@
             "type": "string",
             "description": "The absolute URI for the HTTP request."
           },
+          "ignorePath": {
+            "type": "boolean",
+            "description": "Whether to ignore the URI's path when matching the interception.",
+            "default": false
+          },
+          "ignoreQuery": {
+            "type": "boolean",
+            "description": "Whether to ignore the URI's query string when matching the interception.",
+            "default": false
+          },
           "priority": {
             "type": "integer",
             "description": "The optional priority value for the item."
@@ -113,6 +123,11 @@
             "additionalProperties": {
               "type": "string"
             }
+          },
+          "skip": {
+            "type": "boolean",
+            "description": "Whether to skip the item so it is not used.",
+            "default": false
           }
         },
         "required": [ "uri" ]

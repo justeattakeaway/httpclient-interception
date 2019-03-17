@@ -97,5 +97,23 @@ namespace JustEat.HttpClientInterception.Bundles
         /// </summary>
         [JsonProperty("templateValues", NullValueHandling = NullValueHandling.Ignore)]
         public IDictionary<string, string> TemplateValues { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to ignore the URI's path.
+        /// </summary>
+        [JsonProperty("ignorePath", NullValueHandling = NullValueHandling.Ignore)]
+        public bool IgnorePath { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to ignore the URI's query string.
+        /// </summary>
+        [JsonProperty("ignoreQuery", NullValueHandling = NullValueHandling.Ignore)]
+        public bool IgnoreQuery { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to skip the item.
+        /// </summary>
+        [JsonProperty("skip", NullValueHandling = NullValueHandling.Ignore)]
+        public bool Skip { get; set; }
     }
 }
