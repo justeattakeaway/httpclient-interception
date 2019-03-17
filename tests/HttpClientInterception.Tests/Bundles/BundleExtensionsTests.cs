@@ -333,6 +333,44 @@ namespace JustEat.HttpClientInterception.Bundles
             content.ShouldBe(string.Empty);
         }
 
+        [Fact]
+        public static async Task Can_Intercept_Http_Requests_With_Different_Path_If_The_Uri_Path_Is_Ignored()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "ignoring-path.json"));
+
+            // Assert
+            string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/some-other-org");
+
+            content
+                .Replace(" ", string.Empty, StringComparison.Ordinal)
+                .Replace("\n", string.Empty, StringComparison.Ordinal)
+                .Replace("\r", string.Empty, StringComparison.Ordinal)
+                .ShouldBe(@"{""id"":1516790,""login"":""justeat"",""url"":""https://api.github.com/orgs/justeat""}");
+        }
+
+        [Fact]
+        public static async Task Can_Intercept_Http_Requests_With_Different_Path_If_The_Uri_Query_String()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "ignoring-query.json"));
+
+            // Assert
+            string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat?foo=bar");
+
+            content
+                .Replace(" ", string.Empty, StringComparison.Ordinal)
+                .Replace("\n", string.Empty, StringComparison.Ordinal)
+                .Replace("\r", string.Empty, StringComparison.Ordinal)
+                .ShouldBe(@"{""id"":1516790,""login"":""justeat"",""url"":""https://api.github.com/orgs/justeat""}");
+        }
+
         [Theory]
         [MemberData(nameof(BundleFiles))]
         public static async Task Bundle_Schema_Is_Valid_From_Test(string bundlePath)
