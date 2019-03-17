@@ -109,5 +109,11 @@ namespace JustEat.HttpClientInterception.Bundles
         /// </summary>
         [JsonProperty("ignoreQuery", NullValueHandling = NullValueHandling.Ignore)]
         public bool IgnoreQuery { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to skip the item.
+        /// </summary>
+        [JsonProperty("skip", NullValueHandling = NullValueHandling.Ignore)]
+        public bool Skip { get; set; }
     }
 }

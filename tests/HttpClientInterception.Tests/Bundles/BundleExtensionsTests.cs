@@ -371,6 +371,20 @@ namespace JustEat.HttpClientInterception.Bundles
                 .ShouldBe(@"{""id"":1516790,""login"":""justeat"",""url"":""https://api.github.com/orgs/justeat""}");
         }
 
+        [Fact]
+        public static async Task Can_Skip_Bundle_Items()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "skipped-item-bundle.json"));
+
+            // Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(
+                () => HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/"));
+        }
+
         [Theory]
         [MemberData(nameof(BundleFiles))]
         public static async Task Bundle_Schema_Is_Valid_From_Test(string bundlePath)

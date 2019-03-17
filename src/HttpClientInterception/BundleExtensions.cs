@@ -76,10 +76,12 @@ namespace JustEat.HttpClientInterception
             {
                 foreach (var item in bundle.Items)
                 {
-                    if (item != null)
+                    if (item == null || item.Skip)
                     {
-                        builders.Add(BundleItemConverter.FromItem(item, templateValues));
+                        continue;
                     }
+
+                    builders.Add(BundleItemConverter.FromItem(item, templateValues));
                 }
             }
 

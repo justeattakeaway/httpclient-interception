@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "id": "test-skipped-item-bundle-bundle",
+  "comment": "An HTTP request bundle where the item is skipped.",
+  "version": 1,
+  "items": [
+    {
+      "id": "html",
+      "comment": "A skipped HTTP request.",
+      "uri": "https://www.just-eat.co.uk/",
+      "contentHeaders": {
+        "content-type": [
+          "text/html; charset=utf-8"
+        ]
+      },
+      "contentString": "<html><head><title>Just Eat</title></head></html>",
+      "skip": true
+    }
+  ]
+}
