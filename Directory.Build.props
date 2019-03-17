@@ -33,6 +33,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <VersionPrefix>2.0.0</VersionPrefix>
