@@ -7,7 +7,7 @@
     <TargetFrameworks>netcoreapp2.2</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="xunit.runner.json;Bundles\*.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="example-bundle.json;xunit.runner.json;Bundles\*.json" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\..\src\HttpClientInterception\Bundles\http-request-bundle-schema.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>

@@ -31,7 +31,9 @@ dotnet add package JustEat.HttpClientInterception
 
 #### Request Interception
 
-Below is a minimal example of intercepting a request to an HTTP API for a JSON resource to return a custom response:
+##### Fluent API
+
+Below is a minimal example of intercepting a request to an HTTP API for a JSON resource to return a custom response using the fluent API:
 
 ```csharp
 // using JustEat.HttpClientInterception;
@@ -53,6 +55,62 @@ var json = await client.GetStringAsync("http://public.je-apis.com/terms");
 ```
 
 `HttpRequestInterceptionBuilder` objects are mutable, so properties can be freely changed once a particular setup has been registered with an instance of `HttpClientInterceptorOptions` as the state is captured at the point of registration. This allows multiple responses and paths to be configured from a single `HttpRequestInterceptionBuilder` instance where multiple registrations against a common hostname.
+
+##### _HTTP Bundle_ Files
+
+HTTP requests to intercept can also be configured in an _"HTTP bundle"_ file, which can be used to store the HTTP requests to intercept and their corresponding responses as JSON.
+
+This functionality is analogous to our [_Shock_](https://github.com/justeat/Shock "Shock") pod for iOS.
+
+###### JSON
+
+Below is an example bundle file, which can return content in formats such as a string, JSON and base64-encoded data.
+
+The full JSON schema for HTTP bundle files can be found [here](https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json "JSON Schema for HTTP request interception bundles for use with JustEat.HttpClientInterception.").
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "id": "my-bundle",
+  "comment": "A bundle of HTTP requests",
+  "items": [
+    {
+      "id": "home",
+      "comment": "Returns the home page",
+      "uri": "https://www.just-eat.co.uk",
+      "contentString": "<html><head><title>Just Eat</title></head></html>"
+    },
+    {
+      "id": "terms",
+      "comment": "Returns the Ts & Cs",
+      "uri": "https://public.je-apis.com/terms",
+      "contentFormat": "json",
+      "contentJson": {
+        "Id": 1,
+        "Link": "https://www.just-eat.co.uk/privacy-policy"
+      }
+    }
+  ]
+}
+```
+
+###### Code
+
+```cs
+// using JustEat.HttpClientInterception;
+
+var options = new HttpClientInterceptorOptions().RegisterBundle("my-bundle.json");
+
+var client = options.CreateHttpClient();
+
+// The value of html will be "<html><head><title>Just Eat</title></head></html>"
+var html = await client.GetStringAsync("https://www.just-eat.co.uk");
+
+// The value of json will be "{\"Id\":1,\"Link\":\"https://www.just-eat.co.uk/privacy-policy\"}"
+var json = await client.GetStringAsync("http://public.je-apis.com/terms");
+```
+
+Further examples of using HTTP bundles can be found in the [tests](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Tests/Bundles/BundleExtensionsTests.cs "BundleExtensionsTests.cs"), such as for changing the response code, the HTTP method, and matching to HTTP requests based on the request headers.
 
 #### Fault Injection
 
@@ -177,23 +235,24 @@ Further examples of using the library can be found by following the links below:
 
 ### Benchmarks
 
-Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [e189875](https://github.com/justeat/httpclient-interception/commit/e18987518f279ece7ad4631d21c5e986733fdab3 "Benchmark commit") on 14/10/2018.
+Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [b60b750](https://github.com/justeat/httpclient-interception/commit/b60b750c7b63934b91a3b3e81df4b5506e3668a5 "Benchmark commit") on 24/03/2019.
 
 ``` ini
-BenchmarkDotNet=v0.11.1, OS=Windows 10.0.17763
+BenchmarkDotNet=v0.11.4, OS=Windows 10.0.17763.379 (1809/October2018Update/Redstone5)
 Intel Core i7-6700HQ CPU 2.60GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
-.NET Core SDK=2.1.403
-  [Host]     : .NET Core 2.1.5 (CoreCLR 4.6.26919.02, CoreFX 4.6.26919.02), 64bit RyuJIT
-  DefaultJob : .NET Core 2.1.5 (CoreCLR 4.6.26919.02, CoreFX 4.6.26919.02), 64bit RyuJIT
+.NET Core SDK=2.2.105
+  [Host]     : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
+  DefaultJob : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
 ```
 
-|    Method |      Mean |     Error |    StdDev |    Median |  Gen 0 | Allocated |
-|---------- |----------:|----------:|----------:|----------:|-------:|----------:|
-| [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/c09c38bad3ed5db6cfffdbaebeac33c2d286764f/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L73-L77 "Benchmark using a byte array") |  8.675 μs | 0.2513 μs | 0.7330 μs |  8.478 μs | 1.3275 |   4.13 KB |
-| [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/c09c38bad3ed5db6cfffdbaebeac33c2d286764f/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L79-L83 "Benchmark using HTML") |  9.406 μs | 0.2480 μs | 0.7313 μs |  9.141 μs | 1.4191 |   4.41 KB |
-| [`GetJson`](https://github.com/justeat/httpclient-interception/blob/c09c38bad3ed5db6cfffdbaebeac33c2d286764f/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L85-L90 "Benchmark using JSON") | 17.653 μs | 0.3501 μs | 0.5849 μs | 17.428 μs | 3.0518 |   9.44 KB |
-| [`GetStream`](https://github.com/justeat/httpclient-interception/blob/c09c38bad3ed5db6cfffdbaebeac33c2d286764f/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L92-L98 "Benchmark using a stream") | 74.822 μs | 1.4916 μs | 3.7695 μs | 73.784 μs | 1.0986 |   3.43 KB |
-| [`Refit`](https://github.com/justeat/httpclient-interception/blob/c09c38bad3ed5db6cfffdbaebeac33c2d286764f/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L100-L104 "Benchmark using Refit") | 43.953 μs | 0.8722 μs | 0.9694 μs | 44.026 μs | 4.8218 |  14.97 KB |
+
+|    Method |      Mean |     Error |    StdDev |    Median | Gen 0/1k Op | Gen 1/1k Op | Gen 2/1k Op | Allocated Memory/Op |
+|---------- |----------:|----------:|----------:|----------:|------------:|------------:|------------:|--------------------:|
+|  [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L70-L74 "Benchmark using a byte array") |  5.656 μs | 0.1083 μs | 0.1483 μs |  5.647 μs |      1.0071 |           - |           - |             3.12 KB |
+|   [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L76-L80 "Benchmark using HTML") |  7.275 μs | 0.1091 μs | 0.1021 μs |  7.293 μs |      1.2054 |           - |           - |             3.72 KB |
+|   [`GetJson`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L82-L87 "Benchmark using JSON") | 16.918 μs | 0.3353 μs | 0.8473 μs | 16.572 μs |      3.1738 |           - |           - |             9.77 KB |
+| [`GetStream`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L89-L95 "Benchmark using a stream") | 62.880 μs | 1.2273 μs | 1.5072 μs | 62.892 μs |      1.0986 |           - |           - |             3.43 KB |
+|     [`Refit`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L97-L101 "Benchmark using Refit") | 43.055 μs | 0.8330 μs | 0.7792 μs | 42.704 μs |      4.9438 |           - |           - |            15.33 KB |
 
 ## Feedback
 
