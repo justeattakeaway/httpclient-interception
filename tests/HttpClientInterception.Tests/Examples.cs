@@ -623,5 +623,41 @@ namespace JustEat.HttpClientInterception
                 (await client.GetStringAsync("https://www.just-eat.co.uk/")).ShouldContain("Fourth");
             }
         }
+
+        [Fact]
+        public static async Task Intercept_Http_Requests_Registered_Using_A_Bundle_File()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions()
+                .RegisterBundle("example-bundle.json")
+                .ThrowsOnMissingRegistration();
+
+            // Act
+            string content;
+
+            using (var client = options.CreateHttpClient())
+            {
+                content = await client.GetStringAsync("https://www.just-eat.co.uk/");
+            }
+
+            // Assert
+            content.ShouldBe("<html><head><title>Just Eat</title></head></html>");
+
+            // Act
+            using (var client = options.CreateHttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
+                client.DefaultRequestHeaders.Add("Authorization", "bearer my-token");
+                client.DefaultRequestHeaders.Add("User-Agent", "My-App/1.0.0");
+
+                content = await client.GetStringAsync("https://api.github.com/orgs/justeat");
+            }
+
+            // Assert
+            var organization = JObject.Parse(content);
+            organization.Value<int>("id").ShouldBe(1516790);
+            organization.Value<string>("login").ShouldBe("justeat");
+            organization.Value<string>("url").ShouldBe("https://api.github.com/orgs/justeat");
+        }
     }
 }
