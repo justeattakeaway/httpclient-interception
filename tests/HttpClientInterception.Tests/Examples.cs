@@ -25,11 +25,11 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
+            var builder = new HttpRequestInterceptionBuilder();
 
-            var builder = new HttpRequestInterceptionBuilder()
-                .Requests().ForGet().ForHttps().ForHost("public.je-apis.com").ForPath("terms")
-                .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
-                .RegisterWith(options);
+            builder.Requests().ForGet().ForHttps().ForHost("public.je-apis.com").ForPath("terms")
+                   .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
+                   .RegisterWith(options);
 
             string json;
 
