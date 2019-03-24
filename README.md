@@ -31,7 +31,9 @@ dotnet add package JustEat.HttpClientInterception
 
 #### Request Interception
 
-Below is a minimal example of intercepting a request to an HTTP API for a JSON resource to return a custom response:
+##### Fluent API
+
+Below is a minimal example of intercepting a request to an HTTP API for a JSON resource to return a custom response using the fluent API:
 
 ```csharp
 // using JustEat.HttpClientInterception;
@@ -53,6 +55,62 @@ var json = await client.GetStringAsync("http://public.je-apis.com/terms");
 ```
 
 `HttpRequestInterceptionBuilder` objects are mutable, so properties can be freely changed once a particular setup has been registered with an instance of `HttpClientInterceptorOptions` as the state is captured at the point of registration. This allows multiple responses and paths to be configured from a single `HttpRequestInterceptionBuilder` instance where multiple registrations against a common hostname.
+
+##### _HTTP Bundle_ Files
+
+HTTP requests to intercept can also be configured in an _"HTTP bundle"_ file, which can be used to store the HTTP requests to intercept and their corresponding responses as JSON.
+
+This functionality is analogous to our [_Shock_](https://github.com/justeat/Shock "Shock") pod for iOS.
+
+###### JSON
+
+Below is an example bundle file, which can return content in formats such as a string, JSON and base64-encoded data.
+
+The full JSON schema for HTTP bundle files can be found [here](https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json "JSON Schema for HTTP request interception bundles for use with JustEat.HttpClientInterception.").
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "id": "my-bundle",
+  "comment": "A bundle of HTTP requests",
+  "items": [
+    {
+      "id": "home",
+      "comment": "Returns the home page",
+      "uri": "https://www.just-eat.co.uk",
+      "contentString": "<html><head><title>Just Eat</title></head></html>"
+    },
+    {
+      "id": "terms",
+      "comment": "Returns the Ts & Cs",
+      "uri": "https://public.je-apis.com/terms",
+      "contentFormat": "json",
+      "contentJson": {
+        "Id": 1,
+        "Link": "https://www.just-eat.co.uk/privacy-policy"
+      }
+    }
+  ]
+}
+```
+
+###### Code
+
+```cs
+// using JustEat.HttpClientInterception;
+
+var options = new HttpClientInterceptorOptions().RegisterBundle("my-bundle.json");
+
+var client = options.CreateHttpClient();
+
+// The value of html will be "<html><head><title>Just Eat</title></head></html>"
+var html = await client.GetStringAsync("https://www.just-eat.co.uk");
+
+// The value of json will be "{\"Id\":1,\"Link\":\"https://www.just-eat.co.uk/privacy-policy\"}"
+var json = await client.GetStringAsync("http://public.je-apis.com/terms");
+```
+
+Further examples of using HTTP bundles can be found in the [tests](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Tests/Bundles/BundleExtensionsTests.cs "BundleExtensionsTests.cs"), such as for changing the response code, the HTTP method, and matching to HTTP requests based on the request headers.
 
 #### Fault Injection
 
