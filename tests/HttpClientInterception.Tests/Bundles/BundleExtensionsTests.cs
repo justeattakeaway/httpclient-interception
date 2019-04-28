@@ -52,9 +52,9 @@ namespace JustEat.HttpClientInterception.Bundles
             options.RegisterBundle(Path.Join("Bundles", "http-request-bundle.json"));
 
             // Assert
-            await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/");
+            await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", mediaType: "text/html");
             await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/order-history");
-            await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat", headers: headers);
+            await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat", headers: headers, mediaType: "application/json");
         }
 
         [Fact]

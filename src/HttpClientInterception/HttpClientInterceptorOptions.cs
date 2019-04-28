@@ -464,7 +464,11 @@ namespace JustEat.HttpClientInterception
 
                 PopulateHeaders(result.Content.Headers, response.ContentHeaders);
 
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue(response.ContentMediaType);
+                // Do not overwrite a custom Content-Type header if already set
+                if (!result.Content.Headers.TryGetValues("content-type", out var contentType))
+                {
+                    result.Content.Headers.ContentType = new MediaTypeHeaderValue(response.ContentMediaType);
+                }
 
                 PopulateHeaders(result.Headers, response.ResponseHeaders);
             }
