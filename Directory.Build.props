@@ -2,14 +2,13 @@
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
     <Compile Include="$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.9.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="2.9.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.9.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="2.9.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
     <PackageReference Include="OpenCover" Version="4.7.922" PrivateAssets="All" />
-    <PackageReference Include="ReportGenerator" Version="4.1.0" PrivateAssets="All" />
+    <PackageReference Include="ReportGenerator" Version="4.1.4" PrivateAssets="All" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
-    <PackageReference Include="Text.Analyzers" Version="2.6.3" PrivateAssets="All" />
   </ItemGroup>
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -36,7 +35,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>2.0.1</VersionPrefix>
     <VersionSuffix Condition=" '$(VersionSuffix)' == '' AND '$(APPVEYOR)' == 'true' AND '$(APPVEYOR_REPO_TAG)' != 'true'">beta$([System.Convert]::ToInt32(`$(APPVEYOR_BUILD_NUMBER)`).ToString(`0000`))</VersionSuffix>
     <VersionSuffix Condition=" '$(VersionSuffix)' == '' AND '$(TF_BUILD)' == 'True'">beta$([System.Convert]::ToInt32(`$(BUILD_BUILDID)`).ToString(`0000`))</VersionSuffix>
     <VersionSuffix Condition=" '$(VersionSuffix)' == '' AND '$(TRAVIS)' == 'true'">beta$([System.Convert]::ToInt32(`$(TRAVIS_BUILD_NUMBER)`).ToString(`0000`))</VersionSuffix>
