@@ -128,7 +128,7 @@ namespace JustEat.HttpClientInterception
             {
                 var headers = new Dictionary<string, string>()
                 {
-                    [header] = id.ToString(CultureInfo.InvariantCulture)
+                    [header] = id.ToString(CultureInfo.InvariantCulture),
                 };
 
                 return HttpAssert.GetAsync(options, requestUrl, headers: headers);
@@ -168,7 +168,7 @@ namespace JustEat.HttpClientInterception
 
                 var response = new HttpResponseMessage(HttpStatusCode.Accepted)
                 {
-                    Content = new StringContent(string.Empty)
+                    Content = new StringContent(string.Empty),
                 };
 
                 return Task.FromResult(response);
@@ -178,7 +178,7 @@ namespace JustEat.HttpClientInterception
             {
                 var headers = new Dictionary<string, string>()
                 {
-                    [header] = id.ToString(CultureInfo.InvariantCulture)
+                    [header] = id.ToString(CultureInfo.InvariantCulture),
                 };
 
                 return HttpAssert.GetAsync(options, requestUrl, HttpStatusCode.Accepted, headers: headers);

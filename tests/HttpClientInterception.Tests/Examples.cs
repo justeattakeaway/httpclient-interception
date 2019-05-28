@@ -560,7 +560,7 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var options = new HttpClientInterceptorOptions()
             {
-                OnMissingRegistration = (request) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound))
+                OnMissingRegistration = (request) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)),
             };
 
             using (var client = options.CreateHttpClient())

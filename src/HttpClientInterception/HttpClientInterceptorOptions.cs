@@ -110,7 +110,7 @@ namespace JustEat.HttpClientInterception
         {
             var clone = new HttpClientInterceptorOptions()
             {
-                ThrowOnMissingRegistration = ThrowOnMissingRegistration
+                ThrowOnMissingRegistration = ThrowOnMissingRegistration,
             };
 
             clone._comparer = _comparer;
@@ -235,7 +235,7 @@ namespace JustEat.HttpClientInterception
                 OnIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted),
                 RequestUri = uri,
                 ResponseHeaders = responseHeaders,
-                StatusCode = statusCode
+                StatusCode = statusCode,
             };
 
             ConfigureMatcherAndRegister(interceptor);
@@ -294,7 +294,7 @@ namespace JustEat.HttpClientInterception
                 OnIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted),
                 RequestUri = uri,
                 ResponseHeaders = responseHeaders,
-                StatusCode = statusCode
+                StatusCode = statusCode,
             };
 
             ConfigureMatcherAndRegister(interceptor);
