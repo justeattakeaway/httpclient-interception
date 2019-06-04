@@ -39,7 +39,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <VersionPrefix>2.0.1</VersionPrefix>
+    <VersionPrefix>2.0.2</VersionPrefix>
     <VersionSuffix Condition=" '$(VersionSuffix)' == '' AND '$(APPVEYOR)' == 'true' AND '$(APPVEYOR_REPO_TAG)' != 'true'">beta$([System.Convert]::ToInt32(`$(APPVEYOR_BUILD_NUMBER)`).ToString(`0000`))</VersionSuffix>
     <VersionSuffix Condition=" '$(VersionSuffix)' == '' AND '$(TF_BUILD)' == 'True'">beta$([System.Convert]::ToInt32(`$(BUILD_BUILDID)`).ToString(`0000`))</VersionSuffix>
     <VersionSuffix Condition=" '$(VersionSuffix)' == '' AND '$(TRAVIS)' == 'true'">beta$([System.Convert]::ToInt32(`$(TRAVIS_BUILD_NUMBER)`).ToString(`0000`))</VersionSuffix>
