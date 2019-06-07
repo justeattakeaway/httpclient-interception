@@ -63,8 +63,10 @@ namespace JustEat.HttpClientInterception
                 .WithContentStream(() => File.OpenRead("organization.json"))
                 .RegisterWith(_options);
 
+#pragma warning disable CA2000
             _client = _options.CreateHttpClient();
             _service = RestService.For<IGitHub>(_options.CreateHttpClient("https://api.github.com"));
+#pragma warning restore CA2000
         }
 
         [Benchmark]

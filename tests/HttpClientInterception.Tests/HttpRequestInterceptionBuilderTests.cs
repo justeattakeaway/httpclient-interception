@@ -1475,6 +1475,89 @@ namespace JustEat.HttpClientInterception
             }
         }
 
+        [Fact]
+        public static void ForRequestHeader_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            string name = "name";
+            var values = Array.Empty<string>();
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("name", () => builder.ForRequestHeader(null, string.Empty));
+            Assert.Throws<ArgumentNullException>("name", () => builder.ForRequestHeader(null, values as string[]));
+            Assert.Throws<ArgumentNullException>("name", () => builder.ForRequestHeader(null, values as IEnumerable<string>));
+            Assert.Throws<ArgumentNullException>("values", () => builder.ForRequestHeader(name, null as string[]));
+            Assert.Throws<ArgumentNullException>("values", () => builder.ForRequestHeader(name, null as IEnumerable<string>));
+        }
+
+        [Fact]
+        public static void ForRequestHeaders_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            IDictionary<string, string> headers = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("headers", () => builder.ForRequestHeaders(headers));
+        }
+
+        [Fact]
+        public static void WithContentHeader_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            string name = "name";
+            var values = Array.Empty<string>();
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("name", () => builder.WithContentHeader(null, string.Empty));
+            Assert.Throws<ArgumentNullException>("name", () => builder.WithContentHeader(null, values as string[]));
+            Assert.Throws<ArgumentNullException>("name", () => builder.WithContentHeader(null, values as IEnumerable<string>));
+            Assert.Throws<ArgumentNullException>("values", () => builder.WithContentHeader(name, null as string[]));
+            Assert.Throws<ArgumentNullException>("values", () => builder.WithContentHeader(name, null as IEnumerable<string>));
+        }
+
+        [Fact]
+        public static void WithContentHeaders_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            IDictionary<string, string> headers = null;
+            IDictionary<string, ICollection<string>> headerValues = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("headers", () => builder.WithContentHeaders(headers));
+            Assert.Throws<ArgumentNullException>("headers", () => builder.WithContentHeaders(headerValues));
+        }
+
+        [Fact]
+        public static void WithResponseHeader_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            string name = "name";
+            var values = Array.Empty<string>();
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("name", () => builder.WithResponseHeader(null, string.Empty));
+            Assert.Throws<ArgumentNullException>("name", () => builder.WithResponseHeader(null, values as string[]));
+            Assert.Throws<ArgumentNullException>("name", () => builder.WithResponseHeader(null, values as IEnumerable<string>));
+            Assert.Throws<ArgumentNullException>("values", () => builder.WithResponseHeader(name, null as string[]));
+            Assert.Throws<ArgumentNullException>("values", () => builder.WithResponseHeader(name, null as IEnumerable<string>));
+        }
+
+        [Fact]
+        public static void WithResponseHeaders_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            IDictionary<string, string> headers = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("headers", () => builder.WithResponseHeaders(headers));
+        }
+
         private sealed class CustomObject
         {
             internal enum Color
