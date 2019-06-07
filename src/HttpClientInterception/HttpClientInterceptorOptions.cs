@@ -374,7 +374,10 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         public virtual HttpClient CreateHttpClient(HttpMessageHandler innerHandler = null)
         {
+#pragma warning disable CA2000
             var handler = new InterceptingHttpMessageHandler(this, innerHandler ?? new HttpClientHandler());
+#pragma warning restore CA2000
+
             return new HttpClient(handler, true);
         }
 

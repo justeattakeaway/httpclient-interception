@@ -63,6 +63,11 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(path));
             }
 
+            if (templateValues == null)
+            {
+                throw new ArgumentNullException(nameof(templateValues));
+            }
+
             var bundle = BundleFactory.Create(path);
 
             if (bundle.Version != 1)

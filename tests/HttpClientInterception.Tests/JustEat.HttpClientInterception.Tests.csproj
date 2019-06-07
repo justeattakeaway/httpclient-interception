@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Tests for JustEat.HttpClientInterception</Description>
-    <NoWarn>$(NoWarn);CA1707;CA1812;CA2007</NoWarn>
+    <NoWarn>$(NoWarn);CA1303;CA1600;CA1707;CA1812;CA2000;CA2007</NoWarn>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Tests for JustEat.HttpClientInterception</Summary>
     <TargetFrameworks>netcoreapp2.2</TargetFrameworks>

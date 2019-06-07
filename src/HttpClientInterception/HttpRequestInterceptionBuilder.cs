@@ -314,6 +314,9 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder WithContentHeader(string name, string value)
             => WithContentHeader(name, new[] { value });
 
@@ -325,6 +328,9 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> or <paramref name="values"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder WithContentHeader(string name, params string[] values)
             => WithContentHeader(name, values as IEnumerable<string>);
 
@@ -336,14 +342,27 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> or <paramref name="values"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder WithContentHeader(string name, IEnumerable<string> values)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+
             if (_contentHeaders == null)
             {
                 _contentHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
             }
 
-            if (!_contentHeaders.TryGetValue(name, out ICollection<string> current))
+            if (!_contentHeaders.TryGetValue(name, out var current))
             {
                 _contentHeaders[name] = current = new List<string>();
             }
@@ -365,8 +384,16 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="headers"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder WithContentHeaders(IDictionary<string, ICollection<string>> headers)
         {
+            if (headers == null)
+            {
+                throw new ArgumentNullException(nameof(headers));
+            }
+
             _contentHeaders = new Dictionary<string, ICollection<string>>(headers, StringComparer.OrdinalIgnoreCase);
             return this;
         }
@@ -378,8 +405,16 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="headers"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder WithContentHeaders(IDictionary<string, string> headers)
         {
+            if (headers == null)
+            {
+                throw new ArgumentNullException(nameof(headers));
+            }
+
             var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var pair in headers)
@@ -400,6 +435,9 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder WithResponseHeader(string name, string value)
             => WithResponseHeader(name, new[] { value });
 
@@ -411,6 +449,9 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> or <paramref name="values"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder WithResponseHeader(string name, params string[] values)
             => WithResponseHeader(name, values as IEnumerable<string>);
 
@@ -422,8 +463,21 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> or <paramref name="values"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder WithResponseHeader(string name, IEnumerable<string> values)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+
             if (_responseHeaders == null)
             {
                 _responseHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
@@ -451,8 +505,16 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="headers"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder WithResponseHeaders(IDictionary<string, string> headers)
         {
+            if (headers == null)
+            {
+                throw new ArgumentNullException(nameof(headers));
+            }
+
             var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var pair in headers)
@@ -634,6 +696,9 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> is <see langword="null"/>.
+        /// </exception>
         /// <remarks>
         /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
         /// </remarks>
@@ -648,6 +713,9 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> or <paramref name="values"/> is <see langword="null"/>.
+        /// </exception>
         /// <remarks>
         /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
         /// </remarks>
@@ -662,11 +730,24 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> or <paramref name="values"/> is <see langword="null"/>.
+        /// </exception>
         /// <remarks>
         /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
         /// </remarks>
         public HttpRequestInterceptionBuilder ForRequestHeader(string name, IEnumerable<string> values)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+
             if (_requestHeaders == null)
             {
                 _requestHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
@@ -694,11 +775,19 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="headers"/> is <see langword="null"/>.
+        /// </exception>
         /// <remarks>
         /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
         /// </remarks>
         public HttpRequestInterceptionBuilder ForRequestHeaders(IDictionary<string, string> headers)
         {
+            if (headers == null)
+            {
+                throw new ArgumentNullException(nameof(headers));
+            }
+
             var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var pair in headers)
