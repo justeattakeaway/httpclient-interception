@@ -109,42 +109,17 @@ function DotNetTest {
         $nugetPath = Join-Path $env:USERPROFILE ".nuget\packages"
         $propsFile = Join-Path $solutionPath "Directory.Build.props"
 
-        $openCoverVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='OpenCover']/@Version").Node.'#text'
-        $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
-
         $reportGeneratorVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='ReportGenerator']/@Version").Node.'#text'
         $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
 
-        $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
+        $coverageOutput = Join-Path $OutputPath "coverage.cobertura.xml"
         $reportOutput = Join-Path $OutputPath "coverage"
 
         if ($null -ne $env:TF_BUILD) {
-            & $openCoverPath `
-                `"-target:$dotnetPath`" `
-                `"-targetargs:test $Project --output $OutputPath --logger trx`" `
-                -output:$coverageOutput `
-                `"-excludebyattribute:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage*`" `
-                -hideskipped:All `
-                -mergebyhash `
-                -mergeoutput `
-                -oldstyle `
-                -register:user `
-                -skipautoprops `
-                `"-filter:+[JustEat.HttpClientInterception]* -[JustEat.HttpClientInterception.Tests]*`"
+            & $dotnetPath test $Project --output $OutputPath --logger trx
         }
         else {
-            & $openCoverPath `
-                `"-target:$dotnetPath`" `
-                `"-targetargs:test $Project --output $OutputPath`" `
-                -output:$coverageOutput `
-                `"-excludebyattribute:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage*`" `
-                -hideskipped:All `
-                -mergebyhash `
-                -mergeoutput `
-                -oldstyle `
-                -register:user `
-                -skipautoprops `
-                `"-filter:+[JustEat.HttpClientInterception]* -[JustEat.HttpClientInterception.Tests]*`"
+            & $dotnetPath test $Project --output $OutputPath
         }
 
         $dotNetTestExitCode = $LASTEXITCODE
@@ -153,7 +128,7 @@ function DotNetTest {
             $reportGeneratorPath `
             `"-reports:$coverageOutput`" `
             `"-targetdir:$reportOutput`" `
-            -reporttypes:HTML`;Cobertura `
+            -reporttypes:HTML `
             -verbosity:Warning
     }
 
@@ -168,6 +143,7 @@ DotNetPack $libraryProject
 
 if ($SkipTests -eq $false) {
     Write-Host "Running tests..." -ForegroundColor Green
+    Remove-Item -Path (Join-Path $OutputPath "coverage.json") -Force -ErrorAction SilentlyContinue | Out-Null
     ForEach ($testProject in $testProjects) {
         DotNetTest $testProject
     }
