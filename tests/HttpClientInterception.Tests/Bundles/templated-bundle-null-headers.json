@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "id": "templated-string-bundle",
+  "comment": "An HTTP request bundle that uses templating for a string.",
+  "version": 1,
+  "items": [
+    {
+      "comment": "An HTTP request for a string that uses templating.",
+      "uri": "${Scheme}://www.just-eat.co.uk/",
+      "responseHeaders": {
+        "Server": [
+          "${ServerUrl}"
+        ]
+      },
+      "requestHeaders": {
+        "User-Agent": [
+          "${ApplicationName}/1.0.0"
+        ]
+      },
+      "contentHeaders": {
+        "content-type": null
+      },
+      "contentString": "<html><head><title>${CompanyName}</title></head></html>",
+      "templateValues": {
+        "ApplicationName": "My-App",
+        "CompanyName": "Just Eat",
+        "MediaType": "text/html",
+        "Scheme": "https",
+        "ServerUrl": "www.just-eat.co.uk"
+      }
+    }
+  ]
+}
