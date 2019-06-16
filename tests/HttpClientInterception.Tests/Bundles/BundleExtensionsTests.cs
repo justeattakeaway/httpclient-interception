@@ -406,5 +406,16 @@ namespace JustEat.HttpClientInterception.Bundles
             actual.ShouldBeTrue();
             errors.Count.ShouldBe(0);
         }
+
+        [Fact]
+        public static void Can_Register_Bundle_With_Null_Header_Values_In_Bundle()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+            var headers = new Dictionary<string, string>();
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "templated-bundle-null-headers.json"), headers);
+        }
     }
 }
