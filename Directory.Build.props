@@ -5,11 +5,11 @@
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
     <Compile Include="$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" />
+    <PackageReference Include="coverlet.msbuild" Version="2.6.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
     <PackageReference Include="Microsoft.NetCore.Analyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19270-01" PrivateAssets="All" />
-    <PackageReference Include="OpenCover" Version="4.7.922" PrivateAssets="All" />
     <PackageReference Include="ReportGenerator" Version="4.1.10" PrivateAssets="All" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
   </ItemGroup>
@@ -47,5 +47,14 @@
     <FileVersion Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' ">$(VersionPrefix).$(APPVEYOR_BUILD_NUMBER)</FileVersion>
     <FileVersion Condition=" '$(BUILD_BUILDID)' != '' ">$(VersionPrefix).$(BUILD_BUILDID)</FileVersion>
     <FileVersion Condition=" '$(TRAVIS_BUILD_NUMBER)' != '' ">$(VersionPrefix).$(TRAVIS_BUILD_NUMBER)</FileVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CollectCoverage>true</CollectCoverage>
+    <CoverletOutput>$(OutputPath)\</CoverletOutput>
+    <CoverletOutputFormat>cobertura,json</CoverletOutputFormat>
+    <Exclude>[*.Tests]*,[SampleApp]*,[xunit.*]*</Exclude>
+    <ExcludeByAttribute>System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
+    <MergeWith>$(CoverletOutput)coverage.json</MergeWith>
+    <Threshold>95</Threshold>
   </PropertyGroup>
 </Project>

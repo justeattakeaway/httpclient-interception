@@ -60,16 +60,15 @@ phases:
           testRunner: VSTest
           testRunTitle: Unit and integration tests ($(AgentOSName))
           testResultsFiles: $(Build.SourcesDirectory)/**/*.trx
-      - ${{ if eq(parameters.agentOS, 'Windows') }}:
-        - task: PublishCodeCoverageResults@1
-          name: PublishCodeCoverage
-          displayName: Publish code coverage
-          condition: always()
-          inputs:
-            codeCoverageTool: cobertura
-            failIfCoverageEmpty: true
-            reportDirectory: $(Build.StagingDirectory)/**/coverage
-            summaryFileLocation: $(Build.StagingDirectory)/**/Cobertura.xml
+      - task: PublishCodeCoverageResults@1
+        name: PublishCodeCoverage
+        displayName: Publish code coverage
+        condition: always()
+        inputs:
+          codeCoverageTool: cobertura
+          failIfCoverageEmpty: true
+          reportDirectory: $(Build.StagingDirectory)/**/coverage
+          summaryFileLocation: $(Build.StagingDirectory)/coverage.cobertura.xml
       - task: PublishBuildArtifacts@1
         displayName: Publish build artifacts
         condition: eq(variables['System.PullRequest.IsFork'], false)
