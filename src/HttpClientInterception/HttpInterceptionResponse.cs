@@ -12,6 +12,8 @@ namespace JustEat.HttpClientInterception
 {
     internal sealed class HttpInterceptionResponse
     {
+        internal Func<HttpContent, Task<bool>> ContentMatcher { get; set; }
+
         internal Predicate<HttpRequestMessage> UserMatcher { get; set; }
 
         internal Matching.RequestMatcher InternalMatcher { get; set; }

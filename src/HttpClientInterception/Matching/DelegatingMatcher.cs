@@ -1,8 +1,9 @@
-// Copyright (c) Just Eat, 2017. All rights reserved.
+﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace JustEat.HttpClientInterception.Matching
 {
@@ -27,6 +28,7 @@ namespace JustEat.HttpClientInterception.Matching
         }
 
         /// <inheritdoc />
-        public override bool IsMatch(HttpRequestMessage request) => _predicate(request);
+        public override Task<bool> IsMatchAsync(HttpRequestMessage request)
+            => Task.FromResult(_predicate(request));
     }
 }
