@@ -394,7 +394,7 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         private static string BuildKey(HttpInterceptionResponse interceptor)
         {
-            if (interceptor.UserMatcher != null)
+            if (interceptor.UserMatcher != null || interceptor.ContentMatcher != null)
             {
                 // Use the internal matcher's hash code as UserMatcher (a delegate)
                 // will always return the hash code. See https://stackoverflow.com/q/6624151/1064169

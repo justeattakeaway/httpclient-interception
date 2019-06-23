@@ -1976,6 +1976,48 @@ namespace JustEat.HttpClientInterception
             actual.ShouldBe(@"{""message"":""Hi Bob!""}");
         }
 
+        [Fact]
+        public static async Task Builder_For_Posted_Json_To_Match_Intercepts_Requests_That_Differ_By_Content_Only()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration();
+
+            new HttpRequestInterceptionBuilder()
+                .ForUrl("https://chat.local/send")
+                .ForPost()
+                .ForContent(async (content) => await content.ReadAsStringAsync() == @"{""message"":""Who are you?""}")
+                .Responds()
+                .WithJsonContent(new { message = "My name is Alice, what's your name?" })
+                .RegisterWith(options);
+
+            new HttpRequestInterceptionBuilder()
+                .ForUrl("https://chat.local/send")
+                .ForPost()
+                .ForContent(async (content) => await content.ReadAsStringAsync() == @"{""message"":""Hello, Alice - I'm Bob.""}")
+                .Responds()
+                .WithJsonContent(new { message = "Hi Bob!" })
+                .RegisterWith(options);
+
+            // Act
+            string actual = await HttpAssert.PostAsync(
+                options,
+                "https://chat.local/send",
+                new { message = "Who are you?" });
+
+            // Assert
+            actual.ShouldBe(@"{""message"":""My name is Alice, what's your name?""}");
+
+            // Act
+            actual = await HttpAssert.PostAsync(
+                options,
+                "https://chat.local/send",
+                new { message = "Hello, Alice - I'm Bob." });
+
+            // Assert
+            actual.ShouldBe(@"{""message"":""Hi Bob!""}");
+        }
+
         private sealed class CustomObject
         {
             internal enum Color
