@@ -206,13 +206,13 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(content));
             }
 
-            Func<byte[]> contentFactory = () =>
+            byte[] ContentFactory()
             {
                 string json = JsonConvert.SerializeObject(content);
                 return Encoding.UTF8.GetBytes(json);
-            };
+            }
 
-            return options.Register(HttpMethod.Get, new Uri(uriString), contentFactory, statusCode);
+            return options.Register(HttpMethod.Get, new Uri(uriString), ContentFactory, statusCode);
         }
 
         /// <summary>

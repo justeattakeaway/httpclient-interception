@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace JustEat.HttpClientInterception.Matching
 {
@@ -42,7 +43,7 @@ namespace JustEat.HttpClientInterception.Matching
         }
 
         /// <inheritdoc />
-        public override bool IsMatch(HttpRequestMessage request)
+        public override async Task<bool> IsMatchAsync(HttpRequestMessage request)
         {
             if (request.RequestUri == null || request.Method != _registration.Method)
             {
@@ -56,12 +57,19 @@ namespace JustEat.HttpClientInterception.Matching
                 return false;
             }
 
+            bool isMatch = true;
+
             if (_registration.RequestHeaders != null)
             {
-                return IsMatchForHeaders(request.Headers);
+                isMatch = IsMatchForHeaders(request.Headers);
             }
 
-            return true;
+            if (isMatch && _registration.ContentMatcher != null)
+            {
+                isMatch = await _registration.ContentMatcher(request.Content).ConfigureAwait(false);
+            }
+
+            return isMatch;
         }
 
         /// <summary>

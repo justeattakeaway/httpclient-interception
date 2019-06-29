@@ -344,10 +344,14 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(request));
             }
 
-            if (!TryGetResponse(request, out HttpInterceptionResponse response))
+            var matchResult = await TryGetResponseAsync(request).ConfigureAwait(false);
+
+            if (!matchResult.Item1)
             {
                 return null;
             }
+
+            var response = matchResult.Item2;
 
             if (response.OnIntercepted != null && !await response.OnIntercepted(request).ConfigureAwait(false))
             {
@@ -390,7 +394,7 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         private static string BuildKey(HttpInterceptionResponse interceptor)
         {
-            if (interceptor.UserMatcher != null)
+            if (interceptor.UserMatcher != null || interceptor.ContentMatcher != null)
             {
                 // Use the internal matcher's hash code as UserMatcher (a delegate)
                 // will always return the hash code. See https://stackoverflow.com/q/6624151/1064169
@@ -484,15 +488,21 @@ namespace JustEat.HttpClientInterception
             return result;
         }
 
-        private bool TryGetResponse(HttpRequestMessage request, out HttpInterceptionResponse response)
+        private async Task<Tuple<bool, HttpInterceptionResponse>> TryGetResponseAsync(HttpRequestMessage request)
         {
-            response = _mappings.Values
+            var responses = _mappings.Values
                 .OrderByDescending((p) => p.Priority.HasValue)
-                .ThenBy((p) => p.Priority)
-                .Where((p) => p.InternalMatcher.IsMatch(request))
-                .FirstOrDefault();
+                .ThenBy((p) => p.Priority);
 
-            return response != null;
+            foreach (var response in responses)
+            {
+                if (await response.InternalMatcher.IsMatchAsync(request).ConfigureAwait(false))
+                {
+                    return Tuple.Create(true, response);
+                }
+            }
+
+            return Tuple.Create<bool, HttpInterceptionResponse>(false, null);
         }
 
         private void ConfigureMatcherAndRegister(HttpInterceptionResponse registration)

@@ -21,6 +21,8 @@ namespace JustEat.HttpClientInterception
 
         private Func<Task<byte[]>> _contentFactory;
 
+        private Func<HttpContent, Task<bool>> _contentMatcher;
+
         private Func<Task<Stream>> _contentStream;
 
         private IDictionary<string, ICollection<string>> _contentHeaders;
@@ -816,11 +818,31 @@ namespace JustEat.HttpClientInterception
             return this;
         }
 
+        /// <summary>
+        /// Configures the builder to match any request whose HTTP content meets the criteria defined by the specified predicate.
+        /// </summary>
+        /// <param name="predicate">
+        /// A delegate to a method which returns <see langword="true"/> if the
+        /// request's HTTP content is considered a match; otherwise <see langword="false"/>.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// Pass a value of <see langword="null"/> to remove a previously-registered custom content matching predicate.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder ForContent(Func<HttpContent, Task<bool>> predicate)
+        {
+            _contentMatcher = predicate;
+            return this;
+        }
+
         internal HttpInterceptionResponse Build()
         {
             var response = new HttpInterceptionResponse()
             {
                 ContentFactory = _contentFactory ?? EmptyContentFactory,
+                ContentMatcher = _contentMatcher,
                 ContentStream = _contentStream,
                 ContentMediaType = _mediaType,
                 HasCustomPort = _hasCustomPort,

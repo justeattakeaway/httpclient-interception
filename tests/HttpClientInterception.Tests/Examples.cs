@@ -171,21 +171,23 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var builder = new HttpRequestInterceptionBuilder()
+                .Requests()
                 .ForPost()
                 .ForHttps()
                 .ForHost("public.je-apis.com")
                 .ForPath("consumer")
-                .WithStatus(HttpStatusCode.Created)
-                .WithContent(@"{ ""id"": 123 }")
-                .WithInterceptionCallback(
-                    async (request) =>
+                .ForContent(
+                    async (requestContent) =>
                     {
-                        string requestBody = await request.Content.ReadAsStringAsync();
+                        string requestBody = await requestContent.ReadAsStringAsync();
 
                         var body = JObject.Parse(requestBody);
 
                         return body.Value<string>("FirstName") == "John";
-                    });
+                    })
+                .Responds()
+                .WithStatus(HttpStatusCode.Created)
+                .WithContent(@"{ ""id"": 123 }");
 
             var options = new HttpClientInterceptorOptions()
                 .ThrowsOnMissingRegistration()

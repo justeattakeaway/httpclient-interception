@@ -801,7 +801,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var options = new HttpClientInterceptorOptions();
-            var builder = new HttpRequestInterceptionBuilder()
+            new HttpRequestInterceptionBuilder()
                 .Requests().ForPost().ForUrl(requestUri)
                 .Responds().WithFormContent(parameters)
                 .RegisterWith(options);
@@ -1093,9 +1093,8 @@ namespace JustEat.HttpClientInterception
                 .RegisterWith(options);
 
             // Change to a different scheme without an explicit port
-            builder = builder
-                .ForHttp()
-                .RegisterWith(options);
+            builder.ForHttp()
+                   .RegisterWith(options);
 
             // Act and Assert
             await HttpAssert.GetAsync(options, "http://api.github.com/orgs/justeat");
@@ -1135,10 +1134,9 @@ namespace JustEat.HttpClientInterception
                 .RegisterWith(options);
 
             // Restore default scheme and port
-            builder = builder
-                .ForHttp()
-                .ForPort(-1)
-                .RegisterWith(options);
+            builder.ForHttp()
+                   .ForPort(-1)
+                   .RegisterWith(options);
 
             // Act and Assert
             await HttpAssert.GetAsync(options, "https://api.github.com:123/orgs/justeat");
@@ -1556,6 +1554,468 @@ namespace JustEat.HttpClientInterception
 
             // Act and Assert
             Assert.Throws<ArgumentNullException>("headers", () => builder.WithResponseHeaders(headers));
+        }
+
+        [Fact]
+        public static void ForFormContent_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            var parameters = new Dictionary<string, string>();
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).ForFormContent(parameters));
+            Assert.Throws<ArgumentNullException>("parameters", () => builder.ForFormContent(null));
+        }
+
+        [Fact]
+        public static void ForContent_Validates_Parameters()
+        {
+            // Arrange
+            bool Predicate(HttpContent content) => false;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).ForContent(Predicate));
+        }
+
+        [Fact]
+        public static async Task Builder_For_Posted_Encoded_Form_To_Match_Intercepts_Request()
+        {
+            // Arrange
+            // From https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SetQueueAttributes.html
+            var expectedForm = new Dictionary<string, string>()
+            {
+                { "Action", "SetQueueAttributes" },
+                { "Attribute.Name", "VisibilityTimeout" },
+                { "Attribute.Value", "35" },
+                { "Expires", "2020-04-18T22:52:43PST" },
+                { "Version", "2012-11-05" },
+            };
+
+            // Extra parameters to validate matches a subset
+            var actualForm = new Dictionary<string, string>()
+            {
+                { "Foo", "Bar" },
+                { "Action", "SetQueueAttributes" },
+                { "Attribute.Name", "VisibilityTimeout" },
+                { "Attribute.Value", "35" },
+                { "Expires", "2020-04-18T22:52:43PST" },
+                { "Version", "2012-11-05" },
+                { "Fizz", "Buzz" },
+            };
+
+            string expectedXml = @"<SetQueueAttributesResponse>
+    <ResponseMetadata>
+        <RequestId>e5cca473-4fc0-4198-a451-8abb94d02c75</RequestId>
+    </ResponseMetadata>
+</SetQueueAttributesResponse>";
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHttps()
+                .ForPost()
+                .ForHost("sqs.us-east-2.amazonaws.com")
+                .ForPath("/123456789012/MyQueue/")
+                .ForFormContent(expectedForm)
+                .Responds()
+                .WithContent(expectedXml);
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            string actualXml;
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act
+                using (var content = new FormUrlEncodedContent(actualForm))
+                {
+                    actualXml = await HttpAssert.SendAsync(
+                        options,
+                        HttpMethod.Post,
+                        "https://sqs.us-east-2.amazonaws.com/123456789012/MyQueue/",
+                        content);
+                }
+            }
+
+            // Assert
+            actualXml.ShouldBe(expectedXml);
+        }
+
+        [Fact]
+        public static async Task Builder_For_Posted_Encoded_Form_To_Match_With_Missing_Parameter_Does_Not_Intercept_Request()
+        {
+            // Arrange
+            var actualForm = new Dictionary<string, string>()
+            {
+                { "Foo", "Bar" },
+            };
+
+            var expectedForm = new Dictionary<string, string>()
+            {
+                { "Bar", "Foo" },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl("https://test.local/form")
+                .ForPost()
+                .ForFormContent(expectedForm)
+                .Responds()
+                .WithContent("<xml/>");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                using (var content = new FormUrlEncodedContent(actualForm))
+                {
+                    // Act
+                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+
+                    // Assert
+                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
+                }
+            }
+        }
+
+        [Fact]
+        public static async Task Builder_For_Posted_Encoded_Form_To_Match_With_Missing_Parameters_Does_Not_Intercept_Request()
+        {
+            // Arrange
+            var actualForm = new Dictionary<string, string>()
+            {
+                { "Foo", "Bar" },
+            };
+
+            var expectedForm = new Dictionary<string, string>()
+            {
+                { "Foo", "Bar" },
+                { "Baz", "Qux" },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl("https://test.local/form")
+                .ForPost()
+                .ForFormContent(expectedForm)
+                .Responds()
+                .WithContent("<xml/>");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                using (var content = new FormUrlEncodedContent(actualForm))
+                {
+                    // Act
+                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+
+                    // Assert
+                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
+                }
+            }
+        }
+
+        [Fact]
+        public static async Task Builder_For_Posted_Encoded_Form_To_Match_With_No_Parameters_Does_Not_Intercept_Request()
+        {
+            // Arrange
+            var actualForm = new Dictionary<string, string>();
+
+            var expectedForm = new Dictionary<string, string>()
+            {
+                { "Foo", "Bar" },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl("https://test.local/form")
+                .ForPost()
+                .ForFormContent(expectedForm)
+                .Responds()
+                .WithContent("<xml/>");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                using (var content = new FormUrlEncodedContent(actualForm))
+                {
+                    // Act
+                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+
+                    // Assert
+                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
+                }
+            }
+        }
+
+        [Fact]
+        public static async Task Builder_For_Posted_Encoded_Form_To_Match_With_Incorrect_Parameter_Does_Not_Intercept_Request()
+        {
+            // Arrange
+            var actualForm = new Dictionary<string, string>()
+            {
+                { "Foo", "Bar" },
+                { "Fizz", "Buzz" },
+            };
+
+            var expectedForm = new Dictionary<string, string>()
+            {
+                { "Foo", "Bar" },
+                { "Fizz", "Buzzz" },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl("https://test.local/form")
+                .ForPost()
+                .ForFormContent(expectedForm)
+                .Responds()
+                .WithContent("<xml/>");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                using (var content = new FormUrlEncodedContent(actualForm))
+                {
+                    // Act
+                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+
+                    // Assert
+                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
+                }
+            }
+        }
+
+        [Fact]
+        public static async Task Builder_For_Posted_Encoded_Form_To_Match_With_Incorrect_Parameter_Case_Does_Not_Intercept_Request()
+        {
+            // Arrange
+            var expectedForm = new Dictionary<string, string>()
+            {
+                { "Foo", "Bar" },
+            };
+
+            var actualForm = new Dictionary<string, string>()
+            {
+                { "Foo", "bar" },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl("https://test.local/form")
+                .ForPost()
+                .ForFormContent(expectedForm)
+                .Responds()
+                .WithContent("<xml/>");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                using (var content = new FormUrlEncodedContent(actualForm))
+                {
+                    // Act
+                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+
+                    // Assert
+                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
+                }
+            }
+        }
+
+        [Fact]
+        public static async Task Builder_For_Posted_Encoded_Form_To_Match_Does_Not_Intercept_Request_If_Not_Url_Encoded_Form_String()
+        {
+            // Arrange
+            var expectedForm = new Dictionary<string, string>()
+            {
+                { "Foo", "Bar" },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl("https://test.local/post")
+                .ForPost()
+                .ForFormContent(expectedForm)
+                .Responds()
+                .WithContent("<xml/>");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => HttpAssert.PostAsync(options, "https://test.local/post", new { message = "Hello" }));
+
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
+        }
+
+        [Fact]
+        public static async Task Builder_For_Posted_Encoded_Form_To_Match_Does_Not_Intercept_Request_If_Not_Url_Encoded_Form_Bytes()
+        {
+            // Arrange
+            var expectedForm = new Dictionary<string, string>()
+            {
+                { "Foo", "Bar" },
+            };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl("https://test.local/post")
+                .ForPost()
+                .ForFormContent(expectedForm)
+                .Responds()
+                .WithContent("<xml/>");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            using (var stream = new MemoryStream())
+            {
+                using (var content = new StreamContent(stream))
+                {
+                    // Act
+                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/post", content));
+
+                    // Assert
+                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
+                }
+            }
+        }
+
+        [Fact]
+        public static async Task Builder_ForContent_Clears_Matcher_If_Null_Synchronous()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl("https://test.local/post")
+                .ForPost()
+                .ForContent((content) => false)
+                .ForContent(null as Predicate<HttpContent>)
+                .Responds()
+                .WithContent("{}");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            // Act
+            string actual = await HttpAssert.PostAsync(
+                options,
+                "https://test.local/post",
+                new { });
+
+            // Assert
+            actual.ShouldBe("{}");
+        }
+
+        [Fact]
+        public static async Task Builder_ForContent_Clears_Matcher_If_Null_Asynchronous()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl("https://test.local/post")
+                .ForPost()
+                .ForContent((content) => Task.FromResult(false))
+                .ForContent(null as Func<HttpContent, Task<bool>>)
+                .Responds()
+                .WithContent("{}");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            // Act
+            string actual = await HttpAssert.PostAsync(
+                options,
+                "https://test.local/post",
+                new { });
+
+            // Assert
+            actual.ShouldBe("{}");
+        }
+
+        [Fact]
+        public static async Task Builder_For_Posted_Json_To_Match_Intercepts_Request()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl("https://test.local/post")
+                .ForPost()
+                .ForContent((content) => content.ReadAsStringAsync().Result == @"{""message"":""Hello, Alice""}")
+                .Responds()
+                .WithJsonContent(new { message = "Hi Bob!" });
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            // Act
+            string actual = await HttpAssert.PostAsync(
+                options,
+                "https://test.local/post",
+                new { message = "Hello, Alice" });
+
+            // Assert
+            actual.ShouldBe(@"{""message"":""Hi Bob!""}");
+        }
+
+        [Fact]
+        public static async Task Builder_For_Posted_Json_To_Match_Intercepts_Requests_That_Differ_By_Content_Only()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration();
+
+            new HttpRequestInterceptionBuilder()
+                .ForUrl("https://chat.local/send")
+                .ForPost()
+                .ForContent(async (content) => await content.ReadAsStringAsync() == @"{""message"":""Who are you?""}")
+                .Responds()
+                .WithJsonContent(new { message = "My name is Alice, what's your name?" })
+                .RegisterWith(options);
+
+            new HttpRequestInterceptionBuilder()
+                .ForUrl("https://chat.local/send")
+                .ForPost()
+                .ForContent(async (content) => await content.ReadAsStringAsync() == @"{""message"":""Hello, Alice - I'm Bob.""}")
+                .Responds()
+                .WithJsonContent(new { message = "Hi Bob!" })
+                .RegisterWith(options);
+
+            // Act
+            string actual = await HttpAssert.PostAsync(
+                options,
+                "https://chat.local/send",
+                new { message = "Who are you?" });
+
+            // Assert
+            actual.ShouldBe(@"{""message"":""My name is Alice, what's your name?""}");
+
+            // Act
+            actual = await HttpAssert.PostAsync(
+                options,
+                "https://chat.local/send",
+                new { message = "Hello, Alice - I'm Bob." });
+
+            // Assert
+            actual.ShouldBe(@"{""message"":""Hi Bob!""}");
         }
 
         private sealed class CustomObject

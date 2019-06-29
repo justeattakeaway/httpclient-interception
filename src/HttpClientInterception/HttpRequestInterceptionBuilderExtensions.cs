@@ -4,9 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 
 namespace JustEat.HttpClientInterception
@@ -294,6 +296,119 @@ namespace JustEat.HttpClientInterception
             options.Register(builder);
 
             return builder;
+        }
+
+        /// <summary>
+        /// Configures the builder to match any request whose HTTP content meets the criteria defined by the specified predicate.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <param name="predicate">
+        /// A delegate to a method which returns <see langword="true"/> if the
+        /// request's HTTP content is considered a match; otherwise <see langword="false"/>.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="builder"/> is <see langword="null"/>.
+        /// </exception>
+        /// <remarks>
+        /// Pass a value of <see langword="null"/> to remove a previously-registered custom content matching predicate.
+        /// </remarks>
+        public static HttpRequestInterceptionBuilder ForContent(
+            this HttpRequestInterceptionBuilder builder,
+            Predicate<HttpContent> predicate)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (predicate == null)
+            {
+                return builder.ForContent(null as Func<HttpContent, Task<bool>>);
+            }
+            else
+            {
+                return builder.ForContent((content) => Task.FromResult(predicate(content)));
+            }
+        }
+
+        /// <summary>
+        /// Sets the parameters to use as the form URL-encoded response content.
+        /// </summary>
+        /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+        /// <param name="parameters">The parameters to use for the form URL-encoded content.</param>
+        /// <returns>
+        /// The value specified by <paramref name="builder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="builder"/> or <paramref name="parameters"/> is <see langword="null"/>.
+        /// </exception>
+        /// <remarks>
+        /// <para>
+        /// Matching is based on a subset rather than an exact match. If all the parameters and values
+        /// specified are found in the request's body the request will be considered a match, even if
+        /// there are other parameters contained in the request's body. Value matching is case-sensitive.
+        /// </para>
+        /// <para>
+        /// For more specific matching to the request body parameters, use the <see cref="HttpRequestInterceptionBuilder.ForContent(Func{HttpContent, Task{bool}})"/>
+        /// method to provide a custom predicate that implements your content matching requirements.
+        /// </para>
+        /// </remarks>
+        public static HttpRequestInterceptionBuilder ForFormContent(
+            this HttpRequestInterceptionBuilder builder,
+            IEnumerable<KeyValuePair<string, string>> parameters)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            async Task<bool> IsMatchAsync(HttpContent content)
+            {
+                // FormUrlEncodedContent derives from ByteArrayContent so use the
+                // least specific type for more flexibility (e.g. also StringContent).
+                // Other content types are not supported as they may be iterating over
+                // a stream which might not support arbitrary seeking if the request
+                // is not a match and needs to be sent to the URL originally specified.
+                if (!(content is ByteArrayContent))
+                {
+                    return false;
+                }
+
+                string bodyMaybeForm;
+
+                using (var stream = new MemoryStream())
+                {
+                    await content.CopyToAsync(stream).ConfigureAwait(false);
+                    bodyMaybeForm = Encoding.UTF8.GetString(stream.ToArray());
+                }
+
+                // This is tolerant to non-well-formed content, so even JSON
+                // parses without issues, it then just won't match the input.
+                var query = QueryHelpers.ParseQuery(bodyMaybeForm);
+
+                bool matched = true;
+
+                foreach (var pair in parameters)
+                {
+                    if (!query.TryGetValue(pair.Key, out var value) ||
+                        !string.Equals(pair.Value, value.ToString(), StringComparison.Ordinal))
+                    {
+                        return false;
+                    }
+                }
+
+                return matched;
+            }
+
+            return builder.ForContent(IsMatchAsync);
         }
     }
 }
