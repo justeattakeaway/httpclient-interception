@@ -33,7 +33,7 @@ dotnet add package JustEat.HttpClientInterception
 
 ##### Fluent API
 
-Below is a minimal example of intercepting a request to an HTTP API for a JSON resource to return a custom response using the fluent API:
+Below is a minimal example of intercepting an HTTP GET request to an API for a JSON resource to return a custom response using the fluent API:
 
 ```csharp
 // using JustEat.HttpClientInterception;
