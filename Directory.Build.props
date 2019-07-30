@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <AnalyzersVersion>2.9.3</AnalyzersVersion>
+    <AnalyzersVersion>2.9.4</AnalyzersVersion>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
