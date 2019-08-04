@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 namespace JustEat.HttpClientInterception
 {
     /// <summary>
-    /// A class containing extenion methods for the <see cref="HttpClientInterceptorOptions"/> class. This class cannot be inherited.
+    /// A class containing extention methods for the <see cref="HttpClientInterceptorOptions"/> class. This class cannot be inherited.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class HttpClientInterceptorOptionsExtensions
