@@ -9,8 +9,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using Xunit;
@@ -122,30 +120,6 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldBe(@"{""mode"":1}");
-        }
-
-        [Fact]
-        public static async Task Builder_Uses_Specified_Json_Serializer()
-        {
-            // Arrange
-            var requestUri = "https://google.com/";
-            var expected = new { mode = EventResetMode.ManualReset };
-
-            var settings = new JsonSerializerSettings();
-            settings.Converters.Add(new StringEnumConverter());
-
-            var builder = new HttpRequestInterceptionBuilder()
-                .ForPost()
-                .ForUrl(requestUri)
-                .WithJsonContent(expected, settings);
-
-            var options = new HttpClientInterceptorOptions().Register(builder);
-
-            // Act
-            string actual = await HttpAssert.PostAsync(options, requestUri, new { });
-
-            // Assert
-            actual.ShouldBe(@"{""mode"":""ManualReset""}");
         }
 
         [Fact]

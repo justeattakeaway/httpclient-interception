@@ -203,7 +203,6 @@ namespace JustEat.HttpClientInterception
         /// </summary>
         /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
         /// <param name="content">The object to serialize as JSON as the content.</param>
-        /// <param name="settings">The optional settings to use to serialize <paramref name="content"/> as JSON.</param>
         /// <returns>
         /// The value specified by <paramref name="builder"/>.
         /// </returns>
@@ -212,8 +211,7 @@ namespace JustEat.HttpClientInterception
         /// </exception>
         public static HttpRequestInterceptionBuilder WithJsonContent(
             this HttpRequestInterceptionBuilder builder,
-            object content,
-            JsonSerializerSettings settings = null)
+            object content)
         {
             if (builder == null)
             {
@@ -227,7 +225,7 @@ namespace JustEat.HttpClientInterception
 
             byte[] ContentFactory()
             {
-                string json = JsonConvert.SerializeObject(content, settings ?? new JsonSerializerSettings());
+                string json = JsonConvert.SerializeObject(content);
                 return Encoding.UTF8.GetBytes(json);
             }
 
