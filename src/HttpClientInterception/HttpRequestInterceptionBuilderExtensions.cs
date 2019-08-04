@@ -186,10 +186,8 @@ namespace JustEat.HttpClientInterception
 
             async Task<byte[]> ContentFactoryAsync()
             {
-                using (var content = new FormUrlEncodedContent(parameters))
-                {
-                    return await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                }
+                using var content = new FormUrlEncodedContent(parameters);
+                return await content.ReadAsByteArrayAsync().ConfigureAwait(false);
             }
 
             return builder

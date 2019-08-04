@@ -130,7 +130,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uriToRequest);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request);
+            using HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             (actual == null).ShouldBe(expectNull);
@@ -645,7 +645,7 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(method, uri, contentFactory: () => throw new NotImplementedException());
 
-            var request = new HttpRequestMessage(method, uri);
+            using var request = new HttpRequestMessage(method, uri);
 
             // Act and Assert
             await Assert.ThrowsAsync<NotImplementedException>(() => options.GetResponseAsync(request));
@@ -661,7 +661,7 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(method, uri, contentStream: () => throw new NotImplementedException());
 
-            var request = new HttpRequestMessage(method, uri);
+            using var request = new HttpRequestMessage(method, uri);
 
             // Act and Assert
             await Assert.ThrowsAsync<NotImplementedException>(() => options.GetResponseAsync(request));

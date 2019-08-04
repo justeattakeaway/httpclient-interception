@@ -42,10 +42,8 @@ namespace JustEat.HttpClientInterception
         {
             string json = JsonConvert.SerializeObject(content);
 
-            using (var httpContent = new StringContent(json, Encoding.UTF8, mediaType ?? "application/json"))
-            {
-                return await SendAsync(target, HttpMethod.Post, requestUri, httpContent, statusCode, mediaType);
-            }
+            using var httpContent = new StringContent(json, Encoding.UTF8, mediaType ?? "application/json");
+            return await SendAsync(target, HttpMethod.Post, requestUri, httpContent, statusCode, mediaType);
         }
 
         internal static async Task<string> SendAsync(
@@ -57,41 +55,36 @@ namespace JustEat.HttpClientInterception
             string mediaType = null,
             IDictionary<string, string> headers = null)
         {
-            using (var httpClient = target.CreateHttpClient(ErroringHandler.Handler))
+            using var httpClient = target.CreateHttpClient(ErroringHandler.Handler);
+            using var request = new HttpRequestMessage(httpMethod, requestUri);
+
+            if (content != null)
             {
-                using (var request = new HttpRequestMessage(httpMethod, requestUri))
+                request.Content = content;
+            }
+
+            if (headers != null)
+            {
+                foreach (var pair in headers)
                 {
-                    if (content != null)
-                    {
-                        request.Content = content;
-                    }
-
-                    if (headers != null)
-                    {
-                        foreach (var pair in headers)
-                        {
-                            request.Headers.Add(pair.Key, pair.Value);
-                        }
-                    }
-
-                    using (var response = await httpClient.SendAsync(request))
-                    {
-                        response.StatusCode.ShouldBe(statusCode);
-
-                        if (mediaType != null)
-                        {
-                            response.Content.Headers.ContentType.MediaType.ShouldBe(mediaType);
-                        }
-
-                        if (response.Content == null)
-                        {
-                            return null;
-                        }
-
-                        return await response.Content.ReadAsStringAsync();
-                    }
+                    request.Headers.Add(pair.Key, pair.Value);
                 }
             }
+
+            using var response = await httpClient.SendAsync(request);
+            response.StatusCode.ShouldBe(statusCode);
+
+            if (mediaType != null)
+            {
+                response.Content.Headers.ContentType.MediaType.ShouldBe(mediaType);
+            }
+
+            if (response.Content == null)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadAsStringAsync();
         }
 
         private sealed class ErroringHandler : HttpMessageHandler
