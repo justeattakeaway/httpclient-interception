@@ -17,7 +17,7 @@ namespace SampleApp
             services.AddHttpClients();
 
             services
-                .AddControllersWithViews()
+                .AddControllers()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions((p) => p.JsonSerializerOptions.WriteIndented = true);
         }
