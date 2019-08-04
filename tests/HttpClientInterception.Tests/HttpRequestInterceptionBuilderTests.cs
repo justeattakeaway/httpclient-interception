@@ -7,8 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Shouldly;
 using Xunit;
@@ -103,7 +106,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task Builder_Uses_Default_Json_Serializer()
+        public static async Task WithJsonContent_Uses_Default_Json_Serializer()
         {
             // Arrange
             var requestUri = "https://google.com/";
@@ -120,6 +123,94 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldBe(@"{""mode"":1}");
+        }
+
+        [Fact]
+        public static async Task WithNewtonsoftJsonContent_Uses_Default_Json_Serializer()
+        {
+            // Arrange
+            var requestUri = "https://google.com/";
+            var expected = new { mode = EventResetMode.ManualReset };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(requestUri)
+                .WithNewtonsoftJsonContent(expected);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.GetAsync(options, requestUri);
+
+            // Assert
+            actual.ShouldBe(@"{""mode"":1}");
+        }
+
+        [Fact]
+        public static async Task WithSystemTextJsonContent_Uses_Default_Json_Serializer()
+        {
+            // Arrange
+            var requestUri = "https://google.com/";
+            var expected = new { mode = EventResetMode.ManualReset };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(requestUri)
+                .WithSystemTextJsonContent(expected);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.GetAsync(options, requestUri);
+
+            // Assert
+            actual.ShouldBe(@"{""mode"":1}");
+        }
+
+        [Fact]
+        public static async Task Builder_Uses_Specified_Json_Serializer_Settings()
+        {
+            // Arrange
+            var requestUri = "https://google.com/";
+            var expected = new { mode = EventResetMode.ManualReset };
+
+            var settings = new JsonSerializerSettings();
+            settings.Converters.Add(new StringEnumConverter());
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUrl(requestUri)
+                .WithNewtonsoftJsonContent(expected, settings);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.PostAsync(options, requestUri, new { });
+
+            // Assert
+            actual.ShouldBe(@"{""mode"":""ManualReset""}");
+        }
+
+        [Fact]
+        public static async Task Builder_Uses_Specified_Json_Serializer_Options()
+        {
+            // Arrange
+            var requestUri = "https://google.com/";
+            var expected = new { mode = EventResetMode.ManualReset };
+
+            var settings = new JsonSerializerOptions();
+            settings.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUrl(requestUri)
+                .WithSystemTextJsonContent(expected, settings);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.PostAsync(options, requestUri, new { });
+
+            // Assert
+            actual.ShouldBe(@"{""mode"":""ManualReset""}");
         }
 
         [Fact]
@@ -797,6 +888,30 @@ namespace JustEat.HttpClientInterception
             // Act and Assert
             Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).WithJsonContent(content));
             Assert.Throws<ArgumentNullException>("content", () => builder.WithJsonContent(content));
+        }
+
+        [Fact]
+        public static void WithNewtonsoftJsonContent_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            object content = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).WithNewtonsoftJsonContent(content));
+            Assert.Throws<ArgumentNullException>("content", () => builder.WithNewtonsoftJsonContent(content));
+        }
+
+        [Fact]
+        public static void WithSystemTextJsonContent_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            object content = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).WithSystemTextJsonContent(content));
+            Assert.Throws<ArgumentNullException>("content", () => builder.WithSystemTextJsonContent(content));
         }
 
         [Fact]

@@ -9,7 +9,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
 
 namespace JustEat.HttpClientInterception
 {
@@ -213,25 +212,7 @@ namespace JustEat.HttpClientInterception
             this HttpRequestInterceptionBuilder builder,
             object content)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (content == null)
-            {
-                throw new ArgumentNullException(nameof(content));
-            }
-
-            byte[] ContentFactory()
-            {
-                string json = JsonConvert.SerializeObject(content);
-                return Encoding.UTF8.GetBytes(json);
-            }
-
-            return builder
-                .WithMediaType(HttpClientInterceptorOptions.JsonMediaType)
-                .WithContent(ContentFactory);
+            return builder.WithNewtonsoftJsonContent(content);
         }
 
         /// <summary>
