@@ -155,7 +155,11 @@ namespace JustEat.HttpClientInterception
                 }
                 catch (Exception)
                 {
+#if NETCOREAPP3_0
                     await stream.DisposeAsync();
+#else
+                    stream.Dispose();
+#endif
                     throw;
                 }
             }

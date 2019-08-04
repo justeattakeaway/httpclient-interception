@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
     <AnalyzersVersion>2.9.4</AnalyzersVersion>
+    <MicrosoftNETFrameworkReferenceAssembliesVersion>1.0.0-preview.2</MicrosoftNETFrameworkReferenceAssembliesVersion>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
