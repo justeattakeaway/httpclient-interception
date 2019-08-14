@@ -382,7 +382,7 @@ namespace JustEat.HttpClientInterception.Bundles
             options.RegisterBundle(Path.Join("Bundles", "skipped-item-bundle.json"));
 
             // Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(
+            await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/"));
         }
 

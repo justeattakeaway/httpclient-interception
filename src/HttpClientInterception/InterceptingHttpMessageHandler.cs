@@ -54,7 +54,7 @@ namespace JustEat.HttpClientInterception
                 await _options.OnSend(request).ConfigureAwait(false);
             }
 
-            HttpResponseMessage response = await _options.GetResponseAsync(request).ConfigureAwait(false);
+            var response = await _options.GetResponseAsync(request).ConfigureAwait(false);
 
             if (response == null && _options.OnMissingRegistration != null)
             {
@@ -68,7 +68,9 @@ namespace JustEat.HttpClientInterception
 
             if (_options.ThrowOnMissingRegistration)
             {
-                throw new InvalidOperationException($"No HTTP response is configured for {request.Method.Method} {request.RequestUri}.");
+                throw new HttpRequestNotInterceptedException(
+                    $"No HTTP response is configured for {request.Method.Method} {request.RequestUri}.",
+                    request);
             }
 
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);

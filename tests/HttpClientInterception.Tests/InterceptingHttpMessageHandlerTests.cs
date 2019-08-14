@@ -37,10 +37,13 @@ namespace JustEat.HttpClientInterception
             using (var target = options.CreateHttpClient())
             {
                 // Act
-                var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => target.GetAsync("https://google.com/"));
+                var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                    () => target.GetAsync("https://google.com/"));
 
                 // Assert
                 exception.Message.ShouldBe("No HTTP response is configured for GET https://google.com/.");
+                exception.Request.ShouldNotBeNull();
+                exception.Request.RequestUri.ShouldBe(new Uri("https://google.com/"));
             }
         }
 
@@ -60,10 +63,13 @@ namespace JustEat.HttpClientInterception
                     using (var content = new StringContent(string.Empty))
                     {
                         // Act
-                        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => target.PostAsync("https://google.com/", content));
+                        var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                            () => target.PostAsync("https://google.com/", content));
 
                         // Assert
                         exception.Message.ShouldBe("No HTTP response is configured for POST https://google.com/.");
+                        exception.Request.ShouldNotBeNull();
+                        exception.Request.RequestUri.ShouldBe(new Uri("https://google.com/"));
                     }
                 }
             }
