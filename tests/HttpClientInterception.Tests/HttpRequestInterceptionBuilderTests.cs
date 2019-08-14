@@ -2018,6 +2018,47 @@ namespace JustEat.HttpClientInterception
             actual.ShouldBe(@"{""message"":""Hi Bob!""}");
         }
 
+        [Fact]
+        public static async Task Use_Asynchronous_Custom_Request_Matching()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests().For(async (request) => await Task.FromResult(request.RequestUri.Host == "google.com"))
+                .Responds().WithContent(@"<!DOCTYPE html><html dir=""ltr"" lang=""en""><head><title>Google Search</title></head></html>");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act and Assert
+                (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
+                (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
+                (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
+            }
+        }
+
+        [Fact]
+        public static async Task Can_Deregister_Custom_Matcher()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests().For(async (request) => await Task.FromResult(request.RequestUri.Host == "google.com"))
+                .Responds().WithContent(@"<!DOCTYPE html><html dir=""ltr"" lang=""en""><head><title>Bing Search</title></head></html>")
+                .Requests().For(null as Predicate<HttpRequestMessage>);
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act and Assert
+                await Assert.ThrowsAsync<InvalidOperationException>(() => client.GetStringAsync("https://google.com/"));
+            }
+        }
+
         private sealed class CustomObject
         {
             internal enum Color
