@@ -409,7 +409,7 @@ namespace JustEat.HttpClientInterception
 
             options.Deregister(builder);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => HttpAssert.GetAsync(options, "https://bing.com/"));
+            await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(() => HttpAssert.GetAsync(options, "https://bing.com/"));
         }
 
         [Fact]
@@ -477,7 +477,7 @@ namespace JustEat.HttpClientInterception
 
             // Act and Assert
             clone.ThrowOnMissingRegistration.ShouldNotBe(options.ThrowOnMissingRegistration);
-            await Assert.ThrowsAsync<InvalidOperationException>(() => HttpAssert.GetAsync(options, url, HttpStatusCode.InternalServerError));
+            await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(() => HttpAssert.GetAsync(options, url, HttpStatusCode.InternalServerError));
             await HttpAssert.GetAsync(clone, url, HttpStatusCode.InternalServerError);
 
             // Arrange

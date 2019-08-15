@@ -37,7 +37,7 @@ namespace JustEat.HttpClientInterception
 
         private Func<HttpRequestMessage, Task<bool>> _onIntercepted;
 
-        private Predicate<HttpRequestMessage> _requestMatcher;
+        private Func<HttpRequestMessage, Task<bool>> _requestMatcher;
 
         private string _reasonPhrase;
 
@@ -71,6 +71,25 @@ namespace JustEat.HttpClientInterception
         /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
         /// </remarks>
         public HttpRequestInterceptionBuilder For(Predicate<HttpRequestMessage> predicate)
+        {
+            _requestMatcher = predicate == null ? null : DelegateHelpers.ConvertToBooleanTask(predicate);
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the builder to match any request that meets the criteria defined by the specified asynchronous predicate.
+        /// </summary>
+        /// <param name="predicate">
+        /// A delegate to an asynchronous method which returns <see langword="true"/> if
+        /// the request is considered a match; otherwise <see langword="false"/>.
+        /// </param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder For(Func<HttpRequestMessage, Task<bool>> predicate)
         {
             _requestMatcher = predicate;
             return this;
@@ -675,8 +694,8 @@ namespace JustEat.HttpClientInterception
         /// </returns>
         /// <remarks>
         /// The priority is used to establish a hierarchy for matching of intercepted
-        /// HTTP requests, particularly when <see cref="For"/> is used. This allows
-        /// registered requests to establish an order of precedence when an HTTP request
+        /// HTTP requests, particularly when <see cref="For(Predicate{HttpRequestMessage})"/> is used.
+        /// This allows registered requests to establish an order of precedence when an HTTP request
         /// could match against multiple predicates, where the matching predicate with
         /// the lowest value for <paramref name="priority"/> dictates the HTTP response
         /// that is used for the intercepted request.

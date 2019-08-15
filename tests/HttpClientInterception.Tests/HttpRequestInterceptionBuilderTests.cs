@@ -952,7 +952,7 @@ namespace JustEat.HttpClientInterception
                 .Register(builder);
 
             // Act
-            var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.PostAsync(options, requestUri.ToString(), content));
 
             // Assert
@@ -1371,7 +1371,7 @@ namespace JustEat.HttpClientInterception
             using (var client = options.CreateHttpClient())
             {
                 // Act
-                var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                     () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
                 // Assert
@@ -1401,7 +1401,7 @@ namespace JustEat.HttpClientInterception
                 client.DefaultRequestHeaders.Add("Accept-Tenant", new[] { "ie" });
 
                 // Act
-                var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                     () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
                 // Assert
@@ -1433,7 +1433,7 @@ namespace JustEat.HttpClientInterception
                 client.DefaultRequestHeaders.Add("Accept-Tenant", new[] { "uk" });
 
                 // Act
-                var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                     () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
                 // Assert
@@ -1465,7 +1465,7 @@ namespace JustEat.HttpClientInterception
                 client.DefaultRequestHeaders.Add("Authorization", "basic my-other-key");
 
                 // Act
-                var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                     () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
                 // Assert
@@ -1672,7 +1672,7 @@ namespace JustEat.HttpClientInterception
                 using (var content = new FormUrlEncodedContent(actualForm))
                 {
                     // Act
-                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                         () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
 
                     // Assert
@@ -1712,7 +1712,7 @@ namespace JustEat.HttpClientInterception
                 using (var content = new FormUrlEncodedContent(actualForm))
                 {
                     // Act
-                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                         () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
 
                     // Assert
@@ -1748,7 +1748,7 @@ namespace JustEat.HttpClientInterception
                 using (var content = new FormUrlEncodedContent(actualForm))
                 {
                     // Act
-                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                         () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
 
                     // Assert
@@ -1789,7 +1789,7 @@ namespace JustEat.HttpClientInterception
                 using (var content = new FormUrlEncodedContent(actualForm))
                 {
                     // Act
-                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                         () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
 
                     // Assert
@@ -1828,7 +1828,7 @@ namespace JustEat.HttpClientInterception
                 using (var content = new FormUrlEncodedContent(actualForm))
                 {
                     // Act
-                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                         () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
 
                     // Assert
@@ -1858,7 +1858,7 @@ namespace JustEat.HttpClientInterception
                 .Register(builder);
 
             // Act
-            var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.PostAsync(options, "https://test.local/post", new { message = "Hello" }));
 
             // Assert
@@ -1890,7 +1890,7 @@ namespace JustEat.HttpClientInterception
                 using (var content = new StreamContent(stream))
                 {
                     // Act
-                    var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
                         () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/post", content));
 
                     // Assert
@@ -2016,6 +2016,48 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldBe(@"{""message"":""Hi Bob!""}");
+        }
+
+        [Fact]
+        public static async Task Use_Asynchronous_Custom_Request_Matching()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests().For(async (request) => await Task.FromResult(request.RequestUri.Host == "google.com"))
+                .Responds().WithContent(@"<!DOCTYPE html><html dir=""ltr"" lang=""en""><head><title>Google Search</title></head></html>");
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act and Assert
+                (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
+                (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
+                (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
+            }
+        }
+
+        [Fact]
+        public static async Task Can_Deregister_Custom_Matcher()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests().For(async (request) => await Task.FromResult(request.RequestUri.Host == "google.com"))
+                .Responds().WithContent(@"<!DOCTYPE html><html dir=""ltr"" lang=""en""><head><title>Bing Search</title></head></html>")
+                .Requests().For(null as Predicate<HttpRequestMessage>);
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            using (var client = options.CreateHttpClient())
+            {
+                // Act and Assert
+                await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                    () => client.GetStringAsync("https://google.com/"));
+            }
         }
 
         private sealed class CustomObject
