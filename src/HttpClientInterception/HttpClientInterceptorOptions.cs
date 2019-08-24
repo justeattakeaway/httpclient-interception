@@ -185,7 +185,7 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
-        /// Registers an HTTP request interception, replacing any existing registration.
+        /// Registers an HTTP request interception for an array of bytes, replacing any existing registration.
         /// </summary>
         /// <param name="method">The HTTP method to register an interception for.</param>
         /// <param name="uri">The request URI to register an interception for.</param>
@@ -201,7 +201,7 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/>, <paramref name="uri"/> or <paramref name="contentFactory"/> is <see langword="null"/>.
         /// </exception>
-        public HttpClientInterceptorOptions Register(
+        public HttpClientInterceptorOptions RegisterByteArray(
             HttpMethod method,
             Uri uri,
             Func<Task<byte[]>> contentFactory,
@@ -244,7 +244,7 @@ namespace JustEat.HttpClientInterception
         }
 
         /// <summary>
-        /// Registers an HTTP request interception, replacing any existing registration.
+        /// Registers an HTTP request interception for a stream, replacing any existing registration.
         /// </summary>
         /// <param name="method">The HTTP method to register an interception for.</param>
         /// <param name="uri">The request URI to register an interception for.</param>
@@ -260,7 +260,7 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/>, <paramref name="uri"/> or <paramref name="contentStream"/> is <see langword="null"/>.
         /// </exception>
-        public HttpClientInterceptorOptions Register(
+        public HttpClientInterceptorOptions RegisterStream(
             HttpMethod method,
             Uri uri,
             Func<Task<Stream>> contentStream,

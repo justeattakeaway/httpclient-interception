@@ -72,9 +72,9 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-                .Register(HttpMethod.Get, new Uri("https://google.com/foo"), () => Array.Empty<byte>())
-                .Register(HttpMethod.Options, new Uri("http://google.com/foo"), () => Array.Empty<byte>())
-                .Register(HttpMethod.Options, new Uri("https://google.com/FOO"), () => Array.Empty<byte>());
+                .RegisterByteArray(HttpMethod.Get, new Uri("https://google.com/foo"), () => Array.Empty<byte>())
+                .RegisterByteArray(HttpMethod.Options, new Uri("http://google.com/foo"), () => Array.Empty<byte>())
+                .RegisterByteArray(HttpMethod.Options, new Uri("https://google.com/FOO"), () => Array.Empty<byte>());
 
             options.OnMissingRegistration = (request) => Task.FromResult<HttpResponseMessage>(null);
 
@@ -104,7 +104,7 @@ namespace JustEat.HttpClientInterception
             var requestUrl = "https://google.com/foo";
 
             var options = new HttpClientInterceptorOptions()
-                .Register(HttpMethod.Get, new Uri(requestUrl), () => Array.Empty<byte>());
+                .RegisterByteArray(HttpMethod.Get, new Uri(requestUrl), () => Array.Empty<byte>());
 
             int expected = 7;
             int actual = 0;
