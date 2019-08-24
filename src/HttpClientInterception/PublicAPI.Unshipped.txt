@@ -1,0 +1,7 @@
+JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.For(System.Func<System.Net.Http.HttpRequestMessage, System.Threading.Tasks.Task<bool>> predicate) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder
+JustEat.HttpClientInterception.HttpRequestNotInterceptedException
+JustEat.HttpClientInterception.HttpRequestNotInterceptedException.HttpRequestNotInterceptedException() -> void
+JustEat.HttpClientInterception.HttpRequestNotInterceptedException.HttpRequestNotInterceptedException(string message) -> void
+JustEat.HttpClientInterception.HttpRequestNotInterceptedException.HttpRequestNotInterceptedException(string message, System.Exception innerException) -> void
+JustEat.HttpClientInterception.HttpRequestNotInterceptedException.HttpRequestNotInterceptedException(string message, System.Net.Http.HttpRequestMessage request) -> void
+JustEat.HttpClientInterception.HttpRequestNotInterceptedException.Request.get -> System.Net.Http.HttpRequestMessage
