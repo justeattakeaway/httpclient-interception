@@ -58,6 +58,13 @@ namespace JustEat.HttpClientInterception
         private int? _priority;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="HttpRequestInterceptionBuilder"/> class.
+        /// </summary>
+        public HttpRequestInterceptionBuilder()
+        {
+        }
+
+        /// <summary>
         /// Configures the builder to match any request that meets the criteria defined by the specified predicate.
         /// </summary>
         /// <param name="predicate">
@@ -219,6 +226,9 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="uri"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder ForUri(Uri uri)
         {
             _uriBuilder = new UriBuilder(uri);
