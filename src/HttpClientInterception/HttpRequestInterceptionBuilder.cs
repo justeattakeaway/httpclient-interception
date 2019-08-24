@@ -226,6 +226,9 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="uri"/> is <see langword="null"/>.
+        /// </exception>
         public HttpRequestInterceptionBuilder ForUri(Uri uri)
         {
             _uriBuilder = new UriBuilder(uri);
