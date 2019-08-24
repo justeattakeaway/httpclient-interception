@@ -124,6 +124,21 @@ namespace JustEat.HttpClientInterception.Bundles
         }
 
         [Fact]
+        public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Null_Json()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+            // Act
+            options.RegisterBundle(Path.Join("Bundles", "content-as-null-json.json"));
+
+            // Assert
+            string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat");
+
+            content.ShouldBe(string.Empty);
+        }
+
+        [Fact]
         public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Non_Default_Status_Codes()
         {
             // Arrange

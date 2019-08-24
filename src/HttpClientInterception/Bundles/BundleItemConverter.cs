@@ -104,7 +104,7 @@ namespace JustEat.HttpClientInterception.Bundles
                     return Encoding.UTF8.GetString(decoded);
 
                 case "JSON":
-                    return item.ContentJson.ToString();
+                    return item.ContentJson!.ToString();
 
                 case null:
                 case "":
