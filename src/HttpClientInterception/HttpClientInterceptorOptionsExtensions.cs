@@ -48,7 +48,7 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="options"/> is <see langword="null"/>.
         /// </exception>
-        public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, Uri baseAddress, HttpMessageHandler innerHandler = null)
+        public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, Uri baseAddress, HttpMessageHandler? innerHandler = null)
         {
             if (options == null)
             {
@@ -86,7 +86,7 @@ namespace JustEat.HttpClientInterception
             Func<byte[]> contentFactory,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = HttpClientInterceptorOptions.JsonMediaType,
-            IEnumerable<KeyValuePair<string, string>> responseHeaders = null)
+            IEnumerable<KeyValuePair<string, string>>? responseHeaders = null)
         {
             if (options == null)
             {
@@ -98,7 +98,7 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(contentFactory));
             }
 
-            IDictionary<string, IEnumerable<string>> multivalueHeaders = null;
+            IDictionary<string, IEnumerable<string>>? multivalueHeaders = null;
 
             if (responseHeaders != null)
             {
@@ -143,7 +143,7 @@ namespace JustEat.HttpClientInterception
             Func<Stream> contentStream,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = HttpClientInterceptorOptions.JsonMediaType,
-            IEnumerable<KeyValuePair<string, string>> responseHeaders = null)
+            IEnumerable<KeyValuePair<string, string>>? responseHeaders = null)
         {
             if (options == null)
             {
@@ -155,7 +155,7 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(contentStream));
             }
 
-            IDictionary<string, IEnumerable<string>> multivalueHeaders = null;
+            IDictionary<string, IEnumerable<string>>? multivalueHeaders = null;
 
             if (responseHeaders != null)
             {

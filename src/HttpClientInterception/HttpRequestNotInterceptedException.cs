@@ -72,6 +72,6 @@ namespace JustEat.HttpClientInterception
         /// <summary>
         /// Gets the HTTP request message that was not intercepted.
         /// </summary>
-        public HttpRequestMessage Request { get; }
+        public HttpRequestMessage? Request { get; }
     }
 }

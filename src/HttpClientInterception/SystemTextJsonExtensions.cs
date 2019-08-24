@@ -29,7 +29,7 @@ namespace JustEat.HttpClientInterception
         public static HttpRequestInterceptionBuilder WithSystemTextJsonContent(
             this HttpRequestInterceptionBuilder builder,
             object content,
-            JsonSerializerOptions options = null)
+            JsonSerializerOptions? options = null)
         {
             if (builder == null)
             {

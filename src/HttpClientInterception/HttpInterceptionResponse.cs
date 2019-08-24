@@ -12,31 +12,31 @@ namespace JustEat.HttpClientInterception
 {
     internal sealed class HttpInterceptionResponse
     {
-        internal Func<HttpContent, Task<bool>> ContentMatcher { get; set; }
+        internal Func<HttpContent, Task<bool>>? ContentMatcher { get; set; }
 
-        internal Func<HttpRequestMessage, Task<bool>> UserMatcher { get; set; }
+        internal Func<HttpRequestMessage, Task<bool>>? UserMatcher { get; set; }
 
-        internal Matching.RequestMatcher InternalMatcher { get; set; }
+        internal Matching.RequestMatcher? InternalMatcher { get; set; }
 
-        internal HttpMethod Method { get; set; }
+        internal HttpMethod? Method { get; set; }
 
         internal int? Priority { get; set; }
 
-        internal string ReasonPhrase { get; set; }
+        internal string? ReasonPhrase { get; set; }
 
-        internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> RequestHeaders { get; set; }
+        internal IEnumerable<KeyValuePair<string, IEnumerable<string>>>? RequestHeaders { get; set; }
 
-        internal Uri RequestUri { get; set; }
+        internal Uri? RequestUri { get; set; }
 
         internal HttpStatusCode StatusCode { get; set; }
 
-        internal Func<Task<byte[]>> ContentFactory { get; set; }
+        internal Func<Task<byte[]>>? ContentFactory { get; set; }
 
-        internal Func<Task<Stream>> ContentStream { get; set; }
+        internal Func<Task<Stream>>? ContentStream { get; set; }
 
-        internal string ContentMediaType { get; set; }
+        internal string? ContentMediaType { get; set; }
 
-        internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ContentHeaders { get; set; }
+        internal IEnumerable<KeyValuePair<string, IEnumerable<string>>>? ContentHeaders { get; set; }
 
         internal bool HasCustomPort { get; set; }
 
@@ -46,10 +46,10 @@ namespace JustEat.HttpClientInterception
 
         internal bool IgnoreQuery { get; set; }
 
-        internal IEnumerable<KeyValuePair<string, IEnumerable<string>>> ResponseHeaders { get; set; }
+        internal IEnumerable<KeyValuePair<string, IEnumerable<string>>>? ResponseHeaders { get; set; }
 
-        internal Func<HttpRequestMessage, Task<bool>> OnIntercepted { get; set; }
+        internal Func<HttpRequestMessage, Task<bool>>? OnIntercepted { get; set; }
 
-        internal Version Version { get; set; }
+        internal Version? Version { get; set; }
     }
 }

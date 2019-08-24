@@ -30,7 +30,7 @@ namespace JustEat.HttpClientInterception
         public static HttpRequestInterceptionBuilder WithNewtonsoftJsonContent(
             this HttpRequestInterceptionBuilder builder,
             object content,
-            JsonSerializerSettings settings = null)
+            JsonSerializerSettings? settings = null)
         {
             if (builder == null)
             {

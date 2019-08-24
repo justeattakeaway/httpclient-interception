@@ -80,7 +80,7 @@ namespace JustEat.HttpClientInterception.Matching
         /// <returns>
         /// A <see cref="string"/> containing the URI to use for string comparisons for URIs.
         /// </returns>
-        private static string GetUriStringForMatch(HttpInterceptionResponse registration, Uri uri = null)
+        private static string GetUriStringForMatch(HttpInterceptionResponse registration, Uri? uri = null)
         {
             var builder = new UriBuilder(uri ?? registration.RequestUri);
 
@@ -109,7 +109,7 @@ namespace JustEat.HttpClientInterception.Matching
 
         private bool IsMatchForHeaders(HttpHeaders requestHeaders)
         {
-            foreach (var headerToMatch in _registration.RequestHeaders)
+            foreach (var headerToMatch in _registration.RequestHeaders!)
             {
                 if (!requestHeaders.TryGetValues(headerToMatch.Key, out IEnumerable<string> values))
                 {

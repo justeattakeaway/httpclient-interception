@@ -66,12 +66,12 @@ namespace JustEat.HttpClientInterception
         /// Gets or sets an optional delegate to invoke when an HTTP request does not match an existing
         /// registration, which optionally returns an <see cref="HttpResponseMessage"/> to use.
         /// </summary>
-        public Func<HttpRequestMessage, Task<HttpResponseMessage>> OnMissingRegistration { get; set; }
+        public Func<HttpRequestMessage, Task<HttpResponseMessage>>? OnMissingRegistration { get; set; }
 
         /// <summary>
         /// Gets or sets an optional delegate to invoke when an HTTP request is sent.
         /// </summary>
-        public Func<HttpRequestMessage, Task> OnSend { get; set; }
+        public Func<HttpRequestMessage, Task>? OnSend { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to throw an exception if a response has not been registered for an HTTP request.
@@ -207,9 +207,9 @@ namespace JustEat.HttpClientInterception
             Func<Task<byte[]>> contentFactory,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = JsonMediaType,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders = null,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> contentHeaders = null,
-            Func<HttpRequestMessage, Task> onIntercepted = null)
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>>? responseHeaders = null,
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>>? contentHeaders = null,
+            Func<HttpRequestMessage, Task>? onIntercepted = null)
         {
             if (method == null)
             {
@@ -266,9 +266,9 @@ namespace JustEat.HttpClientInterception
             Func<Task<Stream>> contentStream,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = JsonMediaType,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders = null,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> contentHeaders = null,
-            Func<HttpRequestMessage, Task> onIntercepted = null)
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>>? responseHeaders = null,
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>>? contentHeaders = null,
+            Func<HttpRequestMessage, Task>? onIntercepted = null)
         {
             if (method == null)
             {
@@ -337,7 +337,7 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <see langword="null"/>.
         /// </exception>
-        public virtual async Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request)
+        public virtual async Task<HttpResponseMessage?> GetResponseAsync(HttpRequestMessage request)
         {
             if (request == null)
             {
@@ -353,7 +353,8 @@ namespace JustEat.HttpClientInterception
 
             var response = matchResult.Item2;
 
-            if (response.OnIntercepted != null && !await response.OnIntercepted(request).ConfigureAwait(false))
+            // If Item1 is true, then Item2 is non-null
+            if (response!.OnIntercepted != null && !await response.OnIntercepted(request).ConfigureAwait(false))
             {
                 return null;
             }
@@ -376,7 +377,7 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The <see cref="HttpClient"/> that uses the current <see cref="HttpClientInterceptorOptions"/>.
         /// </returns>
-        public virtual HttpClient CreateHttpClient(HttpMessageHandler innerHandler = null)
+        public virtual HttpClient CreateHttpClient(HttpMessageHandler? innerHandler = null)
         {
 #pragma warning disable CA2000
             var handler = new InterceptingHttpMessageHandler(this, innerHandler ?? new HttpClientHandler());
@@ -398,7 +399,7 @@ namespace JustEat.HttpClientInterception
             {
                 // Use the internal matcher's hash code as UserMatcher (a delegate)
                 // will always return the hash code. See https://stackoverflow.com/q/6624151/1064169
-                return $"CUSTOM:{interceptor.InternalMatcher.GetHashCode().ToString(CultureInfo.InvariantCulture)}";
+                return $"CUSTOM:{interceptor.InternalMatcher!.GetHashCode().ToString(CultureInfo.InvariantCulture)}";
             }
 
             var builderForKey = new UriBuilder(interceptor.RequestUri);
@@ -427,10 +428,10 @@ namespace JustEat.HttpClientInterception
                 builderForKey.Port = -1;
             }
 
-            return $"{keyPrefix};{interceptor.Method.Method}:{builderForKey}";
+            return $"{keyPrefix};{interceptor.Method!.Method}:{builderForKey}";
         }
 
-        private static void PopulateHeaders(HttpHeaders headers, IEnumerable<KeyValuePair<string, IEnumerable<string>>> values)
+        private static void PopulateHeaders(HttpHeaders headers, IEnumerable<KeyValuePair<string, IEnumerable<string>>>? values)
         {
             if (values != null)
             {
@@ -465,7 +466,7 @@ namespace JustEat.HttpClientInterception
                 }
                 else
                 {
-                    byte[] content = await response.ContentFactory().ConfigureAwait(false) ?? Array.Empty<byte>();
+                    byte[] content = await response.ContentFactory!().ConfigureAwait(false) ?? Array.Empty<byte>();
                     result.Content = new ByteArrayContent(content);
                 }
 
@@ -488,7 +489,7 @@ namespace JustEat.HttpClientInterception
             return result;
         }
 
-        private async Task<Tuple<bool, HttpInterceptionResponse>> TryGetResponseAsync(HttpRequestMessage request)
+        private async Task<Tuple<bool, HttpInterceptionResponse?>> TryGetResponseAsync(HttpRequestMessage request)
         {
             var responses = _mappings.Values
                 .OrderByDescending((p) => p.Priority.HasValue)
@@ -496,13 +497,13 @@ namespace JustEat.HttpClientInterception
 
             foreach (var response in responses)
             {
-                if (await response.InternalMatcher.IsMatchAsync(request).ConfigureAwait(false))
+                if (await response.InternalMatcher!.IsMatchAsync(request).ConfigureAwait(false))
                 {
-                    return Tuple.Create(true, response);
+                    return Tuple.Create<bool, HttpInterceptionResponse?>(true, response);
                 }
             }
 
-            return Tuple.Create<bool, HttpInterceptionResponse>(false, null);
+            return Tuple.Create<bool, HttpInterceptionResponse?>(false, null);
         }
 
         private void ConfigureMatcherAndRegister(HttpInterceptionResponse registration)
