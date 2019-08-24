@@ -2088,13 +2088,12 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act and Assert
-                (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
-                (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
-                (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
-            }
+            using var client = options.CreateHttpClient();
+
+            // Act and Assert
+            (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
+            (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
+            (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
         }
 
         [Fact]
@@ -2110,12 +2109,11 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act and Assert
-                await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                    () => client.GetStringAsync("https://google.com/"));
-            }
+            using var client = options.CreateHttpClient();
+
+            // Act and Assert
+            await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => client.GetStringAsync("https://google.com/"));
         }
 
         private sealed class CustomObject
