@@ -14,6 +14,9 @@
     <PackageReference Include="ReportGenerator" Version="4.2.20" PrivateAssets="All" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)package-icon.png" Pack="True" PackagePath="" />
+  </ItemGroup>
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)justeat-oss.snk</AssemblyOriginatorKeyFile>
@@ -28,7 +31,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <NoWarn>$(NoWarn);CA1054;CA2234</NoWarn>
     <NoWarn Condition=" '$(GenerateDocumentationFile)' != 'true' ">$(NoWarn);SA0001</NoWarn>
-    <PackageIconUrl>https://avatars3.githubusercontent.com/u/1516790?s=64</PackageIconUrl>
+    <PackageIcon>package-icon.png</PackageIcon>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/justeat/httpclient-interception</PackageProjectUrl>
     <PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
