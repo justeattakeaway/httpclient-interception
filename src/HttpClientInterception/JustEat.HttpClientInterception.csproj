@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="$(MicrosoftNETFrameworkReferenceAssembliesVersion)" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="1.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="System.Text.Json" Version="4.6.0-rc1.19456.4" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0" />
   </ItemGroup>
   <ItemGroup Condition=" ('$(TargetFramework)' == 'net461') OR ('$(TargetFramework)' == 'net472') ">
     <PackageReference Include="System.Net.Http" Version="4.0.0" />
