@@ -52,7 +52,7 @@ else {
 
 if ($installDotNetSdk -eq $true) {
 
-    $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
+    $installScript = Join-Path (Join-Path "$(Convert-Path "$PSScriptRoot")" ".dotnetcli") "install.ps1"
     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
     Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
     & $installScript -Version "$dotnetVersion"
