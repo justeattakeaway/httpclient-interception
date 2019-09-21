@@ -97,7 +97,7 @@ function DotNetTest {
     $reportOutput = Join-Path $OutputPath "coverage"
 
     if ($null -ne $env:TF_BUILD) {
-        & $dotnet test $Project --output $OutputPath --logger trx --verbosity diag
+        & $dotnet test $Project --output $OutputPath --logger trx '--logger:console;verbosity=detailed'
     }
     else {
         & $dotnet test $Project --output $OutputPath
