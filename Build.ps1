@@ -61,7 +61,7 @@ if ($installDotNetSdk -eq $true) {
         $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
         [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
         Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
-        & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath -Architecture x86
+        & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
     }
 
     $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
@@ -97,7 +97,7 @@ function DotNetTest {
     $reportOutput = Join-Path $OutputPath "coverage"
 
     if ($null -ne $env:TF_BUILD) {
-        & $dotnet test $Project --output $OutputPath --logger trx
+        & $dotnet test $Project --output $OutputPath --logger trx --verbosity diag
     }
     else {
         & $dotnet test $Project --output $OutputPath
