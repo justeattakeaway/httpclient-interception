@@ -51,8 +51,6 @@ else {
 }
 
 if ($installDotNetSdk -eq $true) {
-    $env:DOTNET_INSTALL_DIR = Join-Path "$(Convert-Path "$PSScriptRoot")" ".dotnetcli"
-    $sdkPath = Join-Path $env:DOTNET_INSTALL_DIR "sdk\$dotnetVersion"
 
     if (!(Test-Path $sdkPath)) {
         if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
@@ -61,15 +59,11 @@ if ($installDotNetSdk -eq $true) {
         $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
         [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
         Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
-        & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+        & $installScript -Version "$dotnetVersion"
     }
+}
 
-    $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
-    $dotnet = Join-Path "$env:DOTNET_INSTALL_DIR" "dotnet.exe"
-}
-else {
-    $dotnet = "dotnet.exe"
-}
+$dotnet = "dotnet.exe"
 
 function DotNetPack {
     param([string]$Project)
@@ -97,9 +91,7 @@ function DotNetTest {
     $reportOutput = Join-Path $OutputPath "coverage"
 
     if ($null -ne $env:TF_BUILD) {
-        $diagPath = Join-Path $OutputPath "diag.txt"
-        & $dotnet test $Project --output $OutputPath --logger trx '--logger:console;verbosity=detailed' --diag:$diagPath
-        Write-Host (Get-Content -path $diagPath)
+        & $dotnet test $Project --output $OutputPath --logger trx
     }
     else {
         & $dotnet test $Project --output $OutputPath
