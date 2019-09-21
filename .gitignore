@@ -15,6 +15,7 @@ bin
 Bin
 BuildOutput
 coverage
+coverage.*
 node_modules
 obj
 packages
