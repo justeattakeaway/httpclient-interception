@@ -61,7 +61,7 @@ if ($installDotNetSdk -eq $true) {
         $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
         [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
         Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
-        & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath -Architecture x64
+        & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath -Architecture x86
     }
 
     $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
