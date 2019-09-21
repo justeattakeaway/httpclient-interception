@@ -52,18 +52,13 @@ else {
 
 if ($installDotNetSdk -eq $true) {
 
-    if (!(Test-Path $sdkPath)) {
-        if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
-            mkdir $env:DOTNET_INSTALL_DIR | Out-Null
-        }
-        $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
-        [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
-        Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
-        & $installScript -Version "$dotnetVersion"
-    }
+    $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
+    [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
+    Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
+    & $installScript -Version "$dotnetVersion"
 }
 
-$dotnet = "dotnet.exe"
+$dotnet = "dotnet"
 
 function DotNetPack {
     param([string]$Project)
