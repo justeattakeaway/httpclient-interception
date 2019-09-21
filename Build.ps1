@@ -97,7 +97,9 @@ function DotNetTest {
     $reportOutput = Join-Path $OutputPath "coverage"
 
     if ($null -ne $env:TF_BUILD) {
-        & $dotnet test $Project --output $OutputPath --logger trx '--logger:console;verbosity=detailed'
+        $diagPath = Join-Path $OutputPath "diag.txt"
+        & $dotnet test $Project --output $OutputPath --logger trx '--logger:console;verbosity=detailed' --diag:$diagPath
+        Write-Host (Get-Content -path $diagPath)
     }
     else {
         & $dotnet test $Project --output $OutputPath
