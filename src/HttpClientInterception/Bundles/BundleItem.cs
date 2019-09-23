@@ -18,31 +18,31 @@ namespace JustEat.HttpClientInterception.Bundles
         /// Gets or sets the optional Id of the item.
         /// </summary>
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         /// <summary>
         /// Gets or sets the optional comment for the item.
         /// </summary>
         [JsonProperty("comment", NullValueHandling = NullValueHandling.Ignore)]
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         /// <summary>
         /// Gets or sets the optional HTTP version for the item.
         /// </summary>
         [JsonProperty("version", NullValueHandling = NullValueHandling.Ignore)]
-        public string Version { get; set; }
+        public string? Version { get; set; }
 
         /// <summary>
         /// Gets or sets the default HTTP method for the item.
         /// </summary>
         [JsonProperty("method")]
-        public string Method { get; set; }
+        public string? Method { get; set; }
 
         /// <summary>
         /// Gets or sets the request URI for the item.
         /// </summary>
         [JsonProperty("uri")]
-        public string Uri { get; set; }
+        public string? Uri { get; set; }
 
         /// <summary>
         /// Gets or sets the optional priority for the item.
@@ -54,49 +54,49 @@ namespace JustEat.HttpClientInterception.Bundles
         /// Gets or sets the HTTP status code for the response for item.
         /// </summary>
         [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
-        public string Status { get; set; }
+        public string? Status { get; set; }
 
         /// <summary>
         /// Gets or sets the optional request headers for the item.
         /// </summary>
         [JsonProperty("requestHeaders", NullValueHandling = NullValueHandling.Ignore)]
-        public IDictionary<string, ICollection<string>> RequestHeaders { get; set; }
+        public IDictionary<string, ICollection<string>>? RequestHeaders { get; set; }
 
         /// <summary>
         /// Gets or sets the optional response headers for the item.
         /// </summary>
         [JsonProperty("responseHeaders", NullValueHandling = NullValueHandling.Ignore)]
-        public IDictionary<string, ICollection<string>> ResponseHeaders { get; set; }
+        public IDictionary<string, ICollection<string>>? ResponseHeaders { get; set; }
 
         /// <summary>
         /// Gets or sets the optional content headers for the item.
         /// </summary>
         [JsonProperty("contentHeaders", NullValueHandling = NullValueHandling.Ignore)]
-        public IDictionary<string, ICollection<string>> ContentHeaders { get; set; }
+        public IDictionary<string, ICollection<string>>? ContentHeaders { get; set; }
 
         /// <summary>
         /// Gets or sets the optional content format of the item.
         /// </summary>
         [JsonProperty("contentFormat")]
-        public string ContentFormat { get; set; }
+        public string? ContentFormat { get; set; }
 
         /// <summary>
         /// Gets or sets the content of the item as JSON.
         /// </summary>
         [JsonProperty("contentJson")]
-        public JToken ContentJson { get; set; }
+        public JToken? ContentJson { get; set; }
 
         /// <summary>
         /// Gets or sets the content of the item as a string.
         /// </summary>
         [JsonProperty("contentString")]
-        public string ContentString { get; set; }
+        public string? ContentString { get; set; }
 
         /// <summary>
         /// Gets or sets the optional templating values.
         /// </summary>
         [JsonProperty("templateValues", NullValueHandling = NullValueHandling.Ignore)]
-        public IDictionary<string, string> TemplateValues { get; set; }
+        public IDictionary<string, string>? TemplateValues { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore the URI's path.

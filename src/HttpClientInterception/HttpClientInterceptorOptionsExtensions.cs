@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 namespace JustEat.HttpClientInterception
 {
     /// <summary>
-    /// A class containing extenion methods for the <see cref="HttpClientInterceptorOptions"/> class. This class cannot be inherited.
+    /// A class containing extention methods for the <see cref="HttpClientInterceptorOptions"/> class. This class cannot be inherited.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class HttpClientInterceptorOptionsExtensions
@@ -24,17 +24,16 @@ namespace JustEat.HttpClientInterception
         /// </summary>
         /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
         /// <param name="baseAddress">The base address to use for the created HTTP client.</param>
-        /// <param name="innerHandler">The optional inner <see cref="HttpMessageHandler"/>.</param>
         /// <returns>
         /// The <see cref="HttpClient"/> that uses the specified <see cref="HttpClientInterceptorOptions"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="options"/> is <see langword="null"/>.
         /// </exception>
-        public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, string baseAddress, HttpMessageHandler innerHandler = null)
+        public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, string baseAddress)
         {
-            Uri baseAddressUri = new Uri(baseAddress, UriKind.RelativeOrAbsolute);
-            return options.CreateHttpClient(baseAddressUri, innerHandler);
+            var baseAddressUri = new Uri(baseAddress, UriKind.RelativeOrAbsolute);
+            return options.CreateHttpClient(baseAddressUri);
         }
 
         /// <summary>
@@ -49,7 +48,7 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="options"/> is <see langword="null"/>.
         /// </exception>
-        public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, Uri baseAddress, HttpMessageHandler innerHandler = null)
+        public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, Uri baseAddress, HttpMessageHandler? innerHandler = null)
         {
             if (options == null)
             {
@@ -80,14 +79,14 @@ namespace JustEat.HttpClientInterception
         /// <paramref name="options"/>, <paramref name="method"/>, <paramref name="uri"/> or
         /// <paramref name="contentFactory"/> is <see langword="null"/>.
         /// </exception>
-        public static HttpClientInterceptorOptions Register(
+        public static HttpClientInterceptorOptions RegisterByteArray(
             this HttpClientInterceptorOptions options,
             HttpMethod method,
             Uri uri,
             Func<byte[]> contentFactory,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = HttpClientInterceptorOptions.JsonMediaType,
-            IEnumerable<KeyValuePair<string, string>> responseHeaders = null)
+            IEnumerable<KeyValuePair<string, string>>? responseHeaders = null)
         {
             if (options == null)
             {
@@ -99,7 +98,7 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(contentFactory));
             }
 
-            IDictionary<string, IEnumerable<string>> multivalueHeaders = null;
+            IDictionary<string, IEnumerable<string>>? multivalueHeaders = null;
 
             if (responseHeaders != null)
             {
@@ -111,7 +110,7 @@ namespace JustEat.HttpClientInterception
                 }
             }
 
-            return options.Register(
+            return options.RegisterByteArray(
                 method,
                 uri,
                 () => Task.FromResult(contentFactory()),
@@ -137,14 +136,14 @@ namespace JustEat.HttpClientInterception
         /// <paramref name="options"/>, <paramref name="method"/>, <paramref name="uri"/> or
         /// <paramref name="contentStream"/> is <see langword="null"/>.
         /// </exception>
-        public static HttpClientInterceptorOptions Register(
+        public static HttpClientInterceptorOptions RegisterStream(
             this HttpClientInterceptorOptions options,
             HttpMethod method,
             Uri uri,
             Func<Stream> contentStream,
             HttpStatusCode statusCode = HttpStatusCode.OK,
             string mediaType = HttpClientInterceptorOptions.JsonMediaType,
-            IEnumerable<KeyValuePair<string, string>> responseHeaders = null)
+            IEnumerable<KeyValuePair<string, string>>? responseHeaders = null)
         {
             if (options == null)
             {
@@ -156,7 +155,7 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(contentStream));
             }
 
-            IDictionary<string, IEnumerable<string>> multivalueHeaders = null;
+            IDictionary<string, IEnumerable<string>>? multivalueHeaders = null;
 
             if (responseHeaders != null)
             {
@@ -168,7 +167,7 @@ namespace JustEat.HttpClientInterception
                 }
             }
 
-            return options.Register(
+            return options.RegisterStream(
                 method,
                 uri,
                 () => Task.FromResult(contentStream()),
@@ -190,7 +189,7 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="options"/> or <paramref name="content"/> is <see langword="null"/>.
         /// </exception>
-        public static HttpClientInterceptorOptions RegisterGet(
+        public static HttpClientInterceptorOptions RegisterGetJson(
             this HttpClientInterceptorOptions options,
             string uriString,
             object content,
@@ -212,7 +211,7 @@ namespace JustEat.HttpClientInterception
                 return Encoding.UTF8.GetBytes(json);
             }
 
-            return options.Register(HttpMethod.Get, new Uri(uriString), ContentFactory, statusCode);
+            return options.RegisterByteArray(HttpMethod.Get, new Uri(uriString), ContentFactory, statusCode);
         }
 
         /// <summary>
@@ -241,7 +240,7 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(options));
             }
 
-            return options.Register(HttpMethod.Get, new Uri(uriString), () => Encoding.UTF8.GetBytes(content ?? string.Empty), statusCode, mediaType);
+            return options.RegisterByteArray(HttpMethod.Get, new Uri(uriString), () => Encoding.UTF8.GetBytes(content ?? string.Empty), statusCode, mediaType);
         }
 
         /// <summary>

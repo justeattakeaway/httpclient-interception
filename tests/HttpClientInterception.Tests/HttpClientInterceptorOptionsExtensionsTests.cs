@@ -14,19 +14,35 @@ namespace JustEat.HttpClientInterception
     public static class HttpClientInterceptorOptionsExtensionsTests
     {
         [Fact]
-        public static async Task RegisterGet_For_With_Defaults_Registers_Interception()
+        public static async Task RegisterGetJson_For_With_Defaults_Registers_Interception()
         {
             // Arrange
             string requestUri = "https://google.com/";
             string[] expected = new[] { "foo", "bar" };
 
-            var options = new HttpClientInterceptorOptions().RegisterGet(requestUri, expected);
+            var options = new HttpClientInterceptorOptions().RegisterGetJson(requestUri, expected);
 
             // Act
             string[] actual = await HttpAssert.GetAsync<string[]>(options, requestUri);
 
             // Assert
             actual.ShouldBe(expected);
+        }
+
+        [Fact]
+        public static void RegisterGetJson_Validates_Parameters_For_Null()
+        {
+            // Arrange
+            HttpClientInterceptorOptions options = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("options", () => options.RegisterGetJson("https://google.com", new { }));
+
+            // Arrange
+            options = new HttpClientInterceptorOptions();
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("content", () => options.RegisterGetJson("https://google.com", null as object));
         }
 
         [Fact]
@@ -86,14 +102,7 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions options = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => options.RegisterGet("https://google.com", new { }));
             Assert.Throws<ArgumentNullException>("options", () => options.RegisterGet("https://google.com", string.Empty));
-
-            // Arrange
-            options = new HttpClientInterceptorOptions();
-
-            // Act and Assert
-            Assert.Throws<ArgumentNullException>("content", () => options.RegisterGet("https://google.com", null as object));
         }
 
         [Fact]
@@ -107,7 +116,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void Register_Throws_If_Options_Is_Null()
+        public static void RegisterByteArray_Throws_If_Options_Is_Null()
         {
             // Arrange
             var method = HttpMethod.Get;
@@ -119,11 +128,22 @@ namespace JustEat.HttpClientInterception
             // Act and Assert
             Assert.Throws<ArgumentNullException>(
                 "options",
-                () => options.Register(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: headers));
+                () => options.RegisterByteArray(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: headers));
+        }
+
+        [Fact]
+        public static void RegisterStream_Throws_If_Options_Is_Null()
+        {
+            // Arrange
+            var method = HttpMethod.Get;
+            var uri = new Uri("https://google.com");
+
+            HttpClientInterceptorOptions options = null;
+            IEnumerable<KeyValuePair<string, string>> headers = null;
 
             Assert.Throws<ArgumentNullException>(
                 "options",
-                () => options.Register(method, uri, contentStream: () => Stream.Null, responseHeaders: headers));
+                () => options.RegisterStream(method, uri, contentStream: () => Stream.Null, responseHeaders: headers));
         }
 
         [Fact]

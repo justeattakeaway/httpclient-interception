@@ -25,7 +25,7 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The converted delegate if <paramref name="onIntercepted"/> has a value; otherwise <see langword="null"/>.
         /// </returns>
-        internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(Action<HttpRequestMessage> onIntercepted)
+        internal static Func<HttpRequestMessage, Task<bool>>? ConvertToBooleanTask(Action<HttpRequestMessage>? onIntercepted)
         {
             if (onIntercepted == null)
             {
@@ -47,7 +47,7 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The converted delegate if <paramref name="onIntercepted"/> has a value; otherwise <see langword="null"/>.
         /// </returns>
-        internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(Predicate<HttpRequestMessage> onIntercepted)
+        internal static Func<HttpRequestMessage, Task<bool>>? ConvertToBooleanTask(Predicate<HttpRequestMessage>? onIntercepted)
         {
             if (onIntercepted == null)
             {
@@ -65,7 +65,7 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The converted delegate if <paramref name="onIntercepted"/> has a value; otherwise <see langword="null"/>.
         /// </returns>
-        internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(Func<HttpRequestMessage, Task> onIntercepted)
+        internal static Func<HttpRequestMessage, Task<bool>>? ConvertToBooleanTask(Func<HttpRequestMessage, Task>? onIntercepted)
         {
             if (onIntercepted == null)
             {

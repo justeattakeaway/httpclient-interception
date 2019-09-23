@@ -17,13 +17,13 @@ namespace JustEat.HttpClientInterception.Bundles
         /// Gets or sets the bundle's Id.
         /// </summary>
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         /// <summary>
         /// Gets or sets the bundle's comment.
         /// </summary>
         [JsonProperty("comment", NullValueHandling = NullValueHandling.Ignore)]
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         /// <summary>
         /// Gets or sets the bundle version.
@@ -35,6 +35,6 @@ namespace JustEat.HttpClientInterception.Bundles
         /// Gets or sets the items in the bundle.
         /// </summary>
         [JsonProperty("items")]
-        public IList<BundleItem> Items { get; set; }
+        public IList<BundleItem>? Items { get; set; }
     }
 }

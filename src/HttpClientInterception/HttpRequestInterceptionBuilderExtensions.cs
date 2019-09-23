@@ -9,12 +9,11 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
 
 namespace JustEat.HttpClientInterception
 {
     /// <summary>
-    /// A class containing extenion methods for the <see cref="HttpRequestInterceptionBuilder"/> class. This class cannot be inherited.
+    /// A class containing extention methods for the <see cref="HttpRequestInterceptionBuilder"/> class. This class cannot be inherited.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class HttpRequestInterceptionBuilderExtensions
@@ -187,10 +186,8 @@ namespace JustEat.HttpClientInterception
 
             async Task<byte[]> ContentFactoryAsync()
             {
-                using (var content = new FormUrlEncodedContent(parameters))
-                {
-                    return await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                }
+                using var content = new FormUrlEncodedContent(parameters);
+                return await content.ReadAsByteArrayAsync().ConfigureAwait(false);
             }
 
             return builder
@@ -203,7 +200,6 @@ namespace JustEat.HttpClientInterception
         /// </summary>
         /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
         /// <param name="content">The object to serialize as JSON as the content.</param>
-        /// <param name="settings">The optional settings to use to serialize <paramref name="content"/> as JSON.</param>
         /// <returns>
         /// The value specified by <paramref name="builder"/>.
         /// </returns>
@@ -212,28 +208,9 @@ namespace JustEat.HttpClientInterception
         /// </exception>
         public static HttpRequestInterceptionBuilder WithJsonContent(
             this HttpRequestInterceptionBuilder builder,
-            object content,
-            JsonSerializerSettings settings = null)
+            object content)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (content == null)
-            {
-                throw new ArgumentNullException(nameof(content));
-            }
-
-            byte[] ContentFactory()
-            {
-                string json = JsonConvert.SerializeObject(content, settings ?? new JsonSerializerSettings());
-                return Encoding.UTF8.GetBytes(json);
-            }
-
-            return builder
-                .WithMediaType(HttpClientInterceptorOptions.JsonMediaType)
-                .WithContent(ContentFactory);
+            return builder.WithNewtonsoftJsonContent(content);
         }
 
         /// <summary>

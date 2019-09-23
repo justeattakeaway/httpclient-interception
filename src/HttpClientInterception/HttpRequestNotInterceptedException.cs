@@ -3,7 +3,7 @@
 
 using System;
 using System.Net.Http;
-#if NET461
+#if NET461 || NET472
 using System.Runtime.Serialization;
 #endif
 
@@ -12,10 +12,8 @@ namespace JustEat.HttpClientInterception
     /// <summary>
     /// Represents the exception when an HTTP request is made that has no interception registered. This class cannot be inherited.
     /// </summary>
-#if !NETSTANDARD1_3
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-#endif
-#if NET461
+#if NET461 || NET472
     [Serializable]
 #endif
     public sealed class HttpRequestNotInterceptedException : InvalidOperationException
@@ -59,7 +57,7 @@ namespace JustEat.HttpClientInterception
         {
         }
 
-#if NET461
+#if NET461 || NET472
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpRequestNotInterceptedException"/> class with serialized data.
         /// </summary>
@@ -74,6 +72,6 @@ namespace JustEat.HttpClientInterception
         /// <summary>
         /// Gets the HTTP request message that was not intercepted.
         /// </summary>
-        public HttpRequestMessage Request { get; }
+        public HttpRequestMessage? Request { get; }
     }
 }

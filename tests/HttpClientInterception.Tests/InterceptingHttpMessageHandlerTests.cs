@@ -34,17 +34,14 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .ThrowsOnMissingRegistration();
 
-            using (var target = options.CreateHttpClient())
-            {
-                // Act
-                var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                    () => target.GetAsync("https://google.com/"));
+            using var target = options.CreateHttpClient();
 
-                // Assert
-                exception.Message.ShouldBe("No HTTP response is configured for GET https://google.com/.");
-                exception.Request.ShouldNotBeNull();
-                exception.Request.RequestUri.ShouldBe(new Uri("https://google.com/"));
-            }
+            // Act
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => target.GetAsync("https://google.com/"));
+
+            // Assert
+            exception.Message.ShouldBe("No HTTP response is configured for GET https://google.com/.");
         }
 
         [Fact]
@@ -56,23 +53,18 @@ namespace JustEat.HttpClientInterception
 
             var mock = new Mock<HttpMessageHandler>();
 
-            using (var handler = options.CreateHttpMessageHandler())
-            {
-                using (var target = new HttpClient(handler))
-                {
-                    using (var content = new StringContent(string.Empty))
-                    {
-                        // Act
-                        var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                            () => target.PostAsync("https://google.com/", content));
+            using var handler = options.CreateHttpMessageHandler();
+            using var target = new HttpClient(handler);
+            using var content = new StringContent(string.Empty);
 
-                        // Assert
-                        exception.Message.ShouldBe("No HTTP response is configured for POST https://google.com/.");
-                        exception.Request.ShouldNotBeNull();
-                        exception.Request.RequestUri.ShouldBe(new Uri("https://google.com/"));
-                    }
-                }
-            }
+            // Act
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => target.PostAsync("https://google.com/", content));
+
+            // Assert
+            exception.Message.ShouldBe("No HTTP response is configured for POST https://google.com/.");
+            exception.Request.ShouldNotBeNull();
+            exception.Request.RequestUri.ShouldBe(new Uri("https://google.com/"));
         }
 
         [Fact]
@@ -80,32 +72,28 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-                .Register(HttpMethod.Get, new Uri("https://google.com/foo"), () => Array.Empty<byte>())
-                .Register(HttpMethod.Options, new Uri("http://google.com/foo"), () => Array.Empty<byte>())
-                .Register(HttpMethod.Options, new Uri("https://google.com/FOO"), () => Array.Empty<byte>());
+                .RegisterByteArray(HttpMethod.Get, new Uri("https://google.com/foo"), () => Array.Empty<byte>())
+                .RegisterByteArray(HttpMethod.Options, new Uri("http://google.com/foo"), () => Array.Empty<byte>())
+                .RegisterByteArray(HttpMethod.Options, new Uri("https://google.com/FOO"), () => Array.Empty<byte>());
 
             options.OnMissingRegistration = (request) => Task.FromResult<HttpResponseMessage>(null);
 
             var mock = new Mock<HttpMessageHandler>();
 
-            using (var expected = new HttpResponseMessage(HttpStatusCode.OK))
-            {
-                using (var request = new HttpRequestMessage(HttpMethod.Options, "https://google.com/foo"))
-                {
-                    mock.Protected()
-                        .Setup<Task<HttpResponseMessage>>("SendAsync", request, ItExpr.IsAny<CancellationToken>())
-                        .ReturnsAsync(expected);
+            using var expected = new HttpResponseMessage(HttpStatusCode.OK);
+            using var request = new HttpRequestMessage(HttpMethod.Options, "https://google.com/foo");
 
-                    using (var httpClient = options.CreateHttpClient(mock.Object))
-                    {
-                        // Act
-                        var actual = await httpClient.SendAsync(request, CancellationToken.None);
+            mock.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", request, ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(expected);
 
-                        // Asert
-                        actual.ShouldBe(expected);
-                    }
-                }
-            }
+            using var httpClient = options.CreateHttpClient(mock.Object);
+
+            // Act
+            var actual = await httpClient.SendAsync(request, CancellationToken.None);
+
+            // Asert
+            actual.ShouldBe(expected);
         }
 
         [Fact]
@@ -116,7 +104,7 @@ namespace JustEat.HttpClientInterception
             var requestUrl = "https://google.com/foo";
 
             var options = new HttpClientInterceptorOptions()
-                .Register(HttpMethod.Get, new Uri(requestUrl), () => Array.Empty<byte>());
+                .RegisterByteArray(HttpMethod.Get, new Uri(requestUrl), () => Array.Empty<byte>());
 
             int expected = 7;
             int actual = 0;

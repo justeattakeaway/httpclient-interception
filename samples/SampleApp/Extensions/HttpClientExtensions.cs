@@ -21,7 +21,7 @@ namespace SampleApp.Extensions
             // configures the HttpClient with the appropriate base URL and HTTP request
             // headers. It also adds two custom delegating handlers.
             return services
-                .AddHttpClient<IGitHub>()
+                .AddHttpClient(nameof(IGitHub))
                 .AddTypedClient(AddGitHub)
                 .AddHttpMessageHandler(() => new AddRequestIdHandler())
                 .AddHttpMessageHandler(() => new TimingHandler());
@@ -29,7 +29,7 @@ namespace SampleApp.Extensions
 
         private static IGitHub AddGitHub(HttpClient client, IServiceProvider provider)
         {
-            IConfiguration configuration = provider.GetRequiredService<IConfiguration>();
+            var configuration = provider.GetRequiredService<IConfiguration>();
 
             client.BaseAddress = new Uri("https://api.github.com");
 

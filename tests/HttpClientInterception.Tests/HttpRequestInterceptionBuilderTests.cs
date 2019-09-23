@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -105,7 +106,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task Builder_Uses_Default_Json_Serializer()
+        public static async Task WithJsonContent_Uses_Default_Json_Serializer()
         {
             // Arrange
             var requestUri = "https://google.com/";
@@ -125,7 +126,47 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task Builder_Uses_Specified_Json_Serializer()
+        public static async Task WithNewtonsoftJsonContent_Uses_Default_Json_Serializer()
+        {
+            // Arrange
+            var requestUri = "https://google.com/";
+            var expected = new { mode = EventResetMode.ManualReset };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(requestUri)
+                .WithNewtonsoftJsonContent(expected);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.GetAsync(options, requestUri);
+
+            // Assert
+            actual.ShouldBe(@"{""mode"":1}");
+        }
+
+        [Fact]
+        public static async Task WithSystemTextJsonContent_Uses_Default_Json_Serializer()
+        {
+            // Arrange
+            var requestUri = "https://google.com/";
+            var expected = new { mode = EventResetMode.ManualReset };
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForUrl(requestUri)
+                .WithSystemTextJsonContent(expected);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.GetAsync(options, requestUri);
+
+            // Assert
+            actual.ShouldBe(@"{""mode"":1}");
+        }
+
+        [Fact]
+        public static async Task Builder_Uses_Specified_Json_Serializer_Settings()
         {
             // Arrange
             var requestUri = "https://google.com/";
@@ -137,7 +178,31 @@ namespace JustEat.HttpClientInterception
             var builder = new HttpRequestInterceptionBuilder()
                 .ForPost()
                 .ForUrl(requestUri)
-                .WithJsonContent(expected, settings);
+                .WithNewtonsoftJsonContent(expected, settings);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            string actual = await HttpAssert.PostAsync(options, requestUri, new { });
+
+            // Assert
+            actual.ShouldBe(@"{""mode"":""ManualReset""}");
+        }
+
+        [Fact]
+        public static async Task Builder_Uses_Specified_Json_Serializer_Options()
+        {
+            // Arrange
+            var requestUri = "https://google.com/";
+            var expected = new { mode = EventResetMode.ManualReset };
+
+            var settings = new JsonSerializerOptions();
+            settings.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUrl(requestUri)
+                .WithSystemTextJsonContent(expected, settings);
 
             var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -826,6 +891,30 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static void WithNewtonsoftJsonContent_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            object content = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).WithNewtonsoftJsonContent(content));
+            Assert.Throws<ArgumentNullException>("content", () => builder.WithNewtonsoftJsonContent(content));
+        }
+
+        [Fact]
+        public static void WithSystemTextJsonContent_Validates_Parameters()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder();
+            object content = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).WithSystemTextJsonContent(content));
+            Assert.Throws<ArgumentNullException>("content", () => builder.WithSystemTextJsonContent(content));
+        }
+
+        [Fact]
         public static void ForUrl_Validates_Parameters()
         {
             // Arrange
@@ -1367,16 +1456,14 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            // Act
-            using (var client = options.CreateHttpClient())
-            {
-                // Act
-                var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                    () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
+            using var client = options.CreateHttpClient();
 
-                // Assert
-                exception.Message.ShouldStartWith("No HTTP response is configured for ");
-            }
+            // Act
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
+
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
         }
 
         [Fact]
@@ -1395,18 +1482,15 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
+            using var client = options.CreateHttpClient();
+            client.DefaultRequestHeaders.Add("Accept-Tenant", "ie");
+
             // Act
-            using (var client = options.CreateHttpClient())
-            {
-                client.DefaultRequestHeaders.Add("Accept-Tenant", new[] { "ie" });
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
-                // Act
-                var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                    () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
-
-                // Assert
-                exception.Message.ShouldStartWith("No HTTP response is configured for ");
-            }
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
         }
 
         [Fact]
@@ -1427,18 +1511,15 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
+            using var client = options.CreateHttpClient();
+            client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
+
             // Act
-            using (var client = options.CreateHttpClient())
-            {
-                client.DefaultRequestHeaders.Add("Accept-Tenant", new[] { "uk" });
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
-                // Act
-                var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                    () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
-
-                // Assert
-                exception.Message.ShouldStartWith("No HTTP response is configured for ");
-            }
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
         }
 
         [Fact]
@@ -1458,19 +1539,16 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
+            using var client = options.CreateHttpClient();
+            client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
+            client.DefaultRequestHeaders.Add("Authorization", "basic my-other-key");
+
             // Act
-            using (var client = options.CreateHttpClient())
-            {
-                client.DefaultRequestHeaders.Add("Accept-Tenant", new[] { "uk" });
-                client.DefaultRequestHeaders.Add("Authorization", "basic my-other-key");
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
-                // Act
-                var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                    () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
-
-                // Assert
-                exception.Message.ShouldStartWith("No HTTP response is configured for ");
-            }
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
         }
 
         [Fact]
@@ -1572,7 +1650,7 @@ namespace JustEat.HttpClientInterception
         public static void ForContent_Validates_Parameters()
         {
             // Arrange
-            bool Predicate(HttpContent content) => false;
+            static bool Predicate(HttpContent content) => false;
 
             // Act and Assert
             Assert.Throws<ArgumentNullException>("builder", () => (null as HttpRequestInterceptionBuilder).ForContent(Predicate));
@@ -1628,14 +1706,12 @@ namespace JustEat.HttpClientInterception
             using (var client = options.CreateHttpClient())
             {
                 // Act
-                using (var content = new FormUrlEncodedContent(actualForm))
-                {
-                    actualXml = await HttpAssert.SendAsync(
-                        options,
-                        HttpMethod.Post,
-                        "https://sqs.us-east-2.amazonaws.com/123456789012/MyQueue/",
-                        content);
-                }
+                using var content = new FormUrlEncodedContent(actualForm);
+                actualXml = await HttpAssert.SendAsync(
+                    options,
+                    HttpMethod.Post,
+                    "https://sqs.us-east-2.amazonaws.com/123456789012/MyQueue/",
+                    content);
             }
 
             // Assert
@@ -1667,18 +1743,15 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                using (var content = new FormUrlEncodedContent(actualForm))
-                {
-                    // Act
-                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+            using var client = options.CreateHttpClient();
+            using var content = new FormUrlEncodedContent(actualForm);
 
-                    // Assert
-                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
-                }
-            }
+            // Act
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
         }
 
         [Fact]
@@ -1707,18 +1780,15 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                using (var content = new FormUrlEncodedContent(actualForm))
-                {
-                    // Act
-                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+            using var client = options.CreateHttpClient();
+            using var content = new FormUrlEncodedContent(actualForm);
 
-                    // Assert
-                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
-                }
-            }
+            // Act
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
         }
 
         [Fact]
@@ -1743,18 +1813,15 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                using (var content = new FormUrlEncodedContent(actualForm))
-                {
-                    // Act
-                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+            using var client = options.CreateHttpClient();
+            using var content = new FormUrlEncodedContent(actualForm);
 
-                    // Assert
-                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
-                }
-            }
+            // Act
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
         }
 
         [Fact]
@@ -1784,18 +1851,15 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                using (var content = new FormUrlEncodedContent(actualForm))
-                {
-                    // Act
-                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+            using var client = options.CreateHttpClient();
+            using var content = new FormUrlEncodedContent(actualForm);
 
-                    // Assert
-                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
-                }
-            }
+            // Act
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
         }
 
         [Fact]
@@ -1823,18 +1887,15 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                using (var content = new FormUrlEncodedContent(actualForm))
-                {
-                    // Act
-                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+            using var client = options.CreateHttpClient();
+            using var content = new FormUrlEncodedContent(actualForm);
 
-                    // Assert
-                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
-                }
-            }
+            // Act
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
+
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
         }
 
         [Fact]
@@ -1885,18 +1946,15 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            using (var stream = new MemoryStream())
-            {
-                using (var content = new StreamContent(stream))
-                {
-                    // Act
-                    var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                        () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/post", content));
+            using var stream = new MemoryStream();
+            using var content = new StreamContent(stream);
 
-                    // Assert
-                    exception.Message.ShouldStartWith("No HTTP response is configured for ");
-                }
-            }
+            // Act
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/post", content));
+
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
         }
 
         [Fact]
@@ -2030,13 +2088,12 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act and Assert
-                (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
-                (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
-                (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
-            }
+            using var client = options.CreateHttpClient();
+
+            // Act and Assert
+            (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
+            (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
+            (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
         }
 
         [Fact]
@@ -2052,12 +2109,11 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act and Assert
-                await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
-                    () => client.GetStringAsync("https://google.com/"));
-            }
+            using var client = options.CreateHttpClient();
+
+            // Act and Assert
+            await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => client.GetStringAsync("https://google.com/"));
         }
 
         private sealed class CustomObject

@@ -19,33 +19,33 @@ namespace JustEat.HttpClientInterception
 
         private static readonly Func<Task<byte[]>> EmptyContentFactory = () => EmptyContent;
 
-        private Func<Task<byte[]>> _contentFactory;
+        private Func<Task<byte[]>>? _contentFactory;
 
-        private Func<HttpContent, Task<bool>> _contentMatcher;
+        private Func<HttpContent, Task<bool>>? _contentMatcher;
 
-        private Func<Task<Stream>> _contentStream;
+        private Func<Task<Stream>>? _contentStream;
 
-        private IDictionary<string, ICollection<string>> _contentHeaders;
+        private IDictionary<string, ICollection<string>>? _contentHeaders;
 
-        private IDictionary<string, ICollection<string>> _requestHeaders;
+        private IDictionary<string, ICollection<string>>? _requestHeaders;
 
-        private IDictionary<string, ICollection<string>> _responseHeaders;
+        private IDictionary<string, ICollection<string>>? _responseHeaders;
 
         private string _mediaType = HttpClientInterceptorOptions.JsonMediaType;
 
         private HttpMethod _method = HttpMethod.Get;
 
-        private Func<HttpRequestMessage, Task<bool>> _onIntercepted;
+        private Func<HttpRequestMessage, Task<bool>>? _onIntercepted;
 
-        private Func<HttpRequestMessage, Task<bool>> _requestMatcher;
+        private Func<HttpRequestMessage, Task<bool>>? _requestMatcher;
 
-        private string _reasonPhrase;
+        private string? _reasonPhrase;
 
         private HttpStatusCode _statusCode = HttpStatusCode.OK;
 
         private UriBuilder _uriBuilder = new UriBuilder();
 
-        private Version _version;
+        private Version? _version;
 
         private bool _hasCustomPort;
 
@@ -658,7 +658,7 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithInterceptionCallback(Predicate<HttpRequestMessage> onIntercepted)
+        public HttpRequestInterceptionBuilder WithInterceptionCallback(Predicate<HttpRequestMessage>? onIntercepted)
         {
             _onIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted);
             return this;
@@ -860,7 +860,7 @@ namespace JustEat.HttpClientInterception
         /// <remarks>
         /// Pass a value of <see langword="null"/> to remove a previously-registered custom content matching predicate.
         /// </remarks>
-        public HttpRequestInterceptionBuilder ForContent(Func<HttpContent, Task<bool>> predicate)
+        public HttpRequestInterceptionBuilder ForContent(Func<HttpContent, Task<bool>>? predicate)
         {
             _contentMatcher = predicate;
             return this;

@@ -35,7 +35,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-                .Register(HttpMethod.Get, new Uri("https://google.com/"), contentFactory: EmptyContent);
+                .RegisterByteArray(HttpMethod.Get, new Uri("https://google.com/"), contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage(HttpMethod.Delete, "https://google.com/");
 
@@ -51,7 +51,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-                .Register(HttpMethod.Get, new Uri("https://google.co.uk/"), contentFactory: EmptyContent);
+                .RegisterByteArray(HttpMethod.Get, new Uri("https://google.co.uk/"), contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com/");
 
@@ -67,7 +67,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-                .Register(HttpMethod.Get, new Uri("https://google.com/"), contentFactory: EmptyContent);
+                .RegisterByteArray(HttpMethod.Get, new Uri("https://google.com/"), contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage(HttpMethod.Post, "https://google.com/");
 
@@ -83,7 +83,7 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-                .Register(HttpMethod.Get, new Uri("https://google.co.uk/"), contentFactory: EmptyContent);
+                .RegisterByteArray(HttpMethod.Get, new Uri("https://google.co.uk/"), contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage();
 
@@ -102,7 +102,7 @@ namespace JustEat.HttpClientInterception
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, contentFactory: EmptyContent);
+                .RegisterByteArray(method, uri, contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -125,12 +125,12 @@ namespace JustEat.HttpClientInterception
             var uriToRequest = new Uri("https://google.com/UK");
 
             var options = new HttpClientInterceptorOptions(caseSensitive)
-                .Register(method, uriToRegister, contentFactory: EmptyContent);
+                .RegisterByteArray(method, uriToRegister, contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage(method, uriToRequest);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request);
+            using HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             (actual == null).ShouldBe(expectNull);
@@ -144,7 +144,7 @@ namespace JustEat.HttpClientInterception
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, () => null as byte[]);
+                .RegisterByteArray(method, uri, () => null as byte[]);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -167,7 +167,7 @@ namespace JustEat.HttpClientInterception
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, () => Task.FromResult<byte[]>(null));
+                .RegisterByteArray(method, uri, () => Task.FromResult<byte[]>(null));
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -190,7 +190,7 @@ namespace JustEat.HttpClientInterception
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, () => null as Stream);
+                .RegisterStream(method, uri, () => null as Stream);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -213,7 +213,7 @@ namespace JustEat.HttpClientInterception
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, () => Task.FromResult<Stream>(null));
+                .RegisterStream(method, uri, () => Task.FromResult<Stream>(null));
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -242,7 +242,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: headers);
+                .RegisterByteArray(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: headers);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -268,7 +268,7 @@ namespace JustEat.HttpClientInterception
             IDictionary<string, string> responseHeaders = null;
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: responseHeaders);
+                .RegisterByteArray(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: responseHeaders);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -296,7 +296,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, contentFactory: EmptyContent, responseHeaders: responseHeaders);
+                .RegisterByteArray(method, uri, contentFactory: EmptyContent, responseHeaders: responseHeaders);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -326,7 +326,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, contentStream: () => Stream.Null, responseHeaders: headers);
+                .RegisterStream(method, uri, contentStream: () => Stream.Null, responseHeaders: headers);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -356,7 +356,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, contentStream: EmptyStream, responseHeaders: responseHeaders);
+                .RegisterStream(method, uri, contentStream: EmptyStream, responseHeaders: responseHeaders);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -377,8 +377,8 @@ namespace JustEat.HttpClientInterception
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
-                .RegisterGet("https://google.com/", new { message = "Hello world!" })
-                .RegisterGet("https://google.co.uk/", new { message = "Hello world!" });
+                .RegisterGetJson("https://google.com/", new { message = "Hello world!" })
+                .RegisterGetJson("https://google.co.uk/", new { message = "Hello world!" });
 
             // Act and Assert
             await HttpAssert.GetAsync(options, "https://google.com/");
@@ -420,7 +420,7 @@ namespace JustEat.HttpClientInterception
             var payload = new MyObject() { Message = "Hello world!" };
 
             var options = new HttpClientInterceptorOptions()
-                .RegisterGet(url, payload, statusCode: HttpStatusCode.NotFound);
+                .RegisterGetJson(url, payload, statusCode: HttpStatusCode.NotFound);
 
             // Act - begin first scope
             using (options.BeginScope())
@@ -429,7 +429,7 @@ namespace JustEat.HttpClientInterception
                 await HttpAssert.GetAsync(options, url, HttpStatusCode.NotFound);
 
                 // Arrange - first update to registration
-                options.RegisterGet(url, payload, statusCode: HttpStatusCode.InternalServerError);
+                options.RegisterGetJson(url, payload, statusCode: HttpStatusCode.InternalServerError);
 
                 // Assert - first updated registration
                 await HttpAssert.GetAsync(options, url, HttpStatusCode.InternalServerError);
@@ -438,7 +438,7 @@ namespace JustEat.HttpClientInterception
                 using (options.BeginScope())
                 {
                     // Arrange - second update to registration
-                    options.RegisterGet(url, payload, statusCode: HttpStatusCode.RequestTimeout);
+                    options.RegisterGetJson(url, payload, statusCode: HttpStatusCode.RequestTimeout);
 
                     // Assert - second updated registration
                     await HttpAssert.GetAsync(options, url, HttpStatusCode.RequestTimeout);
@@ -460,11 +460,11 @@ namespace JustEat.HttpClientInterception
             var payload = new MyObject() { Message = "Hello world!" };
 
             var options = new HttpClientInterceptorOptions()
-                .RegisterGet(url, payload, statusCode: HttpStatusCode.NotFound);
+                .RegisterGetJson(url, payload, statusCode: HttpStatusCode.NotFound);
 
             // Act
             var clone = options.Clone()
-                .RegisterGet(url, payload, statusCode: HttpStatusCode.InternalServerError);
+                .RegisterGetJson(url, payload, statusCode: HttpStatusCode.InternalServerError);
 
             // Assert
             clone.ThrowOnMissingRegistration.ShouldBe(options.ThrowOnMissingRegistration);
@@ -530,7 +530,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void Register_Throws_If_Method_Is_Null()
+        public static void RegisterByteArray_Throws_If_Method_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -539,40 +539,64 @@ namespace JustEat.HttpClientInterception
             Uri uri = new Uri("https://www.just-eat.co.uk");
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("method", () => options.Register(method, uri, contentFactory: EmptyContent));
-            Assert.Throws<ArgumentNullException>("method", () => options.Register(method, uri, contentStream: EmptyStream));
+            Assert.Throws<ArgumentNullException>("method", () => options.RegisterByteArray(method, uri, contentFactory: EmptyContent));
         }
 
         [Fact]
-        public static void Register_Throws_If_Uri_Is_Null()
+        public static void RegisterStream_Throws_If_Method_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
 
-            HttpMethod method = HttpMethod.Get;
+            HttpMethod method = null;
+            var uri = new Uri("https://www.just-eat.co.uk");
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("method", () => options.RegisterStream(method, uri, contentStream: EmptyStream));
+        }
+
+        [Fact]
+        public static void RegisterByteArray_Throws_If_Uri_Is_Null()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            var method = HttpMethod.Get;
             Uri uri = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("uri", () => options.Register(method, uri, contentFactory: EmptyContent));
-            Assert.Throws<ArgumentNullException>("uri", () => options.Register(method, uri, contentStream: EmptyStream));
+            Assert.Throws<ArgumentNullException>("uri", () => options.RegisterByteArray(method, uri, contentFactory: EmptyContent));
         }
 
         [Fact]
-        public static void Register_Throws_If_ContentFactory_Is_Null_Synchronous()
+        public static void RegisterStream_Throws_If_Uri_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
 
-            HttpMethod method = HttpMethod.Get;
-            Uri uri = new Uri("https://www.just-eat.co.uk");
-            Func<byte[]> contentFactory = null;
+            var method = HttpMethod.Get;
+            Uri uri = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("contentFactory", () => options.Register(method, uri, contentFactory));
+            Assert.Throws<ArgumentNullException>("uri", () => options.RegisterStream(method, uri, contentStream: EmptyStream));
         }
 
         [Fact]
-        public static void Register_Throws_If_ContentFactory_Is_Null_Asynchronous()
+        public static void RegisterByteArray_Throws_If_ContentFactory_Is_Null_Synchronous()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+
+            var method = HttpMethod.Get;
+            var uri = new Uri("https://www.just-eat.co.uk");
+            Func<byte[]> contentFactory = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("contentFactory", () => options.RegisterByteArray(method, uri, contentFactory));
+        }
+
+        [Fact]
+        public static void RegisterByteArray_Throws_If_ContentFactory_Is_Null_Asynchronous()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -582,11 +606,11 @@ namespace JustEat.HttpClientInterception
             Func<Task<byte[]>> contentFactory = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("contentFactory", () => options.Register(method, uri, contentFactory));
+            Assert.Throws<ArgumentNullException>("contentFactory", () => options.RegisterByteArray(method, uri, contentFactory));
         }
 
         [Fact]
-        public static void Register_Throws_If_ContentStream_Is_Null_Synchronous()
+        public static void RegisterStream_Throws_If_ContentStream_Is_Null_Synchronous()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -596,11 +620,11 @@ namespace JustEat.HttpClientInterception
             Func<Stream> contentStream = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("contentStream", () => options.Register(method, uri, contentStream));
+            Assert.Throws<ArgumentNullException>("contentStream", () => options.RegisterStream(method, uri, contentStream));
         }
 
         [Fact]
-        public static void Register_Throws_If_ContentStream_Is_Null_Asynchronous()
+        public static void RegisterStream_Throws_If_ContentStream_Is_Null_Asynchronous()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -610,7 +634,7 @@ namespace JustEat.HttpClientInterception
             Func<Task<Stream>> contentStream = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("contentStream", () => options.Register(method, uri, contentStream));
+            Assert.Throws<ArgumentNullException>("contentStream", () => options.RegisterStream(method, uri, contentStream));
         }
 
         [Fact]
@@ -643,9 +667,9 @@ namespace JustEat.HttpClientInterception
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, contentFactory: () => throw new NotImplementedException());
+                .RegisterByteArray(method, uri, contentFactory: () => throw new NotImplementedException());
 
-            var request = new HttpRequestMessage(method, uri);
+            using var request = new HttpRequestMessage(method, uri);
 
             // Act and Assert
             await Assert.ThrowsAsync<NotImplementedException>(() => options.GetResponseAsync(request));
@@ -659,9 +683,9 @@ namespace JustEat.HttpClientInterception
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
-                .Register(method, uri, contentStream: () => throw new NotImplementedException());
+                .RegisterStream(method, uri, contentStream: () => throw new NotImplementedException());
 
-            var request = new HttpRequestMessage(method, uri);
+            using var request = new HttpRequestMessage(method, uri);
 
             // Act and Assert
             await Assert.ThrowsAsync<NotImplementedException>(() => options.GetResponseAsync(request));

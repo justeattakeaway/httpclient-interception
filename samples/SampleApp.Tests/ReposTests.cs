@@ -46,7 +46,7 @@ namespace SampleApp.Tests
                     .ForPath("orgs/weyland-yutani/repos")
                     .ForQuery("per_page=2")
                     .Responds()
-                    .WithJsonContent(
+                    .WithSystemTextJsonContent(
                         new[]
                         {
                             new { id = 1, name = "foo" },

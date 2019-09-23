@@ -2,9 +2,13 @@ param(
     [Parameter(Mandatory = $false)][string] $Configuration = "Release",
     [Parameter(Mandatory = $false)][string] $VersionSuffix = "",
     [Parameter(Mandatory = $false)][string] $OutputPath = "",
-    [Parameter(Mandatory = $false)][switch] $SkipTests,
-    [Parameter(Mandatory = $false)][switch] $DisableCodeCoverage
+    [Parameter(Mandatory = $false)][switch] $SkipTests
 )
+
+# These make CI builds faster
+$env:DOTNET_MULTILEVEL_LOOKUP = "0"
+$env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true"
+$env:NUGET_XMLDOC_MODE = "skip"
 
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
@@ -52,10 +56,16 @@ else {
 }
 
 if ($installDotNetSdk -eq $true) {
-    $env:DOTNET_INSTALL_DIR = Join-Path "$(Convert-Path "$PSScriptRoot")" ".dotnetcli"
+
+    if (($null -ne $env:TF_BUILD)) {
+        $env:DOTNET_INSTALL_DIR = Join-Path $env:ProgramFiles "dotnet"
+    } else {
+        $env:DOTNET_INSTALL_DIR = Join-Path "$(Convert-Path "$PSScriptRoot")" ".dotnetcli"
+    }
+
     $sdkPath = Join-Path $env:DOTNET_INSTALL_DIR "sdk\$dotnetVersion"
 
-    if (!(Test-Path $sdkPath)) {
+    if (($null -ne $env:TF_BUILD) -or (!(Test-Path $sdkPath))) {
         if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
             mkdir $env:DOTNET_INSTALL_DIR | Out-Null
         }
@@ -64,12 +74,15 @@ if ($installDotNetSdk -eq $true) {
         Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
         & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
     }
-
-    $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
-    $dotnet = Join-Path "$env:DOTNET_INSTALL_DIR" "dotnet.exe"
 }
 else {
-    $dotnet = "dotnet"
+    $env:DOTNET_INSTALL_DIR = Split-Path -Path (Get-Command dotnet.exe).Path
+}
+
+$dotnet = Join-Path "$env:DOTNET_INSTALL_DIR" "dotnet.exe"
+
+if (($installDotNetSdk -eq $true) -And ($null -eq $env:TF_BUILD)) {
+    $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
 }
 
 function DotNetPack {
@@ -89,48 +102,29 @@ function DotNetPack {
 function DotNetTest {
     param([string]$Project)
 
-    if ($DisableCodeCoverage -eq $true) {
-        if ($null -ne $env:TF_BUILD) {
-            & $dotnet test $Project --output $OutputPath --logger trx
-        }
-        else {
-            & $dotnet test $Project --output $OutputPath
-        }
+    $nugetPath = Join-Path $env:USERPROFILE ".nuget\packages"
+    $propsFile = Join-Path $solutionPath "Directory.Build.props"
+    $reportGeneratorVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='ReportGenerator']/@Version").Node.'#text'
+    $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
+
+    $coverageOutput = Join-Path $OutputPath "coverage.cobertura.xml"
+    $reportOutput = Join-Path $OutputPath "coverage"
+
+    if ($null -ne $env:TF_BUILD) {
+        & $dotnet test $Project --output $OutputPath --logger trx
     }
     else {
-
-        if ($installDotNetSdk -eq $true) {
-            $dotnetPath = $dotnet
-        }
-        else {
-            $dotnetPath = (Get-Command "dotnet.exe").Source
-        }
-
-        $nugetPath = Join-Path $env:USERPROFILE ".nuget\packages"
-        $propsFile = Join-Path $solutionPath "Directory.Build.props"
-
-        $reportGeneratorVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='ReportGenerator']/@Version").Node.'#text'
-        $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
-
-        $coverageOutput = Join-Path $OutputPath "coverage.cobertura.xml"
-        $reportOutput = Join-Path $OutputPath "coverage"
-
-        if ($null -ne $env:TF_BUILD) {
-            & $dotnetPath test $Project --output $OutputPath --logger trx
-        }
-        else {
-            & $dotnetPath test $Project --output $OutputPath
-        }
-
-        $dotNetTestExitCode = $LASTEXITCODE
-
-        & $dotnet `
-            $reportGeneratorPath `
-            `"-reports:$coverageOutput`" `
-            `"-targetdir:$reportOutput`" `
-            -reporttypes:HTML `
-            -verbosity:Warning
+        & $dotnet test $Project --output $OutputPath
     }
+
+    $dotNetTestExitCode = $LASTEXITCODE
+
+    & $dotnet `
+        $reportGeneratorPath `
+        `"-reports:$coverageOutput`" `
+        `"-targetdir:$reportOutput`" `
+        -reporttypes:HTML `
+        -verbosity:Warning
 
     if ($dotNetTestExitCode -ne 0) {
         throw "dotnet test failed with exit code $dotNetTestExitCode"
@@ -141,10 +135,8 @@ Write-Host "Packaging solution..." -ForegroundColor Green
 
 DotNetPack $libraryProject
 
-if ($SkipTests -eq $false) {
-    Write-Host "Running tests..." -ForegroundColor Green
-    Remove-Item -Path (Join-Path $OutputPath "coverage.json") -Force -ErrorAction SilentlyContinue | Out-Null
-    ForEach ($testProject in $testProjects) {
-        DotNetTest $testProject
-    }
+Write-Host "Running tests..." -ForegroundColor Green
+Remove-Item -Path (Join-Path $OutputPath "coverage.json") -Force -ErrorAction SilentlyContinue | Out-Null
+ForEach ($testProject in $testProjects) {
+    DotNetTest $testProject
 }

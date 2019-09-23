@@ -26,7 +26,7 @@ namespace JustEat.HttpClientInterception.Bundles
                 }
             }
 
-            ValidateItem(item, out Uri uri, out Version version);
+            ValidateItem(item, out Uri uri, out Version? version);
 
             var builder = new HttpRequestInterceptionBuilder().ForUri(uri);
 
@@ -95,7 +95,7 @@ namespace JustEat.HttpClientInterception.Bundles
             return builder.WithContent(content);
         }
 
-        private static string GetRawContentString(BundleItem item)
+        private static string? GetRawContentString(BundleItem item)
         {
             switch (item.ContentFormat?.ToUpperInvariant())
             {
@@ -104,7 +104,7 @@ namespace JustEat.HttpClientInterception.Bundles
                     return Encoding.UTF8.GetString(decoded);
 
                 case "JSON":
-                    return item.ContentJson.ToString();
+                    return item.ContentJson!.ToString();
 
                 case null:
                 case "":
@@ -116,7 +116,7 @@ namespace JustEat.HttpClientInterception.Bundles
             }
         }
 
-        private static void ValidateItem(BundleItem item, out Uri uri, out Version version)
+        private static void ValidateItem(BundleItem item, out Uri uri, out Version? version)
         {
             version = null;
 
@@ -140,7 +140,7 @@ namespace JustEat.HttpClientInterception.Bundles
 
         private static IDictionary<string, ICollection<string>> TemplateHeaders(
             IDictionary<string, ICollection<string>> headers,
-            IDictionary<string, string> parameters)
+            IDictionary<string, string>? parameters)
         {
             var result = headers;
 
@@ -167,7 +167,7 @@ namespace JustEat.HttpClientInterception.Bundles
             return result;
         }
 
-        private static string TemplateString(string content, IDictionary<string, string> parameters)
+        private static string TemplateString(string content, IDictionary<string, string>? parameters)
         {
             if (parameters == null || parameters.Count < 1)
             {

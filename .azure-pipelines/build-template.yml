@@ -20,7 +20,7 @@ phases:
       ${{ if and(eq(parameters.queueName, ''), eq(parameters.agentOS, 'macOS')) }}:
         name: Hosted macOS
       ${{ if and(eq(parameters.queueName, ''), eq(parameters.agentOS, 'Windows')) }}:
-        name: Hosted VS2017
+        name: Hosted Windows 2019 with VS2019
     variables:
       AgentOSName: ${{ parameters.agentOS }}
       BuildArgs: ${{ parameters.buildArgs }}
@@ -39,7 +39,6 @@ phases:
           name: BuildAndTest
           displayName: Build and test
           env:
-            DOTNET_MULTILEVEL_LOOKUP: 0
             DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
             NUGET_XMLDOC_MODE: skip
       - ${{ if ne(parameters.agentOS, 'Windows') }}:
@@ -48,7 +47,6 @@ phases:
           name: BuildAndTest
           displayName: Build and test
           env:
-            DOTNET_MULTILEVEL_LOOKUP: 0
             DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
             NUGET_XMLDOC_MODE: skip
       - task: PublishTestResults@2

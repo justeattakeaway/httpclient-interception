@@ -32,10 +32,10 @@ namespace SampleApp.Tests
         public HttpClientInterceptorOptions Interceptor { get; }
 
         public void ClearOutputHelper()
-            => Server.Host.Services.GetRequiredService<ITestOutputHelperAccessor>().OutputHelper = null;
+            => Server.Services.GetRequiredService<ITestOutputHelperAccessor>().OutputHelper = null;
 
         public void SetOutputHelper(ITestOutputHelper value)
-            => Server.Host.Services.GetRequiredService<ITestOutputHelperAccessor>().OutputHelper = value;
+            => Server.Services.GetRequiredService<ITestOutputHelperAccessor>().OutputHelper = value;
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {

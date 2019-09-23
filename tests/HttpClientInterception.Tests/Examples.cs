@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using JustEat.HttpClientInterception.GitHub;
 using Newtonsoft.Json.Linq;
@@ -31,13 +32,10 @@ namespace JustEat.HttpClientInterception
                    .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
                    .RegisterWith(options);
 
-            string json;
+            using var client = options.CreateHttpClient();
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act
-                json = await client.GetStringAsync("https://public.je-apis.com/terms");
-            }
+            // Act
+            string json = await client.GetStringAsync("https://public.je-apis.com/terms");
 
             // Assert
             var content = JObject.Parse(json);
@@ -59,13 +57,10 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
 
-            string html;
+            using var client = options.CreateHttpClient();
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act
-                html = await client.GetStringAsync("http://www.google.co.uk/search?q=Just+Eat");
-            }
+            // Act
+            string html = await client.GetStringAsync("http://www.google.co.uk/search?q=Just+Eat");
 
             // Assert
             html.ShouldContain("Just Eat");
@@ -85,13 +80,10 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
 
-            byte[] content;
+            using var client = options.CreateHttpClient();
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act
-                content = await client.GetByteArrayAsync("https://files.domain.com/setup.exe");
-            }
+            // Act
+            byte[] content = await client.GetByteArrayAsync("https://files.domain.com/setup.exe");
 
             // Assert
             content.ShouldBe(new byte[] { 0, 1, 2, 3, 4 });
@@ -112,24 +104,15 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
 
-            HttpStatusCode status;
-            string json;
+            using var client = options.CreateHttpClient();
+            using var body = new StringContent(@"{ ""FirstName"": ""John"" }");
 
-            using (var client = options.CreateHttpClient())
-            {
-                using (var body = new StringContent(@"{ ""FirstName"": ""John"" }"))
-                {
-                    // Act
-                    using (var response = await client.PostAsync("https://public.je-apis.com/consumer", body))
-                    {
-                        status = response.StatusCode;
-                        json = await response.Content.ReadAsStringAsync();
-                    }
-                }
-            }
+            // Act
+            using var response = await client.PostAsync("https://public.je-apis.com/consumer", body);
+            string json = await response.Content.ReadAsStringAsync();
 
             // Assert
-            status.ShouldBe(HttpStatusCode.Created);
+            response.StatusCode.ShouldBe(HttpStatusCode.Created);
 
             var content = JObject.Parse(json);
             content.Value<int>("id").ShouldBe(123);
@@ -150,15 +133,11 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
 
-            string json;
+            using var client = options.CreateHttpClient();
+            client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
 
-            using (var client = options.CreateHttpClient())
-            {
-                client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
-
-                // Act
-                json = await client.GetStringAsync("https://public.je-apis.com/terms");
-            }
+            // Act
+            string json = await client.GetStringAsync("https://public.je-apis.com/terms");
 
             // Assert
             var content = JObject.Parse(json);
@@ -193,24 +172,15 @@ namespace JustEat.HttpClientInterception
                 .ThrowsOnMissingRegistration()
                 .Register(builder);
 
-            HttpStatusCode status;
-            string json;
+            using var client = options.CreateHttpClient();
+            using var body = new StringContent(@"{ ""FirstName"": ""John"" }");
 
-            using (var client = options.CreateHttpClient())
-            {
-                using (var body = new StringContent(@"{ ""FirstName"": ""John"" }"))
-                {
-                    // Act
-                    using (var response = await client.PostAsync("https://public.je-apis.com/consumer", body))
-                    {
-                        status = response.StatusCode;
-                        json = await response.Content.ReadAsStringAsync();
-                    }
-                }
-            }
+            // Act
+            using var response = await client.PostAsync("https://public.je-apis.com/consumer", body);
+            string json = await response.Content.ReadAsStringAsync();
 
             // Assert
-            status.ShouldBe(HttpStatusCode.Created);
+            response.StatusCode.ShouldBe(HttpStatusCode.Created);
 
             var content = JObject.Parse(json);
             content.Value<int>("id").ShouldBe(123);
@@ -231,24 +201,15 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
 
-            HttpStatusCode status;
-            string json;
+            using var client = options.CreateHttpClient();
+            using var body = new StringContent(@"{ ""User"": { ""DisplayName"": ""John"" } }");
 
-            using (var client = options.CreateHttpClient())
-            {
-                using (var body = new StringContent(@"{ ""User"": { ""DisplayName"": ""John"" } }"))
-                {
-                    // Act
-                    using (var response = await client.PutAsync("https://public.je-apis.com/baskets/123/user", body))
-                    {
-                        status = response.StatusCode;
-                        json = await response.Content.ReadAsStringAsync();
-                    }
-                }
-            }
+            // Act
+            using var response = await client.PutAsync("https://public.je-apis.com/baskets/123/user", body);
+            string json = await response.Content.ReadAsStringAsync();
 
             // Assert
-            status.ShouldBe(HttpStatusCode.Created);
+            response.StatusCode.ShouldBe(HttpStatusCode.Created);
 
             var content = JObject.Parse(json);
             content.Value<int>("id").ShouldBe(123);
@@ -268,15 +229,13 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act
-                using (var response = await client.DeleteAsync("https://public.je-apis.com/baskets/123/orderitems/456"))
-                {
-                    // Assert
-                    response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
-                }
-            }
+            using var client = options.CreateHttpClient();
+
+            // Act
+            using var response = await client.DeleteAsync("https://public.je-apis.com/baskets/123/orderitems/456");
+
+            // Assert
+            response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
         }
 
         [Fact]
@@ -292,19 +251,12 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
 
-            byte[] content;
+            using var client = options.CreateHttpClient();
+            using var message = new HttpRequestMessage(new HttpMethod("custom"), "http://custom.domain.com?length=2");
 
-            using (var client = options.CreateHttpClient())
-            {
-                using (var message = new HttpRequestMessage(new HttpMethod("custom"), "http://custom.domain.com?length=2"))
-                {
-                    // Act
-                    using (var response = await client.SendAsync(message))
-                    {
-                        content = await response.Content.ReadAsByteArrayAsync();
-                    }
-                }
-            }
+            // Act
+            using var response = await client.SendAsync(message);
+            byte[] content = await response.Content.ReadAsByteArrayAsync();
 
             // Assert
             content.ShouldBe(new byte[] { 0, 1 });
@@ -321,11 +273,10 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act and Assert
-                await Should.ThrowAsync<HttpRequestException>(() => client.GetStringAsync("http://www.google.co.uk"));
-            }
+            using var client = options.CreateHttpClient();
+
+            // Act and Assert
+            await Should.ThrowAsync<HttpRequestException>(() => client.GetStringAsync("http://www.google.co.uk"));
         }
 
         [Fact]
@@ -369,13 +320,10 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
 
-            string json;
+            using var client = options.CreateHttpClient();
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act
-                json = await client.GetStringAsync("http://xunit.github.io/settings.json");
-            }
+            // Act
+            string json = await client.GetStringAsync("http://xunit.github.io/settings.json");
 
             // Assert
             json.ShouldNotBeNullOrWhiteSpace();
@@ -565,15 +513,13 @@ namespace JustEat.HttpClientInterception
                 OnMissingRegistration = (request) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)),
             };
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act
-                using (var response = await client.GetAsync("https://google.com/"))
-                {
-                    // Assert
-                    response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
-                }
-            }
+            using var client = options.CreateHttpClient();
+
+            // Act
+            using var response = await client.GetAsync("https://google.com/");
+
+            // Assert
+            response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -586,13 +532,12 @@ namespace JustEat.HttpClientInterception
 
             var options = new HttpClientInterceptorOptions().Register(builder);
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act and Assert
-                (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
-                (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
-                (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
-            }
+            using var client = options.CreateHttpClient();
+
+            // Act and Assert
+            (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
+            (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
+            (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
         }
 
         [Fact]
@@ -616,14 +561,13 @@ namespace JustEat.HttpClientInterception
                 .Responds().WithContent(@"Fourth")
                 .RegisterWith(options);
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act and Assert
-                (await client.GetStringAsync("https://google.com/")).ShouldBe("First");
-                (await client.GetStringAsync("https://google.co.uk")).ShouldContain("Second");
-                (await client.GetStringAsync("https://example.org/index.html")).ShouldContain("Third");
-                (await client.GetStringAsync("https://www.just-eat.co.uk/")).ShouldContain("Fourth");
-            }
+            using var client = options.CreateHttpClient();
+
+            // Act and Assert
+            (await client.GetStringAsync("https://google.com/")).ShouldBe("First");
+            (await client.GetStringAsync("https://google.co.uk")).ShouldContain("Second");
+            (await client.GetStringAsync("https://example.org/index.html")).ShouldContain("Third");
+            (await client.GetStringAsync("https://www.just-eat.co.uk/")).ShouldContain("Fourth");
         }
 
         [Fact]
@@ -660,6 +604,28 @@ namespace JustEat.HttpClientInterception
             organization.Value<int>("id").ShouldBe(1516790);
             organization.Value<string>("login").ShouldBe("justeat");
             organization.Value<string>("url").ShouldBe("https://api.github.com/orgs/justeat");
+        }
+
+        [Fact]
+        public static async Task Intercept_Http_Get_For_Json_Object_Using_System_Text_Json()
+        {
+            // Arrange
+            var options = new HttpClientInterceptorOptions();
+            var builder = new HttpRequestInterceptionBuilder();
+
+            builder.Requests().ForGet().ForHttps().ForHost("public.je-apis.com").ForPath("terms")
+                   .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
+                   .RegisterWith(options);
+
+            using var client = options.CreateHttpClient();
+
+            // Act
+            using var utf8Json = await client.GetStreamAsync("https://public.je-apis.com/terms");
+
+            // Assert
+            using var content = await JsonDocument.ParseAsync(utf8Json);
+            content.RootElement.GetProperty("Id").GetInt32().ShouldBe(1);
+            content.RootElement.GetProperty("Link").GetString().ShouldBe("https://www.just-eat.co.uk/privacy-policy");
         }
     }
 }
