@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <AnalyzersVersion>2.9.4</AnalyzersVersion>
+    <AnalyzersVersion>2.9.6</AnalyzersVersion>
     <MicrosoftNETFrameworkReferenceAssembliesVersion>1.0.0-preview.2</MicrosoftNETFrameworkReferenceAssembliesVersion>
   </PropertyGroup>
   <ItemGroup>
