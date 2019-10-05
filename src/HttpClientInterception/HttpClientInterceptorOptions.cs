@@ -330,6 +330,7 @@ namespace JustEat.HttpClientInterception
         /// Gets the HTTP response, if any, set up for the specified HTTP request as an asynchronous operation.
         /// </summary>
         /// <param name="request">The HTTP request to try and get the intercepted response for.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> that returns the HTTP response to use, if any,
         /// for <paramref name="request"/>; otherwise <see langword="null"/>.
@@ -337,7 +338,7 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <see langword="null"/>.
         /// </exception>
-        public virtual async Task<HttpResponseMessage?> GetResponseAsync(HttpRequestMessage request)
+        public virtual async Task<HttpResponseMessage?> GetResponseAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request == null)
             {
@@ -354,7 +355,7 @@ namespace JustEat.HttpClientInterception
             var response = matchResult.Item2;
 
             // If Item1 is true, then Item2 is non-null
-            if (response!.OnIntercepted != null && !await response.OnIntercepted(request).ConfigureAwait(false))
+            if (response!.OnIntercepted != null && !await response.OnIntercepted(request, cancellationToken).ConfigureAwait(false))
             {
                 return null;
             }

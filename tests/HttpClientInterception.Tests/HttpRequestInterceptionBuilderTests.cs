@@ -418,7 +418,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request);
+            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -448,7 +448,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request);
+            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -474,7 +474,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request);
+            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -504,7 +504,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request);
+            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -534,7 +534,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request);
+            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -560,7 +560,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request);
+            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -804,7 +804,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request);
+            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -827,7 +827,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request);
+            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
 
             // Assert
             actual.ShouldNotBeNull();

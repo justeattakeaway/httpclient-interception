@@ -54,7 +54,7 @@ namespace JustEat.HttpClientInterception
                 await _options.OnSend(request).ConfigureAwait(false);
             }
 
-            var response = await _options.GetResponseAsync(request).ConfigureAwait(false);
+            var response = await _options.GetResponseAsync(request, cancellationToken).ConfigureAwait(false);
 
             if (response == null && _options.OnMissingRegistration != null)
             {
