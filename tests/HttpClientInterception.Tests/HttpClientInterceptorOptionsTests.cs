@@ -646,7 +646,7 @@ namespace JustEat.HttpClientInterception
             HttpRequestMessage request = null;
 
             // Act and Assert
-            await Assert.ThrowsAsync<ArgumentNullException>("request", () => options.GetResponseAsync(request, CancellationToken.None));
+            await Assert.ThrowsAsync<ArgumentNullException>("request", () => options.GetResponseAsync(request));
         }
 
         [Fact]
@@ -673,7 +673,7 @@ namespace JustEat.HttpClientInterception
             using var request = new HttpRequestMessage(method, uri);
 
             // Act and Assert
-            await Assert.ThrowsAsync<NotImplementedException>(() => options.GetResponseAsync(request, CancellationToken.None));
+            await Assert.ThrowsAsync<NotImplementedException>(() => options.GetResponseAsync(request));
         }
 
         [Fact]
@@ -689,7 +689,7 @@ namespace JustEat.HttpClientInterception
             using var request = new HttpRequestMessage(method, uri);
 
             // Act and Assert
-            await Assert.ThrowsAsync<NotImplementedException>(() => options.GetResponseAsync(request, CancellationToken.None));
+            await Assert.ThrowsAsync<NotImplementedException>(() => options.GetResponseAsync(request));
         }
 
         [Fact]
