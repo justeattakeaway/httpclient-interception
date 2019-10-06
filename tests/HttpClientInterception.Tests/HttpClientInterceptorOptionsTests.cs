@@ -25,7 +25,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldBeNull();
@@ -41,7 +41,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Delete, "https://google.com/");
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldBeNull();
@@ -57,7 +57,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com/");
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldBeNull();
@@ -73,7 +73,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(HttpMethod.Post, "https://google.com/");
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldBeNull();
@@ -89,7 +89,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage();
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldBeNull();
@@ -108,7 +108,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uri);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -131,7 +131,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uriToRequest);
 
             // Act
-            using HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            using HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             (actual == null).ShouldBe(expectNull);
@@ -150,7 +150,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uri);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -173,7 +173,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uri);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -196,7 +196,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uri);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -219,7 +219,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uri);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -248,7 +248,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uri);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -274,7 +274,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uri);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -302,7 +302,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uri);
 
             // Act
-            var actual = await options.GetResponseAsync(request, CancellationToken.None);
+            var actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -332,7 +332,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uri);
 
             // Act
-            HttpResponseMessage actual = await options.GetResponseAsync(request, CancellationToken.None);
+            HttpResponseMessage actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldNotBeNull();
@@ -362,7 +362,7 @@ namespace JustEat.HttpClientInterception
             var request = new HttpRequestMessage(method, uri);
 
             // Act
-            var actual = await options.GetResponseAsync(request, CancellationToken.None);
+            var actual = await options.GetResponseAsync(request);
 
             // Assert
             actual.ShouldNotBeNull();

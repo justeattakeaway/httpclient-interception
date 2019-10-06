@@ -637,35 +637,35 @@ namespace JustEat.HttpClientInterception
 
             var builder = new HttpRequestInterceptionBuilder()
                 .ForHost("www.google.co.uk")
-                .WithInterceptionCallback(async (_, ct) =>
+                .WithInterceptionCallback(async (_, token) =>
                 {
                     try
                     {
-                        await Task.Delay(latency, ct);
+                        await Task.Delay(latency, token);
                     }
                     catch (TaskCanceledException)
                     {
-                        // ignored
+                        // Ignored
                     }
                     finally
                     {
                         // Assert
-                        ct.IsCancellationRequested.ShouldBeTrue();
+                        token.IsCancellationRequested.ShouldBeTrue();
                     }
                 });
 
             var options = new HttpClientInterceptorOptions()
                 .Register(builder);
 
-            var stopwatch = new Stopwatch();
-
             using var cts = new CancellationTokenSource(TimeSpan.Zero);
 
-            using (var client = options.CreateHttpClient())
-            {
-                // Act
-                await client.GetAsync("http://www.google.co.uk", cts.Token);
-            }
+            using var client = options.CreateHttpClient();
+
+            // Act
+            await client.GetAsync("http://www.google.co.uk", cts.Token);
+
+            // Assert
+            cts.IsCancellationRequested.ShouldBeTrue();
         }
     }
 }

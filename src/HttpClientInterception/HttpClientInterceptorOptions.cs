@@ -338,7 +338,7 @@ namespace JustEat.HttpClientInterception
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <see langword="null"/>.
         /// </exception>
-        public virtual async Task<HttpResponseMessage?> GetResponseAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public virtual async Task<HttpResponseMessage?> GetResponseAsync(HttpRequestMessage request, CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (request == null)
             {
