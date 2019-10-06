@@ -1017,6 +1017,35 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static async Task Register_For_Callback_Invokes_Delegate_With_CancellationToken_And_Intercepts_If_Returns_True()
+        {
+            // Arrange
+            var requestUri = new Uri("https://api.just-eat.com/");
+            var content = new { foo = "bar" };
+
+            bool wasDelegateInvoked = false;
+
+            Task<bool> OnInterceptedAsync(HttpRequestMessage request, CancellationToken token)
+            {
+                wasDelegateInvoked = true;
+                return Task.FromResult(true);
+            }
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUri(requestUri)
+                .WithInterceptionCallback(OnInterceptedAsync);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            await HttpAssert.PostAsync(options, requestUri.ToString(), content);
+
+            // Assert
+            wasDelegateInvoked.ShouldBeTrue();
+        }
+
+        [Fact]
         public static async Task Register_For_Callback_Invokes_Delegate_And_Does_Not_Intercept_If_Returns_False()
         {
             // Arrange
@@ -1026,6 +1055,39 @@ namespace JustEat.HttpClientInterception
             bool wasDelegateInvoked = false;
 
             Task<bool> OnInterceptedAsync(HttpRequestMessage request)
+            {
+                wasDelegateInvoked = true;
+                return Task.FromResult(false);
+            }
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUri(requestUri)
+                .WithInterceptionCallback(OnInterceptedAsync);
+
+            var options = new HttpClientInterceptorOptions()
+                .ThrowsOnMissingRegistration()
+                .Register(builder);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+                () => HttpAssert.PostAsync(options, requestUri.ToString(), content));
+
+            // Assert
+            exception.Message.ShouldStartWith("No HTTP response is configured for ");
+            wasDelegateInvoked.ShouldBeTrue();
+        }
+
+        [Fact]
+        public static async Task Register_For_Callback_Invokes_Delegate_With_CancellationToken_And_Does_Not_Intercept_If_Returns_False()
+        {
+            // Arrange
+            var requestUri = new Uri("https://api.just-eat.com/");
+            var content = new { foo = "bar" };
+
+            bool wasDelegateInvoked = false;
+
+            Task<bool> OnInterceptedAsync(HttpRequestMessage request, CancellationToken token)
             {
                 wasDelegateInvoked = true;
                 return Task.FromResult(false);
