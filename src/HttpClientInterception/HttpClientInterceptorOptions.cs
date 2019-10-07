@@ -330,7 +330,7 @@ namespace JustEat.HttpClientInterception
         /// Gets the HTTP response, if any, set up for the specified HTTP request as an asynchronous operation.
         /// </summary>
         /// <param name="request">The HTTP request to try and get the intercepted response for.</param>
-        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <param name="cancellationToken">The optional token to monitor for cancellation requests.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> that returns the HTTP response to use, if any,
         /// for <paramref name="request"/>; otherwise <see langword="null"/>.

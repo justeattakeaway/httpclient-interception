@@ -73,11 +73,7 @@ namespace JustEat.HttpClientInterception
                 return null;
             }
 
-            return async (message, _) =>
-            {
-                await onIntercepted(message).ConfigureAwait(false);
-                return true;
-            };
+            return ConvertToBooleanTask((message, _) => onIntercepted(message));
         }
 
         /// <summary>

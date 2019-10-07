@@ -763,7 +763,7 @@ namespace JustEat.HttpClientInterception
                 _matchHeaders = matchHeaders;
             }
 
-            public override async Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            public override async Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
             {
                 HttpResponseMessage response = await base.GetResponseAsync(request, cancellationToken);
 
