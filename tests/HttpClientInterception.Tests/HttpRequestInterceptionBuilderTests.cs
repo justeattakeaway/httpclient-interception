@@ -1160,6 +1160,30 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static async Task Register_For_Callback_Clears_Delegate_For_Predicate_With_Cancellation_If_Set_To_Null()
+        {
+            // Arrange
+            var requestUri = new Uri("https://api.just-eat.com/");
+            var content = new { foo = "bar" };
+
+            bool wasDelegateInvoked = false;
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForPost()
+                .ForUri(requestUri)
+                .WithInterceptionCallback((request) => wasDelegateInvoked = true)
+                .WithInterceptionCallback(null as Func<HttpRequestMessage, CancellationToken, Task>);
+
+            var options = new HttpClientInterceptorOptions().Register(builder);
+
+            // Act
+            await HttpAssert.PostAsync(options, requestUri.ToString(), content);
+
+            // Assert
+            wasDelegateInvoked.ShouldBeFalse();
+        }
+
+        [Fact]
         public static async Task Builder_For_Any_Host_Registers_Interception()
         {
             // Arrange
