@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using Shouldly;
 using Xunit;
@@ -762,9 +763,9 @@ namespace JustEat.HttpClientInterception
                 _matchHeaders = matchHeaders;
             }
 
-            public override async Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request)
+            public override async Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
             {
-                HttpResponseMessage response = await base.GetResponseAsync(request);
+                HttpResponseMessage response = await base.GetResponseAsync(request, cancellationToken);
 
                 if (response != null && _matchHeaders(request.Headers))
                 {

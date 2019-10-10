@@ -3,6 +3,7 @@
 
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace JustEat.HttpClientInterception
@@ -25,14 +26,14 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The converted delegate if <paramref name="onIntercepted"/> has a value; otherwise <see langword="null"/>.
         /// </returns>
-        internal static Func<HttpRequestMessage, Task<bool>>? ConvertToBooleanTask(Action<HttpRequestMessage>? onIntercepted)
+        internal static Func<HttpRequestMessage, CancellationToken, Task<bool>>? ConvertToBooleanTask(Action<HttpRequestMessage>? onIntercepted)
         {
             if (onIntercepted == null)
             {
                 return null;
             }
 
-            return (message) =>
+            return (message, _) =>
             {
                 onIntercepted(message);
                 return TrueTask;
@@ -47,14 +48,14 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The converted delegate if <paramref name="onIntercepted"/> has a value; otherwise <see langword="null"/>.
         /// </returns>
-        internal static Func<HttpRequestMessage, Task<bool>>? ConvertToBooleanTask(Predicate<HttpRequestMessage>? onIntercepted)
+        internal static Func<HttpRequestMessage, CancellationToken, Task<bool>>? ConvertToBooleanTask(Predicate<HttpRequestMessage>? onIntercepted)
         {
             if (onIntercepted == null)
             {
                 return null;
             }
 
-            return (message) => Task.FromResult(onIntercepted(message));
+            return (message, _) => Task.FromResult(onIntercepted(message));
         }
 
         /// <summary>
@@ -65,18 +66,54 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The converted delegate if <paramref name="onIntercepted"/> has a value; otherwise <see langword="null"/>.
         /// </returns>
-        internal static Func<HttpRequestMessage, Task<bool>>? ConvertToBooleanTask(Func<HttpRequestMessage, Task>? onIntercepted)
+        internal static Func<HttpRequestMessage, CancellationToken, Task<bool>>? ConvertToBooleanTask(Func<HttpRequestMessage, Task>? onIntercepted)
         {
             if (onIntercepted == null)
             {
                 return null;
             }
 
-            return async (message) =>
+            return ConvertToBooleanTask((message, _) => onIntercepted(message));
+        }
+
+        /// <summary>
+        /// Converts a function delegate for an intercepted message to return a
+        /// <see cref="Task{TResult}"/> which returns <see langword="true"/>.
+        /// </summary>
+        /// <param name="onIntercepted">An optional delegate to convert.</param>
+        /// <returns>
+        /// The converted delegate if <paramref name="onIntercepted"/> has a value; otherwise <see langword="null"/>.
+        /// </returns>
+        internal static Func<HttpRequestMessage, CancellationToken, Task<bool>>? ConvertToBooleanTask(Func<HttpRequestMessage, CancellationToken, Task>? onIntercepted)
+        {
+            if (onIntercepted == null)
             {
-                await onIntercepted(message).ConfigureAwait(false);
+                return null;
+            }
+
+            return async (message, token) =>
+            {
+                await onIntercepted(message, token).ConfigureAwait(false);
                 return true;
             };
+        }
+
+        /// <summary>
+        /// Converts a function delegate for an intercepted message to return a
+        /// <see cref="Task{TResult}"/> which returns <see langword="true"/>.
+        /// </summary>
+        /// <param name="onIntercepted">An optional delegate to convert.</param>
+        /// <returns>
+        /// The converted delegate if <paramref name="onIntercepted"/> has a value; otherwise <see langword="null"/>.
+        /// </returns>
+        internal static Func<HttpRequestMessage, CancellationToken, Task<bool>>? ConvertToBooleanTask(Func<HttpRequestMessage, Task<bool>>? onIntercepted)
+        {
+            if (onIntercepted == null)
+            {
+                return null;
+            }
+
+            return async (message, _) => await onIntercepted(message).ConfigureAwait(false);
         }
     }
 }

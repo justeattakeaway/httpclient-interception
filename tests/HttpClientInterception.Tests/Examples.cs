@@ -7,6 +7,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using JustEat.HttpClientInterception.GitHub;
 using Newtonsoft.Json.Linq;
@@ -626,6 +627,45 @@ namespace JustEat.HttpClientInterception
             using var content = await JsonDocument.ParseAsync(utf8Json);
             content.RootElement.GetProperty("Id").GetInt32().ShouldBe(1);
             content.RootElement.GetProperty("Link").GetString().ShouldBe("https://www.just-eat.co.uk/privacy-policy");
+        }
+
+        [Fact]
+        public static async Task Inject_Latency_For_Http_Get_With_Cancellation()
+        {
+            // Arrange
+            var latency = TimeSpan.FromMilliseconds(50);
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForHost("www.google.co.uk")
+                .WithInterceptionCallback(async (_, token) =>
+                {
+                    try
+                    {
+                        await Task.Delay(latency, token);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // Ignored
+                    }
+                    finally
+                    {
+                        // Assert
+                        token.IsCancellationRequested.ShouldBeTrue();
+                    }
+                });
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            using var cts = new CancellationTokenSource(TimeSpan.Zero);
+
+            using var client = options.CreateHttpClient();
+
+            // Act
+            await client.GetAsync("http://www.google.co.uk", cts.Token);
+
+            // Assert
+            cts.IsCancellationRequested.ShouldBeTrue();
         }
     }
 }

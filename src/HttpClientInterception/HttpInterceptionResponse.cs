@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace JustEat.HttpClientInterception
@@ -48,7 +49,7 @@ namespace JustEat.HttpClientInterception
 
         internal IEnumerable<KeyValuePair<string, IEnumerable<string>>>? ResponseHeaders { get; set; }
 
-        internal Func<HttpRequestMessage, Task<bool>>? OnIntercepted { get; set; }
+        internal Func<HttpRequestMessage, CancellationToken, Task<bool>>? OnIntercepted { get; set; }
 
         internal Version? Version { get; set; }
     }
