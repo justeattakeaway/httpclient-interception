@@ -1,5 +1,5 @@
 os: Visual Studio 2019
-version: 3.0.0.{build}
+version: 3.0.1.{build}
 
 environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
@@ -31,7 +31,7 @@ deploy:
 
   - provider: NuGet
     api_key:
-      secure: unyq35fj1algoC+PggYKGr/3ObnEsafyrA30JVZxk64w9Dz8G7/du5mD+UzITxHu
+      secure: KHPvV541/beC3McMmIrv2MGGlC0AxMMuc2mmqDotUw4fIhKCrKuINEkeIoh06Hsl
     artifact: /.*\.nupkg/
     skip_symbols: false
     on:
