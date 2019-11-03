@@ -19,6 +19,7 @@ after_build:
 
 artifacts:
   - path: artifacts\*.nupkg
+  - path: artifacts\*.snupkg
   - path: artifacts\coverage*.xml
 
 nuget:
