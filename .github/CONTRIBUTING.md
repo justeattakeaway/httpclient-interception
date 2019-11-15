@@ -12,7 +12,7 @@ If you wish to contribute code, please consider the guidelines below:
   1. Fork the repository to your GitHub account.
   1. Create a branch to work on your changes.
   1. Try to commit changes in a logical manner. Messy histories will be squashed if merged.
-  1. Please follow the existing code style and [EditorConfig](http://editorconfig.org/) formatting settings.
+  1. Please follow the existing code style and [EditorConfig](https://editorconfig.org/) formatting settings.
   1. If fixing a bug or adding new functionality, add any tests you deem appropriate.
   1. Ensure ```Build.ps1```/```build.sh``` runs with no errors or warnings and all the tests pass.
   1. Open a pull request against the ```master``` branch, referencing your issue, if appropriate.
