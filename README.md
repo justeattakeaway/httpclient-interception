@@ -2,7 +2,7 @@
 
 A .NET Standard library for intercepting server-side HTTP dependencies.
 
-[![NuGet version](https://buildstats.info/nuget/JustEat.HttpClientInterception?includePreReleases=false)](http://www.nuget.org/packages/JustEat.HttpClientInterception/)
+[![NuGet version](https://buildstats.info/nuget/JustEat.HttpClientInterception?includePreReleases=false)](https://www.nuget.org/packages/JustEat.HttpClientInterception/)
 
 | | Linux/macOS | Windows | Linux/macOS/Windows |
 |:-:|:-:|:-:|:-:|
@@ -286,4 +286,4 @@ cd httpclient-interception
 
 ## License
 
-This project is licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html "The Apache 2.0 license") license.
+This project is licensed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.html "The Apache 2.0 license") license.
