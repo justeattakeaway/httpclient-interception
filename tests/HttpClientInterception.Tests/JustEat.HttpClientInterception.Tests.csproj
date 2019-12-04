@@ -4,7 +4,7 @@
     <NoWarn>$(NoWarn);CA1303;CA1600;CA1707;CA1812;CA2000;CA2007;SA1600</NoWarn>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Tests for JustEat.HttpClientInterception</Summary>
-    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="example-bundle.json;xunit.runner.json;Bundles\*.json" CopyToOutputDirectory="PreserveNewest" />
