@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AspNetCoreHostingModel>inprocess</AspNetCoreHostingModel>
     <NoWarn>$(NoWarn);CA1062;CA2007;SA1600</NoWarn>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
