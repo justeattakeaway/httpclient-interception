@@ -66,7 +66,7 @@ phases:
           codeCoverageTool: cobertura
           failIfCoverageEmpty: true
           reportDirectory: $(Build.StagingDirectory)/**/coverage
-          summaryFileLocation: $(Build.StagingDirectory)/coverage.cobertura.xml
+          summaryFileLocation: $(Build.StagingDirectory)/coverage.netcoreapp3.1.cobertura.xml
       - task: PublishBuildArtifacts@1
         displayName: Publish build artifacts
         condition: eq(variables['System.PullRequest.IsFork'], false)
