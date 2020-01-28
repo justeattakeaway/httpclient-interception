@@ -1,5 +1,6 @@
-sudo: required
-dist: xenial
+dist: bionic
+language: csharp
+mono: none
 
 os:
   - linux
@@ -17,15 +18,6 @@ branches:
 cache:
   directories:
     - /home/travis/.nuget/packages
-
-addons:
-  apt:
-    packages:
-    - gettext
-    - libcurl4-openssl-dev
-    - libicu-dev
-    - libssl-dev
-    - libunwind8
 
 script:
   - ./build.sh
