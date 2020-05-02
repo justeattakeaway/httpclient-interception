@@ -6,11 +6,13 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Diagnosers;
 using Newtonsoft.Json.Linq;
 using Refit;
 
 namespace JustEat.HttpClientInterception
 {
+    [EventPipeProfiler(EventPipeProfile.CpuSampling)]
     [MemoryDiagnoser]
     public class InterceptionBenchmarks
     {
