@@ -11,7 +11,7 @@ A .NET Standard library for intercepting server-side HTTP dependencies.
 
 ## Introduction
 
-This library provides functionality for intercepting HTTP requests made using the `HttpClient` class in code targeting .NET Standard 1.3 and 2.0 (and later), and .NET Framework 4.6.1 and later.
+This library provides functionality for intercepting HTTP requests made using the `HttpClient` class in code targeting .NET Standard 2.0 (and later), and .NET Framework 4.6.1 and 4.7.2.
 
 The primary use-case is for providing stub responses for use in tests for applications, such as an ASP.NET Core application, to drive your functional test scenarios.
 
@@ -235,24 +235,28 @@ Further examples of using the library can be found by following the links below:
 
 ### Benchmarks
 
-Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [b60b750](https://github.com/justeat/httpclient-interception/commit/b60b750c7b63934b91a3b3e81df4b5506e3668a5 "Benchmark commit") on 24/03/2019.
+Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [c31abf3](https://github.com/justeat/httpclient-interception/commit/c31abf343d1b3b096c0aa799e95657c064e10508 "Benchmark commit") on 02/05/2020.
 
 ``` ini
-BenchmarkDotNet=v0.11.4, OS=Windows 10.0.17763.379 (1809/October2018Update/Redstone5)
-Intel Core i7-6700HQ CPU 2.60GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
-.NET Core SDK=2.2.105
-  [Host]     : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
-  DefaultJob : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
+
+BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18363.815 (1909/November2018Update/19H2)
+Intel Core i9-9980HK CPU 2.40GHz, 1 CPU, 16 logical and 8 physical cores
+.NET Core SDK=3.1.201
+  [Host]     : .NET Core 3.1.3 (CoreCLR 4.700.20.11803, CoreFX 4.700.20.12001), X64 RyuJIT
+  DefaultJob : .NET Core 3.1.3 (CoreCLR 4.700.20.11803, CoreFX 4.700.20.12001), X64 RyuJIT
+
+
 ```
+|                Method |      Mean |     Error |    StdDev |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|---------------------- |----------:|----------:|----------:|-------:|------:|------:|----------:|
+|              [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/c31abf343d1b3b096c0aa799e95657c064e10508/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L80-L84 "Benchmark using a byte array") |  3.374 μs | 0.0156 μs | 0.0146 μs | 0.4044 |     - |     - |   3.33 KB |
+|               [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/c31abf343d1b3b096c0aa799e95657c064e10508/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L86-L90 "Benchmark using HTML") |  3.590 μs | 0.0150 μs | 0.0133 μs | 0.3967 |     - |     - |   3.25 KB |
+| [`GetJsonNewtonsoftJson`](https://github.com/justeat/httpclient-interception/blob/c31abf343d1b3b096c0aa799e95657c064e10508/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L92-L97 "Benchmark using JSON and Newtonsoft.Json") |  9.316 μs | 0.1269 μs | 0.1125 μs | 1.0834 |     - |     - |   8.95 KB |
+| [`GetJsonSystemTextJson`](https://github.com/justeat/httpclient-interception/blob/c31abf343d1b3b096c0aa799e95657c064e10508/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L99-L104 "Benchmark using JSON and System.Text.Json") |  7.074 μs | 0.0524 μs | 0.0490 μs | 0.6866 |     - |     - |    5.7 KB |
+|             [`GetStream`](https://github.com/justeat/httpclient-interception/blob/c31abf343d1b3b096c0aa799e95657c064e10508/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L106-L112 "Benchmark using a stream") | 34.545 μs | 0.3502 μs | 0.3275 μs | 0.4272 |     - |     - |   3.66 KB |
+|   [`RefitNewtonsoftJson`](https://github.com/justeat/httpclient-interception/blob/c31abf343d1b3b096c0aa799e95657c064e10508/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L114-L118 "Benchmark using Refit and Newtonsoft.Json") | 25.978 μs | 0.1982 μs | 0.1757 μs | 1.7700 |     - |     - |  14.93 KB |
+|   [`RefitSystemTextJson`](https://github.com/justeat/httpclient-interception/blob/c31abf343d1b3b096c0aa799e95657c064e10508/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L120-L124 "Benchmark using Refit and System.Text.Json") | 23.343 μs | 0.2181 μs | 0.2040 μs | 1.0986 |     - |     - |   9.46 KB |
 
-
-|    Method |      Mean |     Error |    StdDev |    Median | Gen 0/1k Op | Gen 1/1k Op | Gen 2/1k Op | Allocated Memory/Op |
-|---------- |----------:|----------:|----------:|----------:|------------:|------------:|------------:|--------------------:|
-|  [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L70-L74 "Benchmark using a byte array") |  5.656 μs | 0.1083 μs | 0.1483 μs |  5.647 μs |      1.0071 |           - |           - |             3.12 KB |
-|   [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L76-L80 "Benchmark using HTML") |  7.275 μs | 0.1091 μs | 0.1021 μs |  7.293 μs |      1.2054 |           - |           - |             3.72 KB |
-|   [`GetJson`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L82-L87 "Benchmark using JSON") | 16.918 μs | 0.3353 μs | 0.8473 μs | 16.572 μs |      3.1738 |           - |           - |             9.77 KB |
-| [`GetStream`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L89-L95 "Benchmark using a stream") | 62.880 μs | 1.2273 μs | 1.5072 μs | 62.892 μs |      1.0986 |           - |           - |             3.43 KB |
-|     [`Refit`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L97-L101 "Benchmark using Refit") | 43.055 μs | 0.8330 μs | 0.7792 μs | 42.704 μs |      4.9438 |           - |           - |            15.33 KB |
 
 ## Feedback
 

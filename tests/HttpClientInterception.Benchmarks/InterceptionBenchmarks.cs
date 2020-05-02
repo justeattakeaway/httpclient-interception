@@ -1,19 +1,18 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using System;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Diagnosers;
 using Newtonsoft.Json.Linq;
 using Refit;
 
 namespace JustEat.HttpClientInterception
 {
+    [EventPipeProfiler(EventPipeProfile.CpuSampling)]
     [MemoryDiagnoser]
     public class InterceptionBenchmarks
     {
@@ -124,41 +123,6 @@ namespace JustEat.HttpClientInterception
         public async Task RefitSystemTextJson()
         {
             _ = await _serviceSystemTextJson.GetOrganizationAsync("justeat");
-        }
-
-        internal sealed class SystemTextJsonContentSerializer : IContentSerializer
-        {
-            private static readonly MediaTypeHeaderValue _jsonMediaType =
-                new MediaTypeHeaderValue("application/json") { CharSet = Encoding.UTF8.WebName };
-
-            public async Task<T> DeserializeAsync<T>(HttpContent content)
-            {
-                using var stream = await content.ReadAsStreamAsync();
-                return await JsonSerializer.DeserializeAsync<T>(stream);
-            }
-
-            public async Task<HttpContent> SerializeAsync<T>(T item)
-            {
-                var stream = new MemoryStream();
-
-                try
-                {
-                    await JsonSerializer.SerializeAsync(stream, item);
-                    await stream.FlushAsync();
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    var content = new StreamContent(stream);
-
-                    content.Headers.ContentType = _jsonMediaType;
-
-                    return content;
-                }
-                catch (Exception)
-                {
-                    stream.Dispose();
-                    throw;
-                }
-            }
         }
     }
 }
