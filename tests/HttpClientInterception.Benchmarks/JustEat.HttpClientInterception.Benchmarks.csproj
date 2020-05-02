@@ -6,6 +6,8 @@
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Benchmarks for JustEat.HttpClientInterception</Summary>
     <TargetFrameworks>netcoreapp2.2;netcoreapp3.1;net472</TargetFrameworks>
+    <!-- Workaround for https://github.com/dotnet/BenchmarkDotNet/pull/1420 -->
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="organization.json" CopyToOutputDirectory="PreserveNewest" />
