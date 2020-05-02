@@ -235,24 +235,27 @@ Further examples of using the library can be found by following the links below:
 
 ### Benchmarks
 
-Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [b60b750](https://github.com/justeat/httpclient-interception/commit/b60b750c7b63934b91a3b3e81df4b5506e3668a5 "Benchmark commit") on 24/03/2019.
+Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/master/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [23b86dd](https://github.com/justeat/httpclient-interception/commit/23b86ddc6015789655c9be22ad777e4778a2006c "Benchmark commit") on 02/05/2020.
 
 ``` ini
-BenchmarkDotNet=v0.11.4, OS=Windows 10.0.17763.379 (1809/October2018Update/Redstone5)
-Intel Core i7-6700HQ CPU 2.60GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
-.NET Core SDK=2.2.105
-  [Host]     : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
-  DefaultJob : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
+
+BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18363.815 (1909/November2018Update/19H2)
+Intel Core i9-9980HK CPU 2.40GHz, 1 CPU, 16 logical and 8 physical cores
+.NET Core SDK=3.1.201
+  [Host]     : .NET Core 3.1.3 (CoreCLR 4.700.20.11803, CoreFX 4.700.20.12001), X64 RyuJIT
+  DefaultJob : .NET Core 3.1.3 (CoreCLR 4.700.20.11803, CoreFX 4.700.20.12001), X64 RyuJIT
+
+
 ```
-
-
-|    Method |      Mean |     Error |    StdDev |    Median | Gen 0/1k Op | Gen 1/1k Op | Gen 2/1k Op | Allocated Memory/Op |
-|---------- |----------:|----------:|----------:|----------:|------------:|------------:|------------:|--------------------:|
-|  [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L70-L74 "Benchmark using a byte array") |  5.656 μs | 0.1083 μs | 0.1483 μs |  5.647 μs |      1.0071 |           - |           - |             3.12 KB |
-|   [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L76-L80 "Benchmark using HTML") |  7.275 μs | 0.1091 μs | 0.1021 μs |  7.293 μs |      1.2054 |           - |           - |             3.72 KB |
-|   [`GetJson`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L82-L87 "Benchmark using JSON") | 16.918 μs | 0.3353 μs | 0.8473 μs | 16.572 μs |      3.1738 |           - |           - |             9.77 KB |
-| [`GetStream`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L89-L95 "Benchmark using a stream") | 62.880 μs | 1.2273 μs | 1.5072 μs | 62.892 μs |      1.0986 |           - |           - |             3.43 KB |
-|     [`Refit`](https://github.com/justeat/httpclient-interception/blob/b60b750c7b63934b91a3b3e81df4b5506e3668a5/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L97-L101 "Benchmark using Refit") | 43.055 μs | 0.8330 μs | 0.7792 μs | 42.704 μs |      4.9438 |           - |           - |            15.33 KB |
+|                Method |      Mean |     Error |    StdDev |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|---------------------- |----------:|----------:|----------:|-------:|------:|------:|----------:|
+|              [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/23b86ddc6015789655c9be22ad777e4778a2006c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L83-L87 "Benchmark using a byte array") |  3.702 μs | 0.0236 μs | 0.0197 μs | 0.4463 |     - |     - |   3.66 KB |
+|               [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/23b86ddc6015789655c9be22ad777e4778a2006c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L89-L93 "Benchmark using HTML") |  4.032 μs | 0.0225 μs | 0.0200 μs | 0.4730 |     - |     - |   3.92 KB |
+| [`GetJsonNewtonsoftJson`](https://github.com/justeat/httpclient-interception/blob/23b86ddc6015789655c9be22ad777e4778a2006c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L95-L100 "Benchmark using JSON and Newtonsoft.Json") |  8.249 μs | 0.0930 μs | 0.0870 μs | 1.0071 |     - |     - |   8.29 KB |
+| [`GetJsonSystemTextJson`](https://github.com/justeat/httpclient-interception/blob/23b86ddc6015789655c9be22ad777e4778a2006c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L102-L107 "Benchmark using JSON and System.Text.Json") |  5.998 μs | 0.1011 μs | 0.0945 μs | 0.5722 |     - |     - |   4.71 KB |
+|             [`GetStream`](https://github.com/justeat/httpclient-interception/blob/23b86ddc6015789655c9be22ad777e4778a2006c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L109-L115 "Benchmark using a stream") | 34.911 μs | 0.4953 μs | 0.4390 μs | 0.4883 |     - |     - |   4.01 KB |
+|   [`RefitNewtonsoftJson`](https://github.com/justeat/httpclient-interception/blob/23b86ddc6015789655c9be22ad777e4778a2006c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L117-L121 "Benchmark using Refit and Newtonsoft.Json") | 27.358 μs | 0.3056 μs | 0.2858 μs | 1.8921 |     - |     - |  15.59 KB |
+|   [`RefitSystemTextJson`](https://github.com/justeat/httpclient-interception/blob/23b86ddc6015789655c9be22ad777e4778a2006c/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L123-L127 "Benchmark using Refit and System.Text.Json") | 22.721 μs | 0.1932 μs | 0.1713 μs | 1.0376 |     - |     - |   8.74 KB |
 
 ## Feedback
 
