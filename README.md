@@ -135,7 +135,7 @@ await client.GetStringAsync("http://public.je-apis.com");
 
 #### Registering Request Interception When Using IHttpClientFactory
 
-If you are using [`IHttpClientFactory`](https://github.com/aspnet/HttpClientFactory "ASP.NET Core HttpClientFactory") to register `HttpClient` for Dependency Injection in a .NET Core 2.1 application (or later), you can implement a custom `IHttpMessageHandlerBuilderFilter` to register during test setup, which makes an instance of `HttpClientInterceptorOptions` available to inject an HTTP handler.
+If you are using [`IHttpClientFactory`](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests "Use IHttpClientFactory to implement resilient HTTP requests") to register `HttpClient` for Dependency Injection in a .NET Core 2.1 application (or later), you can implement a custom [`IHttpMessageHandlerBuilderFilter`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.ihttpmessagehandlerbuilderfilter "IHttpMessageHandlerBuilderFilter Interface") to register during test setup, which makes an instance of `HttpClientInterceptorOptions` available to inject an HTTP handler.
 
 A working example of this approach can be found in the [sample application](https://github.com/justeat/httpclient-interception/blob/master/samples/README.md "Sample application that uses JustEat.HttpClientInterception").
 
