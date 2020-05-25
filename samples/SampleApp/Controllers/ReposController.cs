@@ -28,12 +28,12 @@ namespace SampleApp.Controllers
             // Get the configured organization's repositories
             string organization = _configuration["Organization"];
 
-            ICollection<Repository> respositories = await _github.GetRepositoriesAsync(organization, count);
+            ICollection<Repository> repositories = await _github.GetRepositoriesAsync(organization, count);
 
             // Return the repositories' names
             var names = new List<string>();
 
-            foreach (var repository in respositories)
+            foreach (var repository in repositories)
             {
                 names.Add(repository.Name);
             }
