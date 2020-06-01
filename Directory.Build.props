@@ -6,7 +6,7 @@
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
     <Compile Include="$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" />
-    <PackageReference Include="coverlet.msbuild" Version="2.8.1" PrivateAssets="All" />
+    <PackageReference Include="coverlet.msbuild" Version="2.9.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
     <PackageReference Include="Microsoft.NetCore.Analyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
