@@ -1,0 +1,20 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Microsoft.AspNetCore.WebUtilities
+    versions:
+    - "> 1.0.0"
+  - dependency-name: Newtonsoft.Json
+    versions:
+    - ">= 12.a, < 13"
+  - dependency-name: System.Net.Http
+    versions:
+    - ">= 4.1.a, < 4.2"
+  - dependency-name: System.Net.Http
+    versions:
+    - ">= 4.3.a, < 4.4"
