@@ -4,6 +4,7 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+    timezone: Europe/London
   open-pull-requests-limit: 10
   ignore:
   - dependency-name: Microsoft.AspNetCore.WebUtilities
