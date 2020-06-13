@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace JustEat.HttpClientInterception
 {
+    [System.Diagnostics.DebuggerDisplay("{Id}")]
     internal sealed class HttpInterceptionResponse
     {
         internal Func<HttpContent, Task<bool>>? ContentMatcher { get; set; }
@@ -52,5 +53,7 @@ namespace JustEat.HttpClientInterception
         internal Func<HttpRequestMessage, CancellationToken, Task<bool>>? OnIntercepted { get; set; }
 
         internal Version? Version { get; set; }
+
+        internal string? Id { get; set; }
     }
 }

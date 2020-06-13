@@ -167,10 +167,7 @@ namespace JustEat.HttpClientInterception
                 RequestUri = uri,
             };
 
-            string key = BuildKey(interceptor);
-            _mappings.Remove(key);
-
-            return this;
+            return Deregister(interceptor);
         }
 
         /// <summary>
@@ -197,10 +194,7 @@ namespace JustEat.HttpClientInterception
 
             HttpInterceptionResponse interceptor = builder.Build();
 
-            string key = BuildKey(interceptor);
-            _mappings.Remove(key);
-
-            return this;
+            return Deregister(interceptor);
         }
 
         /// <summary>
@@ -538,10 +532,27 @@ namespace JustEat.HttpClientInterception
 
             foreach (var response in responses)
             {
-                if (await response.InternalMatcher!.IsMatchAsync(request).ConfigureAwait(false))
+                LogTrace(
+                    "Testing HTTP response {HttpResponseRegistrationId} for match against HTTP request {HttpRequestMessage}",
+                    response.Id,
+                    request);
+
+                bool isMatch = await response.InternalMatcher!.IsMatchAsync(request).ConfigureAwait(false);
+
+                if (isMatch)
                 {
+                    LogTrace(
+                        "HTTP response {HttpResponseRegistrationId} matches HTTP request {HttpRequestMessage}",
+                        response.Id,
+                        request);
+
                     return Tuple.Create<bool, HttpInterceptionResponse?>(true, response);
                 }
+
+                LogTrace(
+                    "HTTP response {HttpResponseRegistrationId} does not match HTTP request {HttpRequestMessage}",
+                    response.Id,
+                    request);
             }
 
             return Tuple.Create<bool, HttpInterceptionResponse?>(false, null);
@@ -560,11 +571,31 @@ namespace JustEat.HttpClientInterception
                 matcher = new RegistrationMatcher(registration, _comparer);
             }
 
+            registration.Id ??= $"{registration.Method} {registration.RequestUri} -> {(int)registration.StatusCode} [{registration.GetHashCode()}]";
             registration.InternalMatcher = matcher;
 
             string key = BuildKey(registration);
             _mappings[key] = registration;
+
+            LogTrace(
+                "Registered interception for HTTP request with Id {HttpResponseRegistrationId}",
+                registration.Id);
         }
+
+        private HttpClientInterceptorOptions Deregister(HttpInterceptionResponse registration)
+        {
+            string key = BuildKey(registration);
+            _mappings.Remove(key);
+
+            LogTrace(
+                "Deregistered interception for HTTP request with Id {HttpResponseRegistrationId}",
+                registration.Id);
+
+            return this;
+        }
+
+        private void LogTrace(string message, params object?[] args)
+            => Logger?.LogTrace(message, args);
 
         private sealed class OptionsScope : IDisposable
         {

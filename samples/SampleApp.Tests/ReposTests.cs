@@ -30,6 +30,7 @@ namespace SampleApp.Tests
             {
                 // Setup an expected response from the GitHub API
                 var builder = new HttpRequestInterceptionBuilder()
+                    .HavingId("GET Weyland Yutani repositories")
                     .Requests()
                     .ForHttps()
                     .ForHost("api.github.com")

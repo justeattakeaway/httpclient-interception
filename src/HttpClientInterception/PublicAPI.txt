@@ -36,6 +36,7 @@ JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForRequestHeaders(
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForScheme(string scheme) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForUri(System.Uri uri) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForUri(System.UriBuilder uriBuilder) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder
+JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.HavingId(string value) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.HavingPriority(int? priority) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.HttpRequestInterceptionBuilder() -> void
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.IgnoringPath(bool ignorePath = true) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder

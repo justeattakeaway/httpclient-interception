@@ -50,6 +50,8 @@ namespace JustEat.HttpClientInterception
 
         private bool _hasCustomPort;
 
+        private string? _id;
+
         private bool _ignoreHost;
 
         private bool _ignorePath;
@@ -900,6 +902,22 @@ namespace JustEat.HttpClientInterception
             return this;
         }
 
+        /// <summary>
+        /// Configures an optional identifier to use for the builder.
+        /// </summary>
+        /// <param name="value">The value to use for the builder's identifier.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <remarks>
+        /// Assigning an identifier to builders is useful for logging and debugging matching of HTTP requests.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder HavingId(string value)
+        {
+            _id = value;
+            return this;
+        }
+
         internal HttpInterceptionResponse Build()
         {
             var response = new HttpInterceptionResponse()
@@ -909,6 +927,7 @@ namespace JustEat.HttpClientInterception
                 ContentStream = _contentStream,
                 ContentMediaType = _mediaType,
                 HasCustomPort = _hasCustomPort,
+                Id = _id,
                 IgnoreHost = _ignoreHost,
                 IgnorePath = _ignorePath,
                 IgnoreQuery = _ignoreQuery,

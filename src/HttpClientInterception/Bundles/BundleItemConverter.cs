@@ -80,6 +80,11 @@ namespace JustEat.HttpClientInterception.Bundles
                 builder.IgnoringQuery(ignoreQuery: true);
             }
 
+            if (item.Id != null)
+            {
+                builder.HavingId(item.Id);
+            }
+
             return builder.SetContent(item);
         }
 
