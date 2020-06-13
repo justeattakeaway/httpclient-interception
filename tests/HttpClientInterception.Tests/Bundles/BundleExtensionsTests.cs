@@ -43,9 +43,9 @@ namespace JustEat.HttpClientInterception.Bundles
 
             var headers = new Dictionary<string, string>()
             {
-                { "accept", "application/vnd.github.v3+json" },
-                { "authorization", "token my-token" },
-                { "user-agent", "My-App/1.0.0" },
+                ["accept"] = "application/vnd.github.v3+json",
+                ["authorization"] = "token my-token",
+                ["user-agent"] = "My-App/1.0.0",
             };
 
             // Act
@@ -173,7 +173,7 @@ namespace JustEat.HttpClientInterception.Bundles
 
             var headers = new Dictionary<string, string>()
             {
-                { "user-agent", "My-App/1.0.0" },
+                ["user-agent"] = "My-App/1.0.0",
             };
 
             // Act
@@ -192,12 +192,12 @@ namespace JustEat.HttpClientInterception.Bundles
 
             var headers = new Dictionary<string, string>()
             {
-                { "user-agent", "My-Other-App/1.0.0" },
+                ["user-agent"] = "My-Other-App/1.0.0",
             };
 
             var templateValues = new Dictionary<string, string>()
             {
-                { "ApplicationName", "My-Other-App" },
+                ["ApplicationName"] = "My-Other-App",
             };
 
             // Act

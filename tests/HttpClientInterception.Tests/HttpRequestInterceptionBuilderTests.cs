@@ -404,8 +404,8 @@ namespace JustEat.HttpClientInterception
 
             var headers = new Dictionary<string, string>()
             {
-                { "a", "b" },
-                { "c", "d" },
+                ["a"] = "b",
+                ["c"] = "d",
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -434,8 +434,8 @@ namespace JustEat.HttpClientInterception
 
             var headers = new Dictionary<string, ICollection<string>>()
             {
-                { "a", new[] { "b" } },
-                { "c", new[] { "d", "e" } },
+                ["a"] = new[] { "b" },
+                ["c"] = new[] { "d", "e" },
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -490,8 +490,8 @@ namespace JustEat.HttpClientInterception
 
             var headers = new Dictionary<string, string>()
             {
-                { "a", "b" },
-                { "c", "d" },
+                ["a"] = "b",
+                ["c"] = "d",
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -520,8 +520,8 @@ namespace JustEat.HttpClientInterception
 
             var headers = new Dictionary<string, ICollection<string>>()
             {
-                { "a", new[] { "b" } },
-                { "c", new[] { "d", "e" } },
+                ["a"] = new[] { "b" },
+                ["c"] = new[] { "d", "e" },
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -860,9 +860,9 @@ namespace JustEat.HttpClientInterception
             var requestUri = "https://api.twitter.com/oauth/request_token";
             var parameters = new Dictionary<string, string>()
             {
-                { "oauth_callback_confirmed", "true" },
-                { "oauth_token", "a b c" },
-                { "oauth_token_secret", "U5LJUL3eS+fl9bj9xqHKXyHpBc8=" },
+                ["oauth_callback_confirmed"] = "true",
+                ["oauth_token"] = "a b c",
+                ["oauth_token_secret"] = "U5LJUL3eS+fl9bj9xqHKXyHpBc8=",
             };
 
             var options = new HttpClientInterceptorOptions();
@@ -1450,8 +1450,8 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var headers = new Dictionary<string, string>()
             {
-                { "Accept-Tenant", "uk" },
-                { "Authorization", "basic my-key" },
+                ["Accept-Tenant"] = "uk",
+                ["Authorization"] = "basic my-key",
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -1552,8 +1552,8 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var headers = new Dictionary<string, ICollection<string>>()
             {
-                { "x-forwarded-for", new[] { "192.168.1.1", "192.168.1.2" } },
-                { "x-forwarded-proto", new[] { "http", "https" } },
+                ["x-forwarded-for"] = new[] { "192.168.1.1", "192.168.1.2" },
+                ["x-forwarded-proto"] = new[] { "http", "https" },
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -1807,23 +1807,23 @@ namespace JustEat.HttpClientInterception
             // From https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SetQueueAttributes.html
             var expectedForm = new Dictionary<string, string>()
             {
-                { "Action", "SetQueueAttributes" },
-                { "Attribute.Name", "VisibilityTimeout" },
-                { "Attribute.Value", "35" },
-                { "Expires", "2020-04-18T22:52:43PST" },
-                { "Version", "2012-11-05" },
+                ["Action"] = "SetQueueAttributes",
+                ["Attribute.Name"] = "VisibilityTimeout",
+                ["Attribute.Value"] = "35",
+                ["Expires"] = "2020-04-18T22:52:43PST",
+                ["Version"] = "2012-11-05",
             };
 
             // Extra parameters to validate matches a subset
             var actualForm = new Dictionary<string, string>()
             {
-                { "Foo", "Bar" },
-                { "Action", "SetQueueAttributes" },
-                { "Attribute.Name", "VisibilityTimeout" },
-                { "Attribute.Value", "35" },
-                { "Expires", "2020-04-18T22:52:43PST" },
-                { "Version", "2012-11-05" },
-                { "Fizz", "Buzz" },
+                ["Foo"] = "Bar",
+                ["Action"] = "SetQueueAttributes",
+                ["Attribute.Name"] = "VisibilityTimeout",
+                ["Attribute.Value"] = "35",
+                ["Expires"] = "2020-04-18T22:52:43PST",
+                ["Version"] = "2012-11-05",
+                ["Fizz"] = "Buzz",
             };
 
             string expectedXml = @"<SetQueueAttributesResponse>
@@ -1868,12 +1868,12 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var actualForm = new Dictionary<string, string>()
             {
-                { "Foo", "Bar" },
+                ["Foo"] = "Bar",
             };
 
             var expectedForm = new Dictionary<string, string>()
             {
-                { "Bar", "Foo" },
+                ["Bar"] = "Foo",
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -1904,13 +1904,13 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var actualForm = new Dictionary<string, string>()
             {
-                { "Foo", "Bar" },
+                ["Foo"] = "Bar",
             };
 
             var expectedForm = new Dictionary<string, string>()
             {
-                { "Foo", "Bar" },
-                { "Baz", "Qux" },
+                ["Foo"] = "Bar",
+                ["Baz"] = "Qux",
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -1943,7 +1943,7 @@ namespace JustEat.HttpClientInterception
 
             var expectedForm = new Dictionary<string, string>()
             {
-                { "Foo", "Bar" },
+                ["Foo"] = "Bar",
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -1974,14 +1974,14 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var actualForm = new Dictionary<string, string>()
             {
-                { "Foo", "Bar" },
-                { "Fizz", "Buzz" },
+                ["Foo"] = "Bar",
+                ["Fizz"] = "Buzz",
             };
 
             var expectedForm = new Dictionary<string, string>()
             {
-                { "Foo", "Bar" },
-                { "Fizz", "Buzzz" },
+                ["Foo"] = "Bar",
+                ["Fizz"] = "Buzzz",
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -2012,12 +2012,12 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var expectedForm = new Dictionary<string, string>()
             {
-                { "Foo", "Bar" },
+                ["Foo"] = "Bar",
             };
 
             var actualForm = new Dictionary<string, string>()
             {
-                { "Foo", "bar" },
+                ["Foo"] = "bar",
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -2048,7 +2048,7 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var expectedForm = new Dictionary<string, string>()
             {
-                { "Foo", "Bar" },
+                ["Foo"] = "Bar",
             };
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -2076,7 +2076,7 @@ namespace JustEat.HttpClientInterception
             // Arrange
             var expectedForm = new Dictionary<string, string>()
             {
-                { "Foo", "Bar" },
+                ["Foo"] = "Bar",
             };
 
             var builder = new HttpRequestInterceptionBuilder()

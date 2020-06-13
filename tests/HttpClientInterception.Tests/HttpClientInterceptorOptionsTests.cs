@@ -238,8 +238,8 @@ namespace JustEat.HttpClientInterception
 
             var headers = new Dictionary<string, string>()
             {
-                { "a", "b" },
-                { "c", "d" },
+                ["a"] = "b",
+                ["c"] = "d",
             };
 
             var options = new HttpClientInterceptorOptions()
@@ -292,8 +292,8 @@ namespace JustEat.HttpClientInterception
 
             var responseHeaders = new Dictionary<string, IEnumerable<string>>()
             {
-                { "a", new[] { "b" } },
-                { "c", new[] { "d", "e" } },
+                ["a"] = new[] { "b" },
+                ["c"] = new[] { "d", "e" },
             };
 
             var options = new HttpClientInterceptorOptions()
@@ -322,8 +322,8 @@ namespace JustEat.HttpClientInterception
 
             var headers = new Dictionary<string, string>()
             {
-                { "a", "b" },
-                { "c", "d" },
+                ["a"] = "b",
+                ["c"] = "d",
             };
 
             var options = new HttpClientInterceptorOptions()
@@ -352,8 +352,8 @@ namespace JustEat.HttpClientInterception
 
             var responseHeaders = new Dictionary<string, IEnumerable<string>>()
             {
-                { "a", new[] { "b" } },
-                { "c", new[] { "d", "e" } },
+                ["a"] = new[] { "b" },
+                ["c"] = new[] { "d", "e" },
             };
 
             var options = new HttpClientInterceptorOptions()
@@ -714,9 +714,9 @@ namespace JustEat.HttpClientInterception
             var url = "https://api.github.com/orgs/justeat/repos?type=private";
             var headers = new Dictionary<string, string>()
             {
-                { "accept", "application/vnd.github.v3+json" },
-                { "authorization", "token my-token" },
-                { "user-agent", "My-App/1.0.0" },
+                ["accept"] = "application/vnd.github.v3+json",
+                ["authorization"] = "token my-token",
+                ["user-agent"] = "My-App/1.0.0",
             };
 
             // Act and Assert
@@ -726,9 +726,9 @@ namespace JustEat.HttpClientInterception
             // Arrange
             headers = new Dictionary<string, string>()
             {
-                { "accept", "application/vnd.github.v3+json" },
-                { "authorization", "token my-token" },
-                { "user-agent", "My-App/2.0.0" },
+                ["accept"] = "application/vnd.github.v3+json",
+                ["authorization"] = "token my-token",
+                ["user-agent"] = "My-App/2.0.0",
             };
 
             // Act and Assert
@@ -737,8 +737,8 @@ namespace JustEat.HttpClientInterception
             // Arrange
             headers = new Dictionary<string, string>()
             {
-                { "accept", "application/vnd.github.v3+json" },
-                { "user-agent", "My-App/1.0.0" },
+                ["accept"] = "application/vnd.github.v3+json",
+                ["user-agent"] = "My-App/1.0.0",
             };
 
             // Act and Assert
