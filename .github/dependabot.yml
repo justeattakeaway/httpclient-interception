@@ -5,6 +5,8 @@ updates:
   schedule:
     interval: daily
     timezone: Europe/London
+  reviewers:
+    - "justeat/httpclient-interception"
   open-pull-requests-limit: 10
   ignore:
   - dependency-name: Microsoft.AspNetCore.WebUtilities
