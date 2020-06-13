@@ -4,10 +4,9 @@ A .NET Standard library for intercepting server-side HTTP dependencies.
 
 [![NuGet version](https://buildstats.info/nuget/JustEat.HttpClientInterception?includePreReleases=false)](https://www.nuget.org/packages/JustEat.HttpClientInterception/)
 
-| | Linux/macOS | Windows | Linux/macOS/Windows |
-|:-:|:-:|:-:|:-:|
-| **Build Status** | [![Build status](https://img.shields.io/travis/justeat/httpclient-interception/master.svg)](https://travis-ci.org/justeat/httpclient-interception) | [![Build status](https://img.shields.io/appveyor/ci/justeattech/httpclient-interception/master.svg)](https://ci.appveyor.com/project/justeattech/httpclient-interception) [![codecov](https://codecov.io/gh/justeat/httpclient-interception/branch/master/graph/badge.svg)](https://codecov.io/gh/justeat/httpclient-interception) | [![Azure Pipelines build status](https://dev.azure.com/justeatoss/httpclient-interception/_apis/build/status/justeat.httpclient-interception)](https://dev.azure.com/justeatoss/httpclient-interception/_build?definitionId=1) |
-| **Build History** | [![Build history](https://buildstats.info/travisci/chart/justeat/httpclient-interception?branch=master&includeBuildsFromPullRequest=false)](https://travis-ci.org/justeat/httpclient-interception) | [![Build history](https://buildstats.info/appveyor/chart/justeattech/httpclient-interception?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/justeattech/httpclient-interception) | [![Build history](https://buildstats.info/azurepipelines/chart/justeatoss/httpclient-interception/1?branch=master&includeBuildsFromPullRequest=false)](https://dev.azure.com/justeatoss/httpclient-interception/_build?definitionId=1) |
+[![Build status](https://github.com/justeat/httpclient-interception/workflows/build/badge.svg?branch=master&event=push)](https://github.com/justeat/httpclient-interception/actions?query=workflow%3Abuild+branch%3Amaster+event%3Apush)
+
+[![codecov](https://codecov.io/gh/justeat/httpclient-interception/branch/master/graph/badge.svg)](https://codecov.io/gh/justeat/httpclient-interception)
 
 ## Introduction
 
@@ -272,20 +271,10 @@ Compiling the library yourself requires Git and the [.NET Core SDK](https://www.
 
 To build and test the library locally from a terminal/command-line, run one of the following set of commands:
 
-**Linux/macOS**
-
-```sh
-git clone https://github.com/justeat/httpclient-interception.git
-cd httpclient-interception
-./build.sh
-```
-
-**Windows**
-
 ```powershell
 git clone https://github.com/justeat/httpclient-interception.git
 cd httpclient-interception
-.\Build.ps1
+./build.ps1
 ```
 
 ## License

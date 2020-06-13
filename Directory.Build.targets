@@ -1,10 +1,8 @@
 <Project>
   <PropertyGroup>
-    <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH)</CommitBranch>
-    <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(APPVEYOR_REPO_BRANCH)</CommitBranch>
     <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(BUILD_SOURCEBRANCHNAME)</CommitBranch>
-    <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(TRAVIS_PULL_REQUEST_BRANCH)</CommitBranch>
-    <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(TRAVIS_BRANCH)</CommitBranch>
+    <CommitBranch Condition=" '$(CommitBranch)' == '' and '$(GITHUB_REF)' != '' ">$(GITHUB_REF.Substring(11))</CommitBranch>
+    <CommitHash Condition=" '$(CommitHash)' == '' ">$(GITHUB_SHA)</CommitHash>
   </PropertyGroup>
   <Target Name="AddGitMetadaAssemblyAttributes"
           BeforeTargets="CoreGenerateAssemblyInfo"

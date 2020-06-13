@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{00F2B78C-D33E-4090-9888-C33435B02F1F}"
 EndProject
@@ -10,10 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		.travis.yml = .travis.yml
-		appveyor.yml = appveyor.yml
-		Build.ps1 = Build.ps1
-		build.sh = build.sh
+		build.ps1 = build.ps1
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
@@ -23,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		NuGet.config = NuGet.config
 		README.md = README.md
 		stylecop.json = stylecop.json
+		update-dotnet-sdk.ps1 = update-dotnet-sdk.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6DC2A1B9-1D37-4062-A75D-6A03C7367A46}"
@@ -44,6 +42,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustEat.HttpClientIntercept
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{F258F815-A7C5-44F7-AF55-E12C0F1FB023}"
 	ProjectSection(SolutionItems) = preProject
+		.github\CODEOWNERS = .github\CODEOWNERS
 		.github\CONTRIBUTING.md = .github\CONTRIBUTING.md
 		.github\ISSUE_TEMPLATE.md = .github\ISSUE_TEMPLATE.md
 		.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
@@ -62,10 +61,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{D8A6
 		.vscode\tasks.json = .vscode\tasks.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".azure-pipelines", ".azure-pipelines", "{573F5CC6-B76E-4993-802F-E6141C7FAA46}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{8127648B-FBA5-487E-8583-0E4A374C65DC}"
 	ProjectSection(SolutionItems) = preProject
-		.azure-pipelines\build-template.yml = .azure-pipelines\build-template.yml
-		.azure-pipelines\build.yml = .azure-pipelines\build.yml
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\update-dotnet-sdk.yml = .github\workflows\update-dotnet-sdk.yml
 	EndProjectSection
 EndProject
 Global
@@ -107,7 +106,7 @@ Global
 		{F258F815-A7C5-44F7-AF55-E12C0F1FB023} = {1A2A0990-94DE-4F14-850B-39BA7183BC63}
 		{9071A217-7882-4C3D-A7F6-3D7A56D6177D} = {F258F815-A7C5-44F7-AF55-E12C0F1FB023}
 		{D8A60EDB-E535-4DE2-9284-E758F1FDA350} = {1A2A0990-94DE-4F14-850B-39BA7183BC63}
-		{573F5CC6-B76E-4993-802F-E6141C7FAA46} = {1A2A0990-94DE-4F14-850B-39BA7183BC63}
+		{8127648B-FBA5-487E-8583-0E4A374C65DC} = {F258F815-A7C5-44F7-AF55-E12C0F1FB023}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4BC3B24-A96F-46C5-9405-CBE87A972881}
