@@ -238,8 +238,8 @@ namespace JustEat.HttpClientInterception
 
             var headers = new Dictionary<string, string>()
             {
-                { "a", "b" },
-                { "c", "d" },
+                ["a"] = "b",
+                ["c"] = "d",
             };
 
             var options = new HttpClientInterceptorOptions()
@@ -292,8 +292,8 @@ namespace JustEat.HttpClientInterception
 
             var responseHeaders = new Dictionary<string, IEnumerable<string>>()
             {
-                { "a", new[] { "b" } },
-                { "c", new[] { "d", "e" } },
+                ["a"] = new[] { "b" },
+                ["c"] = new[] { "d", "e" },
             };
 
             var options = new HttpClientInterceptorOptions()
@@ -322,8 +322,8 @@ namespace JustEat.HttpClientInterception
 
             var headers = new Dictionary<string, string>()
             {
-                { "a", "b" },
-                { "c", "d" },
+                ["a"] = "b",
+                ["c"] = "d",
             };
 
             var options = new HttpClientInterceptorOptions()
@@ -352,8 +352,8 @@ namespace JustEat.HttpClientInterception
 
             var responseHeaders = new Dictionary<string, IEnumerable<string>>()
             {
-                { "a", new[] { "b" } },
-                { "c", new[] { "d", "e" } },
+                ["a"] = new[] { "b" },
+                ["c"] = new[] { "d", "e" },
             };
 
             var options = new HttpClientInterceptorOptions()
@@ -468,16 +468,24 @@ namespace JustEat.HttpClientInterception
                 .RegisterGetJson(url, payload, statusCode: HttpStatusCode.InternalServerError);
 
             // Assert
+            clone.OnMissingRegistration.ShouldBe(options.OnMissingRegistration);
+            clone.OnSend.ShouldBe(options.OnSend);
             clone.ThrowOnMissingRegistration.ShouldBe(options.ThrowOnMissingRegistration);
+
             await HttpAssert.GetAsync(options, url, HttpStatusCode.NotFound);
             await HttpAssert.GetAsync(clone, url, HttpStatusCode.InternalServerError);
 
             // Arrange
+            options.OnMissingRegistration = (_) => Task.FromResult<HttpResponseMessage>(null);
+            options.OnSend = (_) => Task.CompletedTask;
             options.ThrowOnMissingRegistration = true;
             options.Clear();
 
             // Act and Assert
             clone.ThrowOnMissingRegistration.ShouldNotBe(options.ThrowOnMissingRegistration);
+            clone.OnMissingRegistration.ShouldNotBe(options.OnMissingRegistration);
+            clone.OnSend.ShouldNotBe(options.OnSend);
+
             await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(() => HttpAssert.GetAsync(options, url, HttpStatusCode.InternalServerError));
             await HttpAssert.GetAsync(clone, url, HttpStatusCode.InternalServerError);
 
@@ -490,6 +498,8 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             clone.ThrowOnMissingRegistration.ShouldBe(options.ThrowOnMissingRegistration);
+            clone.OnMissingRegistration.ShouldBe(options.OnMissingRegistration);
+            clone.OnSend.ShouldBe(options.OnSend);
         }
 
         [Fact]
@@ -714,9 +724,9 @@ namespace JustEat.HttpClientInterception
             var url = "https://api.github.com/orgs/justeat/repos?type=private";
             var headers = new Dictionary<string, string>()
             {
-                { "accept", "application/vnd.github.v3+json" },
-                { "authorization", "token my-token" },
-                { "user-agent", "My-App/1.0.0" },
+                ["accept"] = "application/vnd.github.v3+json",
+                ["authorization"] = "token my-token",
+                ["user-agent"] = "My-App/1.0.0",
             };
 
             // Act and Assert
@@ -726,9 +736,9 @@ namespace JustEat.HttpClientInterception
             // Arrange
             headers = new Dictionary<string, string>()
             {
-                { "accept", "application/vnd.github.v3+json" },
-                { "authorization", "token my-token" },
-                { "user-agent", "My-App/2.0.0" },
+                ["accept"] = "application/vnd.github.v3+json",
+                ["authorization"] = "token my-token",
+                ["user-agent"] = "My-App/2.0.0",
             };
 
             // Act and Assert
@@ -737,8 +747,8 @@ namespace JustEat.HttpClientInterception
             // Arrange
             headers = new Dictionary<string, string>()
             {
-                { "accept", "application/vnd.github.v3+json" },
-                { "user-agent", "My-App/1.0.0" },
+                ["accept"] = "application/vnd.github.v3+json",
+                ["user-agent"] = "My-App/1.0.0",
             };
 
             // Act and Assert

@@ -110,6 +110,8 @@ namespace JustEat.HttpClientInterception
         {
             var clone = new HttpClientInterceptorOptions()
             {
+                OnMissingRegistration = OnMissingRegistration,
+                OnSend = OnSend,
                 ThrowOnMissingRegistration = ThrowOnMissingRegistration,
             };
 
