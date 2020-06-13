@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using JustEat.HttpClientInterception.Matching;
+using Microsoft.Extensions.Logging;
 
 namespace JustEat.HttpClientInterception
 {
@@ -35,6 +36,16 @@ namespace JustEat.HttpClientInterception
         /// The <see cref="StringComparer"/> to use for key registrations.
         /// </summary>
         private StringComparer _comparer;
+
+        /// <summary>
+        /// The optional <see cref="ILoggerFactory"/> to use for logging.
+        /// </summary>
+        private ILoggerFactory? _loggerFactory;
+
+        /// <summary>
+        /// The optional <see cref="ILogger"/> to use for logging.
+        /// </summary>
+        private ILogger? _logger;
 
         /// <summary>
         /// The mapped HTTP request interceptors.
@@ -79,6 +90,11 @@ namespace JustEat.HttpClientInterception
         public bool ThrowOnMissingRegistration { get; set; }
 
         /// <summary>
+        /// Gets the <see cref="ILogger"/> to use, if any.
+        /// </summary>
+        internal ILogger? Logger => _logger ??= _loggerFactory?.CreateLogger<HttpClientInterceptorOptions>();
+
+        /// <summary>
         /// Begins a new options scope where any changes to the
         /// currently registered interceptions are only persisted
         /// until the returned <see cref="IDisposable"/> is disposed of.
@@ -116,6 +132,7 @@ namespace JustEat.HttpClientInterception
             };
 
             clone._comparer = _comparer;
+            clone._loggerFactory = _loggerFactory;
             clone._mappings = new ConcurrentDictionary<string, HttpInterceptionResponse>(_mappings, _comparer);
 
             return clone;
@@ -387,6 +404,27 @@ namespace JustEat.HttpClientInterception
 #pragma warning restore CA2000
 
             return new HttpClient(handler, true);
+        }
+
+        /// <summary>
+        /// Sets an <see cref="ILoggerFactory"/> to use for logging.
+        /// </summary>
+        /// <param name="loggerFactory">The optional <see cref="ILoggerFactory"/> to use.</param>
+        /// <returns>
+        /// The current <see cref="HttpClientInterceptorOptions"/>.
+        /// </returns>
+        public HttpClientInterceptorOptions WithLoggerFactory(ILoggerFactory? loggerFactory)
+        {
+            // If the ILoggerFactory is changed, clear any already-created ILogger
+            bool resetLogger = !ReferenceEquals(_loggerFactory, loggerFactory);
+
+            if (resetLogger)
+            {
+                _logger = null;
+            }
+
+            _loggerFactory = loggerFactory;
+            return this;
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace JustEat.HttpClientInterception
 {
@@ -63,8 +64,11 @@ namespace JustEat.HttpClientInterception
 
             if (response != null)
             {
+                LogDebug("Found matching registration for HTTP request {HttpRequestMessage}", request);
                 return response;
             }
+
+            LogDebug("No matching registration found for HTTP request {HttpRequestMessage}", request);
 
             if (_options.ThrowOnMissingRegistration)
             {
@@ -73,7 +77,12 @@ namespace JustEat.HttpClientInterception
                     request);
             }
 
+            LogDebug("Passing unmatched HTTP request to inner HTTP handler {HttpRequestMessage}", request);
+
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
+
+        private void LogDebug(string message, params object[] args)
+            => _options.Logger?.LogDebug(message, args);
     }
 }

@@ -10,18 +10,27 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Shouldly;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace JustEat.HttpClientInterception
 {
-    public static class HttpClientInterceptorOptionsTests
+    public class HttpClientInterceptorOptionsTests
     {
+        public HttpClientInterceptorOptionsTests(ITestOutputHelper outputHelper)
+        {
+            LoggerFactory = outputHelper.ToLoggerFactory();
+        }
+
+        private ILoggerFactory LoggerFactory { get; }
+
         [Fact]
-        public static async Task GetResponseAsync_Returns_Null_If_Request_Not_Registered()
+        public async Task GetResponseAsync_Returns_Null_If_Request_Not_Registered()
         {
             // Arrange
-            var options = new HttpClientInterceptorOptions();
+            var options = new HttpClientInterceptorOptions().WithLoggerFactory(LoggerFactory);
             var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
             // Act
@@ -32,10 +41,11 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Null_If_Request_Method_Does_Not_Match()
+        public async Task GetResponseAsync_Returns_Null_If_Request_Method_Does_Not_Match()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(HttpMethod.Get, new Uri("https://google.com/"), contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage(HttpMethod.Delete, "https://google.com/");
@@ -48,10 +58,11 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Null_If_Request_Uri_Does_Not_Match()
+        public async Task GetResponseAsync_Returns_Null_If_Request_Uri_Does_Not_Match()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(HttpMethod.Get, new Uri("https://google.co.uk/"), contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com/");
@@ -64,10 +75,11 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Null_If_Http_Method_Does_Not_Match()
+        public async Task GetResponseAsync_Returns_Null_If_Http_Method_Does_Not_Match()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(HttpMethod.Get, new Uri("https://google.com/"), contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage(HttpMethod.Post, "https://google.com/");
@@ -80,10 +92,11 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Null_If_Request_Uri_Does_Not_Match_Blank_Request()
+        public async Task GetResponseAsync_Returns_Null_If_Request_Uri_Does_Not_Match_Blank_Request()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(HttpMethod.Get, new Uri("https://google.co.uk/"), contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage();
@@ -96,13 +109,14 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Response_If_Request_Matches_Default_Constructor()
+        public async Task GetResponseAsync_Returns_Response_If_Request_Matches_Default_Constructor()
         {
             // Arrange
             var method = HttpMethod.Get;
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(method, uri, contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage(method, uri);
@@ -118,7 +132,7 @@ namespace JustEat.HttpClientInterception
         [Theory]
         [InlineData(false, false)]
         [InlineData(true, true)]
-        public static async Task GetResponseAsync_Returns_Response_If_Request_Matches(bool caseSensitive, bool expectNull)
+        public async Task GetResponseAsync_Returns_Response_If_Request_Matches(bool caseSensitive, bool expectNull)
         {
             // Arrange
             var method = HttpMethod.Get;
@@ -126,6 +140,7 @@ namespace JustEat.HttpClientInterception
             var uriToRequest = new Uri("https://google.com/UK");
 
             var options = new HttpClientInterceptorOptions(caseSensitive)
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(method, uriToRegister, contentFactory: EmptyContent);
 
             var request = new HttpRequestMessage(method, uriToRequest);
@@ -138,13 +153,14 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Empty_Response_If_ContentFactory_Returns_Null_Synchronous()
+        public async Task GetResponseAsync_Returns_Empty_Response_If_ContentFactory_Returns_Null_Synchronous()
         {
             // Arrange
             var method = HttpMethod.Get;
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(method, uri, () => null as byte[]);
 
             var request = new HttpRequestMessage(method, uri);
@@ -161,13 +177,14 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Empty_Response_If_ContentFactory_Returns_Null_Asynchronous()
+        public async Task GetResponseAsync_Returns_Empty_Response_If_ContentFactory_Returns_Null_Asynchronous()
         {
             // Arrange
             var method = HttpMethod.Get;
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(method, uri, () => Task.FromResult<byte[]>(null));
 
             var request = new HttpRequestMessage(method, uri);
@@ -184,13 +201,14 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Empty_Response_If_ContentStream_Returns_Null_Synchronous()
+        public async Task GetResponseAsync_Returns_Empty_Response_If_ContentStream_Returns_Null_Synchronous()
         {
             // Arrange
             var method = HttpMethod.Get;
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterStream(method, uri, () => null as Stream);
 
             var request = new HttpRequestMessage(method, uri);
@@ -207,13 +225,14 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Empty_Response_If_ContentStream_Returns_Null_Asynchronous()
+        public async Task GetResponseAsync_Returns_Empty_Response_If_ContentStream_Returns_Null_Asynchronous()
         {
             // Arrange
             var method = HttpMethod.Get;
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterStream(method, uri, () => Task.FromResult<Stream>(null));
 
             var request = new HttpRequestMessage(method, uri);
@@ -230,7 +249,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Header()
+        public async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Header()
         {
             // Arrange
             var method = HttpMethod.Get;
@@ -243,6 +262,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: headers);
 
             var request = new HttpRequestMessage(method, uri);
@@ -260,7 +280,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Header_Is_Null()
+        public async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Header_Is_Null()
         {
             // Arrange
             var method = HttpMethod.Get;
@@ -269,6 +289,7 @@ namespace JustEat.HttpClientInterception
             IDictionary<string, string> responseHeaders = null;
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: responseHeaders);
 
             var request = new HttpRequestMessage(method, uri);
@@ -284,7 +305,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Headers()
+        public async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Headers()
         {
             // Arrange
             var method = HttpMethod.Get;
@@ -297,6 +318,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(method, uri, contentFactory: EmptyContent, responseHeaders: responseHeaders);
 
             var request = new HttpRequestMessage(method, uri);
@@ -314,7 +336,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Header_Using_Stream()
+        public async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Header_Using_Stream()
         {
             // Arrange
             var method = HttpMethod.Get;
@@ -327,6 +349,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterStream(method, uri, contentStream: () => Stream.Null, responseHeaders: headers);
 
             var request = new HttpRequestMessage(method, uri);
@@ -344,7 +367,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Headers_Using_Stream()
+        public async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Response_Headers_Using_Stream()
         {
             // Arrange
             var method = HttpMethod.Get;
@@ -357,6 +380,7 @@ namespace JustEat.HttpClientInterception
             };
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterStream(method, uri, contentStream: EmptyStream, responseHeaders: responseHeaders);
 
             var request = new HttpRequestMessage(method, uri);
@@ -374,10 +398,11 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task HttpClient_Registrations_Can_Be_Removed()
+        public async Task HttpClient_Registrations_Can_Be_Removed()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterGetJson("https://google.com/", new { message = "Hello world!" })
                 .RegisterGetJson("https://google.co.uk/", new { message = "Hello world!" });
 
@@ -414,13 +439,14 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task Options_Can_Be_Scoped()
+        public async Task Options_Can_Be_Scoped()
         {
             // Arrange
             var url = "https://google.com/";
             var payload = new MyObject() { Message = "Hello world!" };
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterGetJson(url, payload, statusCode: HttpStatusCode.NotFound);
 
             // Act - begin first scope
@@ -454,13 +480,14 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task Options_Can_Be_Cloned()
+        public async Task Options_Can_Be_Cloned()
         {
             // Arrange
             var url = "https://google.com/";
             var payload = new MyObject() { Message = "Hello world!" };
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterGetJson(url, payload, statusCode: HttpStatusCode.NotFound);
 
             // Act
@@ -503,7 +530,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void Deregister_Throws_If_Method_Is_Null()
+        public void Deregister_Throws_If_Method_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -516,7 +543,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void Deregister_Throws_If_Uri_Is_Null()
+        public void Deregister_Throws_If_Uri_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -529,7 +556,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void Deregister_Throws_If_Builder_Is_Null()
+        public void Deregister_Throws_If_Builder_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -541,7 +568,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void RegisterByteArray_Throws_If_Method_Is_Null()
+        public void RegisterByteArray_Throws_If_Method_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -554,7 +581,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void RegisterStream_Throws_If_Method_Is_Null()
+        public void RegisterStream_Throws_If_Method_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -567,7 +594,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void RegisterByteArray_Throws_If_Uri_Is_Null()
+        public void RegisterByteArray_Throws_If_Uri_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -580,7 +607,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void RegisterStream_Throws_If_Uri_Is_Null()
+        public void RegisterStream_Throws_If_Uri_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -593,7 +620,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void RegisterByteArray_Throws_If_ContentFactory_Is_Null_Synchronous()
+        public void RegisterByteArray_Throws_If_ContentFactory_Is_Null_Synchronous()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -607,7 +634,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void RegisterByteArray_Throws_If_ContentFactory_Is_Null_Asynchronous()
+        public void RegisterByteArray_Throws_If_ContentFactory_Is_Null_Asynchronous()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -621,7 +648,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void RegisterStream_Throws_If_ContentStream_Is_Null_Synchronous()
+        public void RegisterStream_Throws_If_ContentStream_Is_Null_Synchronous()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -635,7 +662,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void RegisterStream_Throws_If_ContentStream_Is_Null_Asynchronous()
+        public void RegisterStream_Throws_If_ContentStream_Is_Null_Asynchronous()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -649,7 +676,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Throws_If_Request_Is_Null()
+        public async Task GetResponseAsync_Throws_If_Request_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -660,7 +687,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static void Register_Throws_If_Builder_Is_Null()
+        public void Register_Throws_If_Builder_Is_Null()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -671,7 +698,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Throws_If_Content_Cannot_Be_Created()
+        public async Task GetResponseAsync_Throws_If_Content_Cannot_Be_Created()
         {
             // Arrange
             var method = HttpMethod.Get;
@@ -687,7 +714,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task GetResponseAsync_Throws_If_ContentStream_Cannot_Be_Created()
+        public async Task GetResponseAsync_Throws_If_ContentStream_Cannot_Be_Created()
         {
             // Arrange
             var method = HttpMethod.Get;
@@ -703,7 +730,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task Can_Use_Extensibility_For_Request_Header_Matching()
+        public async Task Can_Use_Extensibility_For_Request_Header_Matching()
         {
             // Arrange
             var builder = new HttpRequestInterceptionBuilder()
@@ -755,6 +782,60 @@ namespace JustEat.HttpClientInterception
             await Assert.ThrowsAsync<HttpRequestException>(() => HttpAssert.GetAsync(options, url, headers: headers));
         }
 
+        [Fact]
+        public async Task Can_Configure_And_Update_Logging()
+        {
+            // Arrange
+            var loggerFactory1 = new MockLoggerFactory();
+            var loggerFactory2 = new MockLoggerFactory();
+
+            var method = HttpMethod.Get;
+            var uri = new Uri("https://google.com/");
+
+            var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(loggerFactory1)
+                .RegisterByteArray(method, uri, contentFactory: EmptyContent);
+
+            using var request = new HttpRequestMessage(method, uri);
+
+            // Act
+            await HttpAssert.GetAsync(options, uri.ToString());
+
+            // Assert
+            loggerFactory1.Logger.Invocations.ShouldBe(1);
+            loggerFactory2.Logger.Invocations.ShouldBe(0);
+
+            // Arrange
+            options.WithLoggerFactory(null);
+
+            // Act
+            await HttpAssert.GetAsync(options, uri.ToString());
+
+            // Assert
+            loggerFactory1.Logger.Invocations.ShouldBe(1);
+            loggerFactory2.Logger.Invocations.ShouldBe(0);
+
+            // Arrange
+            options.WithLoggerFactory(loggerFactory2);
+
+            // Act
+            await HttpAssert.GetAsync(options, uri.ToString());
+
+            // Assert
+            loggerFactory1.Logger.Invocations.ShouldBe(1);
+            loggerFactory2.Logger.Invocations.ShouldBe(1);
+
+            // Arrange
+            options.WithLoggerFactory(loggerFactory1);
+
+            // Act
+            await HttpAssert.GetAsync(options, uri.ToString());
+
+            // Assert
+            loggerFactory1.Logger.Invocations.ShouldBe(2);
+            loggerFactory2.Logger.Invocations.ShouldBe(1);
+        }
+
         private static Task<byte[]> EmptyContent() => Task.FromResult(Array.Empty<byte>());
 
         private static Task<Stream> EmptyStream() => Task.FromResult(Stream.Null);
@@ -783,6 +864,37 @@ namespace JustEat.HttpClientInterception
                 }
 
                 return null;
+            }
+        }
+
+        private sealed class MockLogger : ILogger
+        {
+            internal int Invocations { get; private set; }
+
+            public IDisposable BeginScope<TState>(TState state) => null;
+
+            public bool IsEnabled(LogLevel logLevel) => true;
+
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+            {
+                Invocations++;
+            }
+        }
+
+        private sealed class MockLoggerFactory : ILoggerFactory
+        {
+            internal MockLogger Logger { get; } = new MockLogger();
+
+            public void AddProvider(ILoggerProvider provider)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ILogger CreateLogger(string categoryName) => Logger;
+
+            public void Dispose()
+            {
+                // No-op
             }
         }
     }

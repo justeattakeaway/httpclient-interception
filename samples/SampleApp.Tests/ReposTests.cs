@@ -18,23 +18,13 @@ namespace SampleApp.Tests
         {
             Fixture = fixture;
             Fixture.SetOutputHelper(outputHelper);
-            OutputHelper = outputHelper;
         }
 
         private HttpServerFixture Fixture { get; }
 
-        private ITestOutputHelper OutputHelper { get; }
-
         [Fact]
         public async Task Can_Get_Organization_Repositories()
         {
-            // Add a callback to log any HTTP requests made
-            Fixture.Interceptor.OnSend = (request) =>
-                {
-                    OutputHelper.WriteLine($"HTTP {request.Method} {request.RequestUri}");
-                    return Task.CompletedTask;
-                };
-
             // Arrange - use a scope to clean-up registrations
             using (Fixture.Interceptor.BeginScope())
             {

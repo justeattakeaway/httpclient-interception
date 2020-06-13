@@ -10,17 +10,26 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using Shouldly;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace JustEat.HttpClientInterception
 {
-    public static class InterceptingHttpMessageHandlerTests
+    public class InterceptingHttpMessageHandlerTests
     {
+        public InterceptingHttpMessageHandlerTests(ITestOutputHelper outputHelper)
+        {
+            LoggerFactory = outputHelper.ToLoggerFactory();
+        }
+
+        private ILoggerFactory LoggerFactory { get; }
+
         [Fact]
-        public static void Constructor_Throws_If_Options_Is_Null()
+        public void Constructor_Throws_If_Options_Is_Null()
         {
             // Act and Assert
             Assert.Throws<ArgumentNullException>("options", () => new InterceptingHttpMessageHandler(null));
@@ -28,10 +37,11 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task SendAsync_Throws_If_Registration_Missing_Get()
+        public async Task SendAsync_Throws_If_Registration_Missing_Get()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .ThrowsOnMissingRegistration();
 
             using var target = options.CreateHttpClient();
@@ -45,10 +55,11 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task SendAsync_Throws_If_Registration_Missing_Post()
+        public async Task SendAsync_Throws_If_Registration_Missing_Post()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .ThrowsOnMissingRegistration();
 
             var mock = new Mock<HttpMessageHandler>();
@@ -68,10 +79,11 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task SendAsync_Calls_Inner_Handler_If_Registration_Missing()
+        public async Task SendAsync_Calls_Inner_Handler_If_Registration_Missing()
         {
             // Arrange
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(HttpMethod.Get, new Uri("https://google.com/foo"), () => Array.Empty<byte>())
                 .RegisterByteArray(HttpMethod.Options, new Uri("http://google.com/foo"), () => Array.Empty<byte>())
                 .RegisterByteArray(HttpMethod.Options, new Uri("https://google.com/FOO"), () => Array.Empty<byte>());
@@ -97,13 +109,14 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task SendAsync_Calls_OnSend_With_RequestMessage()
+        public async Task SendAsync_Calls_OnSend_With_RequestMessage()
         {
             // Arrange
             var header = "x-request";
             var requestUrl = "https://google.com/foo";
 
             var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory)
                 .RegisterByteArray(HttpMethod.Get, new Uri(requestUrl), () => Array.Empty<byte>());
 
             int expected = 7;
@@ -142,13 +155,14 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task SendAsync_Calls_OnMissingRegistration_With_RequestMessage()
+        public async Task SendAsync_Calls_OnMissingRegistration_With_RequestMessage()
         {
             // Arrange
             var header = "x-request";
             var requestUrl = "https://google.com/foo";
 
-            var options = new HttpClientInterceptorOptions();
+            var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(LoggerFactory);
 
             int expected = 7;
             int actual = 0;

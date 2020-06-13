@@ -10,5 +10,6 @@ updates:
   open-pull-requests-limit: 99
   ignore:
   - dependency-name: Microsoft.AspNetCore.WebUtilities
+  - dependency-name: Microsoft.Extensions.Logging.Abstractions
   - dependency-name: Newtonsoft.Json
   - dependency-name: System.Net.Http

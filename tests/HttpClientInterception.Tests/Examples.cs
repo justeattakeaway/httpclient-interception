@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using JustEat.HttpClientInterception.GitHub;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Refit;
 using Shouldly;
@@ -666,6 +667,32 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             cts.IsCancellationRequested.ShouldBeTrue();
+        }
+
+        [Fact]
+        public static async Task Intercept_With_Debug_Logging()
+        {
+            // Arrange
+            using var loggerFactory = new LoggerFactory();
+
+            var options = new HttpClientInterceptorOptions()
+                .WithLoggerFactory(loggerFactory);
+
+            var builder = new HttpRequestInterceptionBuilder();
+
+            builder.Requests().ForGet().ForHttps().ForHost("public.je-apis.com").ForPath("terms")
+                   .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
+                   .RegisterWith(options);
+
+            using var client = options.CreateHttpClient();
+
+            // Act
+            string json = await client.GetStringAsync("https://public.je-apis.com/terms");
+
+            // Assert
+            var content = JObject.Parse(json);
+            content.Value<int>("Id").ShouldBe(1);
+            content.Value<string>("Link").ShouldBe("https://www.just-eat.co.uk/privacy-policy");
         }
     }
 }
