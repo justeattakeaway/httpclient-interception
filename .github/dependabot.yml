@@ -7,7 +7,7 @@ updates:
     timezone: Europe/London
   reviewers:
     - "justeat/httpclient-interception"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 99
   ignore:
   - dependency-name: Microsoft.AspNetCore.WebUtilities
     versions:
