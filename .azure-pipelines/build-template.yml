@@ -35,7 +35,7 @@ phases:
           displayName: Install .NET Core pre-requisites
       - ${{ if eq(parameters.agentOS, 'Windows') }}:
         - powershell: |
-            .\Build.ps1 -OutputPath $(Build.StagingDirectory) $(BuildArgs)
+            .\build.ps1 -OutputPath $(Build.StagingDirectory) $(BuildArgs)
           name: BuildAndTest
           displayName: Build and test
           env:

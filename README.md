@@ -285,7 +285,7 @@ cd httpclient-interception
 ```powershell
 git clone https://github.com/justeat/httpclient-interception.git
 cd httpclient-interception
-.\Build.ps1
+.\build.ps1
 ```
 
 ## License
