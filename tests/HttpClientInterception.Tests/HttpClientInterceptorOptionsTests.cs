@@ -468,16 +468,24 @@ namespace JustEat.HttpClientInterception
                 .RegisterGetJson(url, payload, statusCode: HttpStatusCode.InternalServerError);
 
             // Assert
+            clone.OnMissingRegistration.ShouldBe(options.OnMissingRegistration);
+            clone.OnSend.ShouldBe(options.OnSend);
             clone.ThrowOnMissingRegistration.ShouldBe(options.ThrowOnMissingRegistration);
+
             await HttpAssert.GetAsync(options, url, HttpStatusCode.NotFound);
             await HttpAssert.GetAsync(clone, url, HttpStatusCode.InternalServerError);
 
             // Arrange
+            options.OnMissingRegistration = (_) => Task.FromResult<HttpResponseMessage>(null);
+            options.OnSend = (_) => Task.CompletedTask;
             options.ThrowOnMissingRegistration = true;
             options.Clear();
 
             // Act and Assert
             clone.ThrowOnMissingRegistration.ShouldNotBe(options.ThrowOnMissingRegistration);
+            clone.OnMissingRegistration.ShouldNotBe(options.OnMissingRegistration);
+            clone.OnSend.ShouldNotBe(options.OnSend);
+
             await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(() => HttpAssert.GetAsync(options, url, HttpStatusCode.InternalServerError));
             await HttpAssert.GetAsync(clone, url, HttpStatusCode.InternalServerError);
 
@@ -490,6 +498,8 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             clone.ThrowOnMissingRegistration.ShouldBe(options.ThrowOnMissingRegistration);
+            clone.OnMissingRegistration.ShouldBe(options.OnMissingRegistration);
+            clone.OnSend.ShouldBe(options.OnSend);
         }
 
         [Fact]
