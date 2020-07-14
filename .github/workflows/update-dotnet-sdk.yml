@@ -16,4 +16,4 @@ jobs:
 
     - name: Update .NET SDK
       shell: pwsh
-      run: ./update-dotnet-sdk.ps1 -Channel "3.1" -GitHubToken ${{ secrets.GITHUB_TOKEN }}
+      run: ./update-dotnet-sdk.ps1 -Channel "3.1" -GitHubToken ${{ secrets.GITHUB_TOKEN }} -UserName "github-actions[bot]" -UserEmail "github-actions[bot]@users.noreply.github.com"
