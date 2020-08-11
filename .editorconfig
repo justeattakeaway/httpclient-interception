@@ -50,6 +50,9 @@ dotnet_style_prefer_inferred_tuple_names = true:suggestion
 dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
 dotnet_style_prefer_auto_properties = true:none
 
+# Public API analyzer preferences
+dotnet_public_api_analyzer.require_api_files = true
+
 ###############################
 # Naming Conventions          #
 ###############################

@@ -68,9 +68,11 @@ namespace JustEat.HttpClientInterception
 
             if (_options.ThrowOnMissingRegistration)
             {
+#pragma warning disable CA1062
                 throw new HttpRequestNotInterceptedException(
                     $"No HTTP response is configured for {request.Method.Method} {request.RequestUri}.",
                     request);
+#pragma warning restore CA1062
             }
 
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
