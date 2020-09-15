@@ -97,8 +97,8 @@ function DotNetTest {
     param([string]$Project)
 
     $nugetPath = Join-Path ($env:USERPROFILE ?? "~") ".nuget\packages"
-    $propsFile = Join-Path $solutionPath "Directory.Build.props"
-    $reportGeneratorVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='ReportGenerator']/@Version").Node.'#text'
+    $propsFile = Join-Path $solutionPath "Directory.Packages.props"
+    $reportGeneratorVersion = (Select-Xml -Path $propsFile -XPath "//PackageVersion[@Include='ReportGenerator']/@Version").Node.'#text'
     $reportGeneratorPath = Join-Path $nugetPath "reportgenerator\$reportGeneratorVersion\tools\netcoreapp3.0\ReportGenerator.dll"
 
     $coverageOutput = Join-Path $OutputPath "coverage.*.cobertura.xml"
