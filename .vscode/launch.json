@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceRoot}/samples/SampleApp/bin/Debug/netcoreapp3.1/SampleApp.dll",
+      "program": "${workspaceRoot}/samples/SampleApp/bin/Debug/net5.0/SampleApp.dll",
       "args": [],
       "cwd": "${workspaceRoot}/samples/SampleApp",
       "stopAtEntry": false,

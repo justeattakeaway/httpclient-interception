@@ -405,7 +405,7 @@ namespace JustEat.HttpClientInterception
                 return $"CUSTOM:{interceptor.InternalMatcher!.GetHashCode().ToString(CultureInfo.InvariantCulture)}";
             }
 
-            var builderForKey = new UriBuilder(interceptor.RequestUri);
+            var builderForKey = new UriBuilder(interceptor.RequestUri!);
             string keyPrefix = string.Empty;
 
             if (interceptor.IgnoreHost)
@@ -478,7 +478,7 @@ namespace JustEat.HttpClientInterception
                 // Do not overwrite a custom Content-Type header if already set
                 if (!result.Content.Headers.TryGetValues("content-type", out var contentType))
                 {
-                    result.Content.Headers.ContentType = new MediaTypeHeaderValue(response.ContentMediaType);
+                    result.Content.Headers.ContentType = new MediaTypeHeaderValue(response.ContentMediaType!);
                 }
 
                 PopulateHeaders(result.Headers, response.ResponseHeaders);

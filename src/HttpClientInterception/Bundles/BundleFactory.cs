@@ -26,7 +26,7 @@ namespace JustEat.HttpClientInterception.Bundles
         public static Bundle Create(string path)
         {
             string json = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<Bundle>(json, Settings);
+            return JsonConvert.DeserializeObject<Bundle>(json, Settings) !;
         }
     }
 }

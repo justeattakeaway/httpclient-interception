@@ -44,7 +44,7 @@ namespace JustEat.HttpClientInterception
 
             byte[] ContentFactory()
             {
-                string json = JsonConvert.SerializeObject(content, settings);
+                string json = JsonConvert.SerializeObject(content, settings!);
                 return Encoding.UTF8.GetBytes(json);
             }
 

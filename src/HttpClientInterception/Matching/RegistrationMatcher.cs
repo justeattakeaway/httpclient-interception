@@ -66,7 +66,7 @@ namespace JustEat.HttpClientInterception.Matching
 
             if (isMatch && _registration.ContentMatcher != null)
             {
-                isMatch = await _registration.ContentMatcher(request.Content).ConfigureAwait(false);
+                isMatch = await _registration.ContentMatcher(request.Content!).ConfigureAwait(false);
             }
 
             return isMatch;
@@ -82,7 +82,7 @@ namespace JustEat.HttpClientInterception.Matching
         /// </returns>
         private static string GetUriStringForMatch(HttpInterceptionResponse registration, Uri? uri = null)
         {
-            var builder = new UriBuilder(uri ?? registration.RequestUri);
+            var builder = new UriBuilder(uri ?? registration.RequestUri!);
 
             if (!registration.HasCustomPort)
             {
@@ -111,7 +111,7 @@ namespace JustEat.HttpClientInterception.Matching
         {
             foreach (var headerToMatch in _registration.RequestHeaders!)
             {
-                if (!requestHeaders.TryGetValues(headerToMatch.Key, out IEnumerable<string> values))
+                if (!requestHeaders.TryGetValues(headerToMatch.Key, out IEnumerable<string>? values))
                 {
                     return false;
                 }
