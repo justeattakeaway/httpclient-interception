@@ -18,6 +18,7 @@
     <PackageReference Include="Moq" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Newtonsoft.Json.Schema" />
+    <PackageReference Include="Polly" />
     <PackageReference Include="Refit" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit" />
