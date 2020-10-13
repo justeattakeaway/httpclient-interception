@@ -3,7 +3,7 @@
     <PackageVersion Include="BenchmarkDotNet" Version="0.12.1" />
     <PackageVersion Include="coverlet.msbuild" Version="2.9.0" />
     <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.1.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.0-rc.1.*" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.0-rc.2.20475.17" />
     <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="1.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.1" />
@@ -28,12 +28,12 @@
   <ItemGroup Condition=" '$(AssemblyName)' == 'JustEat.HttpClientInterception' and '$(TargetFramework)' == 'net5.0' ">
     <PackageVersion Update="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageVersion Update="Newtonsoft.Json" Version="12.0.3" />
-    <PackageVersion Update="System.Text.Json" Version="5.0.0-rc.1.*" />
+    <PackageVersion Update="System.Text.Json" Version="5.0.0-rc.2.20475.5" />
   </ItemGroup>
   <ItemGroup Condition=" '$(AssemblyName)' != 'JustEat.HttpClientInterception' ">
     <PackageVersion Update="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageVersion Update="Newtonsoft.Json" Version="12.0.3" />
-    <PackageVersion Update="System.Text.Json" Version="5.0.0-rc.1.*" />
+    <PackageVersion Update="System.Text.Json" Version="5.0.0-rc.2.20475.5" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" PrivateAssets="All" />
