@@ -186,7 +186,9 @@ namespace JustEat.HttpClientInterception
 
             async Task<byte[]> ContentFactoryAsync()
             {
-                using var content = new FormUrlEncodedContent(parameters);
+                // The cast is to make nullability match for .NET 5.0.
+                // See https://github.com/dotnet/runtime/issues/38494.
+                using var content = new FormUrlEncodedContent((IEnumerable<KeyValuePair<string?, string?>>)parameters);
                 return await content.ReadAsByteArrayAsync().ConfigureAwait(false);
             }
 

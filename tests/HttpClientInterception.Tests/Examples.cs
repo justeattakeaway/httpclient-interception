@@ -663,7 +663,8 @@ namespace JustEat.HttpClientInterception
             using var client = options.CreateHttpClient();
 
             // Act
-            await client.GetAsync("http://www.google.co.uk", cts.Token);
+            await Assert.ThrowsAsync<TaskCanceledException>(
+                () => client.GetAsync("http://www.google.co.uk", cts.Token));
 
             // Assert
             cts.IsCancellationRequested.ShouldBeTrue();

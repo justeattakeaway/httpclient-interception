@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text;
 
@@ -26,9 +27,9 @@ namespace JustEat.HttpClientInterception.Bundles
                 }
             }
 
-            ValidateItem(item, out Uri uri, out Version? version);
+            ValidateItem(item, out Uri? uri, out Version? version);
 
-            var builder = new HttpRequestInterceptionBuilder().ForUri(uri);
+            var builder = new HttpRequestInterceptionBuilder().ForUri(uri!);
 
             if (item.Method != null)
             {
@@ -100,7 +101,7 @@ namespace JustEat.HttpClientInterception.Bundles
             switch (item.ContentFormat?.ToUpperInvariant())
             {
                 case "BASE64":
-                    byte[] decoded = Convert.FromBase64String(item.ContentString);
+                    byte[] decoded = Convert.FromBase64String(item.ContentString ?? string.Empty);
                     return Encoding.UTF8.GetString(decoded);
 
                 case "JSON":
@@ -116,7 +117,7 @@ namespace JustEat.HttpClientInterception.Bundles
             }
         }
 
-        private static void ValidateItem(BundleItem item, out Uri uri, out Version? version)
+        private static void ValidateItem(BundleItem item, out Uri? uri, out Version? version)
         {
             version = null;
 

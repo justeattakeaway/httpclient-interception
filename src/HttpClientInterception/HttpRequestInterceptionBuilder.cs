@@ -515,7 +515,7 @@ namespace JustEat.HttpClientInterception
                 _responseHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
             }
 
-            if (!_responseHeaders.TryGetValue(name, out ICollection<string> current))
+            if (!_responseHeaders.TryGetValue(name, out ICollection<string>? current))
             {
                 _responseHeaders[name] = current = new List<string>();
             }
@@ -818,7 +818,7 @@ namespace JustEat.HttpClientInterception
                 _requestHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
             }
 
-            if (!_requestHeaders.TryGetValue(name, out ICollection<string> current))
+            if (!_requestHeaders.TryGetValue(name, out ICollection<string>? current))
             {
                 _requestHeaders[name] = current = new List<string>();
             }
