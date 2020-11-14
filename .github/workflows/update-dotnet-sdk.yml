@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  update-dotnet-sdk:
     name: Update .NET SDK
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
 
@@ -16,5 +16,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Update .NET SDK
-      shell: pwsh
-      run: ./update-dotnet-sdk.ps1 -Channel "5.0" -GitHubToken ${{ secrets.GITHUB_TOKEN }} -UserName "github-actions[bot]" -UserEmail "github-actions[bot]@users.noreply.github.com"
+      uses: martincostello/update-dotnet-sdk@v1
+      if: ${{ github.repository_owner == 'justeat' }}
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
