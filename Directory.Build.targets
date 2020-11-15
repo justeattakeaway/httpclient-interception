@@ -5,7 +5,7 @@
     <CommitHash Condition=" '$(CommitHash)' == '' ">$(GITHUB_SHA)</CommitHash>
   </PropertyGroup>
   <Target Name="AddGitMetadaAssemblyAttributes"
-          BeforeTargets="CoreGenerateAssemblyInfo"
+          BeforeTargets="GetAssemblyAttributes"
           Condition=" '$(GenerateGitMetadata)' == 'true' ">
     <Exec Command="git rev-parse HEAD" ConsoleToMSBuild="true" StandardOutputImportance="low" IgnoreExitCode="true" Condition=" '$(CommitHash)' == '' ">
       <Output TaskParameter="ConsoleOutput" PropertyName="CommitHash" />
