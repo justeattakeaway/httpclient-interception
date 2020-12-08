@@ -3,7 +3,7 @@
     <PackageVersion Include="BenchmarkDotNet" Version="0.12.1" />
     <PackageVersion Include="coverlet.msbuild" Version="2.9.0" />
     <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.1.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="1.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.2" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
