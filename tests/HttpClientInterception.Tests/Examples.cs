@@ -387,7 +387,7 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldNotBeNull();
-            actual.Id.ShouldBe("1516790");
+            actual.Id.ShouldBe(1516790);
             actual.Login.ShouldBe("justeat");
             actual.Url.ShouldBe("https://api.github.com/orgs/justeat");
         }
@@ -419,13 +419,13 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             justEatOrg.ShouldNotBeNull();
-            justEatOrg.Id.ShouldBe("1516790");
+            justEatOrg.Id.ShouldBe(1516790);
             justEatOrg.Login.ShouldBe("justeat");
             justEatOrg.Url.ShouldBe("https://api.github.com/orgs/justeat");
 
             // Assert
             dotnetOrg.ShouldNotBeNull();
-            dotnetOrg.Id.ShouldBe("9141961");
+            dotnetOrg.Id.ShouldBe(9141961);
             dotnetOrg.Login.ShouldBe("dotnet");
             dotnetOrg.Url.ShouldBe("https://api.github.com/orgs/dotnet");
         }
@@ -459,13 +459,13 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             justEatOrg.ShouldNotBeNull();
-            justEatOrg.Id.ShouldBe("1516790");
+            justEatOrg.Id.ShouldBe(1516790);
             justEatOrg.Login.ShouldBe("justeat");
             justEatOrg.Url.ShouldBe("https://api.github.com/orgs/justeat");
 
             // Assert
             dotnetOrg.ShouldNotBeNull();
-            dotnetOrg.Id.ShouldBe("9141961");
+            dotnetOrg.Id.ShouldBe(9141961);
             dotnetOrg.Login.ShouldBe("dotnet");
             dotnetOrg.Url.ShouldBe("https://api.github.com/orgs/dotnet");
         }
@@ -723,7 +723,7 @@ namespace JustEat.HttpClientInterception
 
             // Assert
             actual.ShouldNotBeNull();
-            actual.Id.ShouldBe("1516790");
+            actual.Id.ShouldBe(1516790);
             actual.Login.ShouldBe("justeat");
             actual.Url.ShouldBe("https://api.github.com/orgs/justeat");
 
