@@ -13,7 +13,7 @@
     <PackageVersion Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageVersion Include="Newtonsoft.Json.Schema" Version="3.0.13" />
     <PackageVersion Include="Polly" Version="7.2.1" />
-    <PackageVersion Include="Refit" Version="6.0.8" />
+    <PackageVersion Include="Refit" Version="6.0.15" />
     <PackageVersion Include="ReportGenerator" Version="4.8.5" />
     <PackageVersion Include="Shouldly" Version="4.0.3" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
