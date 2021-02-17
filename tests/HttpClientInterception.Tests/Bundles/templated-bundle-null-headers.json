@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/master/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "templated-string-bundle",
   "comment": "An HTTP request bundle that uses templating for a string.",
   "version": 1,
