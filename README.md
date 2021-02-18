@@ -106,7 +106,7 @@ var client = options.CreateHttpClient();
 var html = await client.GetStringAsync("https://www.just-eat.co.uk");
 
 // The value of json will be "{\"Id\":1,\"Link\":\"https://www.just-eat.co.uk/privacy-policy\"}"
-var json = await client.GetStringAsync("http://public.je-apis.com/terms");
+var json = await client.GetStringAsync("https://public.je-apis.com/terms");
 ```
 
 Further examples of using HTTP bundles can be found in the [tests](https://github.com/justeat/httpclient-interception/blob/main/tests/HttpClientInterception.Tests/Bundles/BundleExtensionsTests.cs "BundleExtensionsTests.cs"), such as for changing the response code, the HTTP method, and matching to HTTP requests based on the request headers.
