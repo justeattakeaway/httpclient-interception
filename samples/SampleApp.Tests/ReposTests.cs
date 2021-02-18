@@ -17,7 +17,7 @@ namespace SampleApp.Tests
         public ReposTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
         {
             Fixture = fixture;
-            Fixture.SetOutputHelper(outputHelper);
+            Fixture.OutputHelper = outputHelper;
             OutputHelper = outputHelper;
         }
 
@@ -70,7 +70,10 @@ namespace SampleApp.Tests
 
         public void Dispose()
         {
-            Fixture.ClearOutputHelper();
+            if (Fixture is not null)
+            {
+                Fixture.OutputHelper = null;
+            }
         }
     }
 }

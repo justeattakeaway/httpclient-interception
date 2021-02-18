@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 
 namespace SampleApp.Tests
 {
-    public class HttpServerFixture : WebApplicationFactory<Startup>
+    public class HttpServerFixture : WebApplicationFactory<Startup>, ITestOutputHelperAccessor
     {
         public HttpServerFixture()
             : base()
@@ -31,11 +31,7 @@ namespace SampleApp.Tests
 
         public HttpClientInterceptorOptions Interceptor { get; }
 
-        public void ClearOutputHelper()
-            => Server.Services.GetRequiredService<ITestOutputHelperAccessor>().OutputHelper = null;
-
-        public void SetOutputHelper(ITestOutputHelper value)
-            => Server.Services.GetRequiredService<ITestOutputHelperAccessor>().OutputHelper = value;
+        public ITestOutputHelper OutputHelper { get; set; }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -52,7 +48,7 @@ namespace SampleApp.Tests
                 (_, config) => config.AddJsonFile(fullPath));
 
             // Route logs to xunit test output
-            builder.ConfigureLogging((p) => p.AddXUnit());
+            builder.ConfigureLogging((p) => p.AddXUnit(this));
         }
 
         /// <summary>
