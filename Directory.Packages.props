@@ -1,7 +1,7 @@
 <Project>
   <ItemGroup>
     <PackageVersion Include="BenchmarkDotNet" Version="0.12.1" />
-    <PackageVersion Include="coverlet.msbuild" Version="3.0.2" />
+    <PackageVersion Include="coverlet.msbuild" Version="3.0.3" />
     <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.1.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="1.0.0" />
