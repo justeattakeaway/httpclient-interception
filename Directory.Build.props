@@ -15,7 +15,7 @@
     <Company>Just Eat</Company>
     <ContinuousIntegrationBuild Condition=" '$(CI)' != '' ">true</ContinuousIntegrationBuild>
     <Copyright>Copyright (c) Just Eat 2017-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
-    <Deterministic>false</Deterministic>
+    <Deterministic>true</Deterministic>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
