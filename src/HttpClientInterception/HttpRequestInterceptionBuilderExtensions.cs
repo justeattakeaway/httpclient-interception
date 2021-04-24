@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.WebUtilities;
 namespace JustEat.HttpClientInterception
 {
     /// <summary>
-    /// A class containing extention methods for the <see cref="HttpRequestInterceptionBuilder"/> class. This class cannot be inherited.
+    /// A class containing extension methods for the <see cref="HttpRequestInterceptionBuilder"/> class. This class cannot be inherited.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class HttpRequestInterceptionBuilderExtensions
