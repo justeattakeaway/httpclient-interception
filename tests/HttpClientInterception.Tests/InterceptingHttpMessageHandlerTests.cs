@@ -92,7 +92,7 @@ namespace JustEat.HttpClientInterception
             // Act
             var actual = await httpClient.SendAsync(request, CancellationToken.None);
 
-            // Asert
+            // Assert
             actual.ShouldBe(expected);
         }
 

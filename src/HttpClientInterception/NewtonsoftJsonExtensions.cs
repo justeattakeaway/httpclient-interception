@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 namespace JustEat.HttpClientInterception
 {
     /// <summary>
-    /// A class containing extention methods for the <see cref="HttpRequestInterceptionBuilder"/>
+    /// A class containing extension methods for the <see cref="HttpRequestInterceptionBuilder"/>
     /// class for <c>Newtonsoft.Json</c>. This class cannot be inherited.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
