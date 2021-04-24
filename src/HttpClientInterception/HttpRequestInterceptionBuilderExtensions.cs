@@ -296,7 +296,7 @@ namespace JustEat.HttpClientInterception
         /// </remarks>
         public static HttpRequestInterceptionBuilder ForContent(
             this HttpRequestInterceptionBuilder builder,
-            Predicate<HttpContent> predicate)
+            Predicate<HttpContent>? predicate)
         {
             if (builder == null)
             {
@@ -305,7 +305,7 @@ namespace JustEat.HttpClientInterception
 
             if (predicate == null)
             {
-                return builder.ForContent(null as Func<HttpContent, Task<bool>>);
+                return builder.ForContent(null);
             }
             else
             {

@@ -78,7 +78,7 @@ namespace JustEat.HttpClientInterception
         /// <remarks>
         /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
         /// </remarks>
-        public HttpRequestInterceptionBuilder For(Predicate<HttpRequestMessage> predicate)
+        public HttpRequestInterceptionBuilder For(Predicate<HttpRequestMessage>? predicate)
         {
             _requestMatcher = predicate == null ? null : new Func<HttpRequestMessage, Task<bool>>((message) => Task.FromResult(predicate(message)));
             return this;
@@ -261,7 +261,10 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithContent(Func<byte[]> contentFactory)
+        /// <remarks>
+        /// Pass a value of <see langword="null"/> to reset to no content factory.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder WithContent(Func<byte[]>? contentFactory)
         {
             if (contentFactory == null)
             {
@@ -303,7 +306,10 @@ namespace JustEat.HttpClientInterception
         /// <returns>
         /// The current <see cref="HttpRequestInterceptionBuilder"/>.
         /// </returns>
-        public HttpRequestInterceptionBuilder WithContentStream(Func<Stream> contentStream)
+        /// <remarks>
+        /// Pass a value of <see langword="null"/> to reset to no content stream.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder WithContentStream(Func<Stream>? contentStream)
         {
             if (contentStream == null)
             {
