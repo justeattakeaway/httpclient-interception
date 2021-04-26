@@ -47,7 +47,7 @@ builder.Requests()
     .ForHost("public.je-apis.com")
     .ForPath("terms")
     .Responds()
-    .WithJsonContent(new {Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy"})
+    .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
     .RegisterWith(options);
 
 using var client = options.CreateHttpClient();
