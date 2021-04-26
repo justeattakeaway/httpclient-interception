@@ -228,8 +228,14 @@ namespace JustEat.HttpClientInterception.Bundles
             // Arrange
             var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
 
+            var templateValues = new Dictionary<string, string>()
+            {
+                ["AvatarUrl"] = "https://avatars.githubusercontent.com/u/1516790?v=4",
+                ["BlogUrl"] = "https://tech.justeattakeaway.com/",
+            };
+
             // Act
-            options.RegisterBundle(Path.Join("Bundles", "templated-bundle-json.json"));
+            options.RegisterBundle(Path.Join("Bundles", "templated-bundle-json.json"), templateValues);
 
             // Assert
             string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat");
@@ -237,7 +243,15 @@ namespace JustEat.HttpClientInterception.Bundles
                 .Replace(" ", string.Empty, StringComparison.Ordinal)
                 .Replace("\n", string.Empty, StringComparison.Ordinal)
                 .Replace("\r", string.Empty, StringComparison.Ordinal)
-                .ShouldBe(@"{""id"":1516790,""login"":""justeat"",""url"":""https://api.github.com/orgs/justeat""}");
+                .ShouldBe(@"{""id"":1516790,""login"":""justeat"",""url"":""https://api.github.com/orgs/justeat"",""avatar_url"":""https://avatars.githubusercontent.com/u/1516790?v=4"",""name"":""JustEatTakeaway"",""blog"":""https://tech.justeattakeaway.com/""}");
+
+            // Assert
+            content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat/repos");
+            content
+                .Replace(" ", string.Empty, StringComparison.Ordinal)
+                .Replace("\n", string.Empty, StringComparison.Ordinal)
+                .Replace("\r", string.Empty, StringComparison.Ordinal)
+                .ShouldBe(@"[{""id"":123456,""name"":""httpclient-interception"",""full_name"":""justeat/httpclient-interception"",""private"":false,""owner"":{""login"":""justeat"",""id"":1516790}}]");
         }
 
         [Fact]
