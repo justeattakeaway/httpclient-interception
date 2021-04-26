@@ -80,7 +80,8 @@ namespace JustEat.HttpClientInterception
 
             if (bundle.Items != null)
             {
-                var templateValueLists = templateValues.ToList();
+                var templateValuesList = templateValues.ToList();
+
                 foreach (var item in bundle.Items)
                 {
                     if (item == null || item.Skip)
@@ -88,7 +89,7 @@ namespace JustEat.HttpClientInterception
                         continue;
                     }
 
-                    builders.Add(BundleItemConverter.FromItem(item, templateValueLists));
+                    builders.Add(BundleItemConverter.FromItem(item, templateValuesList));
                 }
             }
 
