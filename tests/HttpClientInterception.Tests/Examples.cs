@@ -24,20 +24,51 @@ namespace JustEat.HttpClientInterception
     public static class Examples
     {
         [Fact]
+        public static async Task Fault_injection()
+        {
+            #region fault-injection
+
+            var options = new HttpClientInterceptorOptions();
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHost("public.je-apis.com")
+                .WithStatus(HttpStatusCode.InternalServerError)
+                .RegisterWith(options);
+
+            var client = options.CreateHttpClient();
+
+            // Throws an HttpRequestException
+            await Assert.ThrowsAsync<HttpRequestException>(
+                () => client.GetStringAsync("http://public.je-apis.com"));
+
+            #endregion
+        }
+
+        [Fact]
         public static async Task Intercept_Http_Get_For_Json_Object()
         {
+            #region minimal-example
+
             // Arrange
             var options = new HttpClientInterceptorOptions();
             var builder = new HttpRequestInterceptionBuilder();
 
-            builder.Requests().ForGet().ForHttps().ForHost("public.je-apis.com").ForPath("terms")
-                   .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
-                   .RegisterWith(options);
+            builder.Requests()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("terms")
+                .Responds()
+                .WithJsonContent(new {Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy"})
+                .RegisterWith(options);
 
             using var client = options.CreateHttpClient();
 
             // Act
             string json = await client.GetStringAsync("https://public.je-apis.com/terms");
+
+            #endregion
 
             // Assert
             var content = JObject.Parse(json);

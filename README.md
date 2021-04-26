@@ -34,24 +34,29 @@ dotnet add package JustEat.HttpClientInterception
 
 Below is a minimal example of intercepting an HTTP GET request to an API for a JSON resource to return a custom response using the fluent API:
 
-```csharp
-// using JustEat.HttpClientInterception;
-
+<!-- snippet: minimal-example -->
+<a id='snippet-minimal-example'></a>
+```cs
+// Arrange
 var options = new HttpClientInterceptorOptions();
+var builder = new HttpRequestInterceptionBuilder();
 
-var builder = new HttpRequestInterceptionBuilder()
-    .Requests()
+builder.Requests()
+    .ForGet()
+    .ForHttps()
     .ForHost("public.je-apis.com")
     .ForPath("terms")
-    .Responds()
+       .Responds()
     .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
-    .RegisterWith(options);
+       .RegisterWith(options);
 
-var client = options.CreateHttpClient();
+using var client = options.CreateHttpClient();
 
-// The value of json will be "{\"Id\":1,\"Link\":\"https://www.just-eat.co.uk/privacy-policy\"}"
-var json = await client.GetStringAsync("http://public.je-apis.com/terms");
+// Act
+string json = await client.GetStringAsync("https://public.je-apis.com/terms");
 ```
+<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L51-L70' title='Snippet source file'>snippet source</a> | <a href='#snippet-minimal-example' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
 
 `HttpRequestInterceptionBuilder` objects are mutable, so properties can be freely changed once a particular setup has been registered with an instance of `HttpClientInterceptorOptions` as the state is captured at the point of registration. This allows multiple responses and paths to be configured from a single `HttpRequestInterceptionBuilder` instance where multiple registrations against a common hostname.
 
@@ -67,6 +72,8 @@ Below is an example bundle file, which can return content in formats such as a s
 
 The full JSON schema for HTTP bundle files can be found [here](https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json "JSON Schema for HTTP request interception bundles for use with JustEat.HttpClientInterception.").
 
+<!-- snippet: sample-bundle.json -->
+<a id='snippet-sample-bundle.json'></a>
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
@@ -92,6 +99,8 @@ The full JSON schema for HTTP bundle files can be found [here](https://raw.githu
   ]
 }
 ```
+<sup><a href='/tests/HttpClientInterception.Tests/Bundles/sample-bundle.json#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample-bundle.json' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
 
 ###### Code
 
@@ -115,9 +124,9 @@ Further examples of using HTTP bundles can be found in the [tests](https://githu
 
 Below is a minimal example of intercepting a request to inject an HTTP fault:
 
-```csharp
-// using JustEat.HttpClientInterception;
-
+<!-- snippet: fault-injection -->
+<a id='snippet-fault-injection'></a>
+```cs
 var options = new HttpClientInterceptorOptions();
 
 var builder = new HttpRequestInterceptionBuilder()
@@ -129,8 +138,11 @@ var builder = new HttpRequestInterceptionBuilder()
 var client = options.CreateHttpClient();
 
 // Throws an HttpRequestException
-await client.GetStringAsync("http://public.je-apis.com");
+await Assert.ThrowsAsync<HttpRequestException>(
+    () => client.GetStringAsync("http://public.je-apis.com"));
 ```
+<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L29-L45' title='Snippet source file'>snippet source</a> | <a href='#snippet-fault-injection' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
 
 #### Registering Request Interception When Using IHttpClientFactory
 
@@ -138,10 +150,14 @@ If you are using [`IHttpClientFactory`](https://docs.microsoft.com/en-us/dotnet/
 
 A working example of this approach can be found in the [sample application](https://github.com/justeat/httpclient-interception/blob/main/samples/README.md "Sample application that uses JustEat.HttpClientInterception").
 
-```csharp
-using Microsoft.Extensions.Http;
-
-public class InterceptionFilter : IHttpMessageHandlerBuilderFilter
+<!-- snippet: interception-filter -->
+<a id='snippet-interception-filter'></a>
+```cs
+/// <summary>
+/// A class that registers an intercepting HTTP message handler at the end of
+/// the message handler pipeline when an <see cref="HttpClient"/> is created.
+/// </summary>
+private sealed class InterceptionFilter : IHttpMessageHandlerBuilderFilter
 {
     private readonly HttpClientInterceptorOptions _options;
 
@@ -150,6 +166,7 @@ public class InterceptionFilter : IHttpMessageHandlerBuilderFilter
         _options = options;
     }
 
+    /// <inheritdoc/>
     public Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next)
     {
         return (builder) =>
@@ -163,12 +180,8 @@ public class InterceptionFilter : IHttpMessageHandlerBuilderFilter
     }
 }
 ```
-
-```csharp
-var options = new HttpClientInterceptorOptions();
-services.AddSingleton<IHttpMessageHandlerBuilderFilter, InterceptionFilter>(
-    (_) => new InterceptionFilter(options));
-```
+<sup><a href='/samples/SampleApp.Tests/HttpServerFixture.cs#L54-L83' title='Snippet source file'>snippet source</a> | <a href='#snippet-interception-filter' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
 
 #### Setting Up HttpClient for Dependency Injection Manually
 

@@ -51,6 +51,8 @@ namespace SampleApp.Tests
             builder.ConfigureLogging((p) => p.AddXUnit(this));
         }
 
+        #region interception-filter
+
         /// <summary>
         /// A class that registers an intercepting HTTP message handler at the end of
         /// the message handler pipeline when an <see cref="HttpClient"/> is created.
@@ -77,5 +79,7 @@ namespace SampleApp.Tests
                 };
             }
         }
+
+        #endregion
     }
 }
