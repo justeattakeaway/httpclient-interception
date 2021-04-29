@@ -24,7 +24,7 @@ namespace JustEat.HttpClientInterception
     public static class Examples
     {
         [Fact]
-        public static async Task Fault_injection()
+        public static async Task Fault_Injection()
         {
             #region fault-injection
 
