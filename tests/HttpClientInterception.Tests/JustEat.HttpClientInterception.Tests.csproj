@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="example-bundle.json;xunit.runner.json;Bundles\*.json" CopyToOutputDirectory="PreserveNewest" />
-    <None Remove="Bundles\sample-bundle.json" />
+    <None Remove="Bundles\*.json" />
     <Content Include="..\..\src\HttpClientInterception\Bundles\http-request-bundle-schema.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
