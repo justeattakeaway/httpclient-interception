@@ -67,6 +67,7 @@ namespace JustEat.HttpClientInterception
             using var client = options.CreateHttpClient();
 
             // Act
+            // The value of json will be: {"Id":1, "Link":"https://www.just-eat.co.uk/privacy-policy"}
             string json = await client.GetStringAsync("https://public.je-apis.com/terms");
 
             #endregion
