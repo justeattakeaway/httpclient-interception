@@ -11,10 +11,35 @@
       "contentJson": {
         "id": 1516790,
         "login": "justeat",
-        "url": "https://api.github.com/orgs/${CompanyName}"
+        "url": "https://api.github.com/orgs/${CompanyName}",
+        "avatar_url": "${AvatarUrl}",
+        "name": "${Name}",
+        "blog": "${BlogUrl}"
       },
       "templateValues": {
-        "CompanyName": "justeat"
+        "CompanyName": "justeat",
+        "Name": "JustEatTakeaway"
+      }
+    },
+    {
+      "comment": "An HTTP request for a JSON response that uses templating.",
+      "uri": "https://api.github.com/orgs/${CompanyName}/repos",
+      "contentFormat": "json",
+      "contentJson": [
+        {
+          "id": 123456,
+          "name": "${RepoName}",
+          "full_name": "${CompanyName}/${RepoName}",
+          "private": false,
+          "owner": {
+            "login": "${CompanyName}",
+            "id": 1516790
+          }
+        }
+      ],
+      "templateValues": {
+        "CompanyName": "justeat",
+        "RepoName": "httpclient-interception"
       }
     }
   ]
