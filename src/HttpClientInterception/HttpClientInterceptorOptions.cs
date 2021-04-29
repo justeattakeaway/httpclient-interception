@@ -347,14 +347,12 @@ namespace JustEat.HttpClientInterception
                 throw new ArgumentNullException(nameof(request));
             }
 
-            var matchResult = await TryGetResponseAsync(request).ConfigureAwait(false);
+            var (found, response) = await TryGetResponseAsync(request).ConfigureAwait(false);
 
-            if (!matchResult.Item1)
+            if (!found)
             {
                 return null;
             }
-
-            var response = matchResult.Item2;
 
             // If Item1 is true, then Item2 is non-null
             if (response!.OnIntercepted != null && !await response.OnIntercepted(request, cancellationToken).ConfigureAwait(false))
@@ -492,7 +490,7 @@ namespace JustEat.HttpClientInterception
             return result;
         }
 
-        private async Task<Tuple<bool, HttpInterceptionResponse?>> TryGetResponseAsync(HttpRequestMessage request)
+        private async Task<(bool found, HttpInterceptionResponse? response)> TryGetResponseAsync(HttpRequestMessage request)
         {
             var responses = _mappings.Values
                 .OrderByDescending((p) => p.Priority.HasValue)
@@ -502,11 +500,11 @@ namespace JustEat.HttpClientInterception
             {
                 if (await response.InternalMatcher!.IsMatchAsync(request).ConfigureAwait(false))
                 {
-                    return Tuple.Create<bool, HttpInterceptionResponse?>(true, response);
+                    return new (true, response);
                 }
             }
 
-            return Tuple.Create<bool, HttpInterceptionResponse?>(false, null);
+            return new (false, null);
         }
 
         private void ConfigureMatcherAndRegister(HttpInterceptionResponse registration)
