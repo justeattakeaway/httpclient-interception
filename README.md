@@ -41,7 +41,8 @@ Below is a minimal example of intercepting an HTTP GET request to an API for a J
 var options = new HttpClientInterceptorOptions();
 var builder = new HttpRequestInterceptionBuilder();
 
-builder.Requests()
+builder
+    .Requests()
     .ForGet()
     .ForHttps()
     .ForHost("public.je-apis.com")
@@ -55,7 +56,7 @@ using var client = options.CreateHttpClient();
 // Act
 string json = await client.GetStringAsync("https://public.je-apis.com/terms");
 ```
-<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L51-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-minimal-example' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L51-L72' title='Snippet source file'>snippet source</a> | <a href='#snippet-minimal-example' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 `HttpRequestInterceptionBuilder` objects are mutable, so properties can be freely changed once a particular setup has been registered with an instance of `HttpClientInterceptorOptions` as the state is captured at the point of registration. This allows multiple responses and paths to be configured from a single `HttpRequestInterceptionBuilder` instance where multiple registrations against a common hostname.
