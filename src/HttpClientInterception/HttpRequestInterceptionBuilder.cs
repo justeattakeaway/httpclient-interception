@@ -370,7 +370,7 @@ namespace JustEat.HttpClientInterception
         /// <paramref name="name"/> or <paramref name="values"/> is <see langword="null"/>.
         /// </exception>
         public HttpRequestInterceptionBuilder WithContentHeader(string name, params string[] values)
-            => WithContentHeader(name, values as IEnumerable<string>);
+            => WithContentHeader(name, (IEnumerable<string>)values);
 
         /// <summary>
         /// Sets a custom HTTP content header to use with multiple values.
@@ -491,7 +491,7 @@ namespace JustEat.HttpClientInterception
         /// <paramref name="name"/> or <paramref name="values"/> is <see langword="null"/>.
         /// </exception>
         public HttpRequestInterceptionBuilder WithResponseHeader(string name, params string[] values)
-            => WithResponseHeader(name, values as IEnumerable<string>);
+            => WithResponseHeader(name, (IEnumerable<string>)values);
 
         /// <summary>
         /// Sets a custom HTTP response header to use with multiple values.
@@ -791,7 +791,7 @@ namespace JustEat.HttpClientInterception
         /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
         /// </remarks>
         public HttpRequestInterceptionBuilder ForRequestHeader(string name, params string[] values)
-            => ForRequestHeader(name, values as IEnumerable<string>);
+            => ForRequestHeader(name, (IEnumerable<string>)values);
 
         /// <summary>
         /// Sets an HTTP request header to intercept with multiple values.

@@ -262,7 +262,7 @@ namespace JustEat.HttpClientInterception.Bundles
             string path = "foo.bar";
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => (null as HttpClientInterceptorOptions).RegisterBundle(path));
+            Assert.Throws<ArgumentNullException>("options", () => ((HttpClientInterceptorOptions)null).RegisterBundle(path));
             Assert.Throws<ArgumentNullException>("path", () => options.RegisterBundle(null));
             Assert.Throws<ArgumentNullException>("templateValues", () => options.RegisterBundle(path, null));
         }

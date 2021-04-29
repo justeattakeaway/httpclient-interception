@@ -42,7 +42,7 @@ namespace JustEat.HttpClientInterception
             options = new HttpClientInterceptorOptions();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("content", () => options.RegisterGetJson("https://google.com", null as object));
+            Assert.Throws<ArgumentNullException>("content", () => options.RegisterGetJson("https://google.com", null));
         }
 
         [Fact]
