@@ -54,7 +54,8 @@ namespace JustEat.HttpClientInterception
             var options = new HttpClientInterceptorOptions();
             var builder = new HttpRequestInterceptionBuilder();
 
-            builder.Requests()
+            builder
+                .Requests()
                 .ForGet()
                 .ForHttps()
                 .ForHost("public.je-apis.com")
