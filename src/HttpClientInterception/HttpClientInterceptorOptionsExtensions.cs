@@ -312,7 +312,7 @@ namespace JustEat.HttpClientInterception
             this HttpClientInterceptorOptions options,
             params HttpRequestInterceptionBuilder[] collection)
         {
-            return options.Register(collection as IEnumerable<HttpRequestInterceptionBuilder>);
+            return options.Register((IEnumerable<HttpRequestInterceptionBuilder>)collection);
         }
 
         /// <summary>

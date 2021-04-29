@@ -145,7 +145,7 @@ namespace JustEat.HttpClientInterception
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
-                .RegisterByteArray(method, uri, () => null as byte[]);
+                .RegisterByteArray(method, uri, () => (byte[])null);
 
             var request = new HttpRequestMessage(method, uri);
 
@@ -191,7 +191,7 @@ namespace JustEat.HttpClientInterception
             var uri = new Uri("https://google.com/");
 
             var options = new HttpClientInterceptorOptions()
-                .RegisterStream(method, uri, () => null as Stream);
+                .RegisterStream(method, uri, () => (Stream)null);
 
             var request = new HttpRequestMessage(method, uri);
 
