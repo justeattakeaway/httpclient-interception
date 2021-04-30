@@ -5,6 +5,8 @@ jobs:
   docs:
     runs-on: windows-latest
     steps:
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1
     - uses: actions/checkout@v2
     - name: Run MarkdownSnippets
       run: |
