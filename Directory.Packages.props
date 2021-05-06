@@ -6,7 +6,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.5" />
     <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="1.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.2" />
-    <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
+    <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageVersion Include="Moq" Version="4.16.1" />
