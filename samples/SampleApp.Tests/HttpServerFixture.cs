@@ -51,7 +51,7 @@ namespace SampleApp.Tests
             builder.ConfigureLogging((p) => p.AddXUnit(this));
         }
 
-        #region interception-filter
+        // begin-snippet: interception-filter
 
         /// <summary>
         /// A class that registers an intercepting HTTP message handler at the end of
@@ -80,6 +80,6 @@ namespace SampleApp.Tests
             }
         }
 
-        #endregion
+        // end-snippet
     }
 }

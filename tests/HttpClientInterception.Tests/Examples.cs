@@ -26,8 +26,7 @@ namespace JustEat.HttpClientInterception
         [Fact]
         public static async Task Fault_Injection()
         {
-            #region fault-injection
-
+            // begin-snippet: fault-injection
             var options = new HttpClientInterceptorOptions();
 
             var builder = new HttpRequestInterceptionBuilder()
@@ -42,13 +41,13 @@ namespace JustEat.HttpClientInterception
             await Assert.ThrowsAsync<HttpRequestException>(
                 () => client.GetStringAsync("http://public.je-apis.com"));
 
-            #endregion
+            // end-snippet
         }
 
         [Fact]
         public static async Task Intercept_Http_Get_For_Json_Object()
         {
-            #region minimal-example
+            // begin-snippet: minimal-example
 
             // Arrange
             var options = new HttpClientInterceptorOptions();
@@ -70,7 +69,7 @@ namespace JustEat.HttpClientInterception
             // The value of json will be: {"Id":1, "Link":"https://www.just-eat.co.uk/privacy-policy"}
             string json = await client.GetStringAsync("https://public.je-apis.com/terms");
 
-            #endregion
+            // end-snippet
 
             // Assert
             var content = JObject.Parse(json);
