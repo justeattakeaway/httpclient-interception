@@ -101,34 +101,7 @@ The full JSON schema for HTTP bundle files can be found [here](https://raw.githu
   ]
 }
 ```
-<sup><a href='/artifacts/Bundles/sample-bundle.json#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample-bundle.json' title='Start of snippet'>anchor</a></sup>
-<a id='snippet-sample-bundle.json-1'></a>
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
-  "id": "my-bundle",
-  "comment": "A bundle of HTTP requests",
-  "items": [
-    {
-      "id": "home",
-      "comment": "Returns the home page",
-      "uri": "https://www.just-eat.co.uk",
-      "contentString": "<html><head><title>Just Eat</title></head></html>"
-    },
-    {
-      "id": "terms",
-      "comment": "Returns the Ts & Cs",
-      "uri": "https://public.je-apis.com/terms",
-      "contentFormat": "json",
-      "contentJson": {
-        "Id": 1,
-        "Link": "https://www.just-eat.co.uk/privacy-policy"
-      }
-    }
-  ]
-}
-```
-<sup><a href='/tests/HttpClientInterception.Tests/Bundles/sample-bundle.json#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample-bundle.json-1' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/tests/HttpClientInterception.Tests/Bundles/sample-bundle.json#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample-bundle.json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ###### Code
@@ -186,11 +159,11 @@ A working example of this approach can be found in the [sample application](http
 /// A class that registers an intercepting HTTP message handler at the end of
 /// the message handler pipeline when an <see cref="HttpClient"/> is created.
 /// </summary>
-private sealed class InterceptionFilter : IHttpMessageHandlerBuilderFilter
+public sealed class HttpClientInterceptionFilter : IHttpMessageHandlerBuilderFilter
 {
     private readonly HttpClientInterceptorOptions _options;
 
-    internal InterceptionFilter(HttpClientInterceptorOptions options)
+    public HttpClientInterceptionFilter(HttpClientInterceptorOptions options)
     {
         _options = options;
     }
@@ -209,7 +182,7 @@ private sealed class InterceptionFilter : IHttpMessageHandlerBuilderFilter
     }
 }
 ```
-<sup><a href='/samples/SampleApp.Tests/HttpServerFixture.cs#L55-L84' title='Snippet source file'>snippet source</a> | <a href='#snippet-interception-filter' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/samples/SampleApp.Tests/HttpClientInterceptionFilter.cs#L10-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-interception-filter' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 #### Setting Up HttpClient for Dependency Injection Manually
