@@ -15,9 +15,9 @@
     <ProjectReference Include="..\..\src\HttpClientInterception\JustEat.HttpClientInterception.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MarkdownSnippets.MsBuild" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
-    <PackageReference Include="MarkdownSnippets.MsBuild" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Newtonsoft.Json.Schema" />
     <PackageReference Include="Polly" />
