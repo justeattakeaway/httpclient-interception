@@ -1,13 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Tests for JustEat.HttpClientInterception</Description>
-    <NoWarn>$(NoWarn);CA1303;CA1600;CA1707;CA1812;CA2000;CA2007;SA1600</NoWarn>
+    <NoWarn>$(NoWarn);CA1303;CA1600;CA1707;CA1812;CA2000;CA2007;SA1124;SA1600;SA1123</NoWarn>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Tests for JustEat.HttpClientInterception</Summary>
     <TargetFrameworks>net5.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="example-bundle.json;xunit.runner.json;Bundles\*.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Remove="Bundles\*.json" />
     <Content Include="..\..\src\HttpClientInterception\Bundles\http-request-bundle-schema.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
@@ -16,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
+    <PackageReference Include="MarkdownSnippets.MsBuild" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Newtonsoft.Json.Schema" />
     <PackageReference Include="Polly" />

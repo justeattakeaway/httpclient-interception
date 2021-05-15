@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "id": "my-bundle",
+  "comment": "A bundle of HTTP requests",
+  "items": [
+    {
+      "id": "home",
+      "comment": "Returns the home page",
+      "uri": "https://www.just-eat.co.uk",
+      "contentString": "<html><head><title>Just Eat</title></head></html>"
+    },
+    {
+      "id": "terms",
+      "comment": "Returns the Ts & Cs",
+      "uri": "https://public.je-apis.com/terms",
+      "contentFormat": "json",
+      "contentJson": {
+        "Id": 1,
+        "Link": "https://www.just-eat.co.uk/privacy-policy"
+      }
+    }
+  ]
+}

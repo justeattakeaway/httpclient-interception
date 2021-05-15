@@ -24,20 +24,52 @@ namespace JustEat.HttpClientInterception
     public static class Examples
     {
         [Fact]
+        public static async Task Fault_Injection()
+        {
+            // begin-snippet: fault-injection
+            var options = new HttpClientInterceptorOptions();
+
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHost("public.je-apis.com")
+                .WithStatus(HttpStatusCode.InternalServerError)
+                .RegisterWith(options);
+
+            var client = options.CreateHttpClient();
+
+            // Throws an HttpRequestException
+            await Assert.ThrowsAsync<HttpRequestException>(
+                () => client.GetStringAsync("http://public.je-apis.com"));
+
+            // end-snippet
+        }
+
+        [Fact]
         public static async Task Intercept_Http_Get_For_Json_Object()
         {
+            // begin-snippet: minimal-example
+
             // Arrange
             var options = new HttpClientInterceptorOptions();
             var builder = new HttpRequestInterceptionBuilder();
 
-            builder.Requests().ForGet().ForHttps().ForHost("public.je-apis.com").ForPath("terms")
-                   .Responds().WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
-                   .RegisterWith(options);
+            builder
+                .Requests()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("terms")
+                .Responds()
+                .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" })
+                .RegisterWith(options);
 
             using var client = options.CreateHttpClient();
 
             // Act
+            // The value of json will be: {"Id":1, "Link":"https://www.just-eat.co.uk/privacy-policy"}
             string json = await client.GetStringAsync("https://public.je-apis.com/terms");
+
+            // end-snippet
 
             // Assert
             var content = JObject.Parse(json);
