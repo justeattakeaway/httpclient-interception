@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using System;
 using System.IO;
-using System.Net.Http;
 using JustEat.HttpClientInterception;
 using MartinCostello.Logging.XUnit;
 using Microsoft.AspNetCore.Hosting;
@@ -38,8 +36,8 @@ namespace SampleApp.Tests
         {
             // Configure filter that makes JustEat.HttpClientInterception available
             builder.ConfigureServices(
-                (services) => services.AddSingleton<IHttpMessageHandlerBuilderFilter, InterceptionFilter>(
-                    (_) => new InterceptionFilter(Interceptor)));
+                (services) => services.AddSingleton<IHttpMessageHandlerBuilderFilter, HttpClientInterceptionFilter>(
+                    (_) => new HttpClientInterceptionFilter(Interceptor)));
 
             // Add the test configuration file to override the application configuration
             string directory = Path.GetDirectoryName(typeof(HttpServerFixture).Assembly.Location);
@@ -51,36 +49,5 @@ namespace SampleApp.Tests
             // Route logs to xunit test output
             builder.ConfigureLogging((p) => p.AddXUnit(this));
         }
-
-        // begin-snippet: interception-filter
-
-        /// <summary>
-        /// A class that registers an intercepting HTTP message handler at the end of
-        /// the message handler pipeline when an <see cref="HttpClient"/> is created.
-        /// </summary>
-        private sealed class InterceptionFilter : IHttpMessageHandlerBuilderFilter
-        {
-            private readonly HttpClientInterceptorOptions _options;
-
-            internal InterceptionFilter(HttpClientInterceptorOptions options)
-            {
-                _options = options;
-            }
-
-            /// <inheritdoc/>
-            public Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next)
-            {
-                return (builder) =>
-                {
-                    // Run any actions the application has configured for itself
-                    next(builder);
-
-                    // Add the interceptor as the last message handler
-                    builder.AdditionalHandlers.Add(_options.CreateHttpMessageHandler());
-                };
-            }
-        }
-
-        // end-snippet
     }
 }
