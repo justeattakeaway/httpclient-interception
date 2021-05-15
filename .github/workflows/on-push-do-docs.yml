@@ -1,15 +1,15 @@
 name: on-push-do-docs
 
 on:
-  push:
-    branches: [ main ]
-    paths-ignore:
-    - '**/*.md'
+#  push:
+#    branches: [ main ]
+#    paths-ignore:
+#    - '**/*.md'
   workflow_dispatch:
 
 jobs:
   docs:
-    name: Update documentation examples
+    name: Update documentation
     runs-on: ubuntu-latest
 
     steps:
