@@ -23,7 +23,7 @@ jobs:
     - name: Run MarkdownSnippets
       run: |
         dotnet tool install --global MarkdownSnippets.Tool
-        mdsnippets "${GITHUB_WORKSPACE}"
+        mdsnippets "${GITHUB_WORKSPACE}" --exclude-directories ./artifacts
       shell: bash
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: true
