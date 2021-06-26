@@ -101,34 +101,7 @@ The full JSON schema for HTTP bundle files can be found [here](https://raw.githu
   ]
 }
 ```
-<sup><a href='/artifacts/Bundles/sample-bundle.json#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample-bundle.json' title='Start of snippet'>anchor</a></sup>
-<a id='snippet-sample-bundle.json-1'></a>
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
-  "id": "my-bundle",
-  "comment": "A bundle of HTTP requests",
-  "items": [
-    {
-      "id": "home",
-      "comment": "Returns the home page",
-      "uri": "https://www.just-eat.co.uk",
-      "contentString": "<html><head><title>Just Eat</title></head></html>"
-    },
-    {
-      "id": "terms",
-      "comment": "Returns the Ts & Cs",
-      "uri": "https://public.je-apis.com/terms",
-      "contentFormat": "json",
-      "contentJson": {
-        "Id": 1,
-        "Link": "https://www.just-eat.co.uk/privacy-policy"
-      }
-    }
-  ]
-}
-```
-<sup><a href='/tests/HttpClientInterception.Tests/Bundles/sample-bundle.json#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample-bundle.json-1' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/tests/HttpClientInterception.Tests/Bundles/sample-bundle.json#L1-L23' title='Snippet source file'>snippet source</a> | <a href='#snippet-sample-bundle.json' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 ###### Code
