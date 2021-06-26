@@ -44,7 +44,7 @@ jobs:
     - uses: codecov/codecov-action@v1
       name: Upload coverage to Codecov
       with:
-        file: ./artifacts/coverage.net5.0.cobertura.xml
+        file: ./artifacts/coverage.net6.0.cobertura.xml
         flags: ${{ matrix.os_name }}
 
     - name: Publish artifacts

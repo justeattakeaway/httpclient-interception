@@ -5,7 +5,12 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Benchmarks for JustEat.HttpClientInterception</Summary>
-    <TargetFrameworks>netcoreapp3.1;net472;net5.0</TargetFrameworks>
+    <!--
+      Only target net6.0 due to issue with logging source generators in multi-targeting scenarios.
+      See https://github.com/dotnet/sdk/issues/18148.
+    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+    -->
+    <TargetFrameworks>net6.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="organization.json" CopyToOutputDirectory="PreserveNewest" />

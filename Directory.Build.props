@@ -2,6 +2,7 @@
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
     <Compile Include="$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GlobalUsings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)package-icon.png" Pack="True" PackagePath="" />
@@ -20,11 +21,25 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateGitMetadata Condition=" '$(CI)' != '' and '$(GenerateGitMetadata)' == '' ">true</GenerateGitMetadata>
-    <LangVersion>latest</LangVersion>
+    <!-- TODO Revert to latest for .NET 6 preview 7 -->
+    <LangVersion>preview</LangVersion>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <NeutralLanguage>en-US</NeutralLanguage>
     <NoWarn>$(NoWarn);CA1054;CA2234</NoWarn>
     <NoWarn Condition=" '$(GenerateDocumentationFile)' != 'true' ">$(NoWarn);SA0001</NoWarn>
+    <!--
+      HACK Disable due to CS0105 for System when using global usings.
+      See https://github.com/dotnet/roslyn/issues/54255.
+    -->
+    <NoWarn>$(NoWarn);CS0105</NoWarn>
+    <!--
+      HACK Allow dependencies on preview packages until .NET 6 is stable.
+    -->
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
+    <!--
+      Ignore warnings about dropped TFMs until multi-targeting restored.
+    -->
+    <NoWarn>$(NoWarn);PKV006</NoWarn>
     <PackageIcon>package-icon.png</PackageIcon>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/justeat/httpclient-interception</PackageProjectUrl>

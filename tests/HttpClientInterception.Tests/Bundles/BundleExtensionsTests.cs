@@ -1,15 +1,10 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
-using Shouldly;
-using Xunit;
 
 namespace JustEat.HttpClientInterception.Bundles
 {

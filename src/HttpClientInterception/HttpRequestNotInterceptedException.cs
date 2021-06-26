@@ -1,11 +1,7 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using System;
 using System.Net.Http;
-#if NET461 || NET472
-using System.Runtime.Serialization;
-#endif
 
 namespace JustEat.HttpClientInterception
 {
@@ -13,9 +9,6 @@ namespace JustEat.HttpClientInterception
     /// Represents the exception when an HTTP request is made that has no interception registered. This class cannot be inherited.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-#if NET461 || NET472
-    [Serializable]
-#endif
     public sealed class HttpRequestNotInterceptedException : InvalidOperationException
     {
         /// <summary>
@@ -56,18 +49,6 @@ namespace JustEat.HttpClientInterception
             : base(message, innerException)
         {
         }
-
-#if NET461 || NET472
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HttpRequestNotInterceptedException"/> class with serialized data.
-        /// </summary>
-        /// <param name="serializationInfo">The object that holds the serialized object data.</param>
-        /// <param name="streamingContext">he contextual information about the source or destination.</param>
-        private HttpRequestNotInterceptedException(SerializationInfo serializationInfo, StreamingContext streamingContext)
-            : base(serializationInfo, streamingContext)
-        {
-        }
-#endif
 
         /// <summary>
         /// Gets the HTTP request message that was not intercepted.

@@ -2,10 +2,11 @@
   <PropertyGroup>
     <AspNetCoreHostingModel>inprocess</AspNetCoreHostingModel>
     <NoWarn>$(NoWarn);CA1062;CA2007;SA1600</NoWarn>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <!-- Workaround for https://github.com/dotnet/aspnetcore/issues/31719 -->
+    <_UseRazorSourceGenerator>false</_UseRazorSourceGenerator>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Refit" />
   </ItemGroup>
 </Project>

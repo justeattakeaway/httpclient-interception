@@ -1,4 +1,7 @@
 <Project>
+  <PropertyGroup Condition=" '$(IsTestProject)' == 'true' ">
+    <DefineConstants>$(DefineConstants);TEST_PROJECT</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup>
     <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(BUILD_SOURCEBRANCHNAME)</CommitBranch>
     <CommitBranch Condition=" '$(CommitBranch)' == '' and '$(GITHUB_REF)' != '' ">$(GITHUB_REF.Substring(11))</CommitBranch>
