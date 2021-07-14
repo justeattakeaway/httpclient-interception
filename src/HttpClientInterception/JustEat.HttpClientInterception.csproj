@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Microsoft.DotNet.PackageValidation" Version="1.0.0-preview.5.21302.8" />
+  <Sdk Name="Microsoft.DotNet.PackageValidation" Version="1.0.0-preview.6.21355.3" />
   <PropertyGroup>
     <AssemblyTitle>HttpClient Interception</AssemblyTitle>
     <Description>A .NET library for intercepting server-side HTTP dependencies.</Description>

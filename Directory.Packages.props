@@ -4,10 +4,10 @@
     <PackageVersion Include="coverlet.msbuild" Version="3.1.0" />
     <PackageVersion Include="MarkdownSnippets.MsBuild" Version="24.2.0" />
     <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.2.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.0-preview.5.21301.17" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.0-preview.6.21355.2" />
     <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="1.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.2" />
-    <PackageVersion Include="Microsoft.DotNet.PackageValidation" Version="1.0.0-preview.5.21302.8" />
+    <PackageVersion Include="Microsoft.DotNet.PackageValidation" Version="1.0.0-preview.6.21355.3" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
@@ -29,12 +29,12 @@
   <ItemGroup Condition=" '$(AssemblyName)' == 'JustEat.HttpClientInterception' and '$(TargetFramework)' == 'net6.0' ">
     <PackageVersion Update="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageVersion Update="Newtonsoft.Json" Version="13.0.1" />
-    <PackageVersion Update="System.Text.Json" Version="6.0.0-preview.5.21301.5" />
+    <PackageVersion Update="System.Text.Json" Version="6.0.0-preview.6.21352.12" />
   </ItemGroup>
   <ItemGroup Condition=" '$(AssemblyName)' != 'JustEat.HttpClientInterception' ">
     <PackageVersion Update="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageVersion Update="Newtonsoft.Json" Version="13.0.1" />
-    <PackageVersion Update="System.Text.Json" Version="6.0.0-preview.5.21301.5" />
+    <PackageVersion Update="System.Text.Json" Version="6.0.0-preview.6.21352.12" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
