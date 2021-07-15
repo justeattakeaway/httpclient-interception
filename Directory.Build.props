@@ -21,17 +21,11 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateGitMetadata Condition=" '$(CI)' != '' and '$(GenerateGitMetadata)' == '' ">true</GenerateGitMetadata>
-    <!-- TODO Revert to latest for .NET 6 preview 7 -->
-    <LangVersion>preview</LangVersion>
+    <LangVersion>latest</LangVersion>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <NeutralLanguage>en-US</NeutralLanguage>
     <NoWarn>$(NoWarn);CA1054;CA2234</NoWarn>
     <NoWarn Condition=" '$(GenerateDocumentationFile)' != 'true' ">$(NoWarn);SA0001</NoWarn>
-    <!--
-      HACK Disable due to CS0105 for System when using global usings.
-      See https://github.com/dotnet/roslyn/issues/54255.
-    -->
-    <NoWarn>$(NoWarn);CS0105</NoWarn>
     <!--
       HACK Allow dependencies on preview packages until .NET 6 is stable.
     -->
