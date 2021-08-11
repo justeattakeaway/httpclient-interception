@@ -82,8 +82,7 @@ if ($installDotNetSdk -eq $true) {
 function DotNetPack {
     param([string]$Project)
 
-    # HACK Workaround for https://github.com/dotnet/sdk/pull/18191
-    $PackageOutputPath = ((Join-Path $OutputPath "packages") + [IO.Path]::DirectorySeparatorChar)
+    $PackageOutputPath = (Join-Path $OutputPath "packages")
 
     if ($VersionSuffix) {
         & $dotnet pack $Project --output $PackageOutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
