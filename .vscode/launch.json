@@ -6,29 +6,19 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceRoot}/samples/SampleApp/bin/Debug/net5.0/SampleApp.dll",
+      "program": "${workspaceFolder}/samples/SampleApp/bin/Debug/net5.0/SampleApp.dll",
       "args": [],
-      "cwd": "${workspaceRoot}/samples/SampleApp",
+      "cwd": "${workspaceFolder}/samples/SampleApp",
       "stopAtEntry": false,
-      "launchBrowser": {
-        "enabled": true,
-        "args": "${auto-detect-url}/api/repos",
-        "windows": {
-          "command": "cmd.exe",
-          "args": "/C start ${auto-detect-url}/api/repos"
-        },
-        "osx": {
-          "command": "open"
-        },
-        "linux": {
-          "command": "xdg-open"
-        }
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
       },
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "sourceFileMap": {
-        "/Views": "${workspaceRoot}//samples/SampleApp/Views"
+        "/Views": "${workspaceFolder}/samples/SampleApp/Views"
       }
     },
     {
@@ -40,7 +30,7 @@
       "args": [
         "test"
       ],
-      "cwd": "${workspaceRoot}/tests/HttpClientInterception.Tests",
+      "cwd": "${workspaceFolder}/tests/HttpClientInterception.Tests",
       "console": "internalConsole",
       "stopAtEntry": false,
       "internalConsoleOptions": "openOnSessionStart"
