@@ -2,13 +2,6 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using BenchmarkDotNet.Running;
+using JustEat.HttpClientInterception;
 
-namespace JustEat.HttpClientInterception;
-
-internal static class Program
-{
-    internal static void Main()
-    {
-        BenchmarkRunner.Run<InterceptionBenchmarks>();
-    }
-}
+BenchmarkRunner.Run<InterceptionBenchmarks>(args: args);
