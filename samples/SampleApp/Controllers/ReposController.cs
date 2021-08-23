@@ -4,40 +4,39 @@
 using Microsoft.AspNetCore.Mvc;
 using SampleApp.Services;
 
-namespace SampleApp.Controllers
+namespace SampleApp.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class ReposController : Controller
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ReposController : Controller
+    private readonly IConfiguration _configuration;
+    private readonly IGitHub _github;
+
+    public ReposController(IConfiguration configuration, IGitHub github)
     {
-        private readonly IConfiguration _configuration;
-        private readonly IGitHub _github;
+        _configuration = configuration;
+        _github = github;
+    }
 
-        public ReposController(IConfiguration configuration, IGitHub github)
+    [HttpGet]
+    public async Task<ICollection<string>> Get(int? count = 100)
+    {
+        // Get the configured organization's repositories
+        string organization = _configuration["Organization"];
+
+        ICollection<Repository> repositories = await _github.GetRepositoriesAsync(organization, count);
+
+        // Return the repositories' names
+        var names = new List<string>();
+
+        foreach (var repository in repositories)
         {
-            _configuration = configuration;
-            _github = github;
+            names.Add(repository.Name);
         }
 
-        [HttpGet]
-        public async Task<ICollection<string>> Get(int? count = 100)
-        {
-            // Get the configured organization's repositories
-            string organization = _configuration["Organization"];
+        names.Sort();
 
-            ICollection<Repository> repositories = await _github.GetRepositoriesAsync(organization, count);
-
-            // Return the repositories' names
-            var names = new List<string>();
-
-            foreach (var repository in repositories)
-            {
-                names.Add(repository.Name);
-            }
-
-            names.Sort();
-
-            return names;
-        }
+        return names;
     }
 }

@@ -3,28 +3,27 @@
 
 using SampleApp.Extensions;
 
-namespace SampleApp
+namespace SampleApp;
+
+public class Startup
 {
-    public class Startup
+    public virtual void ConfigureServices(IServiceCollection services)
     {
-        public virtual void ConfigureServices(IServiceCollection services)
-        {
-            services.AddHttpClients();
+        services.AddHttpClients();
 
-            services
-                .AddControllers()
-                .AddJsonOptions((p) => p.JsonSerializerOptions.WriteIndented = true);
+        services
+            .AddControllers()
+            .AddJsonOptions((p) => p.JsonSerializerOptions.WriteIndented = true);
+    }
+
+    public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment environment)
+    {
+        if (environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
         }
 
-        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment environment)
-        {
-            if (environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseRouting();
-            app.UseEndpoints((endpoints) => endpoints.MapDefaultControllerRoute());
-        }
+        app.UseRouting();
+        app.UseEndpoints((endpoints) => endpoints.MapDefaultControllerRoute());
     }
 }

@@ -4,71 +4,70 @@
 using JustEat.HttpClientInterception;
 using Newtonsoft.Json;
 
-namespace SampleApp.Tests
+namespace SampleApp.Tests;
+
+[Collection(HttpServerCollection.Name)] // Use the shared HTTP server fixture
+public sealed class ReposTests : IDisposable
 {
-    [Collection(HttpServerCollection.Name)] // Use the shared HTTP server fixture
-    public sealed class ReposTests : IDisposable
+    public ReposTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
     {
-        public ReposTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
-        {
-            Fixture = fixture;
-            Fixture.OutputHelper = outputHelper;
-            OutputHelper = outputHelper;
-        }
+        Fixture = fixture;
+        Fixture.OutputHelper = outputHelper;
+        OutputHelper = outputHelper;
+    }
 
-        private HttpServerFixture Fixture { get; }
+    private HttpServerFixture Fixture { get; }
 
-        private ITestOutputHelper OutputHelper { get; }
+    private ITestOutputHelper OutputHelper { get; }
 
-        [Fact]
-        public async Task Can_Get_Organization_Repositories()
-        {
-            // Add a callback to log any HTTP requests made
-            Fixture.Interceptor.OnSend = (request) =>
-                {
-                    OutputHelper.WriteLine($"HTTP {request.Method} {request.RequestUri}");
-                    return Task.CompletedTask;
-                };
-
-            // Arrange - use a scope to clean-up registrations
-            using (Fixture.Interceptor.BeginScope())
+    [Fact]
+    public async Task Can_Get_Organization_Repositories()
+    {
+        // Add a callback to log any HTTP requests made
+        Fixture.Interceptor.OnSend = (request) =>
             {
-                // Setup an expected response from the GitHub API
-                var builder = new HttpRequestInterceptionBuilder()
-                    .Requests()
-                    .ForHttps()
-                    .ForHost("api.github.com")
-                    .ForPath("orgs/weyland-yutani/repos")
-                    .ForQuery("per_page=2")
-                    .Responds()
-                    .WithSystemTextJsonContent(
-                        new[]
-                        {
-                            new { id = 1, name = "foo" },
-                            new { id = 2, name = "bar" },
-                        })
-                    .RegisterWith(Fixture.Interceptor);
+                OutputHelper.WriteLine($"HTTP {request.Method} {request.RequestUri}");
+                return Task.CompletedTask;
+            };
 
-                string[] actual;
-
-                // Act - Perform the HTTP request against our application and deserialize the response
-                using (var httpClient = Fixture.CreateClient())
-                {
-                    string json = await httpClient.GetStringAsync("api/repos?count=2");
-                    actual = JsonConvert.DeserializeObject<string[]>(json);
-                }
-
-                // Assert - Our application should have parsed the stub-names
-                actual.ShouldBe(new[] { "bar", "foo" });
-            }
-        }
-
-        public void Dispose()
+        // Arrange - use a scope to clean-up registrations
+        using (Fixture.Interceptor.BeginScope())
         {
-            if (Fixture is not null)
+            // Setup an expected response from the GitHub API
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/weyland-yutani/repos")
+                .ForQuery("per_page=2")
+                .Responds()
+                .WithSystemTextJsonContent(
+                    new[]
+                    {
+                        new { id = 1, name = "foo" },
+                        new { id = 2, name = "bar" },
+                    })
+                .RegisterWith(Fixture.Interceptor);
+
+            string[] actual;
+
+            // Act - Perform the HTTP request against our application and deserialize the response
+            using (var httpClient = Fixture.CreateClient())
             {
-                Fixture.OutputHelper = null;
+                string json = await httpClient.GetStringAsync("api/repos?count=2");
+                actual = JsonConvert.DeserializeObject<string[]>(json);
             }
+
+            // Assert - Our application should have parsed the stub-names
+            actual.ShouldBe(new[] { "bar", "foo" });
+        }
+    }
+
+    public void Dispose()
+    {
+        if (Fixture is not null)
+        {
+            Fixture.OutputHelper = null;
         }
     }
 }

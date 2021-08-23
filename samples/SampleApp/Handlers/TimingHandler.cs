@@ -3,21 +3,20 @@
 
 using System.Diagnostics;
 
-namespace SampleApp.Handlers
+namespace SampleApp.Handlers;
+
+public class TimingHandler : DelegatingHandler
 {
-    public class TimingHandler : DelegatingHandler
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            var stopwatch = Stopwatch.StartNew();
+        var stopwatch = Stopwatch.StartNew();
 
-            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-            stopwatch.Stop();
+        stopwatch.Stop();
 
-            response.Headers.Add("x-request-duration", stopwatch.Elapsed.ToString());
+        response.Headers.Add("x-request-duration", stopwatch.Elapsed.ToString());
 
-            return response;
-        }
+        return response;
     }
 }
