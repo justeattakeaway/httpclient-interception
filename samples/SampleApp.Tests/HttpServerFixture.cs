@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace SampleApp.Tests;
 
-public class HttpServerFixture : WebApplicationFactory<Startup>, ITestOutputHelperAccessor
+public class HttpServerFixture : WebApplicationFactory<Services.Repository>, ITestOutputHelperAccessor
 {
     public HttpServerFixture()
         : base()

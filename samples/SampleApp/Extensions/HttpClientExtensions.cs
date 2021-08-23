@@ -2,7 +2,6 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.Net.Http.Headers;
-using System.Reflection;
 using Refit;
 using SampleApp.Handlers;
 using SampleApp.Services;
@@ -30,7 +29,7 @@ public static class HttpClientExtensions
         client.BaseAddress = new Uri("https://api.github.com");
 
         string productName = configuration["UserAgent"];
-        string productVersion = typeof(Startup).GetTypeInfo().Assembly.GetName().Version.ToString(3);
+        string productVersion = typeof(IGitHub).Assembly.GetName().Version.ToString(3);
 
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
         client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(productName, productVersion));
