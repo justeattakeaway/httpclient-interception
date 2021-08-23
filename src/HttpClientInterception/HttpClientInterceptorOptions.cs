@@ -481,7 +481,7 @@ public class HttpClientInterceptorOptions
         return result;
     }
 
-    private async Task<(bool found, HttpInterceptionResponse? response)> TryGetResponseAsync(HttpRequestMessage request)
+    private async Task<(bool Found, HttpInterceptionResponse? Response)> TryGetResponseAsync(HttpRequestMessage request)
     {
         var responses = _mappings.Values
             .OrderByDescending((p) => p.Priority.HasValue)

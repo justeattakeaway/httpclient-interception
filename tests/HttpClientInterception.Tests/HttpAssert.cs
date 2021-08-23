@@ -84,7 +84,7 @@ internal static class HttpAssert
 
     private sealed class ErroringHandler : HttpMessageHandler
     {
-        internal static readonly ErroringHandler Handler = new ErroringHandler();
+        internal static readonly ErroringHandler Handler = new();
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {

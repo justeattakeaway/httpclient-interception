@@ -38,7 +38,7 @@ public class HttpRequestInterceptionBuilder
 
     private HttpStatusCode _statusCode = HttpStatusCode.OK;
 
-    private UriBuilder _uriBuilder = new UriBuilder();
+    private UriBuilder _uriBuilder = new();
 
     private Version? _version;
 
