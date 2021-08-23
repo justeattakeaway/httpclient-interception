@@ -2,9 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
-using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json;
 

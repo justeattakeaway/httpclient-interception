@@ -2,9 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Text.Json;
 using JustEat.HttpClientInterception.GitHub;
 using Newtonsoft.Json.Linq;
