@@ -262,9 +262,9 @@ namespace JustEat.HttpClientInterception.Bundles
             string path = "foo.bar";
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => ((HttpClientInterceptorOptions)null).RegisterBundle(path));
-            Assert.Throws<ArgumentNullException>("path", () => options.RegisterBundle(null));
-            Assert.Throws<ArgumentNullException>("templateValues", () => options.RegisterBundle(path, null));
+            Should.Throw<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundle(path), "options");
+            Should.Throw<ArgumentNullException>(() => options.RegisterBundle(null), "path");
+            Should.Throw<ArgumentNullException>(() => options.RegisterBundle(path, null), "templateValues");
         }
 
         [Fact]
@@ -275,7 +275,7 @@ namespace JustEat.HttpClientInterception.Bundles
             string path = Path.Join("Bundles", "invalid-bundle-version.json");
 
             // Act and Assert
-            Assert.Throws<NotSupportedException>(() => options.RegisterBundle(path));
+            Should.Throw<NotSupportedException>(() => options.RegisterBundle(path));
         }
 
         [Fact]
@@ -297,7 +297,7 @@ namespace JustEat.HttpClientInterception.Bundles
             string path = Path.Join("Bundles", "invalid-content-format.json");
 
             // Act and Assert
-            var exception = Assert.Throws<NotSupportedException>(() => options.RegisterBundle(path));
+            var exception = Should.Throw<NotSupportedException>(() => options.RegisterBundle(path));
             exception.Message.ShouldBe("Content format 'foo' for bundle item with Id 'invalid-content-format' is not supported.");
         }
 
@@ -309,7 +309,7 @@ namespace JustEat.HttpClientInterception.Bundles
             string path = Path.Join("Bundles", "invalid-status-code.json");
 
             // Act and Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => options.RegisterBundle(path));
+            var exception = Should.Throw<InvalidOperationException>(() => options.RegisterBundle(path));
             exception.Message.ShouldBe("Bundle item with Id 'invalid-status' has an invalid HTTP status code 'foo' configured.");
         }
 
@@ -321,7 +321,7 @@ namespace JustEat.HttpClientInterception.Bundles
             string path = Path.Join("Bundles", "invalid-uri.json");
 
             // Act and Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => options.RegisterBundle(path));
+            var exception = Should.Throw<InvalidOperationException>(() => options.RegisterBundle(path));
             exception.Message.ShouldBe("Bundle item with Id 'invalid-uri' has an invalid absolute URI '::invalid' configured.");
         }
 
@@ -333,7 +333,7 @@ namespace JustEat.HttpClientInterception.Bundles
             string path = Path.Join("Bundles", "invalid-version.json");
 
             // Act and Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => options.RegisterBundle(path));
+            var exception = Should.Throw<InvalidOperationException>(() => options.RegisterBundle(path));
             exception.Message.ShouldBe("Bundle item with Id 'invalid-version' has an invalid version 'foo' configured.");
         }
 
@@ -345,7 +345,7 @@ namespace JustEat.HttpClientInterception.Bundles
             string path = Path.Join("Bundles", "no-uri.json");
 
             // Act and Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => options.RegisterBundle(path));
+            var exception = Should.Throw<InvalidOperationException>(() => options.RegisterBundle(path));
             exception.Message.ShouldBe("Bundle item with Id 'no-uri' has no URI configured.");
         }
 
@@ -411,7 +411,7 @@ namespace JustEat.HttpClientInterception.Bundles
             options.RegisterBundle(Path.Join("Bundles", "skipped-item-bundle.json"));
 
             // Assert
-            await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/"));
         }
 

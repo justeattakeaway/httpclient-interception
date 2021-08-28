@@ -36,13 +36,13 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions options = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => options.RegisterGetJson("https://google.com", new { }));
+            Should.Throw<ArgumentNullException>(() => options.RegisterGetJson("https://google.com", new { }), "content");
 
             // Arrange
             options = new HttpClientInterceptorOptions();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("content", () => options.RegisterGetJson("https://google.com", null));
+            Should.Throw<ArgumentNullException>(() => options.RegisterGetJson("https://google.com", null), "content");
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions options = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => options.RegisterGet("https://google.com", string.Empty));
+            Should.Throw<ArgumentNullException>(() => options.RegisterGet("https://google.com", string.Empty), "options");
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions options = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => options.DeregisterGet("https://google.com"));
+            Should.Throw<ArgumentNullException>(() => options.DeregisterGet("https://google.com"), "options");
         }
 
         [Fact]
@@ -126,9 +126,7 @@ namespace JustEat.HttpClientInterception
             IEnumerable<KeyValuePair<string, string>> headers = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>(
-                "options",
-                () => options.RegisterByteArray(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: headers));
+            Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: headers), "options");
         }
 
         [Fact]
@@ -141,9 +139,7 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions options = null;
             IEnumerable<KeyValuePair<string, string>> headers = null;
 
-            Assert.Throws<ArgumentNullException>(
-                "options",
-                () => options.RegisterStream(method, uri, contentStream: () => Stream.Null, responseHeaders: headers));
+            Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream: () => Stream.Null, responseHeaders: headers), "options");
         }
 
         [Fact]
@@ -155,7 +151,7 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions options = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => options.CreateHttpClient(baseAddress));
+            Should.Throw<ArgumentNullException>(() => options.CreateHttpClient(baseAddress), "options");
         }
 
         [Fact]
@@ -167,7 +163,7 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions options = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => options.Register(new List<HttpRequestInterceptionBuilder>()));
+            Should.Throw<ArgumentNullException>(() => options.Register(new List<HttpRequestInterceptionBuilder>()), "options");
         }
 
         [Fact]
@@ -180,7 +176,7 @@ namespace JustEat.HttpClientInterception
             IEnumerable<HttpRequestInterceptionBuilder> collection = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("collection", () => options.Register(collection));
+            Should.Throw<ArgumentNullException>(() => options.Register(collection), "collection");
         }
 
         [Fact]
@@ -224,7 +220,7 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions options = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => options.Register(Array.Empty<HttpRequestInterceptionBuilder>()));
+            Should.Throw<ArgumentNullException>(() => options.Register(Array.Empty<HttpRequestInterceptionBuilder>()), "options");
         }
 
         [Fact]
@@ -237,7 +233,7 @@ namespace JustEat.HttpClientInterception
             HttpRequestInterceptionBuilder[] collection = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("collection", () => options.Register(collection));
+            Should.Throw<ArgumentNullException>(() => options.Register(collection), "collection");
         }
 
         [Fact]
@@ -279,7 +275,7 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions options = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => options.ThrowsOnMissingRegistration());
+            Should.Throw<ArgumentNullException>(() => options.ThrowsOnMissingRegistration(), "options");
         }
 
         [Fact]

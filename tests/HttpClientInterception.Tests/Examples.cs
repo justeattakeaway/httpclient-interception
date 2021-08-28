@@ -38,7 +38,7 @@ namespace JustEat.HttpClientInterception
             var client = options.CreateHttpClient();
 
             // Throws an HttpRequestException
-            await Assert.ThrowsAsync<HttpRequestException>(
+            await Should.ThrowAsync<HttpRequestException>(
                 () => client.GetStringAsync("http://public.je-apis.com"));
 
             // end-snippet
@@ -695,7 +695,7 @@ namespace JustEat.HttpClientInterception
             using var client = options.CreateHttpClient();
 
             // Act
-            await Assert.ThrowsAsync<TaskCanceledException>(
+            await Should.ThrowAsync<TaskCanceledException>(
                 () => client.GetAsync("http://www.google.co.uk", cts.Token));
 
             // Assert

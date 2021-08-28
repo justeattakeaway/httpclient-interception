@@ -655,7 +655,7 @@ namespace JustEat.HttpClientInterception
             options.Register(builder);
 
             // Assert
-            await Assert.ThrowsAsync<HttpRequestException>(() =>
+            await Should.ThrowAsync<HttpRequestException>(() =>
                 HttpAssert.GetAsync(options, "http://something.com/path/1234"));
         }
 
@@ -691,7 +691,7 @@ namespace JustEat.HttpClientInterception
             options.Register(builder);
 
             // Assert
-            await Assert.ThrowsAsync<HttpRequestException>(() =>
+            await Should.ThrowAsync<HttpRequestException>(() =>
                 HttpAssert.GetAsync(options, "http://something.com?query=1234"));
         }
 
@@ -838,7 +838,7 @@ namespace JustEat.HttpClientInterception
         public static void WithContent_Validates_Parameters()
         {
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).WithContent((string)null));
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithContent((string)null), "builder");
         }
 
         [Fact]
@@ -849,8 +849,8 @@ namespace JustEat.HttpClientInterception
             IEnumerable<KeyValuePair<string, string>> parameters = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).WithFormContent(parameters));
-            Assert.Throws<ArgumentNullException>("parameters", () => builder.WithFormContent(parameters));
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithFormContent(parameters), "builder");
+            Should.Throw<ArgumentNullException>(() => builder.WithFormContent(parameters), "parameters");
         }
 
         [Fact]
@@ -886,8 +886,8 @@ namespace JustEat.HttpClientInterception
             object content = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).WithJsonContent(content));
-            Assert.Throws<ArgumentNullException>("content", () => builder.WithJsonContent(content));
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithJsonContent(content), "builder");
+            Should.Throw<ArgumentNullException>(() => builder.WithJsonContent(content), "content");
         }
 
         [Fact]
@@ -898,8 +898,8 @@ namespace JustEat.HttpClientInterception
             object content = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).WithNewtonsoftJsonContent(content));
-            Assert.Throws<ArgumentNullException>("content", () => builder.WithNewtonsoftJsonContent(content));
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithNewtonsoftJsonContent(content), "builder");
+            Should.Throw<ArgumentNullException>(() => builder.WithNewtonsoftJsonContent(content), "content");
         }
 
         [Fact]
@@ -910,8 +910,8 @@ namespace JustEat.HttpClientInterception
             object content = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).WithSystemTextJsonContent(content));
-            Assert.Throws<ArgumentNullException>("content", () => builder.WithSystemTextJsonContent(content));
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithSystemTextJsonContent(content), "builder");
+            Should.Throw<ArgumentNullException>(() => builder.WithSystemTextJsonContent(content), "content");
         }
 
         [Fact]
@@ -921,49 +921,49 @@ namespace JustEat.HttpClientInterception
             string uriString = "https://google.com/";
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).ForUrl(uriString));
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForUrl(uriString), "builder");
         }
 
         [Fact]
         public static void ForDelete_Validates_Parameters()
         {
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).ForDelete());
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForDelete(), "builder");
         }
 
         [Fact]
         public static void ForGet_Validates_Parameters()
         {
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).ForGet());
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForGet(), "builder");
         }
 
         [Fact]
         public static void ForPost_Validates_Parameters()
         {
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).ForPost());
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForPost(), "builder");
         }
 
         [Fact]
         public static void ForPut_Validates_Parameters()
         {
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).ForPut());
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForPut(), "builder");
         }
 
         [Fact]
         public static void ForHttp_Validates_Parameters()
         {
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).ForHttp());
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForHttp(), "builder");
         }
 
         [Fact]
         public static void ForHttps_Validates_Parameters()
         {
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).ForHttps());
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForHttps(), "builder");
         }
 
         [Fact]
@@ -973,7 +973,7 @@ namespace JustEat.HttpClientInterception
             HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("method", () => builder.ForMethod(null));
+            Should.Throw<ArgumentNullException>(() => builder.ForMethod(null), "method");
         }
 
         [Fact]
@@ -984,7 +984,7 @@ namespace JustEat.HttpClientInterception
             UriBuilder uriBuilder = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("uriBuilder", () => builder.ForUri(uriBuilder));
+            Should.Throw<ArgumentNullException>(() => builder.ForUri(uriBuilder), "uriBuilder");
         }
 
         [Fact]
@@ -1070,7 +1070,7 @@ namespace JustEat.HttpClientInterception
                 .Register(builder);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.PostAsync(options, requestUri.ToString(), content));
 
             // Assert
@@ -1103,7 +1103,7 @@ namespace JustEat.HttpClientInterception
                 .Register(builder);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.PostAsync(options, requestUri.ToString(), content));
 
             // Assert
@@ -1137,7 +1137,7 @@ namespace JustEat.HttpClientInterception
                 .Register(builder);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.PostAsync(options, requestUri.ToString(), content));
 
             // Assert
@@ -1309,7 +1309,7 @@ namespace JustEat.HttpClientInterception
             var builder = new HttpRequestInterceptionBuilder();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => builder.RegisterWith(null));
+            Should.Throw<ArgumentNullException>(() => builder.RegisterWith(null), "options");
         }
 
         [Fact]
@@ -1603,7 +1603,7 @@ namespace JustEat.HttpClientInterception
             using var client = options.CreateHttpClient();
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
             // Assert
@@ -1630,7 +1630,7 @@ namespace JustEat.HttpClientInterception
             client.DefaultRequestHeaders.Add("Accept-Tenant", "ie");
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
             // Assert
@@ -1659,7 +1659,7 @@ namespace JustEat.HttpClientInterception
             client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
             // Assert
@@ -1688,7 +1688,7 @@ namespace JustEat.HttpClientInterception
             client.DefaultRequestHeaders.Add("Authorization", "basic my-other-key");
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
 
             // Assert
@@ -1704,11 +1704,11 @@ namespace JustEat.HttpClientInterception
             var values = Array.Empty<string>();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("name", () => builder.ForRequestHeader(null, string.Empty));
-            Assert.Throws<ArgumentNullException>("name", () => builder.ForRequestHeader(null, values));
-            Assert.Throws<ArgumentNullException>("name", () => builder.ForRequestHeader(null, (IEnumerable<string>)values));
-            Assert.Throws<ArgumentNullException>("values", () => builder.ForRequestHeader(name, (string[])null));
-            Assert.Throws<ArgumentNullException>("values", () => builder.ForRequestHeader(name, (IEnumerable<string>)null));
+            Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(null, string.Empty), "name");
+            Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(null, values), "name");
+            Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(null, (IEnumerable<string>)values), "name");
+            Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(name, (string[])null), "values");
+            Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(name, (IEnumerable<string>)null), "values");
         }
 
         [Fact]
@@ -1719,7 +1719,7 @@ namespace JustEat.HttpClientInterception
             IDictionary<string, string> headers = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("headers", () => builder.ForRequestHeaders(headers));
+            Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headers), "headers");
         }
 
         [Fact]
@@ -1731,11 +1731,11 @@ namespace JustEat.HttpClientInterception
             var values = Array.Empty<string>();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("name", () => builder.WithContentHeader(null, string.Empty));
-            Assert.Throws<ArgumentNullException>("name", () => builder.WithContentHeader(null, values));
-            Assert.Throws<ArgumentNullException>("name", () => builder.WithContentHeader(null, (IEnumerable<string>)values));
-            Assert.Throws<ArgumentNullException>("values", () => builder.WithContentHeader(name, (string[])null));
-            Assert.Throws<ArgumentNullException>("values", () => builder.WithContentHeader(name, (IEnumerable<string>)null));
+            Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(null, string.Empty), "name");
+            Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(null, values), "name");
+            Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(null, (IEnumerable<string>)values), "name");
+            Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(name, (string[])null), "values");
+            Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(name, (IEnumerable<string>)null), "values");
         }
 
         [Fact]
@@ -1747,8 +1747,8 @@ namespace JustEat.HttpClientInterception
             IDictionary<string, ICollection<string>> headerValues = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("headers", () => builder.WithContentHeaders(headers));
-            Assert.Throws<ArgumentNullException>("headers", () => builder.WithContentHeaders(headerValues));
+            Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headers), "headers");
+            Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headerValues), "headers");
         }
 
         [Fact]
@@ -1760,11 +1760,11 @@ namespace JustEat.HttpClientInterception
             var values = Array.Empty<string>();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("name", () => builder.WithResponseHeader(null, string.Empty));
-            Assert.Throws<ArgumentNullException>("name", () => builder.WithResponseHeader(null, values));
-            Assert.Throws<ArgumentNullException>("name", () => builder.WithResponseHeader(null, (IEnumerable<string>)values));
-            Assert.Throws<ArgumentNullException>("values", () => builder.WithResponseHeader(name, (string[])null));
-            Assert.Throws<ArgumentNullException>("values", () => builder.WithResponseHeader(name, (IEnumerable<string>)null));
+            Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(null, string.Empty), "name");
+            Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(null, values), "name");
+            Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(null, (IEnumerable<string>)values), "name");
+            Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(name, (string[])null), "values");
+            Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(name, (IEnumerable<string>)null), "values");
         }
 
         [Fact]
@@ -1775,7 +1775,7 @@ namespace JustEat.HttpClientInterception
             IDictionary<string, string> headers = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("headers", () => builder.WithResponseHeaders(headers));
+            Should.Throw<ArgumentNullException>(() => builder.WithResponseHeaders(headers), "headers");
         }
 
         [Fact]
@@ -1786,8 +1786,8 @@ namespace JustEat.HttpClientInterception
             var parameters = new Dictionary<string, string>();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).ForFormContent(parameters));
-            Assert.Throws<ArgumentNullException>("parameters", () => builder.ForFormContent(null));
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForFormContent(parameters), "builder");
+            Should.Throw<ArgumentNullException>(() => builder.ForFormContent(null), "parameters");
         }
 
         [Fact]
@@ -1797,7 +1797,7 @@ namespace JustEat.HttpClientInterception
             static bool Predicate(HttpContent content) => false;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("builder", () => ((HttpRequestInterceptionBuilder)null).ForContent(Predicate));
+            Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForContent(Predicate), "builder");
         }
 
         [Fact]
@@ -1891,7 +1891,7 @@ namespace JustEat.HttpClientInterception
             using var content = new FormUrlEncodedContent(actualForm);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
 
             // Assert
@@ -1928,7 +1928,7 @@ namespace JustEat.HttpClientInterception
             using var content = new FormUrlEncodedContent(actualForm);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
 
             // Assert
@@ -1961,7 +1961,7 @@ namespace JustEat.HttpClientInterception
             using var content = new FormUrlEncodedContent(actualForm);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
 
             // Assert
@@ -1999,7 +1999,7 @@ namespace JustEat.HttpClientInterception
             using var content = new FormUrlEncodedContent(actualForm);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
 
             // Assert
@@ -2035,7 +2035,7 @@ namespace JustEat.HttpClientInterception
             using var content = new FormUrlEncodedContent(actualForm);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/form", content));
 
             // Assert
@@ -2063,7 +2063,7 @@ namespace JustEat.HttpClientInterception
                 .Register(builder);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.PostAsync(options, "https://test.local/post", new { message = "Hello" }));
 
             // Assert
@@ -2094,7 +2094,7 @@ namespace JustEat.HttpClientInterception
             using var content = new StreamContent(stream);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => HttpAssert.SendAsync(options, HttpMethod.Post, "https://test.local/post", content));
 
             // Assert
@@ -2256,7 +2256,7 @@ namespace JustEat.HttpClientInterception
             using var client = options.CreateHttpClient();
 
             // Act and Assert
-            await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => client.GetStringAsync("https://google.com/"));
         }
 
