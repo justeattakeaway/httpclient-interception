@@ -36,7 +36,7 @@ namespace JustEat.HttpClientInterception
             HttpClientInterceptorOptions options = null;
 
             // Act and Assert
-            Should.Throw<ArgumentNullException>(() => options.RegisterGetJson("https://google.com", new { }), "content");
+            Should.Throw<ArgumentNullException>(() => options.RegisterGetJson("https://google.com", new { }), "options");
 
             // Arrange
             options = new HttpClientInterceptorOptions();
