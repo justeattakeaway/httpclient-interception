@@ -23,8 +23,8 @@ namespace JustEat.HttpClientInterception
         public static void Constructor_Throws_If_Options_Is_Null()
         {
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("options", () => new InterceptingHttpMessageHandler(null));
-            Assert.Throws<ArgumentNullException>("options", () => new InterceptingHttpMessageHandler(null, Mock.Of<HttpMessageHandler>()));
+            Should.Throw<ArgumentNullException>(() => new InterceptingHttpMessageHandler(null), "options");
+            Should.Throw<ArgumentNullException>(() => new InterceptingHttpMessageHandler(null, Mock.Of<HttpMessageHandler>()), "options");
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace JustEat.HttpClientInterception
             using var target = options.CreateHttpClient();
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => target.GetAsync("https://google.com/"));
 
             // Assert
@@ -58,7 +58,7 @@ namespace JustEat.HttpClientInterception
             using var content = new StringContent(string.Empty);
 
             // Act
-            var exception = await Assert.ThrowsAsync<HttpRequestNotInterceptedException>(
+            var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
                 () => target.PostAsync("https://google.com/", content));
 
             // Assert
