@@ -33,6 +33,7 @@ JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForRequestHeader(s
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForRequestHeader(string! name, string! value) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForRequestHeaders(System.Collections.Generic.IDictionary<string!, System.Collections.Generic.ICollection<string!>!>! headers) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForRequestHeaders(System.Collections.Generic.IDictionary<string!, string!>! headers) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
+JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForRequestAuthentication(System.Net.Http.Headers.AuthenticationHeaderValue! authenticationHeader) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForScheme(string! scheme) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForUri(System.Uri! uri) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForUri(System.UriBuilder! uriBuilder) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!

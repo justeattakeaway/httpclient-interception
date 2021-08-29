@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -169,6 +171,34 @@ namespace JustEat.HttpClientInterception
 
             using var client = options.CreateHttpClient();
             client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
+
+            // Act
+            string json = await client.GetStringAsync("https://public.je-apis.com/terms");
+
+            // Assert
+            var content = JObject.Parse(json);
+            content.Value<int>("Id").ShouldBe(1);
+            content.Value<string>("Link").ShouldBe("https://www.just-eat.co.uk/privacy-policy");
+        }
+
+        [Fact]
+        public static async Task Intercept_Http_Get_For_Json_Object_Based_On_Request_Authentication_Header()
+        {
+            // Arrange
+            var basicAuthenticationHeader = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes("username:password")));
+            var builder = new HttpRequestInterceptionBuilder()
+                .ForGet()
+                .ForHttps()
+                .ForHost("public.je-apis.com")
+                .ForPath("terms")
+                .ForRequestAuthentication(basicAuthenticationHeader)
+                .WithJsonContent(new { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" });
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            using var client = options.CreateHttpClient();
+            client.DefaultRequestHeaders.Authorization = basicAuthenticationHeader;
 
             // Act
             string json = await client.GetStringAsync("https://public.je-apis.com/terms");

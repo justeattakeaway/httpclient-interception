@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -775,6 +776,29 @@ namespace JustEat.HttpClientInterception
         /// </remarks>
         public HttpRequestInterceptionBuilder ForRequestHeader(string name, string value)
             => ForRequestHeader(name, new[] { value });
+
+        /// <summary>
+        /// Sets an Authentication header to intercept a request for.
+        /// </summary>
+        /// <param name="authenticationHeader">The authentication credential of the request.</param>
+        /// <returns>
+        /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="authenticationHeader"/> is <see langword="null"/>.
+        /// </exception>
+        /// <remarks>
+        /// HTTP request authentication are only tested for interception if the URI requested was registered for interception.
+        /// </remarks>
+        public HttpRequestInterceptionBuilder ForRequestAuthentication(AuthenticationHeaderValue authenticationHeader)
+        {
+            if (authenticationHeader == null)
+            {
+                throw new ArgumentNullException(nameof(authenticationHeader));
+            }
+
+            return ForRequestHeader("Authorization", new[] { authenticationHeader.ToString() });
+        }
 
         /// <summary>
         /// Sets an HTTP request header to intercept with multiple values.
