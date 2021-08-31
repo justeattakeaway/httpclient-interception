@@ -541,7 +541,7 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
-        public static async Task Deregister_If_Builder_Has_Custom_Matcher()
+        public static async Task Deregister_Works_If_Builder_Has_Custom_Matcher()
         {
             // Arrange
             var builder = new HttpRequestInterceptionBuilder()
