@@ -556,8 +556,8 @@ namespace JustEat.HttpClientInterception
             options.Deregister(builder);
 
             // Assert
-            var result = await options.GetResponseAsync(request);
-            result.ShouldBeNull();
+            var actual = await options.GetResponseAsync(request);
+            actual.ShouldBeNull();
         }
 
         [Fact]
