@@ -150,7 +150,7 @@ namespace JustEat.HttpClientInterception
                 RequestUri = uri,
             };
 
-            ConfigureMatcherAndDeRegister(interceptor);
+            ConfigureMatcherAndDeregister(interceptor);
 
             return this;
         }
