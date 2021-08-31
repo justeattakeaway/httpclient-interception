@@ -150,8 +150,7 @@ namespace JustEat.HttpClientInterception
                 RequestUri = uri,
             };
 
-            string key = BuildKey(interceptor);
-            _mappings.Remove(key);
+            ConfigureMatcherAndDeRegister(interceptor);
 
             return this;
         }
@@ -180,8 +179,7 @@ namespace JustEat.HttpClientInterception
 
             HttpInterceptionResponse interceptor = builder.Build();
 
-            string key = BuildKey(interceptor);
-            _mappings.Remove(key);
+            ConfigureMatcherAndDeRegister(interceptor);
 
             return this;
         }
@@ -507,7 +505,7 @@ namespace JustEat.HttpClientInterception
             return new (false, null);
         }
 
-        private void ConfigureMatcherAndRegister(HttpInterceptionResponse registration)
+        private void ConfigureMatcher(HttpInterceptionResponse registration)
         {
             RequestMatcher matcher;
 
@@ -521,9 +519,22 @@ namespace JustEat.HttpClientInterception
             }
 
             registration.InternalMatcher = matcher;
+        }
+
+        private void ConfigureMatcherAndRegister(HttpInterceptionResponse registration)
+        {
+            ConfigureMatcher(registration);
 
             string key = BuildKey(registration);
             _mappings[key] = registration;
+        }
+
+        private void ConfigureMatcherAndDeRegister(HttpInterceptionResponse registration)
+        {
+            ConfigureMatcher(registration);
+
+            string key = BuildKey(registration);
+            _mappings.Remove(key);
         }
 
         private sealed class OptionsScope : IDisposable

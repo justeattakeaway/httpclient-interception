@@ -30,5 +30,11 @@ namespace JustEat.HttpClientInterception.Matching
         /// <inheritdoc />
         public override async Task<bool> IsMatchAsync(HttpRequestMessage request)
             => await _predicate(request).ConfigureAwait(false);
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return _predicate.GetHashCode();
+        }
     }
 }

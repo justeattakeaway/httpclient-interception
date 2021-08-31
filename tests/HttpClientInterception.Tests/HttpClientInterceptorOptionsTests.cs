@@ -541,6 +541,26 @@ namespace JustEat.HttpClientInterception
         }
 
         [Fact]
+        public static async Task Deregister_If_Builder_Has_Custom_Matcher()
+        {
+            // Arrange
+            var builder = new HttpRequestInterceptionBuilder()
+                .Requests().For(async (_) => await Task.FromResult(true));
+
+            var options = new HttpClientInterceptorOptions()
+                .Register(builder);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://www.just-eat.co.uk");
+
+            // Act
+            options.Deregister(builder);
+
+            // Assert
+            var result = await options.GetResponseAsync(request);
+            result.ShouldBeNull();
+        }
+
+        [Fact]
         public static void RegisterByteArray_Throws_If_Method_Is_Null()
         {
             // Arrange
