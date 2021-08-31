@@ -529,7 +529,7 @@ namespace JustEat.HttpClientInterception
             _mappings[key] = registration;
         }
 
-        private void ConfigureMatcherAndDeRegister(HttpInterceptionResponse registration)
+        private void ConfigureMatcherAndDeregister(HttpInterceptionResponse registration)
         {
             ConfigureMatcher(registration);
 
