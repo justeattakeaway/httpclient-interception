@@ -179,7 +179,7 @@ namespace JustEat.HttpClientInterception
 
             HttpInterceptionResponse interceptor = builder.Build();
 
-            ConfigureMatcherAndDeRegister(interceptor);
+            ConfigureMatcherAndDeregister(interceptor);
 
             return this;
         }
