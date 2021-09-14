@@ -38,7 +38,7 @@ namespace JustEat.HttpClientInterception
             var client = options.CreateHttpClient();
 
             // Throws an HttpRequestException
-            await Should.ThrowAsync<HttpRequestException>(
+            await Assert.ThrowsAsync<HttpRequestException>(
                 () => client.GetStringAsync("http://public.je-apis.com"));
 
             // end-snippet
