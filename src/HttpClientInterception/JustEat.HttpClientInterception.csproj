@@ -4,7 +4,6 @@
     <Description>A .NET library for intercepting server-side HTTP dependencies.</Description>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <IsPackable>true</IsPackable>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
     <PackageId>JustEat.HttpClientInterception</PackageId>
@@ -18,7 +17,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
-    <PackageReference Include="Microsoft.DotNet.Compatibility" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
