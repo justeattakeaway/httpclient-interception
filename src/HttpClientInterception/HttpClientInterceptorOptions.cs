@@ -353,7 +353,7 @@ namespace JustEat.HttpClientInterception
             {
                 return null;
             }
-            
+
             if (response!.OnIntercepted != null && !await response.OnIntercepted(request, cancellationToken).ConfigureAwait(false))
             {
                 return null;
