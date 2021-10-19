@@ -354,7 +354,6 @@ namespace JustEat.HttpClientInterception
                 return null;
             }
 
-            // If Item1 is true, then Item2 is non-null
             if (response!.OnIntercepted != null && !await response.OnIntercepted(request, cancellationToken).ConfigureAwait(false))
             {
                 return null;
