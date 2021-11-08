@@ -2,10 +2,12 @@
   <PropertyGroup>
     <AssemblyTitle>HttpClient Interception</AssemblyTitle>
     <Description>A .NET library for intercepting server-side HTTP dependencies.</Description>
+    <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
     <PackageId>JustEat.HttpClientInterception</PackageId>
+    <PackageValidationBaselineVersion>3.1.1</PackageValidationBaselineVersion>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <SignAssembly>true</SignAssembly>

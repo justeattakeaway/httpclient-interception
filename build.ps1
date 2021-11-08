@@ -28,7 +28,7 @@ if ($OutputPath -eq "") {
 $installDotNetSdk = $false;
 
 if (($null -eq (Get-Command "dotnet" -ErrorAction SilentlyContinue)) -and ($null -eq (Get-Command "dotnet.exe" -ErrorAction SilentlyContinue))) {
-    Write-Host "The .NET Core SDK is not installed."
+    Write-Host "The .NET SDK is not installed."
     $installDotNetSdk = $true
 }
 else {
@@ -40,7 +40,7 @@ else {
     }
 
     if ($installedDotNetVersion -ne $dotnetVersion) {
-        Write-Host "The required version of the .NET Core SDK is not installed. Expected $dotnetVersion."
+        Write-Host "The required version of the .NET SDK is not installed. Expected $dotnetVersion."
         $installDotNetSdk = $true
     }
 }
@@ -82,11 +82,13 @@ if ($installDotNetSdk -eq $true) {
 function DotNetPack {
     param([string]$Project)
 
+    $PackageOutputPath = (Join-Path $OutputPath "packages")
+
     if ($VersionSuffix) {
-        & $dotnet pack $Project --output (Join-Path $OutputPath "packages") --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
+        & $dotnet pack $Project --output $PackageOutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
     }
     else {
-        & $dotnet pack $Project --output (Join-Path $OutputPath "packages") --configuration $Configuration --include-symbols --include-source
+        & $dotnet pack $Project --output $PackageOutputPath --configuration $Configuration --include-symbols --include-source
     }
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet pack failed with exit code $LASTEXITCODE"

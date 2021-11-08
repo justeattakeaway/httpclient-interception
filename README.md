@@ -57,7 +57,7 @@ using var client = options.CreateHttpClient();
 // The value of json will be: {"Id":1, "Link":"https://www.just-eat.co.uk/privacy-policy"}
 string json = await client.GetStringAsync("https://public.je-apis.com/terms");
 ```
-<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L50-L72' title='Snippet source file'>snippet source</a> | <a href='#snippet-minimal-example' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L43-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-minimal-example' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 `HttpRequestInterceptionBuilder` objects are mutable, so properties can be freely changed once a particular setup has been registered with an instance of `HttpClientInterceptorOptions` as the state is captured at the point of registration. This allows multiple responses and paths to be configured from a single `HttpRequestInterceptionBuilder` instance where multiple registrations against a common hostname.
@@ -143,12 +143,12 @@ var client = options.CreateHttpClient();
 await Assert.ThrowsAsync<HttpRequestException>(
     () => client.GetStringAsync("http://public.je-apis.com"));
 ```
-<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L29-L44' title='Snippet source file'>snippet source</a> | <a href='#snippet-fault-injection' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L22-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-fault-injection' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 #### Registering Request Interception When Using IHttpClientFactory
 
-If you are using [`IHttpClientFactory`](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests "Use IHttpClientFactory to implement resilient HTTP requests") to register `HttpClient` for Dependency Injection in a .NET Core 2.1 application (or later), you can implement a custom [`IHttpMessageHandlerBuilderFilter`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.ihttpmessagehandlerbuilderfilter "IHttpMessageHandlerBuilderFilter Interface") to register during test setup, which makes an instance of `HttpClientInterceptorOptions` available to inject an HTTP handler.
+If you are using [`IHttpClientFactory`](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests "Use IHttpClientFactory to implement resilient HTTP requests") to register `HttpClient` for Dependency Injection in a .NET Core 3.1 application (or later), you can implement a custom [`IHttpMessageHandlerBuilderFilter`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.ihttpmessagehandlerbuilderfilter "IHttpMessageHandlerBuilderFilter Interface") to register during test setup, which makes an instance of `HttpClientInterceptorOptions` available to inject an HTTP handler.
 
 A working example of this approach can be found in the [sample application](https://github.com/justeat/httpclient-interception/blob/main/samples/README.md "Sample application that uses JustEat.HttpClientInterception").
 
@@ -182,7 +182,7 @@ public sealed class HttpClientInterceptionFilter : IHttpMessageHandlerBuilderFil
     }
 }
 ```
-<sup><a href='/samples/SampleApp.Tests/HttpClientInterceptionFilter.cs#L10-L39' title='Snippet source file'>snippet source</a> | <a href='#snippet-interception-filter' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/samples/SampleApp.Tests/HttpClientInterceptionFilter.cs#L9-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-interception-filter' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 #### Setting Up HttpClient for Dependency Injection Manually
@@ -282,7 +282,7 @@ The repository is hosted in [GitHub](https://github.com/justeat/httpclient-inter
 
 ## Building and Testing
 
-Compiling the library yourself requires Git and the [.NET Core SDK](https://www.microsoft.com/net/download/core "Download the .NET Core SDK") to be installed (version 3.1.102 or later).
+Compiling the library yourself requires Git and the [.NET SDK](https://www.microsoft.com/net/download/core "Download the .NET SDK") to be installed (version 6.0.100 or later).
 
 To build and test the library locally from a terminal/command-line, run one of the following set of commands:
 
