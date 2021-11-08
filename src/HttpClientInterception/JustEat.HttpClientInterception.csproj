@@ -20,6 +20,9 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
+  <ItemGroup Condition=" ('$(TargetFramework)' == 'net461') OR ('$(TargetFramework)' == 'net472') ">
+    <PackageReference Include="System.Net.Http" />
+  </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="PublicAPI.Shipped.txt" />
     <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
