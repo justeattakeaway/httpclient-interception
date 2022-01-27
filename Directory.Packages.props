@@ -2,6 +2,7 @@
   <ItemGroup>
     <PackageVersion Include="BenchmarkDotNet" Version="0.13.1" />
     <PackageVersion Include="coverlet.msbuild" Version="3.1.0" />
+    <PackageVersion Include="GitHubActionsTestLogger" Version="1.2.0" />
     <PackageVersion Include="MarkdownSnippets.MsBuild" Version="24.2.2" />
     <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.1" />
@@ -42,6 +43,7 @@
   </ItemGroup>
   <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
     <PackageReference Include="coverlet.msbuild" PrivateAssets="All" />
+    <PackageReference Include="GitHubActionsTestLogger" PrivateAssets="All" />
     <PackageReference Include="ReportGenerator" PrivateAssets="All" />
   </ItemGroup>
 </Project>
