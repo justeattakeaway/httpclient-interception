@@ -39,7 +39,9 @@ jobs:
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: true
         DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+        DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
         NUGET_XMLDOC_MODE: skip
+        TERM: xterm
 
     - uses: codecov/codecov-action@v3
       name: Upload coverage to Codecov
