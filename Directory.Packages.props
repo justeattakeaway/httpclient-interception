@@ -34,7 +34,7 @@
   <ItemGroup Condition=" '$(AssemblyName)' != 'JustEat.HttpClientInterception' ">
     <PackageVersion Update="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageVersion Update="Newtonsoft.Json" Version="13.0.1" />
-    <PackageVersion Update="System.Text.Json" Version="6.0.3" />
+    <PackageVersion Update="System.Text.Json" Version="6.0.4" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
