@@ -19,7 +19,7 @@
     <PackageVersion Include="ReportGenerator" Version="5.1.6" />
     <PackageVersion Include="Shouldly" Version="4.0.3" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
-    <PackageVersion Include="System.Text.Json" Version="4.6.0" />
+    <PackageVersion Include="System.Text.Json" Version="6.0.4" />
     <PackageVersion Include="xunit" Version="2.4.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
   </ItemGroup>
@@ -29,7 +29,7 @@
   <ItemGroup Condition=" '$(AssemblyName)' == 'JustEat.HttpClientInterception' and '$(TargetFramework)' == 'net5.0' ">
     <PackageVersion Update="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageVersion Update="Newtonsoft.Json" Version="12.0.3" />
-    <PackageVersion Update="System.Text.Json" Version="5.0.0" />
+    <PackageVersion Update="System.Text.Json" Version="6.0.4" />
   </ItemGroup>
   <ItemGroup Condition=" '$(AssemblyName)' != 'JustEat.HttpClientInterception' ">
     <PackageVersion Update="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
