@@ -1,11 +1,11 @@
 ### Expected behaviour
 
-_Explain what you expected to happen._
+<!-- Explain what you expected to happen. -->
 
 ### Actual behaviour
 
-_Explain what actually happened. If an exception occurred, please include a stack trace if available._
+<!-- Explain what actually happened. If an exception occurred, please include a stack trace if available. -->
 
 ### Steps to reproduce
 
-_A concise, repeatable, example of how to illustrate the issue._
+<!-- A concise, repeatable, example of how to illustrate the issue. -->
