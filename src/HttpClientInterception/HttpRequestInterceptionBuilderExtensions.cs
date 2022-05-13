@@ -2,6 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -219,7 +220,12 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder"/> is <see langword="null"/>.
     /// </exception>
-    public static HttpRequestInterceptionBuilder ForUrl(this HttpRequestInterceptionBuilder builder, string uriString)
+    public static HttpRequestInterceptionBuilder ForUrl(
+        this HttpRequestInterceptionBuilder builder,
+#if NET7_0_OR_GREATER
+        [StringSyntax("Uri")]
+#endif
+        string uriString)
     {
         if (builder is null)
         {

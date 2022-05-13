@@ -2,6 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -25,7 +26,12 @@ public static class HttpClientInterceptorOptionsExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="options"/> is <see langword="null"/>.
     /// </exception>
-    public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, string baseAddress)
+    public static HttpClient CreateHttpClient(
+        this HttpClientInterceptorOptions options,
+#if NET7_0_OR_GREATER
+        [StringSyntax("Uri")]
+#endif
+        string baseAddress)
     {
         var baseAddressUri = new Uri(baseAddress, UriKind.RelativeOrAbsolute);
         return options.CreateHttpClient(baseAddressUri);
@@ -186,6 +192,9 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClientInterceptorOptions RegisterGetJson(
         this HttpClientInterceptorOptions options,
+#if NET7_0_OR_GREATER
+        [StringSyntax("Uri")]
+#endif
         string uriString,
         object content,
         HttpStatusCode statusCode = HttpStatusCode.OK)
@@ -225,6 +234,9 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClientInterceptorOptions RegisterGet(
         this HttpClientInterceptorOptions options,
+#if NET7_0_OR_GREATER
+        [StringSyntax("Uri")]
+#endif
         string uriString,
         string content,
         HttpStatusCode statusCode = HttpStatusCode.OK,
@@ -254,7 +266,12 @@ public static class HttpClientInterceptorOptionsExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="options"/> is <see langword="null"/>.
     /// </exception>
-    public static HttpClientInterceptorOptions DeregisterGet(this HttpClientInterceptorOptions options, string uriString)
+    public static HttpClientInterceptorOptions DeregisterGet(
+        this HttpClientInterceptorOptions options,
+#if NET7_0_OR_GREATER
+        [StringSyntax("Uri")]
+#endif
+        string uriString)
     {
         if (options is null)
         {
