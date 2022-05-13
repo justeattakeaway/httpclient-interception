@@ -223,7 +223,7 @@ public static class HttpRequestInterceptionBuilderExtensions
     public static HttpRequestInterceptionBuilder ForUrl(
         this HttpRequestInterceptionBuilder builder,
 #if NET7_0_OR_GREATER
-        [StringSyntax("Uri")]
+        [StringSyntax(StringSyntaxAttribute.Uri)]
 #endif
         string uriString)
     {

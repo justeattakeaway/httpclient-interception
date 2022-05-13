@@ -29,7 +29,7 @@ public static class HttpClientInterceptorOptionsExtensions
     public static HttpClient CreateHttpClient(
         this HttpClientInterceptorOptions options,
 #if NET7_0_OR_GREATER
-        [StringSyntax("Uri")]
+        [StringSyntax(StringSyntaxAttribute.Uri)]
 #endif
         string baseAddress)
     {
@@ -193,7 +193,7 @@ public static class HttpClientInterceptorOptionsExtensions
     public static HttpClientInterceptorOptions RegisterGetJson(
         this HttpClientInterceptorOptions options,
 #if NET7_0_OR_GREATER
-        [StringSyntax("Uri")]
+        [StringSyntax(StringSyntaxAttribute.Uri)]
 #endif
         string uriString,
         object content,
@@ -235,7 +235,7 @@ public static class HttpClientInterceptorOptionsExtensions
     public static HttpClientInterceptorOptions RegisterGet(
         this HttpClientInterceptorOptions options,
 #if NET7_0_OR_GREATER
-        [StringSyntax("Uri")]
+        [StringSyntax(StringSyntaxAttribute.Uri)]
 #endif
         string uriString,
         string content,
@@ -269,7 +269,7 @@ public static class HttpClientInterceptorOptionsExtensions
     public static HttpClientInterceptorOptions DeregisterGet(
         this HttpClientInterceptorOptions options,
 #if NET7_0_OR_GREATER
-        [StringSyntax("Uri")]
+        [StringSyntax(StringSyntaxAttribute.Uri)]
 #endif
         string uriString)
     {
