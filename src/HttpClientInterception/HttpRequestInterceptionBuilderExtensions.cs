@@ -351,7 +351,7 @@ public static class HttpRequestInterceptionBuilderExtensions
             // Other content types are not supported as they may be iterating over
             // a stream which might not support arbitrary seeking if the request
             // is not a match and needs to be sent to the URL originally specified.
-            if (!(content is ByteArrayContent))
+            if (content is not ByteArrayContent)
             {
                 return false;
             }

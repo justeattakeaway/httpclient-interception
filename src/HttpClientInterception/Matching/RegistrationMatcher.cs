@@ -112,8 +112,14 @@ internal sealed class RegistrationMatcher : RequestMatcher
                 return false;
             }
 
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+            string expectedValues = string.Join(';', headerToMatch.Value);
+            string actualValues = string.Join(';', values);
+#else
+
             string expectedValues = string.Join(";", headerToMatch.Value);
             string actualValues = string.Join(";", values);
+#endif
 
             if (!string.Equals(expectedValues, actualValues, StringComparison.Ordinal))
             {
