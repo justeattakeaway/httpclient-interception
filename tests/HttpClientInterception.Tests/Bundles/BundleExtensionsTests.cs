@@ -311,6 +311,18 @@ public static class BundleExtensionsTests
     }
 
     [Fact]
+    public static async Task RegisterBundleAsync_Validates_Parameters()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions();
+        string path = "foo.bar";
+
+        // Act and Assert
+        await Should.ThrowAsync<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleAsync(path), "options");
+        await Should.ThrowAsync<ArgumentNullException>(() => options.RegisterBundleAsync(null), "path");
+    }
+
+    [Fact]
     public static void RegisterBundle_Throws_If_Bundle_Version_Is_Not_Supported()
     {
         // Arrange
