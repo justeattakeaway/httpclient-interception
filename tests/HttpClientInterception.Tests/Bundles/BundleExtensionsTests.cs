@@ -226,6 +226,30 @@ public static class BundleExtensionsTests
     }
 
     [Fact]
+    public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Templated_String_With_User_Template_Values_Async()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+        var headers = new Dictionary<string, string>()
+        {
+            ["user-agent"] = "My-Other-App/1.0.0",
+        };
+
+        var templateValues = new Dictionary<string, string>()
+        {
+            ["ApplicationName"] = "My-Other-App",
+        };
+
+        // Act
+        await options.RegisterBundleAsync(Path.Join("Bundles", "templated-bundle-string.json"), templateValues);
+
+        // Assert
+        string content = await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", headers: headers);
+        content.ShouldBe("<html><head><title>Just Eat</title></head></html>");
+    }
+
+    [Fact]
     public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Templated_Base64()
     {
         // Arrange
