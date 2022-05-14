@@ -27,9 +27,24 @@ internal static class BundleFactory
     /// <returns>
     /// The <see cref="Bundle"/> deserialized from the file specified by <paramref name="path"/>.
     /// </returns>
-    public static Bundle Create(string path)
+    public static Bundle? Create(string path)
     {
         string json = File.ReadAllText(path);
         return JsonSerializer.Deserialize<Bundle>(json, Settings);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Bundle"/> from the specified JSON file as an asynchronous operation.
+    /// </summary>
+    /// <param name="path">The path of the JSON file containing the bundle.</param>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/> to use.</param>
+    /// <returns>
+    /// A <see cref="ValueTask{Bundle}"/> representing the asynchronous operation which
+    /// returns the bundle deserialized from the file specified by <paramref name="path"/>.
+    /// </returns>
+    public static async ValueTask<Bundle?> CreateAsync(string path, CancellationToken cancellationToken)
+    {
+        using var stream = File.OpenRead(path);
+        return await JsonSerializer.DeserializeAsync<Bundle>(stream, Settings, cancellationToken).ConfigureAwait(false);
     }
 }

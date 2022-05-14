@@ -52,6 +52,28 @@ public static class BundleExtensionsTests
     }
 
     [Fact]
+    public static async Task Can_Intercept_Http_Requests_From_Bundle_File_Async()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+        var headers = new Dictionary<string, string>()
+        {
+            ["accept"] = "application/vnd.github.v3+json",
+            ["authorization"] = "token my-token",
+            ["user-agent"] = "My-App/1.0.0",
+        };
+
+        // Act
+        await options.RegisterBundleAsync(Path.Join("Bundles", "http-request-bundle.json"));
+
+        // Assert
+        await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", mediaType: "text/html");
+        await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/order-history");
+        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat", headers: headers, mediaType: "application/json");
+    }
+
+    [Fact]
     public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_String()
     {
         // Arrange
