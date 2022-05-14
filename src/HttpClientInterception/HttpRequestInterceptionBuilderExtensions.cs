@@ -207,7 +207,7 @@ public static class HttpRequestInterceptionBuilderExtensions
         this HttpRequestInterceptionBuilder builder,
         object content)
     {
-        return builder.WithNewtonsoftJsonContent(content);
+        return builder.WithSystemTextJsonContent(content);
     }
 
     /// <summary>

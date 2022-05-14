@@ -3,8 +3,6 @@
 
 using System.Net;
 using System.Text.Json;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 namespace JustEat.HttpClientInterception;
@@ -117,26 +115,6 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
-    public static async Task WithNewtonsoftJsonContent_Uses_Default_Json_Serializer()
-    {
-        // Arrange
-        var requestUri = "https://google.com/";
-        var expected = new { mode = EventResetMode.ManualReset };
-
-        var builder = new HttpRequestInterceptionBuilder()
-            .ForUrl(requestUri)
-            .WithNewtonsoftJsonContent(expected);
-
-        var options = new HttpClientInterceptorOptions().Register(builder);
-
-        // Act
-        string actual = await HttpAssert.GetAsync(options, requestUri);
-
-        // Assert
-        actual.ShouldBe(@"{""mode"":1}");
-    }
-
-    [Fact]
     public static async Task WithSystemTextJsonContent_Uses_Default_Json_Serializer()
     {
         // Arrange
@@ -154,30 +132,6 @@ public static class HttpRequestInterceptionBuilderTests
 
         // Assert
         actual.ShouldBe(@"{""mode"":1}");
-    }
-
-    [Fact]
-    public static async Task Builder_Uses_Specified_Json_Serializer_Settings()
-    {
-        // Arrange
-        var requestUri = "https://google.com/";
-        var expected = new { mode = EventResetMode.ManualReset };
-
-        var settings = new JsonSerializerSettings();
-        settings.Converters.Add(new StringEnumConverter());
-
-        var builder = new HttpRequestInterceptionBuilder()
-            .ForPost()
-            .ForUrl(requestUri)
-            .WithNewtonsoftJsonContent(expected, settings);
-
-        var options = new HttpClientInterceptorOptions().Register(builder);
-
-        // Act
-        string actual = await HttpAssert.PostAsync(options, requestUri, new { });
-
-        // Assert
-        actual.ShouldBe(@"{""mode"":""ManualReset""}");
     }
 
     [Fact]
@@ -879,18 +833,6 @@ public static class HttpRequestInterceptionBuilderTests
         // Act and Assert
         Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithJsonContent(content), "builder");
         Should.Throw<ArgumentNullException>(() => builder.WithJsonContent(content), "content");
-    }
-
-    [Fact]
-    public static void WithNewtonsoftJsonContent_Validates_Parameters()
-    {
-        // Arrange
-        var builder = new HttpRequestInterceptionBuilder();
-        object content = null;
-
-        // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithNewtonsoftJsonContent(content), "builder");
-        Should.Throw<ArgumentNullException>(() => builder.WithNewtonsoftJsonContent(content), "content");
     }
 
     [Fact]
@@ -2254,7 +2196,7 @@ public static class HttpRequestInterceptionBuilderTests
             new { message = "Who are you?" });
 
         // Assert
-        actual.ShouldBe(@"{""message"":""My name is Alice, what's your name?""}");
+        actual.ShouldBe(@"{""message"":""My name is Alice, what\u0027s your name?""}");
 
         // Act
         actual = await HttpAssert.PostAsync(

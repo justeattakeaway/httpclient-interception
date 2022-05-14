@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace JustEat.HttpClientInterception.Bundles;
 
@@ -13,7 +13,12 @@ internal static class BundleFactory
     /// <summary>
     /// Gets the JSON serializer settings to use.
     /// </summary>
-    private static JsonSerializerSettings Settings { get; } = new JsonSerializerSettings();
+    private static JsonSerializerOptions Settings { get; } =
+#if NET7_0_OR_GREATER
+        JsonSerializerOptions.Default;
+#else
+        new();
+#endif
 
     /// <summary>
     /// Creates a <see cref="Bundle"/> from the specified JSON file.
@@ -25,6 +30,6 @@ internal static class BundleFactory
     public static Bundle Create(string path)
     {
         string json = File.ReadAllText(path);
-        return JsonConvert.DeserializeObject<Bundle>(json, Settings)!;
+        return JsonSerializer.Deserialize<Bundle>(json, Settings);
     }
 }

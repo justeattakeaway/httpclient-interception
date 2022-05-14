@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace JustEat.HttpClientInterception.Bundles;
 
@@ -15,24 +15,30 @@ internal sealed class Bundle
     /// <summary>
     /// Gets or sets the bundle's Id.
     /// </summary>
-    [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("id")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public string? Id { get; set; }
 
     /// <summary>
     /// Gets or sets the bundle's comment.
     /// </summary>
-    [JsonProperty("comment", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("comment")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public string? Comment { get; set; }
 
     /// <summary>
     /// Gets or sets the bundle version.
     /// </summary>
-    [JsonProperty("version")]
+    [JsonPropertyName("version")]
     public int Version { get; set; } = 1;
 
     /// <summary>
     /// Gets or sets the items in the bundle.
     /// </summary>
-    [JsonProperty("items")]
+    [JsonPropertyName("items")]
     public IList<BundleItem>? Items { get; set; }
 }

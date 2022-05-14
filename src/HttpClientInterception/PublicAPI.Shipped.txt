@@ -78,7 +78,6 @@ JustEat.HttpClientInterception.HttpRequestNotInterceptedException.Request.get ->
 JustEat.HttpClientInterception.InterceptingHttpMessageHandler
 JustEat.HttpClientInterception.InterceptingHttpMessageHandler.InterceptingHttpMessageHandler(JustEat.HttpClientInterception.HttpClientInterceptorOptions! options) -> void
 JustEat.HttpClientInterception.InterceptingHttpMessageHandler.InterceptingHttpMessageHandler(JustEat.HttpClientInterception.HttpClientInterceptorOptions! options, System.Net.Http.HttpMessageHandler! innerHandler) -> void
-JustEat.HttpClientInterception.NewtonsoftJsonExtensions
 JustEat.HttpClientInterception.SystemTextJsonExtensions
 override JustEat.HttpClientInterception.InterceptingHttpMessageHandler.SendAsync(System.Net.Http.HttpRequestMessage! request, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!
 static JustEat.HttpClientInterception.BundleExtensions.RegisterBundle(this JustEat.HttpClientInterception.HttpClientInterceptorOptions! options, string! path) -> JustEat.HttpClientInterception.HttpClientInterceptorOptions!
@@ -108,7 +107,6 @@ static JustEat.HttpClientInterception.HttpRequestInterceptionBuilderExtensions.R
 static JustEat.HttpClientInterception.HttpRequestInterceptionBuilderExtensions.WithContent(this JustEat.HttpClientInterception.HttpRequestInterceptionBuilder! builder, string! content) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 static JustEat.HttpClientInterception.HttpRequestInterceptionBuilderExtensions.WithFormContent(this JustEat.HttpClientInterception.HttpRequestInterceptionBuilder! builder, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, string!>>! parameters) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 static JustEat.HttpClientInterception.HttpRequestInterceptionBuilderExtensions.WithJsonContent(this JustEat.HttpClientInterception.HttpRequestInterceptionBuilder! builder, object! content) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
-static JustEat.HttpClientInterception.NewtonsoftJsonExtensions.WithNewtonsoftJsonContent(this JustEat.HttpClientInterception.HttpRequestInterceptionBuilder! builder, object! content, Newtonsoft.Json.JsonSerializerSettings? settings = null) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 static JustEat.HttpClientInterception.SystemTextJsonExtensions.WithSystemTextJsonContent(this JustEat.HttpClientInterception.HttpRequestInterceptionBuilder! builder, object! content, System.Text.Json.JsonSerializerOptions? options = null) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 virtual JustEat.HttpClientInterception.HttpClientInterceptorOptions.CreateHttpClient(System.Net.Http.HttpMessageHandler? innerHandler = null) -> System.Net.Http.HttpClient!
 virtual JustEat.HttpClientInterception.HttpClientInterceptorOptions.CreateHttpMessageHandler() -> System.Net.Http.DelegatingHandler!

@@ -16,7 +16,6 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" />
-    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Refit" />
   </ItemGroup>
 </Project>

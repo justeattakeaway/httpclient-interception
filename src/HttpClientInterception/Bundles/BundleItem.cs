@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace JustEat.HttpClientInterception.Bundles;
 
@@ -16,102 +16,129 @@ internal sealed class BundleItem
     /// <summary>
     /// Gets or sets the optional Id of the item.
     /// </summary>
-    [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("id")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public string? Id { get; set; }
 
     /// <summary>
     /// Gets or sets the optional comment for the item.
     /// </summary>
-    [JsonProperty("comment", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("comment")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public string? Comment { get; set; }
 
     /// <summary>
     /// Gets or sets the optional HTTP version for the item.
     /// </summary>
-    [JsonProperty("version", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("version")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public string? Version { get; set; }
 
     /// <summary>
     /// Gets or sets the default HTTP method for the item.
     /// </summary>
-    [JsonProperty("method")]
+    [JsonPropertyName("method")]
     public string? Method { get; set; }
 
     /// <summary>
     /// Gets or sets the request URI for the item.
     /// </summary>
-    [JsonProperty("uri")]
+    [JsonPropertyName("uri")]
     public string? Uri { get; set; }
 
     /// <summary>
     /// Gets or sets the optional priority for the item.
     /// </summary>
-    [JsonProperty("priority", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("priority")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public int? Priority { get; set; }
 
     /// <summary>
     /// Gets or sets the HTTP status code for the response for item.
     /// </summary>
-    [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("status")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public string? Status { get; set; }
 
     /// <summary>
     /// Gets or sets the optional request headers for the item.
     /// </summary>
-    [JsonProperty("requestHeaders", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("requestHeaders")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public IDictionary<string, ICollection<string>>? RequestHeaders { get; set; }
 
     /// <summary>
     /// Gets or sets the optional response headers for the item.
     /// </summary>
-    [JsonProperty("responseHeaders", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("responseHeaders")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public IDictionary<string, ICollection<string>>? ResponseHeaders { get; set; }
 
     /// <summary>
     /// Gets or sets the optional content headers for the item.
     /// </summary>
-    [JsonProperty("contentHeaders", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("contentHeaders")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public IDictionary<string, ICollection<string>>? ContentHeaders { get; set; }
 
     /// <summary>
     /// Gets or sets the optional content format of the item.
     /// </summary>
-    [JsonProperty("contentFormat")]
+    [JsonPropertyName("contentFormat")]
     public string? ContentFormat { get; set; }
 
     /// <summary>
     /// Gets or sets the content of the item as JSON.
     /// </summary>
-    [JsonProperty("contentJson")]
-    public JToken? ContentJson { get; set; }
+    [JsonPropertyName("contentJson")]
+    public JsonElement ContentJson { get; set; }
 
     /// <summary>
     /// Gets or sets the content of the item as a string.
     /// </summary>
-    [JsonProperty("contentString")]
+    [JsonPropertyName("contentString")]
     public string? ContentString { get; set; }
 
     /// <summary>
     /// Gets or sets the optional templating values.
     /// </summary>
-    [JsonProperty("templateValues", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("templateValues")]
+#if NET6_0_OR_GREATER
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+#endif
     public IDictionary<string, string>? TemplateValues { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to ignore the URI's path.
     /// </summary>
-    [JsonProperty("ignorePath", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("ignorePath")]
     public bool IgnorePath { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to ignore the URI's query string.
     /// </summary>
-    [JsonProperty("ignoreQuery", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("ignoreQuery")]
     public bool IgnoreQuery { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to skip the item.
     /// </summary>
-    [JsonProperty("skip", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("skip")]
     public bool Skip { get; set; }
 }
