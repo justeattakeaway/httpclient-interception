@@ -22,6 +22,16 @@
         ]
       },
       "contentString": "<html><head><title>Just Eat</title></head></html>"
+    },
+    {
+      "uri": "https://www.just-eat.co.uk/3",
+      "status": "418",
+      "contentHeaders": {
+        "content-type": [
+          "text/html"
+        ]
+      },
+      "contentString": "<html><head><title>Just Eat</title></head></html>"
     }
   ]
 }

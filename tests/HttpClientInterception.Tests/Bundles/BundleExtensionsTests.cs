@@ -144,6 +144,7 @@ public static class BundleExtensionsTests
         // Assert
         await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/1", HttpStatusCode.NotFound);
         await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/2", HttpStatusCode.NotFound);
+        await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/3", (HttpStatusCode)418);
     }
 
     [Fact]
