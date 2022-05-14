@@ -126,12 +126,12 @@ public class HttpClientInterceptorOptions
     /// </exception>
     public HttpClientInterceptorOptions Deregister(HttpMethod method, Uri uri)
     {
-        if (method == null)
+        if (method is null)
         {
             throw new ArgumentNullException(nameof(method));
         }
 
-        if (uri == null)
+        if (uri is null)
         {
             throw new ArgumentNullException(nameof(uri));
         }
@@ -165,7 +165,7 @@ public class HttpClientInterceptorOptions
     /// </remarks>
     public HttpClientInterceptorOptions Deregister(HttpRequestInterceptionBuilder builder)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
@@ -205,17 +205,17 @@ public class HttpClientInterceptorOptions
         IEnumerable<KeyValuePair<string, IEnumerable<string>>>? contentHeaders = null,
         Func<HttpRequestMessage, Task>? onIntercepted = null)
     {
-        if (method == null)
+        if (method is null)
         {
             throw new ArgumentNullException(nameof(method));
         }
 
-        if (uri == null)
+        if (uri is null)
         {
             throw new ArgumentNullException(nameof(uri));
         }
 
-        if (contentFactory == null)
+        if (contentFactory is null)
         {
             throw new ArgumentNullException(nameof(contentFactory));
         }
@@ -264,17 +264,17 @@ public class HttpClientInterceptorOptions
         IEnumerable<KeyValuePair<string, IEnumerable<string>>>? contentHeaders = null,
         Func<HttpRequestMessage, Task>? onIntercepted = null)
     {
-        if (method == null)
+        if (method is null)
         {
             throw new ArgumentNullException(nameof(method));
         }
 
-        if (uri == null)
+        if (uri is null)
         {
             throw new ArgumentNullException(nameof(uri));
         }
 
-        if (contentStream == null)
+        if (contentStream is null)
         {
             throw new ArgumentNullException(nameof(contentStream));
         }
@@ -308,7 +308,7 @@ public class HttpClientInterceptorOptions
     /// </exception>
     public HttpClientInterceptorOptions Register(HttpRequestInterceptionBuilder builder)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
@@ -334,7 +334,7 @@ public class HttpClientInterceptorOptions
     /// </exception>
     public virtual async Task<HttpResponseMessage?> GetResponseAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
     {
-        if (request == null)
+        if (request is null)
         {
             throw new ArgumentNullException(nameof(request));
         }
@@ -387,7 +387,7 @@ public class HttpClientInterceptorOptions
     /// </returns>
     private static string BuildKey(HttpInterceptionResponse interceptor)
     {
-        if (interceptor.UserMatcher != null || interceptor.ContentMatcher != null)
+        if (interceptor.UserMatcher is not null || interceptor.ContentMatcher is not null)
         {
             // Use the internal matcher's hash code as UserMatcher (a delegate)
             // will always return the hash code. See https://stackoverflow.com/q/6624151/1064169
@@ -425,7 +425,7 @@ public class HttpClientInterceptorOptions
 
     private static void PopulateHeaders(HttpHeaders headers, IEnumerable<KeyValuePair<string, IEnumerable<string>>>? values)
     {
-        if (values != null)
+        if (values is not null)
         {
             foreach (var pair in values)
             {
@@ -442,17 +442,17 @@ public class HttpClientInterceptorOptions
         {
             result.RequestMessage = request;
 
-            if (response.ReasonPhrase != null)
+            if (response.ReasonPhrase is not null)
             {
                 result.ReasonPhrase = response.ReasonPhrase;
             }
 
-            if (response.Version != null)
+            if (response.Version is not null)
             {
                 result.Version = response.Version;
             }
 
-            if (response.ContentStream != null)
+            if (response.ContentStream is not null)
             {
                 result.Content = new StreamContent(await response.ContentStream().ConfigureAwait(false) ?? Stream.Null);
             }
@@ -502,7 +502,7 @@ public class HttpClientInterceptorOptions
     {
         RequestMatcher matcher;
 
-        if (registration.UserMatcher != null)
+        if (registration.UserMatcher is not null)
         {
             matcher = new DelegatingMatcher(registration.UserMatcher);
         }

@@ -260,7 +260,7 @@ public class HttpRequestInterceptionBuilder
     /// </remarks>
     public HttpRequestInterceptionBuilder WithContent(Func<byte[]>? contentFactory)
     {
-        if (contentFactory == null)
+        if (contentFactory is null)
         {
             _contentFactory = null;
         }
@@ -285,7 +285,7 @@ public class HttpRequestInterceptionBuilder
         _contentFactory = contentFactory;
 
         // Remove the stream if setting the factory
-        if (_contentFactory != null)
+        if (_contentFactory is not null)
         {
             _contentStream = null;
         }
@@ -305,7 +305,7 @@ public class HttpRequestInterceptionBuilder
     /// </remarks>
     public HttpRequestInterceptionBuilder WithContentStream(Func<Stream>? contentStream)
     {
-        if (contentStream == null)
+        if (contentStream is null)
         {
             _contentStream = null;
         }
@@ -330,7 +330,7 @@ public class HttpRequestInterceptionBuilder
         _contentStream = contentStream;
 
         // Remove the factory if setting the stream
-        if (_contentStream != null)
+        if (_contentStream is not null)
         {
             _contentFactory = null;
         }
@@ -379,17 +379,17 @@ public class HttpRequestInterceptionBuilder
     /// </exception>
     public HttpRequestInterceptionBuilder WithContentHeader(string name, IEnumerable<string> values)
     {
-        if (name == null)
+        if (name is null)
         {
             throw new ArgumentNullException(nameof(name));
         }
 
-        if (values == null)
+        if (values is null)
         {
             throw new ArgumentNullException(nameof(values));
         }
 
-        if (_contentHeaders == null)
+        if (_contentHeaders is null)
         {
             _contentHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
         }
@@ -421,7 +421,7 @@ public class HttpRequestInterceptionBuilder
     /// </exception>
     public HttpRequestInterceptionBuilder WithContentHeaders(IDictionary<string, ICollection<string>> headers)
     {
-        if (headers == null)
+        if (headers is null)
         {
             throw new ArgumentNullException(nameof(headers));
         }
@@ -442,12 +442,12 @@ public class HttpRequestInterceptionBuilder
     /// </exception>
     public HttpRequestInterceptionBuilder WithContentHeaders(IDictionary<string, string> headers)
     {
-        if (headers == null)
+        if (headers is null)
         {
             throw new ArgumentNullException(nameof(headers));
         }
 
-        var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+        var copy = new Dictionary<string, ICollection<string>>(headers.Count, StringComparer.OrdinalIgnoreCase);
 
         foreach (var pair in headers)
         {
@@ -500,17 +500,17 @@ public class HttpRequestInterceptionBuilder
     /// </exception>
     public HttpRequestInterceptionBuilder WithResponseHeader(string name, IEnumerable<string> values)
     {
-        if (name == null)
+        if (name is null)
         {
             throw new ArgumentNullException(nameof(name));
         }
 
-        if (values == null)
+        if (values is null)
         {
             throw new ArgumentNullException(nameof(values));
         }
 
-        if (_responseHeaders == null)
+        if (_responseHeaders is null)
         {
             _responseHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
         }
@@ -542,12 +542,12 @@ public class HttpRequestInterceptionBuilder
     /// </exception>
     public HttpRequestInterceptionBuilder WithResponseHeaders(IDictionary<string, string> headers)
     {
-        if (headers == null)
+        if (headers is null)
         {
             throw new ArgumentNullException(nameof(headers));
         }
 
-        var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+        var copy = new Dictionary<string, ICollection<string>>(headers.Count, StringComparer.OrdinalIgnoreCase);
 
         foreach (var pair in headers)
         {
@@ -803,17 +803,17 @@ public class HttpRequestInterceptionBuilder
     /// </remarks>
     public HttpRequestInterceptionBuilder ForRequestHeader(string name, IEnumerable<string> values)
     {
-        if (name == null)
+        if (name is null)
         {
             throw new ArgumentNullException(nameof(name));
         }
 
-        if (values == null)
+        if (values is null)
         {
             throw new ArgumentNullException(nameof(values));
         }
 
-        if (_requestHeaders == null)
+        if (_requestHeaders is null)
         {
             _requestHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
         }
@@ -848,12 +848,12 @@ public class HttpRequestInterceptionBuilder
     /// </remarks>
     public HttpRequestInterceptionBuilder ForRequestHeaders(IDictionary<string, string> headers)
     {
-        if (headers == null)
+        if (headers is null)
         {
             throw new ArgumentNullException(nameof(headers));
         }
 
-        var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+        var copy = new Dictionary<string, ICollection<string>>(headers.Count, StringComparer.OrdinalIgnoreCase);
 
         foreach (var pair in headers)
         {
@@ -924,7 +924,7 @@ public class HttpRequestInterceptionBuilder
 
         if (_requestHeaders?.Count > 0)
         {
-            var headers = new Dictionary<string, IEnumerable<string>>();
+            var headers = new Dictionary<string, IEnumerable<string>>(_requestHeaders.Count);
 
             foreach (var pair in _requestHeaders)
             {
@@ -936,7 +936,7 @@ public class HttpRequestInterceptionBuilder
 
         if (_responseHeaders?.Count > 0)
         {
-            var headers = new Dictionary<string, IEnumerable<string>>();
+            var headers = new Dictionary<string, IEnumerable<string>>(_responseHeaders.Count);
 
             foreach (var pair in _responseHeaders)
             {
@@ -948,7 +948,7 @@ public class HttpRequestInterceptionBuilder
 
         if (_contentHeaders?.Count > 0)
         {
-            var headers = new Dictionary<string, IEnumerable<string>>();
+            var headers = new Dictionary<string, IEnumerable<string>>(_contentHeaders.Count);
 
             foreach (var pair in _contentHeaders)
             {

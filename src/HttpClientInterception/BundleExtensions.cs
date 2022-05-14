@@ -27,9 +27,7 @@ public static class BundleExtensions
     /// The version of the serialized bundle is not supported.
     /// </exception>
     public static HttpClientInterceptorOptions RegisterBundle(this HttpClientInterceptorOptions options, string path)
-    {
-        return options.RegisterBundle(path, Array.Empty<KeyValuePair<string, string>>());
-    }
+        => options.RegisterBundle(path, Array.Empty<KeyValuePair<string, string>>());
 
     /// <summary>
     /// Registers a bundle of HTTP request interceptions from a specified JSON file.
@@ -51,17 +49,17 @@ public static class BundleExtensions
         string path,
         IEnumerable<KeyValuePair<string, string>> templateValues)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }
 
-        if (path == null)
+        if (path is null)
         {
             throw new ArgumentNullException(nameof(path));
         }
 
-        if (templateValues == null)
+        if (templateValues is null)
         {
             throw new ArgumentNullException(nameof(templateValues));
         }
@@ -81,7 +79,7 @@ public static class BundleExtensions
 
             foreach (var item in bundle.Items)
             {
-                if (item == null || item.Skip)
+                if (item is null || item.Skip)
                 {
                     continue;
                 }

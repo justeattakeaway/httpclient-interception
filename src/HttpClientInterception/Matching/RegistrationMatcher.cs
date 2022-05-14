@@ -41,7 +41,7 @@ internal sealed class RegistrationMatcher : RequestMatcher
     /// <inheritdoc />
     public override async Task<bool> IsMatchAsync(HttpRequestMessage request)
     {
-        if (request.RequestUri == null || request.Method != _registration.Method)
+        if (request.RequestUri is null || request.Method != _registration.Method)
         {
             return false;
         }
@@ -55,12 +55,12 @@ internal sealed class RegistrationMatcher : RequestMatcher
 
         bool isMatch = true;
 
-        if (_registration.RequestHeaders != null)
+        if (_registration.RequestHeaders is not null)
         {
             isMatch = IsMatchForHeaders(request.Headers);
         }
 
-        if (isMatch && _registration.ContentMatcher != null)
+        if (isMatch && _registration.ContentMatcher is not null)
         {
             isMatch = await _registration.ContentMatcher(request.Content!).ConfigureAwait(false);
         }
