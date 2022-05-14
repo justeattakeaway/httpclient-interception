@@ -30,7 +30,7 @@ public static class HttpRequestInterceptionBuilderExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        return builder.ForScheme("http");
+        return builder.ForScheme(Uri.UriSchemeHttp);
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public static class HttpRequestInterceptionBuilderExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        return builder.ForScheme("https");
+        return builder.ForScheme(Uri.UriSchemeHttps);
     }
 
     /// <summary>
