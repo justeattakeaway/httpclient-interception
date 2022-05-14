@@ -447,7 +447,7 @@ public class HttpRequestInterceptionBuilder
             throw new ArgumentNullException(nameof(headers));
         }
 
-        var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+        var copy = new Dictionary<string, ICollection<string>>(headers.Count, StringComparer.OrdinalIgnoreCase);
 
         foreach (var pair in headers)
         {
@@ -547,7 +547,7 @@ public class HttpRequestInterceptionBuilder
             throw new ArgumentNullException(nameof(headers));
         }
 
-        var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+        var copy = new Dictionary<string, ICollection<string>>(headers.Count, StringComparer.OrdinalIgnoreCase);
 
         foreach (var pair in headers)
         {
@@ -853,7 +853,7 @@ public class HttpRequestInterceptionBuilder
             throw new ArgumentNullException(nameof(headers));
         }
 
-        var copy = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
+        var copy = new Dictionary<string, ICollection<string>>(headers.Count, StringComparer.OrdinalIgnoreCase);
 
         foreach (var pair in headers)
         {
@@ -924,7 +924,7 @@ public class HttpRequestInterceptionBuilder
 
         if (_requestHeaders?.Count > 0)
         {
-            var headers = new Dictionary<string, IEnumerable<string>>();
+            var headers = new Dictionary<string, IEnumerable<string>>(_requestHeaders.Count);
 
             foreach (var pair in _requestHeaders)
             {
@@ -936,7 +936,7 @@ public class HttpRequestInterceptionBuilder
 
         if (_responseHeaders?.Count > 0)
         {
-            var headers = new Dictionary<string, IEnumerable<string>>();
+            var headers = new Dictionary<string, IEnumerable<string>>(_responseHeaders.Count);
 
             foreach (var pair in _responseHeaders)
             {
@@ -948,7 +948,7 @@ public class HttpRequestInterceptionBuilder
 
         if (_contentHeaders?.Count > 0)
         {
-            var headers = new Dictionary<string, IEnumerable<string>>();
+            var headers = new Dictionary<string, IEnumerable<string>>(_contentHeaders.Count);
 
             foreach (var pair in _contentHeaders)
             {
