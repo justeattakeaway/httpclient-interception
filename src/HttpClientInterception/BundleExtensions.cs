@@ -27,9 +27,7 @@ public static class BundleExtensions
     /// The version of the serialized bundle is not supported.
     /// </exception>
     public static HttpClientInterceptorOptions RegisterBundle(this HttpClientInterceptorOptions options, string path)
-    {
-        return options.RegisterBundle(path, Array.Empty<KeyValuePair<string, string>>());
-    }
+        => options.RegisterBundle(path, Array.Empty<KeyValuePair<string, string>>());
 
     /// <summary>
     /// Registers a bundle of HTTP request interceptions from a specified JSON file.
