@@ -12,7 +12,7 @@
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <Summary>A .NET library for intercepting server-side HTTP dependencies.</Summary>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0;net461;net472</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472;net6.0</TargetFrameworks>
     <!--
      TODO Remove after 4.0.0 ships to NuGet.org
     -->
@@ -24,7 +24,7 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
-  <ItemGroup Condition=" ('$(TargetFramework)' == 'net461') OR ('$(TargetFramework)' == 'net472') ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <PackageReference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
