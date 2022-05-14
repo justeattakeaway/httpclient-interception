@@ -235,7 +235,12 @@ public static class HttpClientInterceptorOptionsExtensions
             throw new ArgumentNullException(nameof(options));
         }
 
-        return options.RegisterByteArray(HttpMethod.Get, new Uri(uriString), () => Encoding.UTF8.GetBytes(content ?? string.Empty), statusCode, mediaType);
+        return options.RegisterByteArray(
+            HttpMethod.Get,
+            new Uri(uriString),
+            () => Encoding.UTF8.GetBytes(content ?? string.Empty),
+            statusCode,
+            mediaType);
     }
 
     /// <summary>

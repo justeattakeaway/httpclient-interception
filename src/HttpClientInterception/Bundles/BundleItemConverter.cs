@@ -30,7 +30,7 @@ internal static class BundleItemConverter
 
         if (item.Method is not null)
         {
-            builder.ForMethod(new System.Net.Http.HttpMethod(item.Method));
+            builder.ForMethod(new HttpMethod(item.Method));
         }
 
         if (item.RequestHeaders?.Count > 0)
