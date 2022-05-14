@@ -85,7 +85,7 @@ internal static class BundleItemConverter
     {
         string content = GetRawContentString(item) ?? string.Empty;
 
-        if (item.TemplateValues?.Count > 0)
+        if (item.TemplateValues?.Count > 0 && !string.IsNullOrEmpty(content))
         {
             content = TemplateString(content, item.TemplateValues);
         }
