@@ -44,19 +44,19 @@ public class InterceptingHttpMessageHandler : DelegatingHandler
     /// <inheritdoc />
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        if (_options.OnSend != null)
+        if (_options.OnSend is not null)
         {
             await _options.OnSend(request).ConfigureAwait(false);
         }
 
         var response = await _options.GetResponseAsync(request, cancellationToken).ConfigureAwait(false);
 
-        if (response == null && _options.OnMissingRegistration != null)
+        if (response is null && _options.OnMissingRegistration is not null)
         {
             response = await _options.OnMissingRegistration(request).ConfigureAwait(false);
         }
 
-        if (response != null)
+        if (response is not null)
         {
             return response;
         }

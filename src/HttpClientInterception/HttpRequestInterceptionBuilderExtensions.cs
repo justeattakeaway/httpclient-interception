@@ -25,7 +25,7 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// </exception>
     public static HttpRequestInterceptionBuilder ForHttp(this HttpRequestInterceptionBuilder builder)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
@@ -45,7 +45,7 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// </exception>
     public static HttpRequestInterceptionBuilder ForHttps(this HttpRequestInterceptionBuilder builder)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
@@ -65,7 +65,7 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// </exception>
     public static HttpRequestInterceptionBuilder ForDelete(this HttpRequestInterceptionBuilder builder)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
@@ -85,7 +85,7 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// </exception>
     public static HttpRequestInterceptionBuilder ForGet(this HttpRequestInterceptionBuilder builder)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
@@ -105,7 +105,7 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// </exception>
     public static HttpRequestInterceptionBuilder ForPost(this HttpRequestInterceptionBuilder builder)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
@@ -125,7 +125,7 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// </exception>
     public static HttpRequestInterceptionBuilder ForPut(this HttpRequestInterceptionBuilder builder)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
@@ -146,7 +146,7 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// </exception>
     public static HttpRequestInterceptionBuilder WithContent(this HttpRequestInterceptionBuilder builder, string content)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
@@ -169,12 +169,12 @@ public static class HttpRequestInterceptionBuilderExtensions
         this HttpRequestInterceptionBuilder builder,
         IEnumerable<KeyValuePair<string, string>> parameters)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
 
-        if (parameters == null)
+        if (parameters is null)
         {
             throw new ArgumentNullException(nameof(parameters));
         }
@@ -223,7 +223,7 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// </exception>
     public static HttpRequestInterceptionBuilder ForUrl(this HttpRequestInterceptionBuilder builder, string uriString)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
@@ -262,7 +262,7 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// </exception>
     public static HttpRequestInterceptionBuilder RegisterWith(this HttpRequestInterceptionBuilder builder, HttpClientInterceptorOptions options)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }
@@ -293,12 +293,12 @@ public static class HttpRequestInterceptionBuilderExtensions
         this HttpRequestInterceptionBuilder builder,
         Predicate<HttpContent>? predicate)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
 
-        if (predicate == null)
+        if (predicate is null)
         {
             return builder.ForContent(null);
         }
@@ -334,12 +334,12 @@ public static class HttpRequestInterceptionBuilderExtensions
         this HttpRequestInterceptionBuilder builder,
         IEnumerable<KeyValuePair<string, string>> parameters)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
 
-        if (parameters == null)
+        if (parameters is null)
         {
             throw new ArgumentNullException(nameof(parameters));
         }

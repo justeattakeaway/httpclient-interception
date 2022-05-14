@@ -45,7 +45,7 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, Uri baseAddress, HttpMessageHandler? innerHandler = null)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }
@@ -83,19 +83,19 @@ public static class HttpClientInterceptorOptionsExtensions
         string mediaType = HttpClientInterceptorOptions.JsonMediaType,
         IEnumerable<KeyValuePair<string, string>>? responseHeaders = null)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }
 
-        if (contentFactory == null)
+        if (contentFactory is null)
         {
             throw new ArgumentNullException(nameof(contentFactory));
         }
 
         IDictionary<string, IEnumerable<string>>? multivalueHeaders = null;
 
-        if (responseHeaders != null)
+        if (responseHeaders is not null)
         {
             multivalueHeaders = new Dictionary<string, IEnumerable<string>>();
 
@@ -140,19 +140,19 @@ public static class HttpClientInterceptorOptionsExtensions
         string mediaType = HttpClientInterceptorOptions.JsonMediaType,
         IEnumerable<KeyValuePair<string, string>>? responseHeaders = null)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }
 
-        if (contentStream == null)
+        if (contentStream is null)
         {
             throw new ArgumentNullException(nameof(contentStream));
         }
 
         IDictionary<string, IEnumerable<string>>? multivalueHeaders = null;
 
-        if (responseHeaders != null)
+        if (responseHeaders is not null)
         {
             multivalueHeaders = new Dictionary<string, IEnumerable<string>>();
 
@@ -190,12 +190,12 @@ public static class HttpClientInterceptorOptionsExtensions
         object content,
         HttpStatusCode statusCode = HttpStatusCode.OK)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }
 
-        if (content == null)
+        if (content is null)
         {
             throw new ArgumentNullException(nameof(content));
         }
@@ -230,7 +230,7 @@ public static class HttpClientInterceptorOptionsExtensions
         HttpStatusCode statusCode = HttpStatusCode.OK,
         string mediaType = HttpClientInterceptorOptions.JsonMediaType)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }
@@ -251,7 +251,7 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClientInterceptorOptions DeregisterGet(this HttpClientInterceptorOptions options, string uriString)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }
@@ -274,12 +274,12 @@ public static class HttpClientInterceptorOptionsExtensions
         this HttpClientInterceptorOptions options,
         IEnumerable<HttpRequestInterceptionBuilder> collection)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }
 
-        if (collection == null)
+        if (collection is null)
         {
             throw new ArgumentNullException(nameof(collection));
         }
@@ -322,7 +322,7 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClientInterceptorOptions ThrowsOnMissingRegistration(this HttpClientInterceptorOptions options)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }

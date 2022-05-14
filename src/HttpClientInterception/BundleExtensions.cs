@@ -51,17 +51,17 @@ public static class BundleExtensions
         string path,
         IEnumerable<KeyValuePair<string, string>> templateValues)
     {
-        if (options == null)
+        if (options is null)
         {
             throw new ArgumentNullException(nameof(options));
         }
 
-        if (path == null)
+        if (path is null)
         {
             throw new ArgumentNullException(nameof(path));
         }
 
-        if (templateValues == null)
+        if (templateValues is null)
         {
             throw new ArgumentNullException(nameof(templateValues));
         }
@@ -81,7 +81,7 @@ public static class BundleExtensions
 
             foreach (var item in bundle.Items)
             {
-                if (item == null || item.Skip)
+                if (item is null || item.Skip)
                 {
                     continue;
                 }

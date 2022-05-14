@@ -28,7 +28,7 @@ internal static class BundleItemConverter
 
         var builder = new HttpRequestInterceptionBuilder().ForUri(uri!);
 
-        if (item.Method != null)
+        if (item.Method is not null)
         {
             builder.ForMethod(new System.Net.Http.HttpMethod(item.Method));
         }
@@ -118,7 +118,7 @@ internal static class BundleItemConverter
     {
         version = null;
 
-        if (item.Uri == null)
+        if (item.Uri is null)
         {
             throw new InvalidOperationException($"Bundle item with Id '{item.Id}' has no URI configured.");
         }
@@ -130,7 +130,7 @@ internal static class BundleItemConverter
             throw new InvalidOperationException($"Bundle item with Id '{item.Id}' has an invalid absolute URI '{item.Uri}' configured.");
         }
 
-        if (item.Version != null && !Version.TryParse(item.Version, out version))
+        if (item.Version is not null && !Version.TryParse(item.Version, out version))
         {
             throw new InvalidOperationException($"Bundle item with Id '{item.Id}' has an invalid version '{item.Version}' configured.");
         }
@@ -167,7 +167,7 @@ internal static class BundleItemConverter
 
     private static string TemplateString(string content, IDictionary<string, string>? parameters)
     {
-        if (parameters == null || parameters.Count < 1)
+        if (parameters is null || parameters.Count < 1)
         {
             return content;
         }

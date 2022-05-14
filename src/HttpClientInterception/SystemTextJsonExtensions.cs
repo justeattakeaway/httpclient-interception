@@ -30,12 +30,12 @@ public static class SystemTextJsonExtensions
         object content,
         JsonSerializerOptions? options = null)
     {
-        if (builder == null)
+        if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
 
-        if (content == null)
+        if (content is null)
         {
             throw new ArgumentNullException(nameof(content));
         }

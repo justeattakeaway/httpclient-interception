@@ -23,7 +23,7 @@ internal static class DelegateHelpers
     /// </returns>
     internal static Func<HttpRequestMessage, CancellationToken, Task<bool>>? ConvertToBooleanTask(Action<HttpRequestMessage>? onIntercepted)
     {
-        if (onIntercepted == null)
+        if (onIntercepted is null)
         {
             return null;
         }
@@ -45,7 +45,7 @@ internal static class DelegateHelpers
     /// </returns>
     internal static Func<HttpRequestMessage, CancellationToken, Task<bool>>? ConvertToBooleanTask(Predicate<HttpRequestMessage>? onIntercepted)
     {
-        if (onIntercepted == null)
+        if (onIntercepted is null)
         {
             return null;
         }
@@ -63,7 +63,7 @@ internal static class DelegateHelpers
     /// </returns>
     internal static Func<HttpRequestMessage, CancellationToken, Task<bool>>? ConvertToBooleanTask(Func<HttpRequestMessage, Task>? onIntercepted)
     {
-        if (onIntercepted == null)
+        if (onIntercepted is null)
         {
             return null;
         }
@@ -81,7 +81,7 @@ internal static class DelegateHelpers
     /// </returns>
     internal static Func<HttpRequestMessage, CancellationToken, Task<bool>>? ConvertToBooleanTask(Func<HttpRequestMessage, CancellationToken, Task>? onIntercepted)
     {
-        if (onIntercepted == null)
+        if (onIntercepted is null)
         {
             return null;
         }
@@ -103,7 +103,7 @@ internal static class DelegateHelpers
     /// </returns>
     internal static Func<HttpRequestMessage, CancellationToken, Task<bool>>? ConvertToBooleanTask(Func<HttpRequestMessage, Task<bool>>? onIntercepted)
     {
-        if (onIntercepted == null)
+        if (onIntercepted is null)
         {
             return null;
         }
