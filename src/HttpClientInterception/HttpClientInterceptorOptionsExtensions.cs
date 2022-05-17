@@ -28,9 +28,7 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClient CreateHttpClient(
         this HttpClientInterceptorOptions options,
-#if NET7_0_OR_GREATER
         [StringSyntax(StringSyntaxAttribute.Uri)]
-#endif
         string baseAddress)
     {
         var baseAddressUri = new Uri(baseAddress, UriKind.RelativeOrAbsolute);
@@ -192,9 +190,7 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClientInterceptorOptions RegisterGetJson(
         this HttpClientInterceptorOptions options,
-#if NET7_0_OR_GREATER
         [StringSyntax(StringSyntaxAttribute.Uri)]
-#endif
         string uriString,
         object content,
         HttpStatusCode statusCode = HttpStatusCode.OK)
@@ -234,9 +230,7 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClientInterceptorOptions RegisterGet(
         this HttpClientInterceptorOptions options,
-#if NET7_0_OR_GREATER
         [StringSyntax(StringSyntaxAttribute.Uri)]
-#endif
         string uriString,
         string content,
         HttpStatusCode statusCode = HttpStatusCode.OK,
@@ -268,9 +262,7 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClientInterceptorOptions DeregisterGet(
         this HttpClientInterceptorOptions options,
-#if NET7_0_OR_GREATER
         [StringSyntax(StringSyntaxAttribute.Uri)]
-#endif
         string uriString)
     {
         if (options is null)
