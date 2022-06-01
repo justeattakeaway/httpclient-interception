@@ -2145,6 +2145,24 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
+    public static async Task Builder_Deregisters_With_Custom_Matcher()
+    {
+        // Arrange
+        var builder = new HttpRequestInterceptionBuilder()
+            .Requests().For((_) => Task.FromResult(true));
+
+        var options = new HttpClientInterceptorOptions()
+            .ThrowsOnMissingRegistration()
+            .Register(builder);
+
+        // Act
+        options.Deregister(builder);
+
+        // Assert
+        await Should.ThrowAsync<HttpRequestNotInterceptedException>(() => HttpAssert.GetAsync(options, "https://google.com/"));
+    }
+
+    [Fact]
     public static async Task Builder_For_Posted_Json_To_Match_Intercepts_Request()
     {
         // Arrange
