@@ -157,6 +157,9 @@ public class HttpClientInterceptorOptions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder"/> is <see langword="null"/>.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The HTTP registration associated with <paramref name="builder"/> could not be deregistered.
+    /// </exception>
     /// <remarks>
     /// If <paramref name="builder"/> has been reconfigured since it was used
     /// to register a previous HTTP request interception it will not remove that
