@@ -390,7 +390,7 @@ public class HttpClientInterceptorOptions
         if (interceptor.UserMatcher is not null || interceptor.ContentMatcher is not null)
         {
             // Use the internal matcher's hash code as UserMatcher (a delegate)
-            // will always return the hash code. See https://stackoverflow.com/q/6624151/1064169
+            // will always return the same hash code. See https://stackoverflow.com/q/6624151/1064169
             return $"CUSTOM:{interceptor.InternalMatcher!.GetHashCode().ToString(CultureInfo.InvariantCulture)}";
         }
 
