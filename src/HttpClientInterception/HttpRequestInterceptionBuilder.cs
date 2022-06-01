@@ -52,12 +52,28 @@ public class HttpRequestInterceptionBuilder
 
     private int? _priority;
 
+    private int _revision;
+
+    private string? _matchKey;
+
+    private int? _matchKeyRevision;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpRequestInterceptionBuilder"/> class.
     /// </summary>
     public HttpRequestInterceptionBuilder()
     {
     }
+
+    /// <summary>
+    /// Gets the internal match key for the builder, if any.
+    /// </summary>
+    /// <remarks>
+    /// This is effectively treated as a version of the builder setup itself
+    /// and is used to track whether or not the registrations have changed.
+    /// <see href="https://github.com/justeat/httpclient-interception/issues/361"/>.
+    /// </remarks>
+    internal string? Key => _revision == _matchKeyRevision ? _matchKey : null;
 
     /// <summary>
     /// Configures the builder to match any request that meets the criteria defined by the specified predicate.
@@ -75,6 +91,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder For(Predicate<HttpRequestMessage>? predicate)
     {
         _requestMatcher = predicate == null ? null : new Func<HttpRequestMessage, Task<bool>>((message) => Task.FromResult(predicate(message)));
+        IncrementRevision();
         return this;
     }
 
@@ -94,6 +111,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder For(Func<HttpRequestMessage, Task<bool>> predicate)
     {
         _requestMatcher = predicate;
+        IncrementRevision();
         return this;
     }
 
@@ -106,6 +124,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder ForAnyHost()
     {
         _ignoreHost = true;
+        IncrementRevision();
         return this;
     }
 
@@ -122,6 +141,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder ForMethod(HttpMethod method)
     {
         _method = method ?? throw new ArgumentNullException(nameof(method));
+        IncrementRevision();
         return this;
     }
 
@@ -135,6 +155,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder ForScheme(string scheme)
     {
         _uriBuilder.Scheme = scheme;
+        IncrementRevision();
         return this;
     }
 
@@ -149,6 +170,7 @@ public class HttpRequestInterceptionBuilder
     {
         _uriBuilder.Host = host;
         _ignoreHost = false;
+        IncrementRevision();
         return this;
     }
 
@@ -163,6 +185,7 @@ public class HttpRequestInterceptionBuilder
     {
         _uriBuilder.Port = port;
         _hasCustomPort = port != -1;
+        IncrementRevision();
         return this;
     }
 
@@ -176,6 +199,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder ForPath(string path)
     {
         _uriBuilder.Path = path;
+        IncrementRevision();
         return this;
     }
 
@@ -189,6 +213,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder ForQuery(string query)
     {
         _uriBuilder.Query = query;
+        IncrementRevision();
         return this;
     }
 
@@ -200,6 +225,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder IgnoringPath(bool ignorePath = true)
     {
         _ignorePath = ignorePath;
+        IncrementRevision();
         return this;
     }
 
@@ -211,6 +237,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder IgnoringQuery(bool ignoreQuery = true)
     {
         _ignoreQuery = ignoreQuery;
+        IncrementRevision();
         return this;
     }
 
@@ -228,6 +255,7 @@ public class HttpRequestInterceptionBuilder
     {
         _uriBuilder = new UriBuilder(uri);
         _ignoreHost = false;
+        IncrementRevision();
         return this;
     }
 
@@ -245,6 +273,7 @@ public class HttpRequestInterceptionBuilder
     {
         _uriBuilder = uriBuilder ?? throw new ArgumentNullException(nameof(uriBuilder));
         _ignoreHost = false;
+        IncrementRevision();
         return this;
     }
 
@@ -270,6 +299,8 @@ public class HttpRequestInterceptionBuilder
             _contentStream = null;
         }
 
+        IncrementRevision();
+
         return this;
     }
 
@@ -289,6 +320,8 @@ public class HttpRequestInterceptionBuilder
         {
             _contentStream = null;
         }
+
+        IncrementRevision();
 
         return this;
     }
@@ -315,6 +348,8 @@ public class HttpRequestInterceptionBuilder
             _contentFactory = null;
         }
 
+        IncrementRevision();
+
         return this;
     }
 
@@ -334,6 +369,8 @@ public class HttpRequestInterceptionBuilder
         {
             _contentFactory = null;
         }
+
+        IncrementRevision();
 
         return this;
     }
@@ -406,6 +443,8 @@ public class HttpRequestInterceptionBuilder
             current.Add(value);
         }
 
+        IncrementRevision();
+
         return this;
     }
 
@@ -427,6 +466,7 @@ public class HttpRequestInterceptionBuilder
         }
 
         _contentHeaders = new Dictionary<string, ICollection<string>>(headers, StringComparer.OrdinalIgnoreCase);
+        IncrementRevision();
         return this;
     }
 
@@ -455,6 +495,7 @@ public class HttpRequestInterceptionBuilder
         }
 
         _contentHeaders = copy;
+        IncrementRevision();
 
         return this;
     }
@@ -527,6 +568,8 @@ public class HttpRequestInterceptionBuilder
             current.Add(value);
         }
 
+        IncrementRevision();
+
         return this;
     }
 
@@ -555,6 +598,7 @@ public class HttpRequestInterceptionBuilder
         }
 
         _responseHeaders = copy;
+        IncrementRevision();
 
         return this;
     }
@@ -569,6 +613,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithResponseHeaders(IDictionary<string, ICollection<string>> headers)
     {
         _responseHeaders = new Dictionary<string, ICollection<string>>(headers, StringComparer.OrdinalIgnoreCase);
+        IncrementRevision();
         return this;
     }
 
@@ -582,6 +627,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithMediaType(string mediaType)
     {
         _mediaType = mediaType;
+        IncrementRevision();
         return this;
     }
 
@@ -605,6 +651,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithStatus(HttpStatusCode statusCode)
     {
         _statusCode = statusCode;
+        IncrementRevision();
         return this;
     }
 
@@ -618,6 +665,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithReason(string reasonPhrase)
     {
         _reasonPhrase = reasonPhrase;
+        IncrementRevision();
         return this;
     }
 
@@ -631,6 +679,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithVersion(Version version)
     {
         _version = version;
+        IncrementRevision();
         return this;
     }
 
@@ -644,6 +693,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithInterceptionCallback(Action<HttpRequestMessage> onIntercepted)
     {
         _onIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted);
+        IncrementRevision();
         return this;
     }
 
@@ -662,6 +712,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithInterceptionCallback(Predicate<HttpRequestMessage>? onIntercepted)
     {
         _onIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted);
+        IncrementRevision();
         return this;
     }
 
@@ -675,6 +726,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithInterceptionCallback(Func<HttpRequestMessage, Task> onIntercepted)
     {
         _onIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted);
+        IncrementRevision();
         return this;
     }
 
@@ -693,6 +745,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithInterceptionCallback(Func<HttpRequestMessage, Task<bool>> onIntercepted)
     {
         _onIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted);
+        IncrementRevision();
         return this;
     }
 
@@ -708,6 +761,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithInterceptionCallback(Func<HttpRequestMessage, CancellationToken, Task> onIntercepted)
     {
         _onIntercepted = DelegateHelpers.ConvertToBooleanTask(onIntercepted);
+        IncrementRevision();
         return this;
     }
 
@@ -726,6 +780,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithInterceptionCallback(Func<HttpRequestMessage, CancellationToken, Task<bool>> onIntercepted)
     {
         _onIntercepted = onIntercepted;
+        IncrementRevision();
         return this;
     }
 
@@ -750,6 +805,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder HavingPriority(int? priority)
     {
         _priority = priority;
+        IncrementRevision();
         return this;
     }
 
@@ -830,6 +886,8 @@ public class HttpRequestInterceptionBuilder
             current.Add(value);
         }
 
+        IncrementRevision();
+
         return this;
     }
 
@@ -861,6 +919,7 @@ public class HttpRequestInterceptionBuilder
         }
 
         _requestHeaders = copy;
+        IncrementRevision();
 
         return this;
     }
@@ -878,6 +937,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder ForRequestHeaders(IDictionary<string, ICollection<string>> headers)
     {
         _requestHeaders = new Dictionary<string, ICollection<string>>(headers, StringComparer.OrdinalIgnoreCase);
+        IncrementRevision();
         return this;
     }
 
@@ -897,6 +957,7 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder ForContent(Func<HttpContent, Task<bool>>? predicate)
     {
         _contentMatcher = predicate;
+        IncrementRevision();
         return this;
     }
 
@@ -959,5 +1020,20 @@ public class HttpRequestInterceptionBuilder
         }
 
         return response;
+    }
+
+    internal void SetMatchKey(string key)
+    {
+        _matchKey = key;
+        _matchKeyRevision = _revision;
+    }
+
+    private void IncrementRevision()
+    {
+        // It doesn't matter if somehow this Wraps around
+        unchecked
+        {
+            _revision++;
+        }
     }
 }
