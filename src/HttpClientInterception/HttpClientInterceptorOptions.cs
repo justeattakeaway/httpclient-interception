@@ -332,7 +332,7 @@ public class HttpClientInterceptorOptions
         string key = ConfigureMatcherAndRegister(interceptor);
 
         // Store the key so deregistration for the builder works if
-        // if it is not mutated after the registration has occurred.
+        // it is not mutated after the registration has occurred.
         builder.SetMatchKey(key);
 
         return this;
