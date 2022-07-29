@@ -105,10 +105,9 @@ public class HttpClientInterceptorOptions
             OnMissingRegistration = OnMissingRegistration,
             OnSend = OnSend,
             ThrowOnMissingRegistration = ThrowOnMissingRegistration,
+            _comparer = _comparer,
+            _mappings = new ConcurrentDictionary<string, HttpInterceptionResponse>(_mappings, _comparer),
         };
-
-        clone._comparer = _comparer;
-        clone._mappings = new ConcurrentDictionary<string, HttpInterceptionResponse>(_mappings, _comparer);
 
         return clone;
     }
@@ -158,6 +157,9 @@ public class HttpClientInterceptorOptions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder"/> is <see langword="null"/>.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The HTTP registration associated with <paramref name="builder"/> could not be deregistered.
+    /// </exception>
     /// <remarks>
     /// If <paramref name="builder"/> has been reconfigured since it was used
     /// to register a previous HTTP request interception it will not remove that
@@ -170,10 +172,22 @@ public class HttpClientInterceptorOptions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        HttpInterceptionResponse interceptor = builder.Build();
+        // Use any key stored in the builder to deregister the interception,
+        // if available, otherwise rebuild from the builder itself.
+        string? key = builder.Key;
 
-        string key = BuildKey(interceptor);
-        _mappings.Remove(key);
+        if (key is null)
+        {
+            HttpInterceptionResponse interceptor = builder.Build();
+            key = BuildKey(interceptor);
+        }
+
+        bool removed = _mappings.Remove(key);
+
+        if (!removed)
+        {
+            throw new InvalidOperationException("Failed to deregister HTTP request interception. The builder has not been used to register an HTTP request or has been mutated since it was registered.");
+        }
 
         return this;
     }
@@ -232,7 +246,7 @@ public class HttpClientInterceptorOptions
             StatusCode = statusCode,
         };
 
-        ConfigureMatcherAndRegister(interceptor);
+        _ = ConfigureMatcherAndRegister(interceptor);
 
         return this;
     }
@@ -291,7 +305,7 @@ public class HttpClientInterceptorOptions
             StatusCode = statusCode,
         };
 
-        ConfigureMatcherAndRegister(interceptor);
+        _ = ConfigureMatcherAndRegister(interceptor);
 
         return this;
     }
@@ -315,7 +329,11 @@ public class HttpClientInterceptorOptions
 
         HttpInterceptionResponse interceptor = builder.Build();
 
-        ConfigureMatcherAndRegister(interceptor);
+        string key = ConfigureMatcherAndRegister(interceptor);
+
+        // Store the key so deregistration for the builder works if
+        // it is not mutated after the registration has occurred.
+        builder.SetMatchKey(key);
 
         return this;
     }
@@ -390,8 +408,8 @@ public class HttpClientInterceptorOptions
         if (interceptor.UserMatcher is not null || interceptor.ContentMatcher is not null)
         {
             // Use the internal matcher's hash code as UserMatcher (a delegate)
-            // will always return the hash code. See https://stackoverflow.com/q/6624151/1064169
-            return $"CUSTOM:{interceptor.InternalMatcher!.GetHashCode().ToString(CultureInfo.InvariantCulture)}";
+            // will always return the same hash code. See https://stackoverflow.com/q/6624151/1064169
+            return $"CUSTOM:{interceptor.InternalMatcher?.GetHashCode().ToString(CultureInfo.InvariantCulture)}";
         }
 
         var builderForKey = new UriBuilder(interceptor.RequestUri!);
@@ -498,7 +516,7 @@ public class HttpClientInterceptorOptions
         return new(false, null);
     }
 
-    private void ConfigureMatcherAndRegister(HttpInterceptionResponse registration)
+    private string ConfigureMatcherAndRegister(HttpInterceptionResponse registration)
     {
         RequestMatcher matcher;
 
@@ -514,7 +532,10 @@ public class HttpClientInterceptorOptions
         registration.InternalMatcher = matcher;
 
         string key = BuildKey(registration);
+
         _mappings[key] = registration;
+
+        return key;
     }
 
     private sealed class OptionsScope : IDisposable

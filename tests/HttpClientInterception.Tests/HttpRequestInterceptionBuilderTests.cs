@@ -2145,6 +2145,53 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
+    public static async Task Builder_Deregisters_With_Custom_Matcher()
+    {
+        // Arrange
+        var builder = new HttpRequestInterceptionBuilder()
+            .Requests().For((_) => Task.FromResult(true));
+
+        var options = new HttpClientInterceptorOptions()
+            .ThrowsOnMissingRegistration()
+            .Register(builder);
+
+        // Act
+        options.Deregister(builder);
+
+        // Assert
+        await Should.ThrowAsync<HttpRequestNotInterceptedException>(() => HttpAssert.GetAsync(options, "https://google.com/"));
+    }
+
+    [Fact]
+    public static void Builder_Deregistration_With_Custom_Matcher_Throws_If_Builder_Mutated()
+    {
+        // Arrange
+        var builder = new HttpRequestInterceptionBuilder()
+            .Requests().For((_) => Task.FromResult(true));
+
+        var options = new HttpClientInterceptorOptions()
+            .Register(builder);
+
+        builder.ForAnyHost();
+
+        // Act and Assert
+        var exception = Should.Throw<InvalidOperationException>(() => options.Deregister(builder));
+        exception.Message.ShouldBe("Failed to deregister HTTP request interception. The builder has not been used to register an HTTP request or has been mutated since it was registered.");
+    }
+
+    [Fact]
+    public static void Builder_Deregistration_Throws_If_Builder_Not_Registered()
+    {
+        // Arrange
+        var builder = new HttpRequestInterceptionBuilder();
+        var options = new HttpClientInterceptorOptions();
+
+        // Act and Assert
+        var exception = Should.Throw<InvalidOperationException>(() => options.Deregister(builder));
+        exception.Message.ShouldBe("Failed to deregister HTTP request interception. The builder has not been used to register an HTTP request or has been mutated since it was registered.");
+    }
+
+    [Fact]
     public static async Task Builder_For_Posted_Json_To_Match_Intercepts_Request()
     {
         // Arrange
