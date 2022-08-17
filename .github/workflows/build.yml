@@ -63,4 +63,4 @@ jobs:
 
     - name: Push NuGet packages to NuGet.org
       run: dotnet nuget push "artifacts\packages\*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json
-      if: ${{ github.repository_owner == 'justeat' && startsWith(github.ref, 'refs/tags/v') && runner.os == 'Windows' }}
+      if: ${{ github.event.repository.fork == false && startsWith(github.ref, 'refs/tags/v') && runner.os == 'Windows' }}
