@@ -9,6 +9,7 @@ jobs:
   update-dotnet-sdk:
     name: Update .NET SDK
     runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork == false }}
 
     steps:
 
@@ -17,6 +18,5 @@ jobs:
 
     - name: Update .NET SDK
       uses: martincostello/update-dotnet-sdk@v2
-      if: ${{ github.repository_owner == 'justeat' }}
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
