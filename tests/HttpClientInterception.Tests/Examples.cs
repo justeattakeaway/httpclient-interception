@@ -755,4 +755,45 @@ public static class Examples
         // Verify that the expected number of attempts were made
         count.ShouldBe(retryCount);
     }
+
+    [Fact]
+    public static async Task Dynamic_Headers()
+    {
+        // Arrange
+        int counter = 0;
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForHost("service.local")
+            .ForPath("resource")
+            .WithJsonContent(new object())
+            .WithResponseHeaders(() =>
+            {
+                return new Dictionary<string, ICollection<string>>()
+                {
+                    ["x-count"] = new[] { (++counter).ToString(CultureInfo.InvariantCulture) },
+                };
+            });
+
+        var options = new HttpClientInterceptorOptions()
+            .Register(builder);
+
+        using var client = options.CreateHttpClient();
+        using var body = new StringContent(@"{ ""FirstName"": ""John"" }");
+
+        // Act
+        using var response1 = await client.GetAsync("http://service.local/resource");
+
+        // Assert
+        response1.Headers.TryGetValues("x-count", out var values).ShouldBeTrue();
+        values.ShouldNotBeNull();
+        values.ShouldBe(new[] { "1" });
+
+        // Act
+        using var response2 = await client.GetAsync("http://service.local/resource");
+
+        // Assert
+        response2.Headers.TryGetValues("x-count", out values).ShouldBeTrue();
+        values.ShouldNotBeNull();
+        values.ShouldBe(new[] { "2" });
+    }
 }

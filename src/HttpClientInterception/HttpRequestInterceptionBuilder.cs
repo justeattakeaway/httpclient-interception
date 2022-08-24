@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace JustEat.HttpClientInterception;
@@ -426,10 +428,7 @@ public class HttpRequestInterceptionBuilder
             throw new ArgumentNullException(nameof(values));
         }
 
-        if (_contentHeaders is null)
-        {
-            _contentHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
-        }
+        _contentHeaders ??= new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
 
         if (!_contentHeaders.TryGetValue(name, out var current))
         {
@@ -551,10 +550,7 @@ public class HttpRequestInterceptionBuilder
             throw new ArgumentNullException(nameof(values));
         }
 
-        if (_responseHeaders is null)
-        {
-            _responseHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
-        }
+        _responseHeaders ??= new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
 
         if (!_responseHeaders.TryGetValue(name, out ICollection<string>? current))
         {
@@ -613,6 +609,29 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithResponseHeaders(IDictionary<string, ICollection<string>> headers)
     {
         _responseHeaders = new Dictionary<string, ICollection<string>>(headers, StringComparer.OrdinalIgnoreCase);
+        IncrementRevision();
+        return this;
+    }
+
+    /// <summary>
+    /// Sets a delegate to a method that generates any custom HTTP response headers to use.
+    /// </summary>
+    /// <param name="headerFactory">Any delegate that creates any custom HTTP response headers to use.</param>
+    /// <returns>
+    /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="headerFactory"/> is <see langword="null"/>.
+    /// </exception>
+    public HttpRequestInterceptionBuilder WithResponseHeaders(
+        Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory)
+    {
+        if (headerFactory is null)
+        {
+            throw new ArgumentNullException(nameof(headerFactory));
+        }
+
+        _responseHeaders = new DynamicDictionary(headerFactory);
         IncrementRevision();
         return this;
     }
@@ -869,10 +888,7 @@ public class HttpRequestInterceptionBuilder
             throw new ArgumentNullException(nameof(values));
         }
 
-        if (_requestHeaders is null)
-        {
-            _requestHeaders = new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
-        }
+        _requestHeaders ??= new Dictionary<string, ICollection<string>>(StringComparer.OrdinalIgnoreCase);
 
         if (!_requestHeaders.TryGetValue(name, out ICollection<string>? current))
         {
@@ -983,40 +999,61 @@ public class HttpRequestInterceptionBuilder
             Version = _version,
         };
 
-        if (_requestHeaders?.Count > 0)
+        if (_requestHeaders is not null)
         {
-            var headers = new Dictionary<string, IEnumerable<string>>(_requestHeaders.Count);
-
-            foreach (var pair in _requestHeaders)
+            if (_requestHeaders is DynamicDictionary factory)
             {
-                headers[pair.Key] = pair.Value;
+                response.RequestHeaders = factory;
             }
+            else if (_requestHeaders.Count > 0)
+            {
+                var headers = new Dictionary<string, IEnumerable<string>>(_requestHeaders.Count);
 
-            response.RequestHeaders = headers;
+                foreach (var pair in _requestHeaders)
+                {
+                    headers[pair.Key] = pair.Value;
+                }
+
+                response.RequestHeaders = headers;
+            }
         }
 
-        if (_responseHeaders?.Count > 0)
+        if (_responseHeaders is not null)
         {
-            var headers = new Dictionary<string, IEnumerable<string>>(_responseHeaders.Count);
-
-            foreach (var pair in _responseHeaders)
+            if (_responseHeaders is DynamicDictionary factory)
             {
-                headers[pair.Key] = pair.Value;
+                response.ResponseHeaders = factory;
             }
+            else if (_responseHeaders.Count > 0)
+            {
+                var headers = new Dictionary<string, IEnumerable<string>>(_responseHeaders.Count);
 
-            response.ResponseHeaders = headers;
+                foreach (var pair in _responseHeaders)
+                {
+                    headers[pair.Key] = pair.Value;
+                }
+
+                response.ResponseHeaders = headers;
+            }
         }
 
-        if (_contentHeaders?.Count > 0)
+        if (_contentHeaders is not null)
         {
-            var headers = new Dictionary<string, IEnumerable<string>>(_contentHeaders.Count);
-
-            foreach (var pair in _contentHeaders)
+            if (_contentHeaders is DynamicDictionary factory)
             {
-                headers[pair.Key] = pair.Value;
+                response.ContentHeaders = factory;
             }
+            else if (_contentHeaders.Count > 0)
+            {
+                var headers = new Dictionary<string, IEnumerable<string>>(_contentHeaders.Count);
 
-            response.ContentHeaders = headers;
+                foreach (var pair in _contentHeaders)
+                {
+                    headers[pair.Key] = pair.Value;
+                }
+
+                response.ContentHeaders = headers;
+            }
         }
 
         return response;
@@ -1034,6 +1071,107 @@ public class HttpRequestInterceptionBuilder
         unchecked
         {
             _revision++;
+        }
+    }
+
+    private sealed class DynamicDictionary :
+        IDictionary<string, ICollection<string>>,
+        IEnumerable<KeyValuePair<string, IEnumerable<string>>>
+    {
+        private readonly Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> _generator;
+
+        internal DynamicDictionary(Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> generator)
+        {
+            _generator = generator;
+        }
+
+        [ExcludeFromCodeCoverage]
+        public ICollection<string> Keys => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public ICollection<ICollection<string>> Values => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public int Count => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public bool IsReadOnly => true;
+
+        [ExcludeFromCodeCoverage]
+        public ICollection<string> this[string key]
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
+
+        public IEnumerator<KeyValuePair<string, ICollection<string>>> GetEnumerator()
+            => _generator().GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => GetEnumerator();
+
+        IEnumerator<KeyValuePair<string, IEnumerable<string>>> IEnumerable<KeyValuePair<string, IEnumerable<string>>>.GetEnumerator()
+            => new EnumeratorAdapter(GetEnumerator());
+
+        [ExcludeFromCodeCoverage]
+        public void Add(string key, ICollection<string> value)
+            => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public void Add(KeyValuePair<string, ICollection<string>> item)
+            => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public void Clear()
+            => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public bool Contains(KeyValuePair<string, ICollection<string>> item)
+            => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public bool ContainsKey(string key)
+            => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public void CopyTo(KeyValuePair<string, ICollection<string>>[] array, int arrayIndex)
+            => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public bool Remove(string key)
+             => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public bool Remove(KeyValuePair<string, ICollection<string>> item)
+             => throw new NotSupportedException();
+
+        [ExcludeFromCodeCoverage]
+        public bool TryGetValue(string key, out ICollection<string> value)
+             => throw new NotSupportedException();
+
+        private sealed class EnumeratorAdapter : IEnumerator<KeyValuePair<string, IEnumerable<string>>>
+        {
+            private readonly IEnumerator<KeyValuePair<string, ICollection<string>>> _enumerator;
+
+            internal EnumeratorAdapter(IEnumerator<KeyValuePair<string, ICollection<string>>> enumerator)
+            {
+                _enumerator = enumerator;
+            }
+
+            public KeyValuePair<string, IEnumerable<string>> Current
+                => new(_enumerator.Current.Key, _enumerator.Current.Value);
+
+            object IEnumerator.Current
+                => _enumerator.Current;
+
+            public void Dispose()
+                => _enumerator.Dispose();
+
+            public bool MoveNext()
+                => _enumerator.MoveNext();
+
+            public void Reset()
+                => _enumerator.Reset();
         }
     }
 }
