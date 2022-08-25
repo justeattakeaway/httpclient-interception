@@ -17,7 +17,7 @@
     <PackageVersion Include="Polly" Version="7.2.3" />
     <PackageVersion Include="Refit" Version="6.3.2" />
     <PackageVersion Include="ReportGenerator" Version="5.1.9" />
-    <PackageVersion Include="Shouldly" Version="4.0.3" />
+    <PackageVersion Include="Shouldly" Version="4.1.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
     <PackageVersion Include="System.Text.Json" Version="4.6.0" />
     <PackageVersion Include="xunit" Version="2.4.2" />
