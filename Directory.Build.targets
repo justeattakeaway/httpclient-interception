@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <CommitBranch Condition=" '$(CommitBranch)' == '' ">$(BUILD_SOURCEBRANCHNAME)</CommitBranch>
-    <CommitBranch Condition=" '$(CommitBranch)' == '' and '$(GITHUB_REF)' != '' ">$(GITHUB_REF.Substring(11))</CommitBranch>
+    <CommitBranch Condition=" '$(CommitBranch)' == '' and '$(GITHUB_REF_NAME)' != '' ">$(GITHUB_REF_NAME)</CommitBranch>
     <CommitHash Condition=" '$(CommitHash)' == '' ">$(GITHUB_SHA)</CommitHash>
   </PropertyGroup>
   <Target Name="AddGitMetadaAssemblyAttributes"
