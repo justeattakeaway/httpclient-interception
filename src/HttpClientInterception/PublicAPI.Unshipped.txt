@@ -1,2 +1,4 @@
 #nullable enable
+JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForRequestHeaders(System.Func<System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, System.Collections.Generic.ICollection<string!>!>>!>! headerFactory) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
+JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.WithContentHeaders(System.Func<System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, System.Collections.Generic.ICollection<string!>!>>!>! headerFactory) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.WithResponseHeaders(System.Func<System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, System.Collections.Generic.ICollection<string!>!>>!>! headerFactory) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!

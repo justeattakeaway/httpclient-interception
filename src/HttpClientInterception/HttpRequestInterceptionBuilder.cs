@@ -500,6 +500,29 @@ public class HttpRequestInterceptionBuilder
     }
 
     /// <summary>
+    /// Sets a delegate to a method that generates any custom HTTP content headers to use.
+    /// </summary>
+    /// <param name="headerFactory">Any delegate that creates any custom HTTP content headers to use.</param>
+    /// <returns>
+    /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="headerFactory"/> is <see langword="null"/>.
+    /// </exception>
+    public HttpRequestInterceptionBuilder WithContentHeaders(
+        Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory)
+    {
+        if (headerFactory is null)
+        {
+            throw new ArgumentNullException(nameof(headerFactory));
+        }
+
+        _contentHeaders = new DynamicDictionary(headerFactory);
+        IncrementRevision();
+        return this;
+    }
+
+    /// <summary>
     /// Sets a custom HTTP response header to use with a single value.
     /// </summary>
     /// <param name="name">The name of the custom HTTP response header.</param>
@@ -947,12 +970,46 @@ public class HttpRequestInterceptionBuilder
     /// <returns>
     /// The current <see cref="HttpRequestInterceptionBuilder"/>.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="headers"/> is <see langword="null"/>.
+    /// </exception>
     /// <remarks>
     /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
     /// </remarks>
     public HttpRequestInterceptionBuilder ForRequestHeaders(IDictionary<string, ICollection<string>> headers)
     {
+        if (headers is null)
+        {
+            throw new ArgumentNullException(nameof(headers));
+        }
+
         _requestHeaders = new Dictionary<string, ICollection<string>>(headers, StringComparer.OrdinalIgnoreCase);
+        IncrementRevision();
+        return this;
+    }
+
+    /// <summary>
+    /// Sets a delegate to a method that generates the HTTP request headers to intercept.
+    /// </summary>
+    /// <param name="headerFactory">Any delegate that returns the HTTP request headers to intercept..</param>
+    /// <returns>
+    /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="headerFactory"/> is <see langword="null"/>.
+    /// </exception>
+    /// <remarks>
+    /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
+    /// </remarks>
+    public HttpRequestInterceptionBuilder ForRequestHeaders(
+        Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory)
+    {
+        if (headerFactory is null)
+        {
+            throw new ArgumentNullException(nameof(headerFactory));
+        }
+
+        _requestHeaders = new DynamicDictionary(headerFactory);
         IncrementRevision();
         return this;
     }

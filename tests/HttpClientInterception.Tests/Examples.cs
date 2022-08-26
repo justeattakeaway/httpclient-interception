@@ -757,43 +757,73 @@ public static class Examples
     }
 
     [Fact]
-    public static async Task Dynamic_Headers()
+    public static async Task Dynamically_Compute_Http_Headers()
     {
         // Arrange
-        int counter = 0;
+        int contentHeadersCounter = 0;
+        int requestHeadersCounter = 0;
+        int responseHeadersCounter = 0;
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForHost("service.local")
             .ForPath("resource")
-            .WithJsonContent(new object())
+            .ForRequestHeaders(() =>
+            {
+                return new Dictionary<string, ICollection<string>>()
+                {
+                    ["x-sequence"] = new[] { (++requestHeadersCounter).ToString(CultureInfo.InvariantCulture) },
+                };
+            })
+            .WithContentHeaders(() =>
+            {
+                return new Dictionary<string, ICollection<string>>()
+                {
+                    ["content-type"] = new[] { "application/json; v=" + (++contentHeadersCounter).ToString(CultureInfo.InvariantCulture) },
+                };
+            })
             .WithResponseHeaders(() =>
             {
                 return new Dictionary<string, ICollection<string>>()
                 {
-                    ["x-count"] = new[] { (++counter).ToString(CultureInfo.InvariantCulture) },
+                    ["x-count"] = new[] { (++responseHeadersCounter).ToString(CultureInfo.InvariantCulture) },
                 };
             });
 
         var options = new HttpClientInterceptorOptions()
-            .Register(builder);
+            .Register(builder)
+            .ThrowsOnMissingRegistration();
+
+        var method = HttpMethod.Get;
+        string requestUri = "http://service.local/resource";
 
         using var client = options.CreateHttpClient();
-        using var body = new StringContent(@"{ ""FirstName"": ""John"" }");
 
         // Act
-        using var response1 = await client.GetAsync("http://service.local/resource");
+        using var request1 = new HttpRequestMessage(method, requestUri);
+        request1.Headers.Add("x-sequence", "1");
+        using var response1 = await client.SendAsync(request1);
 
         // Assert
         response1.Headers.TryGetValues("x-count", out var values).ShouldBeTrue();
         values.ShouldNotBeNull();
         values.ShouldBe(new[] { "1" });
 
+        response1.Content.Headers.TryGetValues("content-type", out values).ShouldBeTrue();
+        values.ShouldNotBeNull();
+        values.ShouldBe(new[] { "application/json; v=1" });
+
         // Act
-        using var response2 = await client.GetAsync("http://service.local/resource");
+        using var request2 = new HttpRequestMessage(method, requestUri);
+        request2.Headers.Add("x-sequence", "2");
+        using var response2 = await client.SendAsync(request2);
 
         // Assert
         response2.Headers.TryGetValues("x-count", out values).ShouldBeTrue();
         values.ShouldNotBeNull();
         values.ShouldBe(new[] { "2" });
+
+        response2.Content.Headers.TryGetValues("content-type", out values).ShouldBeTrue();
+        values.ShouldNotBeNull();
+        values.ShouldBe(new[] { "application/json; v=2" });
     }
 }
