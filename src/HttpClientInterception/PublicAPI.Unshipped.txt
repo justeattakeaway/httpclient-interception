@@ -1,1 +1,2 @@
 #nullable enable
+JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.AndFor(System.Func<bool>? predicate) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!

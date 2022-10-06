@@ -7,6 +7,8 @@ namespace JustEat.HttpClientInterception;
 
 internal sealed class HttpInterceptionResponse
 {
+    internal Func<bool>? ConditionalMatcher { get; set; }
+
     internal Func<HttpContent, Task<bool>>? ContentMatcher { get; set; }
 
     internal Func<HttpRequestMessage, Task<bool>>? UserMatcher { get; set; }

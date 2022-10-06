@@ -405,7 +405,7 @@ public class HttpClientInterceptorOptions
     /// </returns>
     private static string BuildKey(HttpInterceptionResponse interceptor)
     {
-        if (interceptor.UserMatcher is not null || interceptor.ContentMatcher is not null)
+        if (interceptor.UserMatcher is not null || interceptor.ContentMatcher is not null || interceptor.ConditionalMatcher is not null)
         {
             // Use the internal matcher's hash code as UserMatcher (a delegate)
             // will always return the same hash code. See https://stackoverflow.com/q/6624151/1064169
