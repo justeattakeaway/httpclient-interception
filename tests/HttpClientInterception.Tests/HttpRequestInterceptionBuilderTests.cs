@@ -229,7 +229,7 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContent(() => new byte[] { 46, 78, 69, 84 });
+            .WithContent(() => ".NET"u8.ToArray());
 
         var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -248,7 +248,7 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContent(() => new byte[] { 46, 78, 69, 84 })
+            .WithContent(() => ".NET"u8.ToArray())
             .WithContent((Func<byte[]>)null)
             .WithContent((Func<Task<byte[]>>)null);
 
@@ -269,8 +269,8 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(new byte[] { 84, 69, 78, 46 })))
-            .WithContent(() => Task.FromResult(new byte[] { 46, 78, 69, 84 }));
+            .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(".NET"u8.ToArray())))
+            .WithContent(() => Task.FromResult(".NET"u8.ToArray()));
 
         var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -289,7 +289,7 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContentStream(() => new MemoryStream(new byte[] { 46, 78, 69, 84 }));
+            .WithContentStream(() => new MemoryStream(".NET"u8.ToArray()));
 
         var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -308,7 +308,7 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContentStream(() => new MemoryStream(new byte[] { 46, 78, 69, 84 }))
+            .WithContentStream(() => new MemoryStream(".NET"u8.ToArray()))
             .WithContentStream((Func<Stream>)null)
             .WithContentStream((Func<Task<Stream>>)null);
 
@@ -329,8 +329,8 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContent(() => Task.FromResult(new byte[] { 84, 69, 78, 46 }))
-            .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(new byte[] { 46, 78, 69, 84 })));
+            .WithContent(() => Task.FromResult(".NET"u8.ToArray()))
+            .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(".NET"u8.ToArray())));
 
         var options = new HttpClientInterceptorOptions().Register(builder);
 
