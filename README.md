@@ -10,7 +10,7 @@ A .NET Standard library for intercepting server-side HTTP dependencies.
 
 ## Introduction
 
-This library provides functionality for intercepting HTTP requests made using the `HttpClient` class in code targeting .NET Standard 2.0 (and later), and .NET Framework 4.6.1 and 4.7.2.
+This library provides functionality for intercepting HTTP requests made using the `HttpClient` class in code targeting .NET Standard 2.0 (and later), and .NET Framework 4.7.2.
 
 The primary use-case is for providing stub responses for use in tests for applications, such as an ASP.NET Core application, to drive your functional test scenarios.
 
@@ -282,7 +282,7 @@ The repository is hosted in [GitHub](https://github.com/justeat/httpclient-inter
 
 ## Building and Testing
 
-Compiling the library yourself requires Git and the [.NET SDK](https://www.microsoft.com/net/download/core "Download the .NET SDK") to be installed (version 6.0.100 or later).
+Compiling the library yourself requires Git and the [.NET SDK](https://www.microsoft.com/net/download/core "Download the .NET SDK") to be installed (version 7.0.100 or later).
 
 To build and test the library locally from a terminal/command-line, run one of the following set of commands:
 

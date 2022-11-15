@@ -16,12 +16,10 @@ internal static class BundleItemConverter
         IEnumerable<KeyValuePair<string, string>> templateValues)
     {
         // Override the template values in the JSON with any user-specified values
-        if (item.TemplateValues?.Count > 0)
+        foreach (var pair in templateValues)
         {
-            foreach (var pair in templateValues)
-            {
-                item.TemplateValues[pair.Key] = pair.Value;
-            }
+            item.TemplateValues ??= new Dictionary<string, string>();
+            item.TemplateValues[pair.Key] = pair.Value;
         }
 
         ValidateItem(item, out Uri? uri, out Version? version);
@@ -102,7 +100,7 @@ internal static class BundleItemConverter
                 return Encoding.UTF8.GetString(decoded);
 
             case "JSON":
-                return item.ContentJson!.ToString();
+                return item.ContentJson.ToString();
 
             case null:
             case "":

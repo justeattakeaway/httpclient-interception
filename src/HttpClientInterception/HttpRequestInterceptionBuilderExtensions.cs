@@ -2,6 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -181,9 +182,7 @@ public static class HttpRequestInterceptionBuilderExtensions
 
         async Task<byte[]> ContentFactoryAsync()
         {
-            // The cast is to make nullability match for .NET 5.0.
-            // See https://github.com/dotnet/runtime/issues/38494.
-            using var content = new FormUrlEncodedContent((IEnumerable<KeyValuePair<string?, string?>>)parameters);
+            using var content = new FormUrlEncodedContent(parameters);
             return await content.ReadAsByteArrayAsync().ConfigureAwait(false);
         }
 
@@ -207,7 +206,7 @@ public static class HttpRequestInterceptionBuilderExtensions
         this HttpRequestInterceptionBuilder builder,
         object content)
     {
-        return builder.WithNewtonsoftJsonContent(content);
+        return builder.WithSystemTextJsonContent(content);
     }
 
     /// <summary>
@@ -221,7 +220,10 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder"/> is <see langword="null"/>.
     /// </exception>
-    public static HttpRequestInterceptionBuilder ForUrl(this HttpRequestInterceptionBuilder builder, string uriString)
+    public static HttpRequestInterceptionBuilder ForUrl(
+        this HttpRequestInterceptionBuilder builder,
+        [StringSyntax(StringSyntaxAttribute.Uri)]
+        string uriString)
     {
         if (builder is null)
         {

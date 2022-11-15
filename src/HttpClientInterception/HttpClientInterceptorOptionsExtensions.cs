@@ -2,9 +2,10 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace JustEat.HttpClientInterception;
 
@@ -25,7 +26,10 @@ public static class HttpClientInterceptorOptionsExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="options"/> is <see langword="null"/>.
     /// </exception>
-    public static HttpClient CreateHttpClient(this HttpClientInterceptorOptions options, string baseAddress)
+    public static HttpClient CreateHttpClient(
+        this HttpClientInterceptorOptions options,
+        [StringSyntax(StringSyntaxAttribute.Uri)]
+        string baseAddress)
     {
         var baseAddressUri = new Uri(baseAddress, UriKind.RelativeOrAbsolute);
         return options.CreateHttpClient(baseAddressUri);
@@ -186,6 +190,7 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClientInterceptorOptions RegisterGetJson(
         this HttpClientInterceptorOptions options,
+        [StringSyntax(StringSyntaxAttribute.Uri)]
         string uriString,
         object content,
         HttpStatusCode statusCode = HttpStatusCode.OK)
@@ -202,7 +207,7 @@ public static class HttpClientInterceptorOptionsExtensions
 
         byte[] ContentFactory()
         {
-            string json = JsonConvert.SerializeObject(content);
+            string json = JsonSerializer.Serialize(content);
             return Encoding.UTF8.GetBytes(json);
         }
 
@@ -225,6 +230,7 @@ public static class HttpClientInterceptorOptionsExtensions
     /// </exception>
     public static HttpClientInterceptorOptions RegisterGet(
         this HttpClientInterceptorOptions options,
+        [StringSyntax(StringSyntaxAttribute.Uri)]
         string uriString,
         string content,
         HttpStatusCode statusCode = HttpStatusCode.OK,
@@ -254,7 +260,10 @@ public static class HttpClientInterceptorOptionsExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="options"/> is <see langword="null"/>.
     /// </exception>
-    public static HttpClientInterceptorOptions DeregisterGet(this HttpClientInterceptorOptions options, string uriString)
+    public static HttpClientInterceptorOptions DeregisterGet(
+        this HttpClientInterceptorOptions options,
+        [StringSyntax(StringSyntaxAttribute.Uri)]
+        string uriString)
     {
         if (options is null)
         {

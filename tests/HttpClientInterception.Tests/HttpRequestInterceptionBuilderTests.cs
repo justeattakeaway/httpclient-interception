@@ -3,8 +3,6 @@
 
 using System.Net;
 using System.Text.Json;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 namespace JustEat.HttpClientInterception;
@@ -117,26 +115,6 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
-    public static async Task WithNewtonsoftJsonContent_Uses_Default_Json_Serializer()
-    {
-        // Arrange
-        var requestUri = "https://google.com/";
-        var expected = new { mode = EventResetMode.ManualReset };
-
-        var builder = new HttpRequestInterceptionBuilder()
-            .ForUrl(requestUri)
-            .WithNewtonsoftJsonContent(expected);
-
-        var options = new HttpClientInterceptorOptions().Register(builder);
-
-        // Act
-        string actual = await HttpAssert.GetAsync(options, requestUri);
-
-        // Assert
-        actual.ShouldBe(@"{""mode"":1}");
-    }
-
-    [Fact]
     public static async Task WithSystemTextJsonContent_Uses_Default_Json_Serializer()
     {
         // Arrange
@@ -154,30 +132,6 @@ public static class HttpRequestInterceptionBuilderTests
 
         // Assert
         actual.ShouldBe(@"{""mode"":1}");
-    }
-
-    [Fact]
-    public static async Task Builder_Uses_Specified_Json_Serializer_Settings()
-    {
-        // Arrange
-        var requestUri = "https://google.com/";
-        var expected = new { mode = EventResetMode.ManualReset };
-
-        var settings = new JsonSerializerSettings();
-        settings.Converters.Add(new StringEnumConverter());
-
-        var builder = new HttpRequestInterceptionBuilder()
-            .ForPost()
-            .ForUrl(requestUri)
-            .WithNewtonsoftJsonContent(expected, settings);
-
-        var options = new HttpClientInterceptorOptions().Register(builder);
-
-        // Act
-        string actual = await HttpAssert.PostAsync(options, requestUri, new { });
-
-        // Assert
-        actual.ShouldBe(@"{""mode"":""ManualReset""}");
     }
 
     [Fact]
@@ -275,7 +229,7 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContent(() => new byte[] { 46, 78, 69, 84 });
+            .WithContent(() => ".NET"u8.ToArray());
 
         var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -294,7 +248,7 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContent(() => new byte[] { 46, 78, 69, 84 })
+            .WithContent(() => ".NET"u8.ToArray())
             .WithContent((Func<byte[]>)null)
             .WithContent((Func<Task<byte[]>>)null);
 
@@ -315,8 +269,8 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(new byte[] { 84, 69, 78, 46 })))
-            .WithContent(() => Task.FromResult(new byte[] { 46, 78, 69, 84 }));
+            .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(".NET"u8.ToArray())))
+            .WithContent(() => Task.FromResult(".NET"u8.ToArray()));
 
         var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -335,7 +289,7 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContentStream(() => new MemoryStream(new byte[] { 46, 78, 69, 84 }));
+            .WithContentStream(() => new MemoryStream(".NET"u8.ToArray()));
 
         var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -354,7 +308,7 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContentStream(() => new MemoryStream(new byte[] { 46, 78, 69, 84 }))
+            .WithContentStream(() => new MemoryStream(".NET"u8.ToArray()))
             .WithContentStream((Func<Stream>)null)
             .WithContentStream((Func<Task<Stream>>)null);
 
@@ -375,8 +329,8 @@ public static class HttpRequestInterceptionBuilderTests
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl(requestUri)
-            .WithContent(() => Task.FromResult(new byte[] { 84, 69, 78, 46 }))
-            .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(new byte[] { 46, 78, 69, 84 })));
+            .WithContent(() => Task.FromResult(".NET"u8.ToArray()))
+            .WithContentStream(() => Task.FromResult<Stream>(new MemoryStream(".NET"u8.ToArray())));
 
         var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -879,18 +833,6 @@ public static class HttpRequestInterceptionBuilderTests
         // Act and Assert
         Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithJsonContent(content), "builder");
         Should.Throw<ArgumentNullException>(() => builder.WithJsonContent(content), "content");
-    }
-
-    [Fact]
-    public static void WithNewtonsoftJsonContent_Validates_Parameters()
-    {
-        // Arrange
-        var builder = new HttpRequestInterceptionBuilder();
-        object content = null;
-
-        // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithNewtonsoftJsonContent(content), "builder");
-        Should.Throw<ArgumentNullException>(() => builder.WithNewtonsoftJsonContent(content), "content");
     }
 
     [Fact]
@@ -1707,10 +1649,14 @@ public static class HttpRequestInterceptionBuilderTests
     {
         // Arrange
         var builder = new HttpRequestInterceptionBuilder();
-        IDictionary<string, string> headers = null;
+        IDictionary<string, string> headersOfString = null;
+        IDictionary<string, ICollection<string>> headersOfStrings = null;
+        Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headers), "headers");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headersOfString), "headers");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headersOfStrings), "headers");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headerFactory), "headerFactory");
     }
 
     [Fact]
@@ -1736,10 +1682,12 @@ public static class HttpRequestInterceptionBuilderTests
         var builder = new HttpRequestInterceptionBuilder();
         IDictionary<string, string> headers = null;
         IDictionary<string, ICollection<string>> headerValues = null;
+        Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory = null;
 
         // Act and Assert
         Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headers), "headers");
         Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headerValues), "headers");
+        Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headerFactory), "headerFactory");
     }
 
     [Fact]
@@ -1764,9 +1712,11 @@ public static class HttpRequestInterceptionBuilderTests
         // Arrange
         var builder = new HttpRequestInterceptionBuilder();
         IDictionary<string, string> headers = null;
+        Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory = null;
 
         // Act and Assert
         Should.Throw<ArgumentNullException>(() => builder.WithResponseHeaders(headers), "headers");
+        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeaders(headerFactory), "headerFactory");
     }
 
     [Fact]
@@ -2246,7 +2196,7 @@ public static class HttpRequestInterceptionBuilderTests
             new { message = "Who are you?" });
 
         // Assert
-        actual.ShouldBe(@"{""message"":""My name is Alice, what's your name?""}");
+        actual.ShouldBe(@"{""message"":""My name is Alice, what\u0027s your name?""}");
 
         // Act
         actual = await HttpAssert.PostAsync(
