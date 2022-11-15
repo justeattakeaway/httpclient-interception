@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "id": "templated-bundle-json-no-parameters",
+  "comment": "An HTTP request bundle that uses templating for JSON where the parameters are only defined in code.",
+  "version": 1,
+  "items": [
+    {
+      "comment": "An HTTP request for a JSON response that uses templating.",
+      "uri": "https://api.github.com/orgs/${CompanyName}/repos",
+      "contentFormat": "json",
+      "contentJson": [
+        {
+          "id": 123456,
+          "name": "${RepoName}",
+          "full_name": "${CompanyName}/${RepoName}",
+          "private": false,
+          "owner": {
+            "login": "${CompanyName}",
+            "id": 1516790
+          }
+        }
+      ]
+    }
+  ]
+}
