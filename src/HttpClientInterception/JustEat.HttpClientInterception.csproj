@@ -12,7 +12,7 @@
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <Summary>A .NET library for intercepting server-side HTTP dependencies.</Summary>
-    <TargetFrameworks>netstandard2.0;net472;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472;net6.0;net7.0</TargetFrameworks>
     <!--
      TODO Remove after 4.0.0 ships to NuGet.org
     -->
