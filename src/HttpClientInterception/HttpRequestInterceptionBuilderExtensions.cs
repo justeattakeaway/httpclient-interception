@@ -181,9 +181,7 @@ public static class HttpRequestInterceptionBuilderExtensions
 
         async Task<byte[]> ContentFactoryAsync()
         {
-            // The cast is to make nullability match for .NET 5.0.
-            // See https://github.com/dotnet/runtime/issues/38494.
-            using var content = new FormUrlEncodedContent((IEnumerable<KeyValuePair<string?, string?>>)parameters);
+            using var content = new FormUrlEncodedContent(parameters);
             return await content.ReadAsByteArrayAsync().ConfigureAwait(false);
         }
 
@@ -207,7 +205,7 @@ public static class HttpRequestInterceptionBuilderExtensions
         this HttpRequestInterceptionBuilder builder,
         object content)
     {
-        return builder.WithNewtonsoftJsonContent(content);
+        return builder.WithSystemTextJsonContent(content);
     }
 
     /// <summary>

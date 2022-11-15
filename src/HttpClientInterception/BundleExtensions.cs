@@ -66,6 +66,58 @@ public static class BundleExtensions
 
         var bundle = BundleFactory.Create(path);
 
+        return options.RegisterBundle(bundle, templateValues);
+    }
+
+    /// <summary>
+    /// Registers a bundle of HTTP request interceptions from a specified JSON file.
+    /// </summary>
+    /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to register the bundle with.</param>
+    /// <param name="path">The path of the JSON file containing the serialized bundle.</param>
+    /// <param name="templateValues">The optional template values to specify.</param>
+    /// <param name="cancellationToken">The optional <see cref="CancellationToken"/> to use.</param>
+    /// <returns>
+    /// The value specified by <paramref name="options"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="options"/>, <paramref name="path"/> or <paramref name="templateValues"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// The version of the serialized bundle is not supported.
+    /// </exception>
+    public static async Task<HttpClientInterceptorOptions> RegisterBundleAsync(
+        this HttpClientInterceptorOptions options,
+        string path,
+        IEnumerable<KeyValuePair<string, string>>? templateValues = default,
+        CancellationToken cancellationToken = default)
+    {
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+
+        if (path is null)
+        {
+            throw new ArgumentNullException(nameof(path));
+        }
+
+        templateValues ??= Array.Empty<KeyValuePair<string, string>>();
+
+        var bundle = await BundleFactory.CreateAsync(path, cancellationToken).ConfigureAwait(false);
+
+        return options.RegisterBundle(bundle!, templateValues);
+    }
+
+    private static HttpClientInterceptorOptions RegisterBundle(
+        this HttpClientInterceptorOptions options,
+        Bundle? bundle,
+        IEnumerable<KeyValuePair<string, string>> templateValues)
+    {
+        if (bundle is null)
+        {
+            throw new InvalidOperationException("No HTTP request interception bundle was deserialized.");
+        }
+
         if (bundle.Version != 1)
         {
             throw new NotSupportedException($"HTTP request interception bundles of version {bundle.Version} are not supported.");

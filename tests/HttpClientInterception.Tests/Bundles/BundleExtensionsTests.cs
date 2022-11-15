@@ -52,6 +52,28 @@ public static class BundleExtensionsTests
     }
 
     [Fact]
+    public static async Task Can_Intercept_Http_Requests_From_Bundle_File_Async()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+        var headers = new Dictionary<string, string>()
+        {
+            ["accept"] = "application/vnd.github.v3+json",
+            ["authorization"] = "token my-token",
+            ["user-agent"] = "My-App/1.0.0",
+        };
+
+        // Act
+        await options.RegisterBundleAsync(Path.Join("Bundles", "http-request-bundle.json"));
+
+        // Assert
+        await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", mediaType: "text/html");
+        await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/order-history");
+        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat", headers: headers, mediaType: "application/json");
+    }
+
+    [Fact]
     public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_String()
     {
         // Arrange
@@ -204,6 +226,30 @@ public static class BundleExtensionsTests
     }
 
     [Fact]
+    public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Templated_String_With_User_Template_Values_Async()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+        var headers = new Dictionary<string, string>()
+        {
+            ["user-agent"] = "My-Other-App/1.0.0",
+        };
+
+        var templateValues = new Dictionary<string, string>()
+        {
+            ["ApplicationName"] = "My-Other-App",
+        };
+
+        // Act
+        await options.RegisterBundleAsync(Path.Join("Bundles", "templated-bundle-string.json"), templateValues);
+
+        // Assert
+        string content = await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", headers: headers);
+        content.ShouldBe("<html><head><title>Just Eat</title></head></html>");
+    }
+
+    [Fact]
     public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Templated_Base64()
     {
         // Arrange
@@ -286,6 +332,18 @@ public static class BundleExtensionsTests
         Should.Throw<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundle(path), "options");
         Should.Throw<ArgumentNullException>(() => options.RegisterBundle(null), "path");
         Should.Throw<ArgumentNullException>(() => options.RegisterBundle(path, null), "templateValues");
+    }
+
+    [Fact]
+    public static async Task RegisterBundleAsync_Validates_Parameters()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions();
+        string path = "foo.bar";
+
+        // Act and Assert
+        await Should.ThrowAsync<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleAsync(path), "options");
+        await Should.ThrowAsync<ArgumentNullException>(() => options.RegisterBundleAsync(null), "path");
     }
 
     [Fact]

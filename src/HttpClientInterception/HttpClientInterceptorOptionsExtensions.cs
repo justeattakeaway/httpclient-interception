@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using System.Net;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace JustEat.HttpClientInterception;
 
@@ -202,7 +202,7 @@ public static class HttpClientInterceptorOptionsExtensions
 
         byte[] ContentFactory()
         {
-            string json = JsonConvert.SerializeObject(content);
+            string json = JsonSerializer.Serialize(content);
             return Encoding.UTF8.GetBytes(json);
         }
 

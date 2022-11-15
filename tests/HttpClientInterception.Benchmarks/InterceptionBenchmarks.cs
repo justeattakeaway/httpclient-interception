@@ -4,7 +4,6 @@
 using System.Text.Json;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnosers;
-using Newtonsoft.Json.Linq;
 using Refit;
 
 namespace JustEat.HttpClientInterception;
@@ -92,7 +91,7 @@ public class InterceptionBenchmarks
     public async Task GetJsonNewtonsoftJson()
     {
         string json = await _client.GetStringAsync("https://api.github.com/orgs/justeat");
-        _ = JObject.Parse(json);
+        _ = JsonDocument.Parse(json);
     }
 
     [Benchmark]
