@@ -14,8 +14,7 @@ public class InterceptionBenchmarks
 {
     private readonly HttpClientInterceptorOptions _options;
     private readonly HttpClient _client;
-    private readonly IGitHub _serviceNewtonsoftJson;
-    private readonly IGitHub _serviceSystemTextJson;
+    private readonly IGitHub _service;
 
     public InterceptionBenchmarks()
     {
@@ -70,8 +69,7 @@ public class InterceptionBenchmarks
 
 #pragma warning disable CA2000
         _client = _options.CreateHttpClient();
-        _serviceNewtonsoftJson = RestService.For<IGitHub>(_options.CreateHttpClient("https://api.github.com"));
-        _serviceSystemTextJson = RestService.For<IGitHub>(_options.CreateHttpClient("https://api.github.com"), refitSettings);
+        _service = RestService.For<IGitHub>(_options.CreateHttpClient("https://api.github.com"), refitSettings);
 #pragma warning restore CA2000
     }
 
@@ -88,17 +86,16 @@ public class InterceptionBenchmarks
     }
 
     [Benchmark]
-    public async Task GetJsonNewtonsoftJson()
-    {
-        string json = await _client.GetStringAsync("https://api.github.com/orgs/justeat");
-        _ = JsonDocument.Parse(json);
-    }
-
-    [Benchmark]
-    public async Task GetJsonSystemTextJson()
+    public async Task GetJson()
     {
         var stream = await _client.GetStreamAsync("https://api.github.com/orgs/justeat");
         using var document = await JsonDocument.ParseAsync(stream);
+    }
+
+    [Benchmark]
+    public async Task GetJsonWithRefit()
+    {
+        _ = await _service.GetOrganizationAsync("justeat");
     }
 
     [Benchmark]
@@ -107,17 +104,5 @@ public class InterceptionBenchmarks
         using (await _client.GetStreamAsync("https://api.github.com/orgs/justeat?page=1"))
         {
         }
-    }
-
-    [Benchmark]
-    public async Task RefitNewtonsoftJson()
-    {
-        _ = await _serviceNewtonsoftJson.GetOrganizationAsync("justeat");
-    }
-
-    [Benchmark]
-    public async Task RefitSystemTextJson()
-    {
-        _ = await _serviceSystemTextJson.GetOrganizationAsync("justeat");
     }
 }
