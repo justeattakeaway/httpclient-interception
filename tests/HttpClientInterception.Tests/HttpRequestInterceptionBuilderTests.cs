@@ -1707,10 +1707,14 @@ public static class HttpRequestInterceptionBuilderTests
     {
         // Arrange
         var builder = new HttpRequestInterceptionBuilder();
-        IDictionary<string, string> headers = null;
+        IDictionary<string, string> headersOfString = null;
+        IDictionary<string, ICollection<string>> headersOfStrings = null;
+        Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headers), "headers");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headersOfString), "headers");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headersOfStrings), "headers");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headerFactory), "headerFactory");
     }
 
     [Fact]
@@ -1736,10 +1740,12 @@ public static class HttpRequestInterceptionBuilderTests
         var builder = new HttpRequestInterceptionBuilder();
         IDictionary<string, string> headers = null;
         IDictionary<string, ICollection<string>> headerValues = null;
+        Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory = null;
 
         // Act and Assert
         Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headers), "headers");
         Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headerValues), "headers");
+        Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headerFactory), "headerFactory");
     }
 
     [Fact]
@@ -1764,9 +1770,11 @@ public static class HttpRequestInterceptionBuilderTests
         // Arrange
         var builder = new HttpRequestInterceptionBuilder();
         IDictionary<string, string> headers = null;
+        Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory = null;
 
         // Act and Assert
         Should.Throw<ArgumentNullException>(() => builder.WithResponseHeaders(headers), "headers");
+        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeaders(headerFactory), "headerFactory");
     }
 
     [Fact]
