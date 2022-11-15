@@ -250,6 +250,32 @@ public static class BundleExtensionsTests
     }
 
     [Fact]
+    public static async Task Can_Intercept_Http_Requests_From_Bundle_File_With_Templated_Json_TemplateValues_Only_Defined_In_Code()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+        var templateValues = new Dictionary<string, string>()
+        {
+            ["AvatarUrl"] = "https://avatars.githubusercontent.com/u/1516790?v=4",
+            ["BlogUrl"] = "https://tech.justeattakeaway.com/",
+            ["CompanyName"] = "justeat",
+            ["RepoName"] = "httpclient-interception",
+        };
+
+        // Act
+        options.RegisterBundle(Path.Join("Bundles", "templated-bundle-json-no-parameters.json"), templateValues);
+
+        // Assert
+        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat/repos");
+        content
+            .Replace(" ", string.Empty, StringComparison.Ordinal)
+            .Replace("\n", string.Empty, StringComparison.Ordinal)
+            .Replace("\r", string.Empty, StringComparison.Ordinal)
+            .ShouldBe(@"[{""id"":123456,""name"":""httpclient-interception"",""full_name"":""justeat/httpclient-interception"",""private"":false,""owner"":{""login"":""justeat"",""id"":1516790}}]");
+    }
+
+    [Fact]
     public static void RegisterBundle_Validates_Parameters()
     {
         // Arrange
