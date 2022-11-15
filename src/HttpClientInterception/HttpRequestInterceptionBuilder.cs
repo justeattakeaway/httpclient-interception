@@ -36,8 +36,6 @@ public class HttpRequestInterceptionBuilder
 
     private Func<HttpRequestMessage, Task<bool>>? _requestMatcher;
 
-    private Func<bool>? _conditionMatcher;
-
     private string? _reasonPhrase;
 
     private HttpStatusCode _statusCode = HttpStatusCode.OK;
@@ -78,23 +76,6 @@ public class HttpRequestInterceptionBuilder
     /// <see href="https://github.com/justeat/httpclient-interception/issues/361"/>.
     /// </remarks>
     internal string? Key => _revision == _matchKeyRevision ? _matchKey : null;
-
-    /// <summary>
-    /// Configures the builder to match a request that meets one of several criteria.
-    /// </summary>
-    /// <param name="predicate">
-    /// A delegate to an asynchronous method which returns <see langword="true"/> if
-    /// the request is considered a match; otherwise <see langword="false"/>.
-    /// </param>
-    /// <returns>
-    /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
-    /// </returns>
-    public HttpRequestInterceptionBuilder AndFor(Func<bool>? predicate)
-    {
-        _conditionMatcher = predicate;
-        IncrementRevision();
-        return this;
-    }
 
     /// <summary>
     /// Configures the builder to match any request that meets the criteria defined by the specified predicate.
@@ -1057,7 +1038,6 @@ public class HttpRequestInterceptionBuilder
     {
         var response = new HttpInterceptionResponse()
         {
-            ConditionalMatcher = _conditionMatcher,
             ContentFactory = _contentFactory ?? EmptyContentFactory,
             ContentMatcher = _contentMatcher,
             ContentStream = _contentStream,

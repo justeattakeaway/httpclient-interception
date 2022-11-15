@@ -2259,7 +2259,7 @@ public static class HttpRequestInterceptionBuilderTests
             .ForHttps()
             .ForHost("api.github.com")
             .ForPath("orgs/justeat")
-            .AndFor(() => requestCount % 2 == 0)
+            .For(_ => requestCount % 2 == 0)
             .Responds()
             .WithStatus(HttpStatusCode.OK)
             .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
@@ -2269,7 +2269,7 @@ public static class HttpRequestInterceptionBuilderTests
             .ForHttps()
             .ForHost("api.github.com")
             .ForPath("orgs/justeat")
-            .AndFor(() => requestCount % 2 > 0)
+            .For(_ => requestCount % 2 > 0)
             .Responds()
             .WithStatus(HttpStatusCode.TooManyRequests)
             .WithJsonContent(new { error = "Too many requests" });

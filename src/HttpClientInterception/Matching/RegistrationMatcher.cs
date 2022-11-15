@@ -65,11 +65,6 @@ internal sealed class RegistrationMatcher : RequestMatcher
             isMatch = await _registration.ContentMatcher(request.Content!).ConfigureAwait(false);
         }
 
-        if (_registration.ConditionalMatcher is not null)
-        {
-            isMatch = _registration.ConditionalMatcher();
-        }
-
         return isMatch;
     }
 
