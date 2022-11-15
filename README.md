@@ -263,10 +263,10 @@ Intel Core i9-9980HK CPU 2.40GHz, 1 CPU, 16 logical and 8 physical cores
 ```
 |           Method |      Mean |     Error |    StdDev |   Gen0 | Allocated |
 |----------------- |----------:|----------:|----------:|-------:|----------:|
-|         [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L76) |  3.102 μs | 0.0780 μs | 0.2264 μs | 0.3128 |    2648 B |
-|          [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L82) |  3.675 μs | 0.0735 μs | 0.2143 μs | 0.3700 |    3104 B |
-|          [`GetJson`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L88) |  5.175 μs | 0.1223 μs | 0.3470 μs | 0.3433 |    2904 B |
-|        [`GetStream`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L101) | 36.359 μs | 0.7168 μs | 1.3981 μs | 0.3662 |    3312 B |
+|         [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L76-L80) |  3.102 μs | 0.0780 μs | 0.2264 μs | 0.3128 |    2648 B |
+|          [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L82-L86) |  3.675 μs | 0.0735 μs | 0.2143 μs | 0.3700 |    3104 B |
+|          [`GetJson`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L88-L93) |  5.175 μs | 0.1223 μs | 0.3470 μs | 0.3433 |    2904 B |
+|        [`GetStream`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L101-L107) | 36.359 μs | 0.7168 μs | 1.3981 μs | 0.3662 |    3312 B |
 
 ## Feedback
 
