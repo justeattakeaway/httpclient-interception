@@ -98,7 +98,7 @@ public class HttpRequestInterceptionBuilder
     }
 
     /// <summary>
-    /// Configures the builder to match any request that meets the criteria defined by the specified predicate.
+    /// Configures the builder to match any request that meets the criteria defined by the specified predicates.
     /// </summary>
     /// <param name="predicates">
     /// Two or more delegates to a method which returns <see langword="true"/> if the
