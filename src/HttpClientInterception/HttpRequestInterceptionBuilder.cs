@@ -142,6 +142,40 @@ public class HttpRequestInterceptionBuilder
     }
 
     /// <summary>
+    /// Configures the builder to match any request that meets the criteria defined by the specified predicate.
+    /// </summary>
+    /// <param name="onSuccessfulMatch">Delegate to run if predicate is matched successfully.</param>
+    /// <param name="predicates">
+    /// Two or more delegates to a method which returns <see langword="true"/> if the
+    /// request is considered a match; otherwise <see langword="false"/>.
+    /// </param>
+    /// <returns>
+    /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+    /// </returns>
+    /// <remarks>
+    /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
+    /// </remarks>
+    public HttpRequestInterceptionBuilder For(Action? onSuccessfulMatch, params Predicate<HttpRequestMessage>[] predicates)
+    {
+        _requestMatcher = (p) =>
+        {
+            foreach (var predicate in predicates)
+            {
+                if (!predicate(p))
+                {
+                    return Task.FromResult(false);
+                }
+            }
+
+            onSuccessfulMatch?.Invoke();
+
+            return Task.FromResult(true);
+        };
+        IncrementRevision();
+        return this;
+    }
+
+    /// <summary>
     /// Configures the builder to match any request that meets the criteria defined by the specified asynchronous predicate.
     /// </summary>
     /// <param name="predicate">
