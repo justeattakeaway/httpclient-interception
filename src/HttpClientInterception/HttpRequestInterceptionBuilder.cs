@@ -112,7 +112,13 @@ public class HttpRequestInterceptionBuilder
     /// </remarks>
     public HttpRequestInterceptionBuilder For(params Predicate<HttpRequestMessage>[] predicates)
     {
-        _requestMatcher = (p) =>
+        if (predicates?.Length == 1)
+        {
+            return For(predicates[0]);
+        }
+
+        _requestMatcher = predicates != null ?
+        (p) =>
         {
             foreach (var predicate in predicates)
             {
@@ -123,7 +129,8 @@ public class HttpRequestInterceptionBuilder
             }
 
             return Task.FromResult(true);
-        };
+        }
+        : null;
         IncrementRevision();
         return this;
     }
