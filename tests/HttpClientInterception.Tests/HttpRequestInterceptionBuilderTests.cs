@@ -2258,6 +2258,8 @@ public static class HttpRequestInterceptionBuilderTests
         bool OddNumberedRequests(HttpRequestMessage message) => requestCount % 2 > 0;
         void IncrementRequestCounter(HttpRequestMessage message) => requestCount++;
 
+        string requestUri = "https://api.github.com/orgs/justeat";
+
         var builder200 = new HttpRequestInterceptionBuilder()
             .Requests()
             .ForHttps()
@@ -2267,7 +2269,7 @@ public static class HttpRequestInterceptionBuilderTests
             .WithInterceptionCallback(IncrementRequestCounter)
             .Responds()
             .WithStatus(HttpStatusCode.OK)
-            .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
+            .WithJsonContent(new { id = 1516790, login = "justeat", url = requestUri });
 
         var builder429 = new HttpRequestInterceptionBuilder()
             .Requests()
@@ -2287,19 +2289,19 @@ public static class HttpRequestInterceptionBuilderTests
         using var client = options.CreateHttpClient();
 
         // Act & Assert (First request)
-        HttpResponseMessage firstResponse = await client.GetAsync("https://api.github.com/orgs/justeat");
+        HttpResponseMessage firstResponse = await client.GetAsync(requestUri);
         firstResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Act & Assert (Second request)
-        HttpResponseMessage secondResponse = await client.GetAsync("https://api.github.com/orgs/justeat");
+        HttpResponseMessage secondResponse = await client.GetAsync(requestUri);
         secondResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
 
         // Act & Assert (Third request)
-        HttpResponseMessage thirdResponse = await client.GetAsync("https://api.github.com/orgs/justeat");
+        HttpResponseMessage thirdResponse = await client.GetAsync(requestUri);
         thirdResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Act & Assert (Fourth request)
-        HttpResponseMessage fourthResponse = await client.GetAsync("https://api.github.com/orgs/justeat");
+        HttpResponseMessage fourthResponse = await client.GetAsync(requestUri);
         fourthResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
     }
 

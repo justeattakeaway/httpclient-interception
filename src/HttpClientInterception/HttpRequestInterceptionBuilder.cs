@@ -98,7 +98,27 @@ public class HttpRequestInterceptionBuilder
     }
 
     /// <summary>
-    /// Configures the builder to match any request that meets the criteria defined by the specified predicates.
+    /// Configures the builder to match any request that meets all the criteria defined by the specified predicates.
+    /// </summary>
+    /// <param name="predicates">
+    /// Delegates to methods which all return <see langword="true"/> if the
+    /// request is considered a match; otherwise <see langword="false"/>.
+    /// </param>
+    /// <returns>
+    /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+    /// </returns>
+    /// <remarks>
+    /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
+    /// </remarks>
+    public HttpRequestInterceptionBuilder For(params Predicate<HttpRequestMessage>[] predicates)
+    {
+        return For(predicates
+            .Select(predicate => new Func<HttpRequestMessage, Task<bool>>((message) => Task.FromResult(predicate(message))))
+            .ToArray());
+    }
+
+    /// <summary>
+    /// Configures the builder to match any request that meets all the criteria defined by the specified predicates.
     /// </summary>
     /// <param name="predicates">
     /// Two or more delegates to a method which returns <see langword="true"/> if the
@@ -110,27 +130,27 @@ public class HttpRequestInterceptionBuilder
     /// <remarks>
     /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
     /// </remarks>
-    public HttpRequestInterceptionBuilder For(params Predicate<HttpRequestMessage>[] predicates)
+    public HttpRequestInterceptionBuilder For(params Func<HttpRequestMessage, Task<bool>>[] predicates)
     {
         if (predicates?.Length == 1)
         {
             return For(predicates[0]);
         }
 
-        _requestMatcher = predicates != null ?
-        (p) =>
-        {
-            foreach (var predicate in predicates)
+        _requestMatcher = predicates == null || predicates.Length == 0
+            ? null
+            : async (p) =>
             {
-                if (!predicate(p))
+                foreach (var predicate in predicates)
                 {
-                    return Task.FromResult(false);
+                    if (!await predicate(p).ConfigureAwait(false))
+                    {
+                        return false;
+                    }
                 }
-            }
 
-            return Task.FromResult(true);
-        }
-        : null;
+                return true;
+            };
         IncrementRevision();
         return this;
     }
