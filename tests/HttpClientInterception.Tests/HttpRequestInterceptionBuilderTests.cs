@@ -2256,14 +2256,15 @@ public static class HttpRequestInterceptionBuilderTests
 
         bool EvenNumberedRequests(HttpRequestMessage message) => requestCount % 2 == 0;
         bool OddNumberedRequests(HttpRequestMessage message) => requestCount % 2 > 0;
-        void IncrementRequestCounter() => requestCount++;
+        void IncrementRequestCounter(HttpRequestMessage message) => requestCount++;
 
         var builder200 = new HttpRequestInterceptionBuilder()
             .Requests()
             .ForHttps()
             .ForHost("api.github.com")
             .ForPath("orgs/justeat")
-            .For(EvenNumberedRequests, onSuccessfulMatch: IncrementRequestCounter)
+            .For(EvenNumberedRequests)
+            .WithInterceptionCallback(IncrementRequestCounter)
             .Responds()
             .WithStatus(HttpStatusCode.OK)
             .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
@@ -2273,7 +2274,8 @@ public static class HttpRequestInterceptionBuilderTests
             .ForHttps()
             .ForHost("api.github.com")
             .ForPath("orgs/justeat")
-            .For(OddNumberedRequests, onSuccessfulMatch: IncrementRequestCounter)
+            .For(OddNumberedRequests)
+            .WithInterceptionCallback(IncrementRequestCounter)
             .Responds()
             .WithStatus(HttpStatusCode.TooManyRequests)
             .WithJsonContent(new { error = "Too many requests" });

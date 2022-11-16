@@ -712,9 +712,12 @@ public static class Examples
                 request.RequestUri == new Uri("https://api.github.com/orgs/justeat");
         }
 
+        void IncrementRequestCount(HttpRequestMessage message) => requestCount++;
+
         // Register an HTTP 429 error for the first three requests.
         var builder1 = new HttpRequestInterceptionBuilder()
-            .For(() => ++requestCount, IsHttpGetForJustEatGitHubOrg, _ => requestCount < 2)
+            .For(IsHttpGetForJustEatGitHubOrg, _ => requestCount < 2)
+            .WithInterceptionCallback(IncrementRequestCount)
             .Responds()
             .WithStatus(HttpStatusCode.TooManyRequests)
             .WithSystemTextJsonContent(new { message = "Too many requests" })
@@ -722,7 +725,8 @@ public static class Examples
 
         // Register another request for an HTTP 200 for all subsequent requests.
         var builder2 = new HttpRequestInterceptionBuilder()
-            .For(() => ++requestCount, IsHttpGetForJustEatGitHubOrg, _ => requestCount >= 2)
+            .For(IsHttpGetForJustEatGitHubOrg, _ => requestCount >= 2)
+            .WithInterceptionCallback(IncrementRequestCount)
             .Responds()
             .WithStatus(HttpStatusCode.OK)
             .WithSystemTextJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" })

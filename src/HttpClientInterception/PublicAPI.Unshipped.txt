@@ -1,3 +1,2 @@
 #nullable enable
-JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.For(System.Action? onSuccessfulMatch, params System.Predicate<System.Net.Http.HttpRequestMessage!>![]! predicates) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
-JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.For(System.Predicate<System.Net.Http.HttpRequestMessage!>? predicate, System.Action? onSuccessfulMatch) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
+JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.For(params System.Predicate<System.Net.Http.HttpRequestMessage!>![]! predicates) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
