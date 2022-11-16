@@ -101,8 +101,8 @@ public class HttpRequestInterceptionBuilder
     /// Configures the builder to match any request that meets all the criteria defined by the specified predicates.
     /// </summary>
     /// <param name="predicates">
-    /// Delegates to methods which all return <see langword="true"/> if the
-    /// request is considered a match; otherwise <see langword="false"/>.
+    /// Delegates to methods which must all return <see langword="true"/> for the
+    /// request to be considered a match.
     /// </param>
     /// <returns>
     /// The current <see cref="HttpRequestInterceptionBuilder"/>.
