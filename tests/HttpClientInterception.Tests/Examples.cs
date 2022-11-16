@@ -703,7 +703,7 @@ public static class Examples
             .ThrowsOnMissingRegistration();
 
         // Keep track of how many HTTP requests to GitHub have been made
-        int count = 0;
+        int requestCount = 0;
 
         static bool IsHttpGetForJustEatGitHubOrg(HttpRequestMessage request)
         {
@@ -712,22 +712,17 @@ public static class Examples
                 request.RequestUri == new Uri("https://api.github.com/orgs/justeat");
         }
 
-        // Register an HTTP 429 error with a specified priority. The For() delegate
-        // is used to match invocation counts that are not divisible by three so that
-        // the first, second, fourth, fifth, seventh etc. request returns an error.
+        // Register an HTTP 429 error for the first three requests.
         var builder1 = new HttpRequestInterceptionBuilder()
-            .For((request) => IsHttpGetForJustEatGitHubOrg(request) && ++count % 3 != 0)
-            .HavingPriority(0)
+            .For((request) => IsHttpGetForJustEatGitHubOrg(request) && requestCount < 2, () => ++requestCount)
             .Responds()
             .WithStatus(HttpStatusCode.TooManyRequests)
             .WithSystemTextJsonContent(new { message = "Too many requests" })
             .RegisterWith(options);
 
-        // Register another request for an HTTP 200 with no priority that will match
-        // if the higher-priority for the HTTP 429 response does not match the request.
-        // In practice this will match for the third, sixth, ninth etc. request.
+        // Register another request for an HTTP 200 for all subsequent requests.
         var builder2 = new HttpRequestInterceptionBuilder()
-            .For(IsHttpGetForJustEatGitHubOrg)
+            .For((request) => IsHttpGetForJustEatGitHubOrg(request) && requestCount >= 2, () => ++requestCount)
             .Responds()
             .WithStatus(HttpStatusCode.OK)
             .WithSystemTextJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" })
@@ -753,7 +748,7 @@ public static class Examples
         actual.Url.ShouldBe("https://api.github.com/orgs/justeat");
 
         // Verify that the expected number of attempts were made
-        count.ShouldBe(retryCount);
+        requestCount.ShouldBe(retryCount);
     }
 
     [Fact]
