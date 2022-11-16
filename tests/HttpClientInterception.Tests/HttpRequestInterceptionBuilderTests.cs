@@ -2249,17 +2249,21 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
-    public static async Task Can_Do_Custom_Matching()
+    public static async Task Can_Do_Custom_Matching_Even_Number_Requests_Return_200_Odd_Number_Requests_Return_429()
     {
         // Arrange
         int requestCount = 0;
+
+        bool EvenNumberedRequests(HttpRequestMessage message) => requestCount % 2 == 0;
+        bool OddNumberedRequests(HttpRequestMessage message) => requestCount % 2 > 0;
+        void IncrementRequestCounter() => requestCount++;
 
         var builder200 = new HttpRequestInterceptionBuilder()
             .Requests()
             .ForHttps()
             .ForHost("api.github.com")
             .ForPath("orgs/justeat")
-            .For(_ => requestCount % 2 == 0)
+            .For(EvenNumberedRequests, onSuccessfulMatch: IncrementRequestCounter)
             .Responds()
             .WithStatus(HttpStatusCode.OK)
             .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
@@ -2269,7 +2273,7 @@ public static class HttpRequestInterceptionBuilderTests
             .ForHttps()
             .ForHost("api.github.com")
             .ForPath("orgs/justeat")
-            .For(_ => requestCount % 2 > 0)
+            .For(OddNumberedRequests, onSuccessfulMatch: IncrementRequestCounter)
             .Responds()
             .WithStatus(HttpStatusCode.TooManyRequests)
             .WithJsonContent(new { error = "Too many requests" });
@@ -2283,22 +2287,18 @@ public static class HttpRequestInterceptionBuilderTests
         // Act & Assert (First request)
         HttpResponseMessage firstResponse = await client.GetAsync("https://api.github.com/orgs/justeat");
         firstResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        requestCount++;
 
         // Act & Assert (Second request)
         HttpResponseMessage secondResponse = await client.GetAsync("https://api.github.com/orgs/justeat");
         secondResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
-        requestCount++;
 
         // Act & Assert (Third request)
         HttpResponseMessage thirdResponse = await client.GetAsync("https://api.github.com/orgs/justeat");
         thirdResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        requestCount++;
 
         // Act & Assert (Fourth request)
         HttpResponseMessage fourthResponse = await client.GetAsync("https://api.github.com/orgs/justeat");
         fourthResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
-        requestCount++;
     }
 
     private sealed class CustomObject
