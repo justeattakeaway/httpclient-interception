@@ -2209,6 +2209,78 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
+    public static void Builder_For_Throws_ArgumentNullException_If_Custom_Matching_Delegate_Is_Null()
+    {
+        // Arrange
+        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+            new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .For((Predicate<HttpRequestMessage>[])null)
+                .Responds()
+                .WithStatus(HttpStatusCode.OK);
+
+        // Act & Assert
+        Should.Throw<ArgumentNullException>(InterceptionBuilder);
+    }
+
+    [Fact]
+    public static void Builder_For_Throws_ArgumentNullException_If_Async_Custom_Matching_Delegate_Is_Null()
+    {
+        // Arrange
+        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+            new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .For((Func<HttpRequestMessage, Task<bool>>[])null)
+                .Responds()
+                .WithStatus(HttpStatusCode.OK);
+
+        // Act & Assert
+        Should.Throw<ArgumentNullException>(InterceptionBuilder);
+    }
+
+    [Fact]
+    public static void Builder_For_Throws_InvalidOperationException_If_At_Least_One_Async_Custom_Matching_Delegate_Is_Null()
+    {
+        // Arrange
+        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+            new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .For(_ => Task.FromResult(true), null)
+                .Responds()
+                .WithStatus(HttpStatusCode.OK);
+
+        // Act & Assert
+        Should.Throw<InvalidOperationException>(InterceptionBuilder);
+    }
+
+    [Fact]
+    public static void Builder_For_Throws_InvalidOperationException_If_At_Least_One_Custom_Matching_Delegate_Is_Null()
+    {
+        // Arrange
+        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+            new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .For(_ => true, null)
+                .Responds()
+                .WithStatus(HttpStatusCode.OK);
+
+        // Act & Assert
+        Should.Throw<InvalidOperationException>(InterceptionBuilder);
+    }
+
+    [Fact]
     public static async Task Use_Asynchronous_Custom_Request_Matching()
     {
         // Arrange

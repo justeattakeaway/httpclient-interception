@@ -112,9 +112,9 @@ public class HttpRequestInterceptionBuilder
     /// </remarks>
     public HttpRequestInterceptionBuilder For(params Predicate<HttpRequestMessage>[] predicates)
     {
-        return For(predicates
-            .Select(predicate => new Func<HttpRequestMessage, Task<bool>>((message) => Task.FromResult(predicate(message))))
-            .ToArray());
+        _requestMatcher = DelegateHelpers.ConvertToBooleanTask(predicates);
+        IncrementRevision();
+        return this;
     }
 
     /// <summary>
@@ -132,25 +132,7 @@ public class HttpRequestInterceptionBuilder
     /// </remarks>
     public HttpRequestInterceptionBuilder For(params Func<HttpRequestMessage, Task<bool>>[] predicates)
     {
-        if (predicates?.Length == 1)
-        {
-            return For(predicates[0]);
-        }
-
-        _requestMatcher = predicates == null || predicates.Length == 0
-            ? null
-            : async (p) =>
-            {
-                foreach (var predicate in predicates)
-                {
-                    if (!await predicate(p).ConfigureAwait(false))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            };
+        _requestMatcher = DelegateHelpers.ConvertToBooleanTask(predicates);
         IncrementRevision();
         return this;
     }

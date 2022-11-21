@@ -14,6 +14,11 @@ internal static class DelegateHelpers
     private static readonly Task<bool> TrueTask = Task.FromResult(true);
 
     /// <summary>
+    /// A <see cref="Task{TResult}"/> that returns <see langword="false"/>. This field is read-only.
+    /// </summary>
+    private static readonly Task<bool> FalseTask = Task.FromResult(false);
+
+    /// <summary>
     /// Converts an action delegate for an intercepted message to return a
     /// <see cref="Task{TResult}"/> which returns <see langword="true"/>.
     /// </summary>
@@ -109,5 +114,101 @@ internal static class DelegateHelpers
         }
 
         return async (message, _) => await onIntercepted(message).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Converts a collection of function delegates for a set of predicates to match a request
+    /// <see cref="Task{TResult}"/> which returns <see langword="true"/>.
+    /// </summary>
+    /// <param name="predicates">A collection of delegates to convert.</param>
+    /// <returns>
+    /// The converted delegate if <paramref name="predicates"/> has a value; otherwise an exception is thrown if <paramref name="predicates"/> is null.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="predicates"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// If any <paramref name="predicates"/> value is <see langword="null"/>.
+    /// </exception>
+    internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(Func<HttpRequestMessage, Task<bool>>[] predicates)
+    {
+        if (predicates == null)
+        {
+            throw new ArgumentNullException(nameof(predicates));
+        }
+
+        foreach (Func<HttpRequestMessage, Task<bool>> predicate in predicates)
+        {
+            if (predicate == null)
+            {
+                throw new InvalidOperationException("At least one predicate is null");
+            }
+        }
+
+        if (predicates.Length == 1)
+        {
+            return predicates[0];
+        }
+
+        return async (message) =>
+        {
+            foreach (Func<HttpRequestMessage, Task<bool>> predicate in predicates)
+            {
+                if (!await predicate(message).ConfigureAwait(false))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+    }
+
+    /// <summary>
+    /// Converts a collection of function delegates for a set of predicates to match a request
+    /// <see cref="Task{TResult}"/> which returns <see langword="true"/>.
+    /// </summary>
+    /// <param name="predicates">A collection of delegates to convert.</param>
+    /// <returns>
+    /// The converted delegate if <paramref name="predicates"/> has a value; otherwise an exception is thrown if <paramref name="predicates"/> is null.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="predicates"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// If any <paramref name="predicates"/> value is <see langword="null"/>.
+    /// </exception>
+    internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(Predicate<HttpRequestMessage>[] predicates)
+    {
+        if (predicates == null)
+        {
+            throw new ArgumentNullException(nameof(predicates));
+        }
+
+        foreach (Predicate<HttpRequestMessage> predicate in predicates)
+        {
+            if (predicate == null)
+            {
+                throw new InvalidOperationException("At least one predicate is null");
+            }
+        }
+
+        if (predicates.Length == 1)
+        {
+            return message => Task.FromResult(predicates[0](message));
+        }
+
+        return (message) =>
+        {
+            foreach (Predicate<HttpRequestMessage> predicate in predicates)
+            {
+                if (!predicate(message))
+                {
+                    return FalseTask;
+                }
+            }
+
+            return TrueTask;
+        };
     }
 }
