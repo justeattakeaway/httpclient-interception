@@ -2290,7 +2290,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .ForHttps()
                 .ForHost("api.github.com")
                 .ForPath("orgs/justeat")
-                .For(_ => Task.FromResult(true), null)
+                .For(new Func<HttpRequestMessage, Task<bool>>[] { _ => Task.FromResult(true), null })
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
 
@@ -2308,7 +2308,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .ForHttps()
                 .ForHost("api.github.com")
                 .ForPath("orgs/justeat")
-                .For(_ => true, null)
+                .For(new Predicate<HttpRequestMessage>[] { _ => true, null })
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
 

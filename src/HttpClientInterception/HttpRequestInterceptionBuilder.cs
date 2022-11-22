@@ -110,7 +110,7 @@ public class HttpRequestInterceptionBuilder
     /// <remarks>
     /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
     /// </remarks>
-    public HttpRequestInterceptionBuilder For(params Predicate<HttpRequestMessage>[] predicates)
+    public HttpRequestInterceptionBuilder For(ICollection<Predicate<HttpRequestMessage>> predicates)
     {
         _requestMatcher = DelegateHelpers.ConvertToBooleanTask(predicates);
         IncrementRevision();
@@ -130,7 +130,7 @@ public class HttpRequestInterceptionBuilder
     /// <remarks>
     /// Pass a value of <see langword="null"/> to remove a previously-registered custom request matching predicate.
     /// </remarks>
-    public HttpRequestInterceptionBuilder For(params Func<HttpRequestMessage, Task<bool>>[] predicates)
+    public HttpRequestInterceptionBuilder For(ICollection<Func<HttpRequestMessage, Task<bool>>> predicates)
     {
         _requestMatcher = DelegateHelpers.ConvertToBooleanTask(predicates);
         IncrementRevision();

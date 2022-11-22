@@ -131,7 +131,7 @@ internal static class DelegateHelpers
     /// If any <paramref name="predicates"/> value is <see langword="null"/>.
     /// If any <paramref name="predicates"/> has no values.
     /// </exception>
-    internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(Func<HttpRequestMessage, Task<bool>>[] predicates)
+    internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(ICollection<Func<HttpRequestMessage, Task<bool>>> predicates)
     {
         if (predicates == null)
         {
@@ -146,14 +146,14 @@ internal static class DelegateHelpers
             }
         }
 
-        if (predicates.Length == 0)
+        if (predicates.Count == 0)
         {
             throw new InvalidOperationException("At least one predicate must be provided.");
         }
 
-        if (predicates.Length == 1)
+        if (predicates.Count == 1)
         {
-            return predicates[0];
+            return predicates.First();
         }
 
         return async (message) =>
@@ -185,7 +185,7 @@ internal static class DelegateHelpers
     /// If any <paramref name="predicates"/> value is <see langword="null"/>.
     /// If any <paramref name="predicates"/> has no values.
     /// </exception>
-    internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(Predicate<HttpRequestMessage>[] predicates)
+    internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(ICollection<Predicate<HttpRequestMessage>> predicates)
     {
         if (predicates == null)
         {
@@ -200,14 +200,18 @@ internal static class DelegateHelpers
             }
         }
 
-        if (predicates.Length == 0)
+        if (predicates.Count == 0)
         {
             throw new InvalidOperationException("At least one predicate must be provided.");
         }
 
-        if (predicates.Length == 1)
+        if (predicates.Count == 1)
         {
-            return message => Task.FromResult(predicates[0](message));
+            return message =>
+            {
+                Predicate<HttpRequestMessage>? predicate = predicates.First();
+                return Task.FromResult(predicate(message));
+            };
         }
 
         return (message) =>
