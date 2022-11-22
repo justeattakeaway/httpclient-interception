@@ -117,8 +117,8 @@ internal static class DelegateHelpers
     }
 
     /// <summary>
-    /// Converts a collection of function delegates for a set of predicates to match a request
-    /// <see cref="Task{TResult}"/> which returns <see langword="true"/>.
+    /// Converts a collection of function delegates to return a
+    /// <see cref="Func{T,TResult}"/> which returns <see langword="Task{bool}"/>.
     /// </summary>
     /// <param name="predicates">A collection of delegates to convert.</param>
     /// <returns>
@@ -129,6 +129,7 @@ internal static class DelegateHelpers
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// If any <paramref name="predicates"/> value is <see langword="null"/>.
+    /// If any <paramref name="predicates"/> has no values.
     /// </exception>
     internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(Func<HttpRequestMessage, Task<bool>>[] predicates)
     {
@@ -143,6 +144,11 @@ internal static class DelegateHelpers
             {
                 throw new InvalidOperationException("At least one predicate is null.");
             }
+        }
+
+        if (predicates.Length == 0)
+        {
+            throw new InvalidOperationException("At least one predicate must be provided.");
         }
 
         if (predicates.Length == 1)
@@ -165,8 +171,8 @@ internal static class DelegateHelpers
     }
 
     /// <summary>
-    /// Converts a collection of function delegates for a set of predicates to match a request
-    /// <see cref="Task{TResult}"/> which returns <see langword="true"/>.
+    /// Converts a collection of function delegates to return a
+    /// <see cref="Func{T,TResult}"/> which returns <see langword="Task{bool}"/>.
     /// </summary>
     /// <param name="predicates">A collection of delegates to convert.</param>
     /// <returns>
@@ -177,6 +183,7 @@ internal static class DelegateHelpers
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// If any <paramref name="predicates"/> value is <see langword="null"/>.
+    /// If any <paramref name="predicates"/> has no values.
     /// </exception>
     internal static Func<HttpRequestMessage, Task<bool>> ConvertToBooleanTask(Predicate<HttpRequestMessage>[] predicates)
     {
@@ -191,6 +198,11 @@ internal static class DelegateHelpers
             {
                 throw new InvalidOperationException("At least one predicate is null.");
             }
+        }
+
+        if (predicates.Length == 0)
+        {
+            throw new InvalidOperationException("At least one predicate must be provided.");
         }
 
         if (predicates.Length == 1)
