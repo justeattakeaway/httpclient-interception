@@ -141,7 +141,7 @@ internal static class DelegateHelpers
         {
             if (predicate == null)
             {
-                throw new InvalidOperationException("At least one predicate is null");
+                throw new InvalidOperationException("At least one predicate is null.");
             }
         }
 
@@ -189,7 +189,7 @@ internal static class DelegateHelpers
         {
             if (predicate == null)
             {
-                throw new InvalidOperationException("At least one predicate is null");
+                throw new InvalidOperationException("At least one predicate is null.");
             }
         }
 
