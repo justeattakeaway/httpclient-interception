@@ -207,8 +207,8 @@ internal static class DelegateHelpers
 
         if (predicates.Count == 1)
         {
-            var predicate = predicates.First();
-            return message => return Task.FromResult(predicate(message));
+            Predicate<HttpRequestMessage>? predicate = predicates.First();
+            return message => Task.FromResult(predicate(message));
         }
 
         return (message) =>
