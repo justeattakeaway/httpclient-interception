@@ -716,7 +716,7 @@ public static class Examples
 
         // Register an HTTP 429 error for the first three requests.
         var builder1 = new HttpRequestInterceptionBuilder()
-            .For(new Predicate<HttpRequestMessage>[] { IsHttpGetForJustEatGitHubOrg, _ => requestCount < 2 })
+            .ForAll(new Predicate<HttpRequestMessage>[] { IsHttpGetForJustEatGitHubOrg, _ => requestCount < 2 })
             .WithInterceptionCallback(IncrementRequestCount)
             .Responds()
             .WithStatus(HttpStatusCode.TooManyRequests)
@@ -725,7 +725,7 @@ public static class Examples
 
         // Register another request for an HTTP 200 for all subsequent requests.
         var builder2 = new HttpRequestInterceptionBuilder()
-            .For(new Predicate<HttpRequestMessage>[] { IsHttpGetForJustEatGitHubOrg, _ => requestCount >= 2 })
+            .ForAll(new Predicate<HttpRequestMessage>[] { IsHttpGetForJustEatGitHubOrg, _ => requestCount >= 2 })
             .WithInterceptionCallback(IncrementRequestCount)
             .Responds()
             .WithStatus(HttpStatusCode.OK)

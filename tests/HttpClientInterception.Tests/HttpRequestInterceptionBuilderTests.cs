@@ -2209,7 +2209,7 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
-    public static void Builder_For_Throws_ArgumentNullException_If_Custom_Matching_Delegate_Is_Null()
+    public static void Builder_ForAll_Throws_ArgumentNullException_If_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
         HttpRequestInterceptionBuilder InterceptionBuilder() =>
@@ -2218,7 +2218,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .ForHttps()
                 .ForHost("api.github.com")
                 .ForPath("orgs/justeat")
-                .For((Predicate<HttpRequestMessage>[])null)
+                .ForAll((Predicate<HttpRequestMessage>[])null)
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
 
@@ -2227,7 +2227,7 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
-    public static void Builder_For_Throws_InvalidOperationException_If_Custom_Matching_Delegate_Is_Empty()
+    public static void Builder_ForAll_Throws_InvalidOperationException_If_Custom_Matching_Delegate_Is_Empty()
     {
         // Arrange
         HttpRequestInterceptionBuilder InterceptionBuilder() =>
@@ -2236,7 +2236,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .ForHttps()
                 .ForHost("api.github.com")
                 .ForPath("orgs/justeat")
-                .For(Array.Empty<Predicate<HttpRequestMessage>>())
+                .ForAll(Array.Empty<Predicate<HttpRequestMessage>>())
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
 
@@ -2245,7 +2245,7 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
-    public static void Builder_For_Throws_ArgumentNullException_If_Async_Custom_Matching_Delegate_Is_Null()
+    public static void Builder_ForAll_Throws_ArgumentNullException_If_Async_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
         HttpRequestInterceptionBuilder InterceptionBuilder() =>
@@ -2254,7 +2254,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .ForHttps()
                 .ForHost("api.github.com")
                 .ForPath("orgs/justeat")
-                .For((Func<HttpRequestMessage, Task<bool>>[])null)
+                .ForAll((Func<HttpRequestMessage, Task<bool>>[])null)
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
 
@@ -2263,7 +2263,7 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
-    public static void Builder_For_Throws_InvalidOperationException_If_Async_Custom_Matching_Delegate_Is_Empty()
+    public static void Builder_ForAll_Throws_InvalidOperationException_If_Async_Custom_Matching_Delegate_Is_Empty()
     {
         // Arrange
         HttpRequestInterceptionBuilder InterceptionBuilder() =>
@@ -2272,7 +2272,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .ForHttps()
                 .ForHost("api.github.com")
                 .ForPath("orgs/justeat")
-                .For(Array.Empty<Func<HttpRequestMessage, Task<bool>>>())
+                .ForAll(Array.Empty<Func<HttpRequestMessage, Task<bool>>>())
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
 
@@ -2281,7 +2281,7 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
-    public static void Builder_For_Throws_InvalidOperationException_If_At_Least_One_Async_Custom_Matching_Delegate_Is_Null()
+    public static void Builder_ForAll_Throws_InvalidOperationException_If_At_Least_One_Async_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
         HttpRequestInterceptionBuilder InterceptionBuilder() =>
@@ -2290,7 +2290,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .ForHttps()
                 .ForHost("api.github.com")
                 .ForPath("orgs/justeat")
-                .For(new Func<HttpRequestMessage, Task<bool>>[] { _ => Task.FromResult(true), null })
+                .ForAll(new Func<HttpRequestMessage, Task<bool>>[] { _ => Task.FromResult(true), null })
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
 
@@ -2299,7 +2299,7 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
-    public static void Builder_For_Throws_InvalidOperationException_If_At_Least_One_Custom_Matching_Delegate_Is_Null()
+    public static void Builder_ForAll_Throws_InvalidOperationException_If_At_Least_One_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
         HttpRequestInterceptionBuilder InterceptionBuilder() =>
@@ -2308,7 +2308,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .ForHttps()
                 .ForHost("api.github.com")
                 .ForPath("orgs/justeat")
-                .For(new Predicate<HttpRequestMessage>[] { _ => true, null })
+                .ForAll(new Predicate<HttpRequestMessage>[] { _ => true, null })
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
 
