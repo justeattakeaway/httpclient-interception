@@ -21,6 +21,8 @@ JustEat.HttpClientInterception.HttpClientInterceptorOptionsExtensions
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.For(System.Func<System.Net.Http.HttpRequestMessage!, System.Threading.Tasks.Task<bool>!>! predicate) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.For(System.Predicate<System.Net.Http.HttpRequestMessage!>? predicate) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
+JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForAll(System.Collections.Generic.ICollection<System.Func<System.Net.Http.HttpRequestMessage!, System.Threading.Tasks.Task<bool>!>!>! predicates) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
+JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForAll(System.Collections.Generic.ICollection<System.Predicate<System.Net.Http.HttpRequestMessage!>!>! predicates) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForAnyHost() -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForContent(System.Func<System.Net.Http.HttpContent!, System.Threading.Tasks.Task<bool>!>? predicate) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
 JustEat.HttpClientInterception.HttpRequestInterceptionBuilder.ForHost(string! host) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!

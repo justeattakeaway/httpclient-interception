@@ -2209,6 +2209,114 @@ public static class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
+    public static void Builder_ForAll_Throws_ArgumentNullException_If_Custom_Matching_Delegate_Is_Null()
+    {
+        // Arrange
+        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+            new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .ForAll((Predicate<HttpRequestMessage>[])null)
+                .Responds()
+                .WithStatus(HttpStatusCode.OK);
+
+        // Act & Assert
+        Should.Throw<ArgumentNullException>(InterceptionBuilder);
+    }
+
+    [Fact]
+    public static void Builder_ForAll_Throws_InvalidOperationException_If_Custom_Matching_Delegate_Is_Empty()
+    {
+        // Arrange
+        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+            new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .ForAll(Array.Empty<Predicate<HttpRequestMessage>>())
+                .Responds()
+                .WithStatus(HttpStatusCode.OK);
+
+        // Act & Assert
+        Should.Throw<InvalidOperationException>(InterceptionBuilder);
+    }
+
+    [Fact]
+    public static void Builder_ForAll_Throws_ArgumentNullException_If_Async_Custom_Matching_Delegate_Is_Null()
+    {
+        // Arrange
+        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+            new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .ForAll((Func<HttpRequestMessage, Task<bool>>[])null)
+                .Responds()
+                .WithStatus(HttpStatusCode.OK);
+
+        // Act & Assert
+        Should.Throw<ArgumentNullException>(InterceptionBuilder);
+    }
+
+    [Fact]
+    public static void Builder_ForAll_Throws_InvalidOperationException_If_Async_Custom_Matching_Delegate_Is_Empty()
+    {
+        // Arrange
+        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+            new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .ForAll(Array.Empty<Func<HttpRequestMessage, Task<bool>>>())
+                .Responds()
+                .WithStatus(HttpStatusCode.OK);
+
+        // Act & Assert
+        Should.Throw<InvalidOperationException>(InterceptionBuilder);
+    }
+
+    [Fact]
+    public static void Builder_ForAll_Throws_InvalidOperationException_If_At_Least_One_Async_Custom_Matching_Delegate_Is_Null()
+    {
+        // Arrange
+        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+            new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .ForAll(new Func<HttpRequestMessage, Task<bool>>[] { _ => Task.FromResult(true), null })
+                .Responds()
+                .WithStatus(HttpStatusCode.OK);
+
+        // Act & Assert
+        Should.Throw<InvalidOperationException>(InterceptionBuilder);
+    }
+
+    [Fact]
+    public static void Builder_ForAll_Throws_InvalidOperationException_If_At_Least_One_Custom_Matching_Delegate_Is_Null()
+    {
+        // Arrange
+        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+            new HttpRequestInterceptionBuilder()
+                .Requests()
+                .ForHttps()
+                .ForHost("api.github.com")
+                .ForPath("orgs/justeat")
+                .ForAll(new Predicate<HttpRequestMessage>[] { _ => true, null })
+                .Responds()
+                .WithStatus(HttpStatusCode.OK);
+
+        // Act & Assert
+        Should.Throw<InvalidOperationException>(InterceptionBuilder);
+    }
+
+    [Fact]
     public static async Task Use_Asynchronous_Custom_Request_Matching()
     {
         // Arrange
@@ -2246,6 +2354,63 @@ public static class HttpRequestInterceptionBuilderTests
         // Act and Assert
         await Should.ThrowAsync<HttpRequestNotInterceptedException>(
             () => client.GetStringAsync("https://google.com/"));
+    }
+
+    [Fact]
+    public static async Task Can_Do_Custom_Matching_Even_Number_Requests_Return_200_Odd_Number_Requests_Return_429()
+    {
+        // Arrange
+        int requestCount = 0;
+
+        bool EvenNumberedRequests(HttpRequestMessage message) => requestCount % 2 == 0;
+        bool OddNumberedRequests(HttpRequestMessage message) => requestCount % 2 > 0;
+        void IncrementRequestCounter(HttpRequestMessage message) => requestCount++;
+
+        string requestUri = "https://api.github.com/orgs/justeat";
+
+        var builder200 = new HttpRequestInterceptionBuilder()
+            .Requests()
+            .ForHttps()
+            .ForHost("api.github.com")
+            .ForPath("orgs/justeat")
+            .For(EvenNumberedRequests)
+            .WithInterceptionCallback(IncrementRequestCounter)
+            .Responds()
+            .WithStatus(HttpStatusCode.OK)
+            .WithJsonContent(new { id = 1516790, login = "justeat", url = requestUri });
+
+        var builder429 = new HttpRequestInterceptionBuilder()
+            .Requests()
+            .ForHttps()
+            .ForHost("api.github.com")
+            .ForPath("orgs/justeat")
+            .For(OddNumberedRequests)
+            .WithInterceptionCallback(IncrementRequestCounter)
+            .Responds()
+            .WithStatus(HttpStatusCode.TooManyRequests)
+            .WithJsonContent(new { error = "Too many requests" });
+
+        var options = new HttpClientInterceptorOptions()
+            .Register(builder200)
+            .Register(builder429);
+
+        using var client = options.CreateHttpClient();
+
+        // Act & Assert (First request)
+        HttpResponseMessage firstResponse = await client.GetAsync(requestUri);
+        firstResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        // Act & Assert (Second request)
+        HttpResponseMessage secondResponse = await client.GetAsync(requestUri);
+        secondResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
+
+        // Act & Assert (Third request)
+        HttpResponseMessage thirdResponse = await client.GetAsync(requestUri);
+        thirdResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        // Act & Assert (Fourth request)
+        HttpResponseMessage fourthResponse = await client.GetAsync(requestUri);
+        fourthResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
     }
 
     private sealed class CustomObject
