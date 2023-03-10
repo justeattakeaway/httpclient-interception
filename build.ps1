@@ -88,12 +88,21 @@ function DotNetPack {
 
     $PackageOutputPath = (Join-Path $OutputPath "packages")
 
+    $additionalArgs = @()
+
     if ($VersionSuffix) {
-        & $dotnet pack $Project --output $PackageOutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
+        $additionalArgs += "--version-suffix"
+        $additionalArgs += $VersionSuffix
     }
-    else {
-        & $dotnet pack $Project --output $PackageOutputPath --configuration $Configuration --include-symbols --include-source
-    }
+
+    & $dotnet `
+      pack $Project `
+      --output $PackageOutputPath `
+      --configuration $Configuration `
+      --include-symbols `
+      --include-source `
+      $additionalArgs
+
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet pack failed with exit code $LASTEXITCODE"
     }
@@ -101,14 +110,6 @@ function DotNetPack {
 
 function DotNetTest {
     param([string]$Project)
-
-    $nugetPath = $env:NUGET_PACKAGES ?? (Join-Path ($env:USERPROFILE ?? "~") ".nuget\packages")
-    $propsFile = Join-Path $solutionPath "Directory.Packages.props"
-    $reportGeneratorVersion = (Select-Xml -Path $propsFile -XPath "//PackageVersion[@Include='ReportGenerator']/@Version").Node.'#text'
-    $reportGeneratorPath = Join-Path $nugetPath "reportgenerator\$reportGeneratorVersion\tools\net6.0\ReportGenerator.dll"
-
-    $coverageOutput = Join-Path $OutputPath "coverage.*.cobertura.xml"
-    $reportOutput = Join-Path $OutputPath "coverage"
 
     $additionalArgs = @()
 
@@ -119,19 +120,8 @@ function DotNetTest {
 
     & $dotnet test $Project --output $OutputPath --configuration $Configuration $additionalArgs
 
-    $dotNetTestExitCode = $LASTEXITCODE
-
-    if (Test-Path $coverageOutput) {
-        & $dotnet `
-            $reportGeneratorPath `
-            `"-reports:$coverageOutput`" `
-            `"-targetdir:$reportOutput`" `
-            -reporttypes:HTML `
-            -verbosity:Warning
-    }
-
-    if ($dotNetTestExitCode -ne 0) {
-        throw "dotnet test failed with exit code $dotNetTestExitCode"
+    if ($LASTEXITCODE -ne 0) {
+        throw "dotnet test failed with exit code $LASTEXITCODE"
     }
 }
 
