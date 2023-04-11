@@ -63,8 +63,7 @@ jobs:
           --include "Microsoft.AspNetCore." `
           --include "Microsoft.EntityFrameworkCore." `
           --include "Microsoft.Extensions." `
-          --include "Microsoft.NET.Test.Sdk" `
-          --include "System."
+          --include "Microsoft.NET.Test.Sdk"
 
         $dependencies = @()
 
