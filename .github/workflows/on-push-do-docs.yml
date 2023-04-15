@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  docs:
-    name: Update documentation
+  update-docs:
+    name: update-docs
     runs-on: ubuntu-latest
 
     permissions:
@@ -27,20 +27,19 @@ jobs:
       uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a # v3.0.3
 
     - name: Run MarkdownSnippets
-      run: |
-        dotnet tool install --global MarkdownSnippets.Tool
-        mdsnippets "${GITHUB_WORKSPACE}" --exclude-directories ./artifacts
       shell: bash
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: true
         DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+      run: |
+        dotnet tool install --global MarkdownSnippets.Tool
+        mdsnippets "${GITHUB_WORKSPACE}" --exclude-directories ./artifacts
 
     - name: Push changes
+      shell: bash
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git commit -m "Update documentation\n\nUpdate examples in documentation." -a  || echo "Nothing to commit"
-        remote="https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
-        branch="${GITHUB_REF:11}"
-        git push "${remote}" "${branch}" || echo "Nothing to push"
-      shell: bash
+        remote="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+        git push "${remote}" "${GITHUB_REF_NAME}" || echo "Nothing to push"
