@@ -7,10 +7,16 @@ on:
 #    - '**/*.md'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   docs:
     name: Update documentation
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
 
     steps:
 
