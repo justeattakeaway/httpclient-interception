@@ -700,7 +700,7 @@ public static class HttpClientInterceptorOptionsTests
         var builder = new HttpRequestInterceptionBuilder()
             .ForHttps()
             .ForHost("api.github.com")
-            .ForPath("orgs/justeat/repos")
+            .ForPath("orgs/justeattakeaway/repos")
             .ForQuery("type=private");
 
         var options = new HeaderMatchingOptions(
@@ -712,7 +712,7 @@ public static class HttpClientInterceptorOptionsTests
 
         options.Register(builder);
 
-        var url = "https://api.github.com/orgs/justeat/repos?type=private";
+        var url = "https://api.github.com/orgs/justeattakeaway/repos?type=private";
         var headers = new Dictionary<string, string>()
         {
             ["accept"] = "application/vnd.github.v3+json",

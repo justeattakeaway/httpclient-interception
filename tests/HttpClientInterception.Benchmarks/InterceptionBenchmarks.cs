@@ -48,11 +48,11 @@ public class InterceptionBenchmarks
             .Requests()
             .ForHttps()
             .ForHost("api.github.com")
-            .ForPath("orgs/justeat")
+            .ForPath("orgs/justeattakeaway")
             .ForQuery(string.Empty)
             .Responds()
             .WithMediaType("application/json")
-            .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" })
+            .WithJsonContent(new { id = 1516790, login = "justeattakeaway", url = "https://api.github.com/orgs/justeattakeaway" })
             .RegisterWith(_options);
 
         builder
@@ -88,20 +88,20 @@ public class InterceptionBenchmarks
     [Benchmark]
     public async Task GetJson()
     {
-        var stream = await _client.GetStreamAsync("https://api.github.com/orgs/justeat");
+        var stream = await _client.GetStreamAsync("https://api.github.com/orgs/justeattakeaway");
         using var document = await JsonDocument.ParseAsync(stream);
     }
 
     [Benchmark]
     public async Task GetJsonWithRefit()
     {
-        _ = await _service.GetOrganizationAsync("justeat");
+        _ = await _service.GetOrganizationAsync("justeattakeaway");
     }
 
     [Benchmark]
     public async Task GetStream()
     {
-        using (await _client.GetStreamAsync("https://api.github.com/orgs/justeat?page=1"))
+        using (await _client.GetStreamAsync("https://api.github.com/orgs/justeattakeaway?page=1"))
         {
         }
     }

@@ -1,18 +1,18 @@
 {
-  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "$schema": "https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "ignoring-path-bundle",
   "comment": "An HTTP request bundle where the path is ignored.",
   "items": [
     {
       "id": "JSON",
       "comment": "An HTTP request where the query string is ignored.",
-      "uri": "https://api.github.com/orgs/justeat",
+      "uri": "https://api.github.com/orgs/justeattakeaway",
       "ignoreQuery": true,
       "contentFormat": "json",
       "contentJson": {
         "id": 1516790,
-        "login": "justeat",
-        "url": "https://api.github.com/orgs/justeat"
+        "login": "justeattakeaway",
+        "url": "https://api.github.com/orgs/justeattakeaway"
       }
     }
   ]

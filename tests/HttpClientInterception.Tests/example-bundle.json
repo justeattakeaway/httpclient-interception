@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "$schema": "https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "example-http-request-bundle",
   "comment": "An example bundle of HTTP requests to be intercepted.",
   "version": 1,
@@ -13,7 +13,7 @@
     {
       "id": "json",
       "comment": "An HTTP request that returns JSON.",
-      "uri": "https://api.github.com/orgs/justeat",
+      "uri": "https://api.github.com/orgs/justeattakeaway",
       "requestHeaders": {
         "Accept": [
           "application/vnd.github.v3+json"
@@ -33,8 +33,8 @@
       "contentFormat": "json",
       "contentJson": {
         "id": 1516790,
-        "login": "justeat",
-        "url": "https://api.github.com/orgs/justeat"
+        "login": "justeattakeaway",
+        "url": "https://api.github.com/orgs/justeattakeaway"
       }
     }
   ]

@@ -4,9 +4,9 @@ A .NET Standard library for intercepting server-side HTTP dependencies.
 
 [![NuGet version](https://buildstats.info/nuget/JustEat.HttpClientInterception?includePreReleases=false)](https://www.nuget.org/packages/JustEat.HttpClientInterception/)
 
-[![Build status](https://github.com/justeat/httpclient-interception/workflows/build/badge.svg?branch=main&event=push)](https://github.com/justeat/httpclient-interception/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
+[![Build status](https://github.com/justeattakeaway/httpclient-interception/workflows/build/badge.svg?branch=main&event=push)](https://github.com/justeattakeaway/httpclient-interception/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
 
-[![codecov](https://codecov.io/gh/justeat/httpclient-interception/branch/main/graph/badge.svg)](https://codecov.io/gh/justeat/httpclient-interception)
+[![codecov](https://codecov.io/gh/justeattakeaway/httpclient-interception/branch/main/graph/badge.svg)](https://codecov.io/gh/justeattakeaway/httpclient-interception)
 
 ## Introduction
 
@@ -72,13 +72,13 @@ This functionality is analogous to our [_Shock_](https://github.com/justeat/Shoc
 
 Below is an example bundle file, which can return content in formats such as a string, JSON and base64-encoded data.
 
-The full JSON schema for HTTP bundle files can be found [here](https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json "JSON Schema for HTTP request interception bundles for use with JustEat.HttpClientInterception.").
+The full JSON schema for HTTP bundle files can be found [here](https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json "JSON Schema for HTTP request interception bundles for use with JustEat.HttpClientInterception.").
 
 <!-- snippet: sample-bundle.json -->
 <a id='snippet-sample-bundle.json'></a>
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "$schema": "https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "my-bundle",
   "comment": "A bundle of HTTP requests",
   "items": [
@@ -120,7 +120,7 @@ var html = await client.GetStringAsync("https://www.just-eat.co.uk");
 var json = await client.GetStringAsync("https://public.je-apis.com/terms");
 ```
 
-Further examples of using HTTP bundles can be found in the [tests](https://github.com/justeat/httpclient-interception/blob/main/tests/HttpClientInterception.Tests/Bundles/BundleExtensionsTests.cs "BundleExtensionsTests.cs"), such as for changing the response code, the HTTP method, and matching to HTTP requests based on the request headers.
+Further examples of using HTTP bundles can be found in the [tests](https://github.com/justeattakeaway/httpclient-interception/blob/main/tests/HttpClientInterception.Tests/Bundles/BundleExtensionsTests.cs "BundleExtensionsTests.cs"), such as for changing the response code, the HTTP method, and matching to HTTP requests based on the request headers.
 
 #### Fault Injection
 
@@ -150,7 +150,7 @@ await Assert.ThrowsAsync<HttpRequestException>(
 
 If you are using [`IHttpClientFactory`](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests "Use IHttpClientFactory to implement resilient HTTP requests") to register `HttpClient` for Dependency Injection in a .NET Core 3.1 application (or later), you can implement a custom [`IHttpMessageHandlerBuilderFilter`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.ihttpmessagehandlerbuilderfilter "IHttpMessageHandlerBuilderFilter Interface") to register during test setup, which makes an instance of `HttpClientInterceptorOptions` available to inject an HTTP handler.
 
-A working example of this approach can be found in the [sample application](https://github.com/justeat/httpclient-interception/blob/main/samples/README.md "Sample application that uses JustEat.HttpClientInterception").
+A working example of this approach can be found in the [sample application](https://github.com/justeattakeaway/httpclient-interception/blob/main/samples/README.md "Sample application that uses JustEat.HttpClientInterception").
 
 <!-- snippet: interception-filter -->
 <a id='snippet-interception-filter'></a>
@@ -243,13 +243,13 @@ server.Start();
 
 Further examples of using the library can be found by following the links below:
 
-  1. [Example tests](https://github.com/justeat/httpclient-interception/blob/main/tests/HttpClientInterception.Tests/Examples.cs "Sample tests using JustEat.HttpClientInterception")
-  1. [Sample application with tests](https://github.com/justeat/httpclient-interception/blob/main/samples/README.md "Sample application that uses JustEat.HttpClientInterception")
-  1. This library's [own tests](https://github.com/justeat/httpclient-interception/blob/main/tests/HttpClientInterception.Tests/HttpClientInterceptorOptionsTests.cs "Tests for JustEat.HttpClientInterception itself")
+  1. [Example tests](https://github.com/justeattakeaway/httpclient-interception/blob/main/tests/HttpClientInterception.Tests/Examples.cs "Sample tests using JustEat.HttpClientInterception")
+  1. [Sample application with tests](https://github.com/justeattakeaway/httpclient-interception/blob/main/samples/README.md "Sample application that uses JustEat.HttpClientInterception")
+  1. This library's [own tests](https://github.com/justeattakeaway/httpclient-interception/blob/main/tests/HttpClientInterception.Tests/HttpClientInterceptorOptionsTests.cs "Tests for JustEat.HttpClientInterception itself")
 
 ### Benchmarks
 
-Generated with the [Benchmarks project](https://github.com/justeat/httpclient-interception/blob/main/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [c31abf3](https://github.com/justeat/httpclient-interception/commit/f38ae38d9f0abd50f380d699c281d76e1a1513c9 "Benchmark commit") on 15/11/2022.
+Generated with the [Benchmarks project](https://github.com/justeattakeaway/httpclient-interception/blob/main/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [c31abf3](https://github.com/justeattakeaway/httpclient-interception/commit/f38ae38d9f0abd50f380d699c281d76e1a1513c9 "Benchmark commit") on 15/11/2022.
 
 ``` ini
 
@@ -263,18 +263,18 @@ Intel Core i9-9980HK CPU 2.40GHz, 1 CPU, 16 logical and 8 physical cores
 ```
 |           Method |      Mean |     Error |    StdDev |   Gen0 | Allocated |
 |----------------- |----------:|----------:|----------:|-------:|----------:|
-|         [`GetBytes`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L76-L80) |  3.102 μs | 0.0780 μs | 0.2264 μs | 0.3128 |    2648 B |
-|          [`GetHtml`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L82-L86) |  3.675 μs | 0.0735 μs | 0.2143 μs | 0.3700 |    3104 B |
-|          [`GetJson`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L88-L93) |  5.175 μs | 0.1223 μs | 0.3470 μs | 0.3433 |    2904 B |
-|        [`GetStream`](https://github.com/justeat/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L101-L107) | 36.359 μs | 0.7168 μs | 1.3981 μs | 0.3662 |    3312 B |
+|         [`GetBytes`](https://github.com/justeattakeaway/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L76-L80) |  3.102 μs | 0.0780 μs | 0.2264 μs | 0.3128 |    2648 B |
+|          [`GetHtml`](https://github.com/justeattakeaway/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L82-L86) |  3.675 μs | 0.0735 μs | 0.2143 μs | 0.3700 |    3104 B |
+|          [`GetJson`](https://github.com/justeattakeaway/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L88-L93) |  5.175 μs | 0.1223 μs | 0.3470 μs | 0.3433 |    2904 B |
+|        [`GetStream`](https://github.com/justeattakeaway/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L101-L107) | 36.359 μs | 0.7168 μs | 1.3981 μs | 0.3662 |    3312 B |
 
 ## Feedback
 
-Any feedback or issues can be added to the issues for this project in [GitHub](https://github.com/justeat/httpclient-interception/issues "This project's issues on GitHub.com").
+Any feedback or issues can be added to the issues for this project in [GitHub](https://github.com/justeattakeaway/httpclient-interception/issues "This project's issues on GitHub.com").
 
 ## Repository
 
-The repository is hosted in [GitHub](https://github.com/justeat/httpclient-interception "This project on GitHub.com"): https://github.com/justeat/httpclient-interception.git
+The repository is hosted in [GitHub](https://github.com/justeattakeaway/httpclient-interception "This project on GitHub.com"): <https://github.com/justeattakeaway/httpclient-interception.git>
 
 ## Building and Testing
 
@@ -283,7 +283,7 @@ Compiling the library yourself requires Git and the [.NET SDK](https://www.micro
 To build and test the library locally from a terminal/command-line, run one of the following set of commands:
 
 ```powershell
-git clone https://github.com/justeat/httpclient-interception.git
+git clone https://github.com/justeattakeaway/httpclient-interception.git
 cd httpclient-interception
 ./build.ps1
 ```

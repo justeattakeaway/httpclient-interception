@@ -1,17 +1,17 @@
 {
-  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "$schema": "https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "content-as-json-object-bundle",
   "comment": "An HTTP request bundle with content as a JSON object.",
   "items": [
     {
       "id": "JSON",
       "comment": "An HTTP request that returns a JSON object.",
-      "uri": "https://api.github.com/orgs/justeat",
+      "uri": "https://api.github.com/orgs/justeattakeaway",
       "contentFormat": "json",
       "contentJson": {
         "id": 1516790,
-        "login": "justeat",
-        "url": "https://api.github.com/orgs/justeat"
+        "login": "justeattakeaway",
+        "url": "https://api.github.com/orgs/justeattakeaway"
       }
     }
   ]
