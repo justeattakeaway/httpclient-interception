@@ -1,0 +1,48 @@
+name: dependabot-approve
+
+on: pull_request_target
+
+permissions:
+  contents: read
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+
+    steps:
+
+      - name: Get dependabot metadata
+        uses: dependabot/fetch-metadata@efb5c8deb113433243b6b08de1aa879d5aa01cf7 # v1.4.0
+        id: dependabot-metadata
+
+      - name: Generate GitHub application token
+        id: generate-application-token
+        uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+        with:
+          application_id: ${{ secrets.REVIEWER_APPLICATION_ID }}
+          application_private_key: ${{ secrets.REVIEWER_APPLICATION_PRIVATE_KEY }}
+          permissions: "contents:write, pull_requests:write"
+
+      - name: Checkout code
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+
+      - name: Approve pull request and enable auto-merge
+        shell: bash
+        if: |
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/cache') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/checkout') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/dependency-review-action') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/download-artifact') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/setup-dotnet') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/upload-artifact') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'dependabot/fetch-metadata') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'github/codeql-action')
+        env:
+          GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          gh pr checkout "$PR_URL"
+          if [ "$(gh pr status --json reviewDecision -q .currentBranch.reviewDecision)" != "APPROVED" ];
+          then gh pr review --approve "$PR_URL" && gh pr merge --auto --squash "$PR_URL"
+          fi
