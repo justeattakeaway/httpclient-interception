@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "$schema": "https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "templated-json-bundle",
   "comment": "An HTTP request bundle that uses templating for JSON.",
   "version": 1,
@@ -10,14 +10,14 @@
       "contentFormat": "json",
       "contentJson": {
         "id": 1516790,
-        "login": "justeat",
+        "login": "justeattakeaway",
         "url": "https://api.github.com/orgs/${CompanyName}",
         "avatar_url": "${AvatarUrl}",
         "name": "${Name}",
         "blog": "${BlogUrl}"
       },
       "templateValues": {
-        "CompanyName": "justeat",
+        "CompanyName": "justeattakeaway",
         "Name": "JustEatTakeaway"
       }
     },
@@ -38,7 +38,7 @@
         }
       ],
       "templateValues": {
-        "CompanyName": "justeat",
+        "CompanyName": "justeattakeaway",
         "RepoName": "httpclient-interception"
       }
     }

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "$schema": "https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "non-default-http-statuses-bundle",
   "comment": "An HTTP request bundle for non-default HTTP status codes.",
   "items": [

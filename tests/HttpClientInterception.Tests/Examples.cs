@@ -401,20 +401,20 @@ public static class Examples
         var builder = new HttpRequestInterceptionBuilder()
             .ForHttps()
             .ForHost("api.github.com")
-            .ForPath("orgs/justeat")
-            .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
+            .ForPath("orgs/justeattakeaway")
+            .WithJsonContent(new { id = 1516790, login = "justeattakeaway", url = "https://api.github.com/orgs/justeattakeaway" });
 
         var options = new HttpClientInterceptorOptions().Register(builder);
         var service = RestService.For<IGitHub>(options.CreateHttpClient("https://api.github.com"));
 
         // Act
-        Organization actual = await service.GetOrganizationAsync("justeat");
+        Organization actual = await service.GetOrganizationAsync("justeattakeaway");
 
         // Assert
         actual.ShouldNotBeNull();
         actual.Id.ShouldBe(1516790);
-        actual.Login.ShouldBe("justeat");
-        actual.Url.ShouldBe("https://api.github.com/orgs/justeat");
+        actual.Login.ShouldBe("justeattakeaway");
+        actual.Url.ShouldBe("https://api.github.com/orgs/justeattakeaway");
     }
 
     [Fact]
@@ -424,8 +424,8 @@ public static class Examples
         var justEat = new HttpRequestInterceptionBuilder()
             .ForHttps()
             .ForHost("api.github.com")
-            .ForPath("orgs/justeat")
-            .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
+            .ForPath("orgs/justeattakeaway")
+            .WithJsonContent(new { id = 1516790, login = "justeattakeaway", url = "https://api.github.com/orgs/justeattakeaway" });
 
         var dotnet = new HttpRequestInterceptionBuilder()
             .ForHttps()
@@ -439,14 +439,14 @@ public static class Examples
         var service = RestService.For<IGitHub>(options.CreateHttpClient("https://api.github.com"));
 
         // Act
-        Organization justEatOrg = await service.GetOrganizationAsync("justeat");
+        Organization justEatOrg = await service.GetOrganizationAsync("justeattakeaway");
         Organization dotnetOrg = await service.GetOrganizationAsync("dotnet");
 
         // Assert
         justEatOrg.ShouldNotBeNull();
         justEatOrg.Id.ShouldBe(1516790);
-        justEatOrg.Login.ShouldBe("justeat");
-        justEatOrg.Url.ShouldBe("https://api.github.com/orgs/justeat");
+        justEatOrg.Login.ShouldBe("justeattakeaway");
+        justEatOrg.Url.ShouldBe("https://api.github.com/orgs/justeattakeaway");
 
         // Assert
         dotnetOrg.ShouldNotBeNull();
@@ -461,12 +461,12 @@ public static class Examples
         // Arrange
         var options = new HttpClientInterceptorOptions();
 
-        // Configure a response for https://api.github.com/orgs/justeat
+        // Configure a response for https://api.github.com/orgs/justeattakeaway
         var builder = new HttpRequestInterceptionBuilder()
             .ForHttps()
             .ForHost("api.github.com")
-            .ForPath("orgs/justeat")
-            .WithJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" });
+            .ForPath("orgs/justeattakeaway")
+            .WithJsonContent(new { id = 1516790, login = "justeattakeaway", url = "https://api.github.com/orgs/justeattakeaway" });
 
         options.Register(builder);
 
@@ -479,14 +479,14 @@ public static class Examples
         var service = RestService.For<IGitHub>(options.CreateHttpClient("https://api.github.com"));
 
         // Act
-        Organization justEatOrg = await service.GetOrganizationAsync("justeat");
+        Organization justEatOrg = await service.GetOrganizationAsync("justeattakeaway");
         Organization dotnetOrg = await service.GetOrganizationAsync("dotnet");
 
         // Assert
         justEatOrg.ShouldNotBeNull();
         justEatOrg.Id.ShouldBe(1516790);
-        justEatOrg.Login.ShouldBe("justeat");
-        justEatOrg.Url.ShouldBe("https://api.github.com/orgs/justeat");
+        justEatOrg.Login.ShouldBe("justeattakeaway");
+        justEatOrg.Url.ShouldBe("https://api.github.com/orgs/justeattakeaway");
 
         // Assert
         dotnetOrg.ShouldNotBeNull();
@@ -623,14 +623,14 @@ public static class Examples
             client.DefaultRequestHeaders.Add("Authorization", "bearer my-token");
             client.DefaultRequestHeaders.Add("User-Agent", "My-App/1.0.0");
 
-            content = await client.GetStringAsync("https://api.github.com/orgs/justeat");
+            content = await client.GetStringAsync("https://api.github.com/orgs/justeattakeaway");
         }
 
         // Assert
         var organization = JObject.Parse(content);
         organization.Value<int>("id").ShouldBe(1516790);
-        organization.Value<string>("login").ShouldBe("justeat");
-        organization.Value<string>("url").ShouldBe("https://api.github.com/orgs/justeat");
+        organization.Value<string>("login").ShouldBe("justeattakeaway");
+        organization.Value<string>("url").ShouldBe("https://api.github.com/orgs/justeattakeaway");
     }
 
     [Fact]
@@ -709,7 +709,7 @@ public static class Examples
         {
             return
                 request.Method.Equals(HttpMethod.Get) &&
-                request.RequestUri == new Uri("https://api.github.com/orgs/justeat");
+                request.RequestUri == new Uri("https://api.github.com/orgs/justeattakeaway");
         }
 
         void IncrementRequestCount(HttpRequestMessage message) => requestCount++;
@@ -729,7 +729,7 @@ public static class Examples
             .WithInterceptionCallback(IncrementRequestCount)
             .Responds()
             .WithStatus(HttpStatusCode.OK)
-            .WithSystemTextJsonContent(new { id = 1516790, login = "justeat", url = "https://api.github.com/orgs/justeat" })
+            .WithSystemTextJsonContent(new { id = 1516790, login = "justeattakeaway", url = "https://api.github.com/orgs/justeattakeaway" })
             .RegisterWith(options);
 
         var service = RestService.For<IGitHub>(options.CreateHttpClient("https://api.github.com"));
@@ -743,13 +743,13 @@ public static class Examples
             .RetryAsync(retryCount);
 
         // Act
-        Organization actual = await policy.ExecuteAsync(() => service.GetOrganizationAsync("justeat"));
+        Organization actual = await policy.ExecuteAsync(() => service.GetOrganizationAsync("justeattakeaway"));
 
         // Assert
         actual.ShouldNotBeNull();
         actual.Id.ShouldBe(1516790);
-        actual.Login.ShouldBe("justeat");
-        actual.Url.ShouldBe("https://api.github.com/orgs/justeat");
+        actual.Login.ShouldBe("justeattakeaway");
+        actual.Url.ShouldBe("https://api.github.com/orgs/justeattakeaway");
 
         // Verify that the expected number of attempts were made
         requestCount.ShouldBe(retryCount);

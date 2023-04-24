@@ -2,7 +2,7 @@
 
 ## Feature requests and bugs
 
-Please submit any feature requests or bugs as an [issue](https://github.com/justeat/httpclient-interception/issues) in GitHub.
+Please submit any feature requests or bugs as an [issue](https://github.com/justeattakeaway/httpclient-interception/issues) in GitHub.
 
 ## Pull requests
 

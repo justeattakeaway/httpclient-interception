@@ -73,7 +73,7 @@ public class HttpRequestInterceptionBuilder
     /// <remarks>
     /// This is effectively treated as a version of the builder setup itself
     /// and is used to track whether or not the registrations have changed.
-    /// <see href="https://github.com/justeat/httpclient-interception/issues/361"/>.
+    /// <see href="https://github.com/justeattakeaway/httpclient-interception/issues/361"/>.
     /// </remarks>
     internal string? Key => _revision == _matchKeyRevision ? _matchKey : null;
 

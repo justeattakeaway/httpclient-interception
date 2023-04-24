@@ -644,7 +644,7 @@ public static class HttpRequestInterceptionBuilderTests
     public static async Task Register_Builds_Uri_From_UriBuilder()
     {
         // Arrange
-        var uriBuilder = new UriBuilder("https://github.com/justeat");
+        var uriBuilder = new UriBuilder("https://github.com/justeattakeaway");
 
         var options = new HttpClientInterceptorOptions();
 
@@ -654,7 +654,7 @@ public static class HttpRequestInterceptionBuilderTests
         options.Register(builder);
 
         // Assert
-        (await HttpAssert.GetAsync(options, "https://github.com/justeat")).ShouldBeEmpty();
+        (await HttpAssert.GetAsync(options, "https://github.com/justeattakeaway")).ShouldBeEmpty();
     }
 
     [Fact]
@@ -1255,7 +1255,7 @@ public static class HttpRequestInterceptionBuilderTests
         var builder = new HttpRequestInterceptionBuilder()
             .ForHttps()
             .ForHost("api.github.com")
-            .ForPath("orgs/justeat")
+            .ForPath("orgs/justeattakeaway")
             .RegisterWith(options);
 
         // Change to a different scheme without an explicit port
@@ -1263,10 +1263,10 @@ public static class HttpRequestInterceptionBuilderTests
                 .RegisterWith(options);
 
         // Act and Assert
-        await HttpAssert.GetAsync(options, "http://api.github.com/orgs/justeat");
-        await HttpAssert.GetAsync(options, "http://api.github.com:80/orgs/justeat");
-        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat");
-        await HttpAssert.GetAsync(options, "https://api.github.com:443/orgs/justeat");
+        await HttpAssert.GetAsync(options, "http://api.github.com/orgs/justeattakeaway");
+        await HttpAssert.GetAsync(options, "http://api.github.com:80/orgs/justeattakeaway");
+        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway");
+        await HttpAssert.GetAsync(options, "https://api.github.com:443/orgs/justeattakeaway");
     }
 
     [Fact]
@@ -1280,7 +1280,7 @@ public static class HttpRequestInterceptionBuilderTests
             .ForPort(123)
             .ForHttps()
             .ForHost("api.github.com")
-            .ForPath("orgs/justeat")
+            .ForPath("orgs/justeattakeaway")
             .RegisterWith(options);
 
         // Change to a different scheme without changing the port
@@ -1305,13 +1305,13 @@ public static class HttpRequestInterceptionBuilderTests
                 .RegisterWith(options);
 
         // Act and Assert
-        await HttpAssert.GetAsync(options, "https://api.github.com:123/orgs/justeat");
-        await HttpAssert.GetAsync(options, "http://api.github.com:123/orgs/justeat");
-        await HttpAssert.GetAsync(options, "http://api.github.com:456/orgs/justeat");
-        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat");
-        await HttpAssert.GetAsync(options, "https://api.github.com:443/orgs/justeat");
-        await HttpAssert.GetAsync(options, "http://api.github.com/orgs/justeat");
-        await HttpAssert.GetAsync(options, "http://api.github.com:80/orgs/justeat");
+        await HttpAssert.GetAsync(options, "https://api.github.com:123/orgs/justeattakeaway");
+        await HttpAssert.GetAsync(options, "http://api.github.com:123/orgs/justeattakeaway");
+        await HttpAssert.GetAsync(options, "http://api.github.com:456/orgs/justeattakeaway");
+        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway");
+        await HttpAssert.GetAsync(options, "https://api.github.com:443/orgs/justeattakeaway");
+        await HttpAssert.GetAsync(options, "http://api.github.com/orgs/justeattakeaway");
+        await HttpAssert.GetAsync(options, "http://api.github.com:80/orgs/justeattakeaway");
     }
 
     [Fact]
@@ -2217,7 +2217,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .Requests()
                 .ForHttps()
                 .ForHost("api.github.com")
-                .ForPath("orgs/justeat")
+                .ForPath("orgs/justeattakeaway")
                 .ForAll((Predicate<HttpRequestMessage>[])null)
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
@@ -2235,7 +2235,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .Requests()
                 .ForHttps()
                 .ForHost("api.github.com")
-                .ForPath("orgs/justeat")
+                .ForPath("orgs/justeattakeaway")
                 .ForAll(Array.Empty<Predicate<HttpRequestMessage>>())
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
@@ -2253,7 +2253,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .Requests()
                 .ForHttps()
                 .ForHost("api.github.com")
-                .ForPath("orgs/justeat")
+                .ForPath("orgs/justeattakeaway")
                 .ForAll((Func<HttpRequestMessage, Task<bool>>[])null)
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
@@ -2271,7 +2271,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .Requests()
                 .ForHttps()
                 .ForHost("api.github.com")
-                .ForPath("orgs/justeat")
+                .ForPath("orgs/justeattakeaway")
                 .ForAll(Array.Empty<Func<HttpRequestMessage, Task<bool>>>())
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
@@ -2289,7 +2289,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .Requests()
                 .ForHttps()
                 .ForHost("api.github.com")
-                .ForPath("orgs/justeat")
+                .ForPath("orgs/justeattakeaway")
                 .ForAll(new Func<HttpRequestMessage, Task<bool>>[] { _ => Task.FromResult(true), null })
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
@@ -2307,7 +2307,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .Requests()
                 .ForHttps()
                 .ForHost("api.github.com")
-                .ForPath("orgs/justeat")
+                .ForPath("orgs/justeattakeaway")
                 .ForAll(new Predicate<HttpRequestMessage>[] { _ => true, null })
                 .Responds()
                 .WithStatus(HttpStatusCode.OK);
@@ -2366,24 +2366,24 @@ public static class HttpRequestInterceptionBuilderTests
         bool OddNumberedRequests(HttpRequestMessage message) => requestCount % 2 > 0;
         void IncrementRequestCounter(HttpRequestMessage message) => requestCount++;
 
-        string requestUri = "https://api.github.com/orgs/justeat";
+        string requestUri = "https://api.github.com/orgs/justeattakeaway";
 
         var builder200 = new HttpRequestInterceptionBuilder()
             .Requests()
             .ForHttps()
             .ForHost("api.github.com")
-            .ForPath("orgs/justeat")
+            .ForPath("orgs/justeattakeaway")
             .For(EvenNumberedRequests)
             .WithInterceptionCallback(IncrementRequestCounter)
             .Responds()
             .WithStatus(HttpStatusCode.OK)
-            .WithJsonContent(new { id = 1516790, login = "justeat", url = requestUri });
+            .WithJsonContent(new { id = 1516790, login = "justeattakeaway", url = requestUri });
 
         var builder429 = new HttpRequestInterceptionBuilder()
             .Requests()
             .ForHttps()
             .ForHost("api.github.com")
-            .ForPath("orgs/justeat")
+            .ForPath("orgs/justeattakeaway")
             .For(OddNumberedRequests)
             .WithInterceptionCallback(IncrementRequestCounter)
             .Responds()

@@ -48,7 +48,7 @@ public static class BundleExtensionsTests
         // Assert
         await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", mediaType: "text/html");
         await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/order-history");
-        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat", headers: headers, mediaType: "application/json");
+        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway", headers: headers, mediaType: "application/json");
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public static class BundleExtensionsTests
         // Assert
         await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", mediaType: "text/html");
         await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/order-history");
-        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat", headers: headers, mediaType: "application/json");
+        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway", headers: headers, mediaType: "application/json");
     }
 
     [Fact]
@@ -111,7 +111,7 @@ public static class BundleExtensionsTests
         options.RegisterBundle(Path.Join("Bundles", "content-as-json-array.json"));
 
         // Assert
-        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat/repos");
+        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway/repos");
 
         content
             .Replace(" ", string.Empty, StringComparison.Ordinal)
@@ -130,13 +130,13 @@ public static class BundleExtensionsTests
         options.RegisterBundle(Path.Join("Bundles", "content-as-json-object.json"));
 
         // Assert
-        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat");
+        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway");
 
         content
             .Replace(" ", string.Empty, StringComparison.Ordinal)
             .Replace("\n", string.Empty, StringComparison.Ordinal)
             .Replace("\r", string.Empty, StringComparison.Ordinal)
-            .ShouldBe(@"{""id"":1516790,""login"":""justeat"",""url"":""https://api.github.com/orgs/justeat""}");
+            .ShouldBe(@"{""id"":1516790,""login"":""justeattakeaway"",""url"":""https://api.github.com/orgs/justeattakeaway""}");
     }
 
     [Fact]
@@ -149,7 +149,7 @@ public static class BundleExtensionsTests
         options.RegisterBundle(Path.Join("Bundles", "content-as-null-json.json"));
 
         // Assert
-        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat");
+        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway");
 
         content.ShouldBe(string.Empty);
     }
@@ -279,20 +279,20 @@ public static class BundleExtensionsTests
         options.RegisterBundle(Path.Join("Bundles", "templated-bundle-json.json"), templateValues);
 
         // Assert
-        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat");
+        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway");
         content
             .Replace(" ", string.Empty, StringComparison.Ordinal)
             .Replace("\n", string.Empty, StringComparison.Ordinal)
             .Replace("\r", string.Empty, StringComparison.Ordinal)
-            .ShouldBe(@"{""id"":1516790,""login"":""justeat"",""url"":""https://api.github.com/orgs/justeat"",""avatar_url"":""https://avatars.githubusercontent.com/u/1516790?v=4"",""name"":""JustEatTakeaway"",""blog"":""https://tech.justeattakeaway.com/""}");
+            .ShouldBe(@"{""id"":1516790,""login"":""justeattakeaway"",""url"":""https://api.github.com/orgs/justeattakeaway"",""avatar_url"":""https://avatars.githubusercontent.com/u/1516790?v=4"",""name"":""JustEatTakeaway"",""blog"":""https://tech.justeattakeaway.com/""}");
 
         // Assert
-        content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat/repos");
+        content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway/repos");
         content
             .Replace(" ", string.Empty, StringComparison.Ordinal)
             .Replace("\n", string.Empty, StringComparison.Ordinal)
             .Replace("\r", string.Empty, StringComparison.Ordinal)
-            .ShouldBe(@"[{""id"":123456,""name"":""httpclient-interception"",""full_name"":""justeat/httpclient-interception"",""private"":false,""owner"":{""login"":""justeat"",""id"":1516790}}]");
+            .ShouldBe(@"[{""id"":123456,""name"":""httpclient-interception"",""full_name"":""justeattakeaway/httpclient-interception"",""private"":false,""owner"":{""login"":""justeattakeaway"",""id"":1516790}}]");
     }
 
     [Fact]
@@ -305,7 +305,7 @@ public static class BundleExtensionsTests
         {
             ["AvatarUrl"] = "https://avatars.githubusercontent.com/u/1516790?v=4",
             ["BlogUrl"] = "https://tech.justeattakeaway.com/",
-            ["CompanyName"] = "justeat",
+            ["CompanyName"] = "justeattakeaway",
             ["RepoName"] = "httpclient-interception",
         };
 
@@ -313,12 +313,12 @@ public static class BundleExtensionsTests
         options.RegisterBundle(Path.Join("Bundles", "templated-bundle-json-no-parameters.json"), templateValues);
 
         // Assert
-        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat/repos");
+        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway/repos");
         content
             .Replace(" ", string.Empty, StringComparison.Ordinal)
             .Replace("\n", string.Empty, StringComparison.Ordinal)
             .Replace("\r", string.Empty, StringComparison.Ordinal)
-            .ShouldBe(@"[{""id"":123456,""name"":""httpclient-interception"",""full_name"":""justeat/httpclient-interception"",""private"":false,""owner"":{""login"":""justeat"",""id"":1516790}}]");
+            .ShouldBe(@"[{""id"":123456,""name"":""httpclient-interception"",""full_name"":""justeattakeaway/httpclient-interception"",""private"":false,""owner"":{""login"":""justeattakeaway"",""id"":1516790}}]");
     }
 
     [Fact]
@@ -458,7 +458,7 @@ public static class BundleExtensionsTests
             .Replace(" ", string.Empty, StringComparison.Ordinal)
             .Replace("\n", string.Empty, StringComparison.Ordinal)
             .Replace("\r", string.Empty, StringComparison.Ordinal)
-            .ShouldBe(@"{""id"":1516790,""login"":""justeat"",""url"":""https://api.github.com/orgs/justeat""}");
+            .ShouldBe(@"{""id"":1516790,""login"":""justeattakeaway"",""url"":""https://api.github.com/orgs/justeattakeaway""}");
     }
 
     [Fact]
@@ -471,13 +471,13 @@ public static class BundleExtensionsTests
         options.RegisterBundle(Path.Join("Bundles", "ignoring-query.json"));
 
         // Assert
-        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeat?foo=bar");
+        string content = await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway?foo=bar");
 
         content
             .Replace(" ", string.Empty, StringComparison.Ordinal)
             .Replace("\n", string.Empty, StringComparison.Ordinal)
             .Replace("\r", string.Empty, StringComparison.Ordinal)
-            .ShouldBe(@"{""id"":1516790,""login"":""justeat"",""url"":""https://api.github.com/orgs/justeat""}");
+            .ShouldBe(@"{""id"":1516790,""login"":""justeattakeaway"",""url"":""https://api.github.com/orgs/justeattakeaway""}");
     }
 
     [Fact]

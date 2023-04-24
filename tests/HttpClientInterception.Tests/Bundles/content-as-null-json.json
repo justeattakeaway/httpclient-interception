@@ -1,12 +1,12 @@
 {
-  "$schema": "https://raw.githubusercontent.com/justeat/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "$schema": "https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
   "id": "content-as-null-json-bundle",
   "comment": "An HTTP request bundle with content as a JSON null.",
   "items": [
     {
       "id": "JSON",
       "comment": "An HTTP request that returns a JSON null.",
-      "uri": "https://api.github.com/orgs/justeat",
+      "uri": "https://api.github.com/orgs/justeattakeaway",
       "contentFormat": "json",
       "contentJson": null
     }
