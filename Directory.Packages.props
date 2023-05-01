@@ -12,7 +12,7 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Moq" Version="4.18.4" />
-    <PackageVersion Include="Newtonsoft.Json.Schema" Version="3.0.14" />
+    <PackageVersion Include="Newtonsoft.Json.Schema" Version="3.0.15" />
     <PackageVersion Include="Polly" Version="7.2.3" />
     <PackageVersion Include="Refit" Version="6.5.1" />
     <PackageVersion Include="ReportGenerator" Version="5.1.19" />
