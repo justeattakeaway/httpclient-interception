@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, dotnet-vnext ]
   schedule:
     - cron: "0 6 * * MON"
   workflow_dispatch:

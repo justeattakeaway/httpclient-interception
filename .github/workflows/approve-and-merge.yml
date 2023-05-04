@@ -2,7 +2,7 @@ name: approve-and-merge
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, dotnet-vnext ]
 
 env:
   REVIEWER_LOGIN: ${{ vars.REVIEWER_USER_NAME }}

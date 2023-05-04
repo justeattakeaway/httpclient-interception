@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System.Text.Json;
 using SampleApp.Extensions;
 using SampleApp.Services;
 
@@ -27,7 +28,7 @@ app.MapGet("/api/repos", async (IConfiguration config, IGitHub github, int? coun
 
     names.Sort();
 
-    return Results.Json(names, new() { WriteIndented = true });
+    return Results.Json(names, new JsonSerializerOptions() { WriteIndented = true });
 });
 
 app.Run();
