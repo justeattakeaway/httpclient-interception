@@ -97,7 +97,6 @@ function DotNetPack {
     & $dotnet `
       pack $Project `
       --output $PackageOutputPath `
-      --configuration $Configuration `
       --include-symbols `
       --include-source `
       $additionalArgs
@@ -117,7 +116,7 @@ function DotNetTest {
         $additionalArgs += "GitHubActions;report-warnings=false"
     }
 
-    & $dotnet test $Project --output $OutputPath --configuration $Configuration $additionalArgs
+    & $dotnet test $Project --output $OutputPath --configuration "Release" $additionalArgs
 
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet test failed with exit code $LASTEXITCODE"
