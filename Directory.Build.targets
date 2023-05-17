@@ -20,11 +20,11 @@
     </ItemGroup>
   </Target>
   <PropertyGroup Condition=" '$(CollectCoverage)' == 'true' ">
-    <CoverletOutput>$([System.IO.Path]::Combine($(OutputPath), 'coverage', 'coverage'))</CoverletOutput>
+    <CoverletOutput>$([System.IO.Path]::Combine($(ArtifactsPath), 'coverage', 'coverage'))</CoverletOutput>
     <ReportGeneratorOutputMarkdown Condition=" '$(ReportGeneratorOutputMarkdown)' == '' AND '$(GITHUB_SHA)' != '' ">true</ReportGeneratorOutputMarkdown>
     <ReportGeneratorReportTypes>HTML</ReportGeneratorReportTypes>
     <ReportGeneratorReportTypes Condition=" '$(ReportGeneratorOutputMarkdown)' == 'true' ">$(ReportGeneratorReportTypes);MarkdownSummaryGitHub</ReportGeneratorReportTypes>
-    <ReportGeneratorTargetDirectory>$([System.IO.Path]::Combine($(OutputPath), 'coverage'))</ReportGeneratorTargetDirectory>
+    <ReportGeneratorTargetDirectory>$([System.IO.Path]::Combine($(ArtifactsPath), 'coverage'))</ReportGeneratorTargetDirectory>
     <MergeWith>$([System.IO.Path]::Combine($(ReportGeneratorTargetDirectory), 'coverage.$(TargetFramework).json'))</MergeWith>
     <_MarkdownSummaryPrefix>&lt;details&gt;&lt;summary&gt;:chart_with_upwards_trend: &lt;b&gt;$(AssemblyName) Code Coverage report&lt;/b&gt;&lt;/summary&gt;</_MarkdownSummaryPrefix>
     <_MarkdownSummarySuffix>&lt;/details&gt;</_MarkdownSummarySuffix>
