@@ -5,7 +5,6 @@
 
 param(
     [Parameter(Mandatory = $false)][string] $Configuration = "Release",
-    [Parameter(Mandatory = $false)][string] $VersionSuffix = "",
     [Parameter(Mandatory = $false)][string] $OutputPath = "",
     [Parameter(Mandatory = $false)][switch] $SkipTests
 )
@@ -13,14 +12,14 @@ param(
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
-$solutionPath = Split-Path $MyInvocation.MyCommand.Definition
+$solutionPath = $PSScriptRoot
 $sdkFile = Join-Path $solutionPath "global.json"
 
-$libraryProject = Join-Path $solutionPath "src\HttpClientInterception\JustEat.HttpClientInterception.csproj"
+$libraryProject = Join-Path $solutionPath "src" "HttpClientInterception" "JustEat.HttpClientInterception.csproj"
 
 $testProjects = @(
-    (Join-Path $solutionPath "tests\HttpClientInterception.Tests\JustEat.HttpClientInterception.Tests.csproj"),
-    (Join-Path $solutionPath "samples\SampleApp.Tests\SampleApp.Tests.csproj")
+    (Join-Path $solutionPath "tests" "HttpClientInterception.Tests" "JustEat.HttpClientInterception.Tests.csproj"),
+    (Join-Path $solutionPath "samples" "SampleApp.Tests" "SampleApp.Tests.csproj")
 )
 
 $dotnetVersion = (Get-Content $sdkFile | Out-String | ConvertFrom-Json).sdk.version
@@ -52,7 +51,7 @@ else {
 if ($installDotNetSdk -eq $true) {
 
     $env:DOTNET_INSTALL_DIR = Join-Path "$(Convert-Path "$PSScriptRoot")" ".dotnetcli"
-    $sdkPath = Join-Path $env:DOTNET_INSTALL_DIR "sdk\$dotnetVersion"
+    $sdkPath = Join-Path $env:DOTNET_INSTALL_DIR "sdk" $dotnetVersion
 
     if (!(Test-Path $sdkPath)) {
         if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
@@ -130,7 +129,7 @@ Write-Host "Packaging library..." -ForegroundColor Green
 DotNetPack $libraryProject
 
 Write-Host "Running tests..." -ForegroundColor Green
-Remove-Item -Path (Join-Path $OutputPath "coverage.*.json") -Force -ErrorAction SilentlyContinue | Out-Null
+Remove-Item -Path (Join-Path $OutputPath "coverage" "coverage.*.json") -Force -ErrorAction SilentlyContinue | Out-Null
 ForEach ($testProject in $testProjects) {
     DotNetTest $testProject
 }

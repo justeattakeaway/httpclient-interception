@@ -3,6 +3,7 @@
 
 #pragma warning disable CA1852
 
+using System.Text.Json;
 using SampleApp.Extensions;
 using SampleApp.Services;
 
@@ -29,7 +30,7 @@ app.MapGet("/api/repos", async (IConfiguration config, IGitHub github, int? coun
 
     names.Sort();
 
-    return Results.Json(names, new() { WriteIndented = true });
+    return Results.Json(names, new JsonSerializerOptions() { WriteIndented = true });
 });
 
 app.Run();
