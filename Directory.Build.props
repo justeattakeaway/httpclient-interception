@@ -56,11 +56,9 @@
   </ItemGroup>
   <PropertyGroup Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">
     <CollectCoverage>true</CollectCoverage>
-    <CoverletOutput Condition=" '$(OutputPath)' != '' ">$(OutputPath)/</CoverletOutput>
     <CoverletOutputFormat>cobertura,json</CoverletOutputFormat>
     <Exclude>[*.Benchmarks]*,[*.Tests]*,[Refit]*,[SampleApp]*,[xunit.*]*</Exclude>
     <ExcludeByAttribute>System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
-    <MergeWith>$(CoverletOutput)coverage.$(TargetFramework).json</MergeWith>
     <Threshold>95</Threshold>
   </PropertyGroup>
 </Project>
