@@ -37,7 +37,8 @@ jobs:
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/setup-dotnet') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/upload-artifact') ||
           contains(steps.dependabot-metadata.outputs.dependency-names, 'dependabot/fetch-metadata') ||
-          contains(steps.dependabot-metadata.outputs.dependency-names, 'github/codeql-action')
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'github/codeql-action') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'Microsoft.NET.Test.Sdk')
         env:
           GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
           PR_URL: ${{ github.event.pull_request.html_url }}
