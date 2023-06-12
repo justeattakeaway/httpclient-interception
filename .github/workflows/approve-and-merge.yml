@@ -101,7 +101,7 @@ jobs:
         "is-trusted-update=$isTrusted" >> $env:GITHUB_OUTPUT
 
     - name: Checkout code
-      uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
 
       # As long as it's not already approved, approve the pull request and enable auto-merge.
       # Our CI tests coupled with required statuses should ensure that the changes compile
