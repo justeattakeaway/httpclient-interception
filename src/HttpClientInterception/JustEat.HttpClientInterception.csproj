@@ -19,7 +19,7 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
+  <ItemGroup>
     <PackageReference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
