@@ -52,6 +52,9 @@
     <Using Include="System.Globalization" />
     <Using Include="System.Net.Http" Condition=" '$(TargetFramework)' == 'net472' " />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <Using Include="System.Net.Http" />
+  </ItemGroup>
   <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
     <Using Include="Shouldly" />
     <Using Include="Xunit" />
