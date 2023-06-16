@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Using Include="System.Globalization" />
+    <Using Include="System.Net.Http" Condition=" '$(TargetFramework)' == 'net472' " />
   </ItemGroup>
   <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
     <Using Include="Shouldly" />
