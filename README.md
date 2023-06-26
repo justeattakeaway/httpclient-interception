@@ -6,7 +6,7 @@ A .NET Standard library for intercepting server-side HTTP dependencies.
 [![Build status](https://github.com/justeattakeaway/httpclient-interception/workflows/build/badge.svg?branch=main&event=push)](https://github.com/justeattakeaway/httpclient-interception/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
 
 [![codecov](https://codecov.io/gh/justeattakeaway/httpclient-interception/branch/main/graph/badge.svg)](https://codecov.io/gh/justeattakeaway/httpclient-interception)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/justeattakeaway/httpclient-interception/badge)](https://api.securityscorecards.dev/projects/github.com/justeattakeaway/httpclient-interception)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/justeattakeaway/httpclient-interception/badge)](https://securityscorecards.dev/viewer/?uri=github.com/justeattakeaway/httpclient-interception)
 
 ## Introduction
 
