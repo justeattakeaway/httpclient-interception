@@ -601,9 +601,9 @@ public static class Examples
     public static async Task Intercept_Http_Requests_Registered_Using_A_Bundle_File()
     {
         // Arrange
-        var options = new HttpClientInterceptorOptions()
-            .RegisterBundle("example-bundle.json")
-            .ThrowsOnMissingRegistration();
+        var options = await new HttpClientInterceptorOptions()
+            .ThrowsOnMissingRegistration()
+            .RegisterBundleAsync("example-bundle.json");
 
         // Act
         string content;
