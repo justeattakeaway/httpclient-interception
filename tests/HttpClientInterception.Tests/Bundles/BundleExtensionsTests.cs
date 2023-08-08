@@ -7,6 +7,8 @@ using Newtonsoft.Json.Schema;
 
 namespace JustEat.HttpClientInterception.Bundles;
 
+#pragma warning disable CA1849
+
 public static class BundleExtensionsTests
 {
     public static IEnumerable<object[]> BundleFiles
