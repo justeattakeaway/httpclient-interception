@@ -3,8 +3,8 @@
 
 using System.Collections.Concurrent;
 using System.Net;
-using Moq;
-using Moq.Protected;
+using System.Reflection;
+using NSubstitute;
 
 namespace JustEat.HttpClientInterception;
 
@@ -15,7 +15,7 @@ public static class InterceptingHttpMessageHandlerTests
     {
         // Act and Assert
         Should.Throw<ArgumentNullException>(() => new InterceptingHttpMessageHandler(null), "options");
-        Should.Throw<ArgumentNullException>(() => new InterceptingHttpMessageHandler(null, Mock.Of<HttpMessageHandler>()), "options");
+        Should.Throw<ArgumentNullException>(() => new InterceptingHttpMessageHandler(null, Substitute.For<HttpMessageHandler>()), "options");
     }
 
     [Fact]
@@ -42,8 +42,6 @@ public static class InterceptingHttpMessageHandlerTests
         var options = new HttpClientInterceptorOptions()
             .ThrowsOnMissingRegistration();
 
-        var mock = new Mock<HttpMessageHandler>();
-
         using var handler = options.CreateHttpMessageHandler();
         using var target = new HttpClient(handler);
         using var content = new StringContent(string.Empty);
@@ -63,22 +61,22 @@ public static class InterceptingHttpMessageHandlerTests
     {
         // Arrange
         var options = new HttpClientInterceptorOptions()
-            .RegisterByteArray(HttpMethod.Get, new Uri("https://google.com/foo"), () => Array.Empty<byte>())
-            .RegisterByteArray(HttpMethod.Options, new Uri("http://google.com/foo"), () => Array.Empty<byte>())
-            .RegisterByteArray(HttpMethod.Options, new Uri("https://google.com/FOO"), () => Array.Empty<byte>());
+            .RegisterByteArray(HttpMethod.Get, new Uri("https://google.com/foo"), Array.Empty<byte>)
+            .RegisterByteArray(HttpMethod.Options, new Uri("http://google.com/foo"), Array.Empty<byte>)
+            .RegisterByteArray(HttpMethod.Options, new Uri("https://google.com/FOO"), Array.Empty<byte>);
 
         options.OnMissingRegistration = (request) => Task.FromResult<HttpResponseMessage>(null);
 
-        var mock = new Mock<HttpMessageHandler>();
-
+        using var handler = Substitute.For<HttpMessageHandler>();
         using var expected = new HttpResponseMessage(HttpStatusCode.OK);
         using var request = new HttpRequestMessage(HttpMethod.Options, "https://google.com/foo");
 
-        mock.Protected()
-            .Setup<Task<HttpResponseMessage>>("SendAsync", request, ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(expected);
+        handler.GetType()
+               .GetMethod("SendAsync", BindingFlags.NonPublic | BindingFlags.Instance)
+               .Invoke(handler, new object[] { request, Arg.Any<CancellationToken>() })
+               .Returns(Task.FromResult(expected));
 
-        using var httpClient = options.CreateHttpClient(mock.Object);
+        using var httpClient = options.CreateHttpClient(handler);
 
         // Act
         var actual = await httpClient.SendAsync(request, CancellationToken.None);
