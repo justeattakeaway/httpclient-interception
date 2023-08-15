@@ -3,7 +3,7 @@
     <PackageVersion Include="BenchmarkDotNet" Version="0.13.7" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.3.2" />
-    <PackageVersion Include="MarkdownSnippets.MsBuild" Version="25.0.1" />
+    <PackageVersion Include="MarkdownSnippets.MsBuild" Version="25.1.0" />
     <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
