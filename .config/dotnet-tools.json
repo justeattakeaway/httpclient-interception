@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "markdownsnippets.tool": {
+      "version": "25.1.0",
+      "commands": [
+        "mdsnippets"
+      ]
+    }
+  }
+}
