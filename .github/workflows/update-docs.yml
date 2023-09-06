@@ -7,8 +7,7 @@ on:
       - '**/*.md'
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   update-docs:
@@ -19,8 +18,18 @@ jobs:
 
     steps:
 
+      - name: Generate GitHub application token
+        id: generate-application-token
+        uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+        with:
+          application_id: ${{ secrets.UPDATER_APPLICATION_ID }}
+          application_private_key: ${{ secrets.UPDATER_APPLICATION_PRIVATE_KEY }}
+          permissions: "contents:write, pull_requests:write"
+
       - name: Checkout code
         uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+        with:
+          token: ${{ steps.generate-application-token.outputs.token }}
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
@@ -69,15 +78,6 @@ jobs:
 
           "branchName=$branchName" >> $env:GITHUB_OUTPUT
           "updated-docs=true" >> $env:GITHUB_OUTPUT
-
-      - name: Generate GitHub application token
-        if: steps.update-docs.outputs.updated-docs == 'true'
-        id: generate-application-token
-        uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
-        with:
-          application_id: ${{ secrets.UPDATER_APPLICATION_ID }}
-          application_private_key: ${{ secrets.UPDATER_APPLICATION_PRIVATE_KEY }}
-          permissions: "contents:write, pull_requests:write"
 
       - name: Create pull request
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
