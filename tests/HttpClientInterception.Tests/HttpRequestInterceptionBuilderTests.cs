@@ -672,7 +672,9 @@ public static class HttpRequestInterceptionBuilderTests
             request.Method.ShouldBe(HttpMethod.Post);
             request.RequestUri.ShouldBe(requestUri);
 
+#pragma warning disable xUnit1031
             string json = request.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+#pragma warning restore xUnit1031
 
             var body = JObject.Parse(json);
 
@@ -2145,12 +2147,14 @@ public static class HttpRequestInterceptionBuilderTests
     public static async Task Builder_For_Posted_Json_To_Match_Intercepts_Request()
     {
         // Arrange
+#pragma warning disable xUnit1031
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl("https://test.local/post")
             .ForPost()
             .ForContent((content) => content.ReadAsStringAsync().Result == @"{""message"":""Hello, Alice""}")
             .Responds()
             .WithJsonContent(new { message = "Hi Bob!" });
+#pragma warning restore xUnit1031
 
         var options = new HttpClientInterceptorOptions()
             .ThrowsOnMissingRegistration()
