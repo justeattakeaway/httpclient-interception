@@ -67,8 +67,10 @@ public class InterceptionBenchmarks
             ContentSerializer = new SystemTextJsonContentSerializer(),
         };
 
+#pragma warning disable CA2000
         _client = _options.CreateHttpClient();
         _service = RestService.For<IGitHub>(_options.CreateHttpClient("https://api.github.com"), refitSettings);
+#pragma warning restore CA2000
     }
 
     [Benchmark]
