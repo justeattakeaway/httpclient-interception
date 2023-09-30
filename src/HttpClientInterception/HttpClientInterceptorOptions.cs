@@ -476,7 +476,7 @@ public class HttpClientInterceptorOptions
             }
             else
             {
-                byte[] content = await response.ContentFactory!().ConfigureAwait(false) ?? Array.Empty<byte>();
+                byte[] content = await response.ContentFactory!().ConfigureAwait(false) ?? [];
                 result.Content = new ByteArrayContent(content);
             }
 
@@ -542,7 +542,7 @@ public class HttpClientInterceptorOptions
     {
         private readonly HttpClientInterceptorOptions _parent;
         private readonly IDictionary<string, HttpInterceptionResponse> _old;
-        private readonly IDictionary<string, HttpInterceptionResponse> _new;
+        private readonly ConcurrentDictionary<string, HttpInterceptionResponse> _new;
 
         internal OptionsScope(HttpClientInterceptorOptions parent)
         {
