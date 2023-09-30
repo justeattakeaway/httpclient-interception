@@ -2212,7 +2212,7 @@ public static class HttpRequestInterceptionBuilderTests
     public static void Builder_ForAll_Throws_ArgumentNullException_If_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
-        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
             new HttpRequestInterceptionBuilder()
                 .Requests()
                 .ForHttps()
@@ -2230,7 +2230,7 @@ public static class HttpRequestInterceptionBuilderTests
     public static void Builder_ForAll_Throws_InvalidOperationException_If_Custom_Matching_Delegate_Is_Empty()
     {
         // Arrange
-        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
             new HttpRequestInterceptionBuilder()
                 .Requests()
                 .ForHttps()
@@ -2248,7 +2248,7 @@ public static class HttpRequestInterceptionBuilderTests
     public static void Builder_ForAll_Throws_ArgumentNullException_If_Async_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
-        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
             new HttpRequestInterceptionBuilder()
                 .Requests()
                 .ForHttps()
@@ -2266,7 +2266,7 @@ public static class HttpRequestInterceptionBuilderTests
     public static void Builder_ForAll_Throws_InvalidOperationException_If_Async_Custom_Matching_Delegate_Is_Empty()
     {
         // Arrange
-        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
             new HttpRequestInterceptionBuilder()
                 .Requests()
                 .ForHttps()
@@ -2284,7 +2284,7 @@ public static class HttpRequestInterceptionBuilderTests
     public static void Builder_ForAll_Throws_InvalidOperationException_If_At_Least_One_Async_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
-        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
             new HttpRequestInterceptionBuilder()
                 .Requests()
                 .ForHttps()
@@ -2302,7 +2302,7 @@ public static class HttpRequestInterceptionBuilderTests
     public static void Builder_ForAll_Throws_InvalidOperationException_If_At_Least_One_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
-        HttpRequestInterceptionBuilder InterceptionBuilder() =>
+        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
             new HttpRequestInterceptionBuilder()
                 .Requests()
                 .ForHttps()

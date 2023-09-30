@@ -10,7 +10,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
     {
         // Arrange
         string requestUri = "https://google.com/";
-        string[] expected = new[] { "foo", "bar" };
+        string[] expected = ["foo", "bar"];
 
         var options = new HttpClientInterceptorOptions().RegisterGetJson(requestUri, expected);
 
@@ -212,7 +212,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpClientInterceptorOptions options = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.Register(Array.Empty<HttpRequestInterceptionBuilder>()), "options");
+        Should.Throw<ArgumentNullException>(() => options.Register([]), "options");
     }
 
     [Fact]
@@ -267,7 +267,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpClientInterceptorOptions options = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.ThrowsOnMissingRegistration(), "options");
+        Should.Throw<ArgumentNullException>(options.ThrowsOnMissingRegistration, "options");
     }
 
     [Fact]

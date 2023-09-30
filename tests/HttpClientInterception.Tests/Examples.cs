@@ -113,7 +113,7 @@ public static class Examples
         byte[] content = await client.GetByteArrayAsync("https://files.domain.com/setup.exe");
 
         // Assert
-        content.ShouldBe(new byte[] { 0, 1, 2, 3, 4 });
+        content.ShouldBe([0, 1, 2, 3, 4]);
     }
 
     [Fact]
@@ -286,7 +286,7 @@ public static class Examples
         byte[] content = await response.Content.ReadAsByteArrayAsync();
 
         // Assert
-        content.ShouldBe(new byte[] { 0, 1 });
+        content.ShouldBe([0, 1]);
     }
 
     [Fact]

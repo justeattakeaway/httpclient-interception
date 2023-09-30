@@ -25,10 +25,10 @@ public sealed class ReposTests : IDisposable
     {
         // Add a callback to log any HTTP requests made
         Fixture.Interceptor.OnSend = (request) =>
-            {
-                OutputHelper.WriteLine($"HTTP {request.Method} {request.RequestUri}");
-                return Task.CompletedTask;
-            };
+        {
+            OutputHelper.WriteLine($"HTTP {request.Method} {request.RequestUri}");
+            return Task.CompletedTask;
+        };
 
         // Arrange - use a scope to clean-up registrations
         using (Fixture.Interceptor.BeginScope())
@@ -59,7 +59,7 @@ public sealed class ReposTests : IDisposable
             }
 
             // Assert - Our application should have parsed the stub-names
-            actual.ShouldBe(new[] { "bar", "foo" });
+            actual.ShouldBe(["bar", "foo"]);
         }
     }
 
