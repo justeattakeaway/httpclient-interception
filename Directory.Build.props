@@ -8,6 +8,7 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)justeat-oss.snk</AssemblyOriginatorKeyFile>
     <Authors>JUSTEAT_OSS</Authors>
+    <ChecksumAlgorithm>SHA256</ChecksumAlgorithm>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)HttpClientInterception.ruleset</CodeAnalysisRuleSet>
     <Company>Just Eat</Company>
     <ContinuousIntegrationBuild Condition=" '$(CI)' != '' ">true</ContinuousIntegrationBuild>
