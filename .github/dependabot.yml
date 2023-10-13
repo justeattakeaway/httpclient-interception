@@ -10,6 +10,10 @@ updates:
     - "justeattakeaway/httpclient-interception"
 - package-ecosystem: nuget
   directory: "/"
+  groups:
+    xunit:
+      patterns:
+        - xunit*
   schedule:
     interval: daily
     time: "05:30"
