@@ -1,6 +1,7 @@
 name: ossf-scorecard
 
 on:
+  branch_protection_rule:
   push:
     branches: [ main ]
   schedule:
@@ -25,10 +26,19 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Get application token
+        id: get-application-token
+        uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+        with:
+          application_id: ${{ vars.JET_GITHUB_APPLICATION_ID }}
+          application_private_key: ${{ secrets.JET_GITHUB_SECRET_KEY }}
+          organization: ${{ github.repository_owner }}
+
       - name: Run analysis
         uses: ossf/scorecard-action@08b4669551908b1024bb425080c797723083c031 # v2.2.0
         with:
           publish_results: true
+          repo_token: ${{ steps.get-application-token.outputs.token }}
           results_file: results.sarif
           results_format: sarif
 
