@@ -18,3 +18,5 @@ jobs:
 
       - name: Review dependencies
         uses: actions/dependency-review-action@6c5ccdad469c9f8a2996bfecaec55a631a347034 # v3.1.0
+        with:
+          allow-licenses: 'Apache-2.0,BSD-2-Clause,BSD-3-Clause,MIT'
