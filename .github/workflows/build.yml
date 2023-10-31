@@ -23,6 +23,9 @@ jobs:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
+    outputs:
+        dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -42,6 +45,7 @@ jobs:
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      id: setup-dotnet
 
     - name: Setup NuGet cache
       uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
@@ -85,6 +89,8 @@ jobs:
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      with:
+        dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
     - name: Validate NuGet packages
       shell: pwsh
@@ -103,7 +109,7 @@ jobs:
         }
 
   publish-nuget:
-    needs: validate-packages
+    needs: [ build, validate-packages ]
     runs-on: ubuntu-latest
     if: |
       github.event.repository.fork == false &&
@@ -117,6 +123,8 @@ jobs:
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+      with:
+        dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
     - name: Push NuGet packages to NuGet.org
       run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json
