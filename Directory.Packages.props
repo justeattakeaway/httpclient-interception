@@ -26,7 +26,7 @@
     <PackageVersion Update="System.Text.Json" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(AssemblyName)' != 'JustEat.HttpClientInterception' ">
-    <PackageVersion Update="System.Text.Json" Version="8.0.0-rc.2.23479.6" />
+    <PackageVersion Update="System.Text.Json" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
