@@ -12,6 +12,8 @@ public static class HttpClientExtensions
 {
     public static IHttpClientBuilder AddHttpClients(this IServiceCollection services)
     {
+        services.ConfigureHttpJsonOptions((options) => options.SerializerOptions.WriteIndented = true);
+
         // Register a Refit-based typed client for use in the controller, which
         // configures the HttpClient with the appropriate base URL and HTTP request
         // headers. It also adds two custom delegating handlers.

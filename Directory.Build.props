@@ -1,7 +1,10 @@
 <Project>
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
-    <Compile Include="$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" />
+    <AssemblyAttribute Include="System.CLSCompliant">
+      <_Parameter1>false</_Parameter1>
+      <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
+    </AssemblyAttribute>
   </ItemGroup>
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -24,6 +27,8 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <NoWarn>$(NoWarn);CA1054;CA2234</NoWarn>
     <NoWarn Condition=" '$(GenerateDocumentationFile)' != 'true' ">$(NoWarn);SA0001</NoWarn>
+    <!-- HACK Workaround for https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/3687 -->
+    <NoWarn>$(NoWarn);SA1010</NoWarn>
     <PackageIcon>package-icon.png</PackageIcon>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/justeattakeaway/httpclient-interception</PackageProjectUrl>
@@ -36,6 +41,7 @@
     <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <VersionPrefix>4.1.0</VersionPrefix>
     <VersionSuffix Condition=" '$(VersionSuffix)' == '' AND '$(GITHUB_ACTIONS)' != '' AND '$(GITHUB_HEAD_REF)' != '' ">beta.$(GITHUB_RUN_NUMBER)</VersionSuffix>
@@ -50,6 +56,9 @@
   <ItemGroup>
     <Using Include="System.Globalization" />
     <Using Include="System.Net.Http" Condition=" '$(TargetFramework)' == 'net472' " />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <Using Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
     <Using Include="Shouldly" />

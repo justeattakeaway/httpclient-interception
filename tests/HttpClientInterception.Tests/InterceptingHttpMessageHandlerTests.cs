@@ -93,7 +93,7 @@ public static class InterceptingHttpMessageHandlerTests
         var requestUrl = "https://google.com/foo";
 
         var options = new HttpClientInterceptorOptions()
-            .RegisterByteArray(HttpMethod.Get, new Uri(requestUrl), () => Array.Empty<byte>());
+            .RegisterByteArray(HttpMethod.Get, new Uri(requestUrl), Array.Empty<byte>);
 
         int expected = 7;
         int actual = 0;

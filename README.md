@@ -159,15 +159,8 @@ A working example of this approach can be found in the [sample application](http
 /// A class that registers an intercepting HTTP message handler at the end of
 /// the message handler pipeline when an <see cref="HttpClient"/> is created.
 /// </summary>
-public sealed class HttpClientInterceptionFilter : IHttpMessageHandlerBuilderFilter
+public sealed class HttpClientInterceptionFilter(HttpClientInterceptorOptions options) : IHttpMessageHandlerBuilderFilter
 {
-    private readonly HttpClientInterceptorOptions _options;
-
-    public HttpClientInterceptionFilter(HttpClientInterceptorOptions options)
-    {
-        _options = options;
-    }
-
     /// <inheritdoc/>
     public Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next)
     {
@@ -177,12 +170,12 @@ public sealed class HttpClientInterceptionFilter : IHttpMessageHandlerBuilderFil
             next(builder);
 
             // Add the interceptor as the last message handler
-            builder.AdditionalHandlers.Add(_options.CreateHttpMessageHandler());
+            builder.AdditionalHandlers.Add(options.CreateHttpMessageHandler());
         };
     }
 }
 ```
-<sup><a href='/samples/SampleApp.Tests/HttpClientInterceptionFilter.cs#L9-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-interception-filter' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/samples/SampleApp.Tests/HttpClientInterceptionFilter.cs#L9-L31' title='Snippet source file'>snippet source</a> | <a href='#snippet-interception-filter' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 #### Setting Up HttpClient for Dependency Injection Manually
