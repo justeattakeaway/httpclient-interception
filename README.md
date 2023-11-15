@@ -57,7 +57,7 @@ using var client = options.CreateHttpClient();
 // The value of json will be: {"Id":1, "Link":"https://www.just-eat.co.uk/privacy-policy"}
 string json = await client.GetStringAsync("https://public.je-apis.com/terms");
 ```
-<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L43-L65' title='Snippet source file'>snippet source</a> | <a href='#snippet-minimal-example' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L44-L66' title='Snippet source file'>snippet source</a> | <a href='#snippet-minimal-example' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 `HttpRequestInterceptionBuilder` objects are mutable, so properties can be freely changed once a particular setup has been registered with an instance of `HttpClientInterceptorOptions` as the state is captured at the point of registration. This allows multiple responses and paths to be configured from a single `HttpRequestInterceptionBuilder` instance where multiple registrations against a common hostname.
@@ -143,7 +143,7 @@ var client = options.CreateHttpClient();
 await Assert.ThrowsAsync<HttpRequestException>(
     () => client.GetStringAsync("http://public.je-apis.com"));
 ```
-<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L22-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-fault-injection' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L23-L38' title='Snippet source file'>snippet source</a> | <a href='#snippet-fault-injection' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 #### Registering Request Interception When Using IHttpClientFactory

@@ -7,6 +7,7 @@ using System.Text.Json;
 using JustEat.HttpClientInterception.GitHub;
 using Newtonsoft.Json.Linq;
 using Polly;
+using Polly.Retry;
 using Refit;
 
 namespace JustEat.HttpClientInterception;
@@ -734,16 +735,20 @@ public static class Examples
 
         var service = RestService.For<IGitHub>(options.CreateHttpClient("https://api.github.com"));
 
-        // Configure a Polly retry policy that will retry an HTTP request up to three times
-        // if the HTTP request fails due to an HTTP 429 response from the server.
+        // Configure a Polly resilience pipeline that will retry an HTTP request up to three
+        // times if the HTTP request fails due to an HTTP 429 response from the server.
         int retryCount = 3;
-
-        var policy = Policy
-            .Handle<ApiException>((ex) => ex.StatusCode == HttpStatusCode.TooManyRequests)
-            .RetryAsync(retryCount);
+        var context = ResilienceContextPool.Shared.Get();
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddRetry(new RetryStrategyOptions()
+            {
+                ShouldHandle = new PredicateBuilder().Handle<ApiException>((ex) => ex.StatusCode == HttpStatusCode.TooManyRequests),
+                MaxRetryAttempts = 3,
+            })
+            .Build();
 
         // Act
-        Organization actual = await policy.ExecuteAsync(() => service.GetOrganizationAsync("justeattakeaway"));
+        Organization actual = await pipeline.ExecuteAsync(async (_) => await service.GetOrganizationAsync("justeattakeaway"), context);
 
         // Assert
         actual.ShouldNotBeNull();
