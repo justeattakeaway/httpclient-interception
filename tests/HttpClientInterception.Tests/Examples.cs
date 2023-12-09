@@ -291,6 +291,33 @@ public static class Examples
     }
 
     [Fact]
+    public static void Intercept_Custom_Synchronous_Http_Method()
+    {
+        // Arrange
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForMethod(new HttpMethod("custom"))
+            .ForHost("custom.domain.com")
+            .ForQuery("length=2")
+            .WithContent(() => new byte[] { 0, 1 });
+
+        var options = new HttpClientInterceptorOptions()
+            .Register(builder);
+
+        using var client = options.CreateHttpClient();
+        using var message = new HttpRequestMessage(new HttpMethod("custom"), "http://custom.domain.com?length=2");
+
+        // Act
+        using var response = client.Send(message);
+        using var responseStream = response.Content.ReadAsStream();
+        using var responseBuffer = new MemoryStream();
+        responseStream.CopyTo(responseBuffer);
+        byte[] content = responseBuffer.ToArray();
+
+        // Assert
+        content.ShouldBe([0, 1]);
+    }
+
+    [Fact]
     public static async Task Inject_Fault_For_Http_Get()
     {
         // Arrange

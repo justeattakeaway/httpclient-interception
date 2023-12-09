@@ -41,6 +41,12 @@ public class InterceptingHttpMessageHandler : DelegatingHandler
         _options = options ?? throw new ArgumentNullException(nameof(options));
     }
 
+#if NET6_0_OR_GREATER
+    /// <inheritdoc />
+    protected override HttpResponseMessage Send(HttpRequestMessage request, CancellationToken cancellationToken) =>
+        SendAsync(request, cancellationToken).ConfigureAwait(false).GetAwaiter().GetResult();
+#endif
+
     /// <inheritdoc />
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
