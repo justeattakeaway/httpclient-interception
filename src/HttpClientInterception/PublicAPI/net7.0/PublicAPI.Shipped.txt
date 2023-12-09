@@ -81,6 +81,7 @@ JustEat.HttpClientInterception.InterceptingHttpMessageHandler
 JustEat.HttpClientInterception.InterceptingHttpMessageHandler.InterceptingHttpMessageHandler(JustEat.HttpClientInterception.HttpClientInterceptorOptions! options) -> void
 JustEat.HttpClientInterception.InterceptingHttpMessageHandler.InterceptingHttpMessageHandler(JustEat.HttpClientInterception.HttpClientInterceptorOptions! options, System.Net.Http.HttpMessageHandler! innerHandler) -> void
 JustEat.HttpClientInterception.SystemTextJsonExtensions
+override JustEat.HttpClientInterception.InterceptingHttpMessageHandler.Send(System.Net.Http.HttpRequestMessage! request, System.Threading.CancellationToken cancellationToken) -> System.Net.Http.HttpResponseMessage!
 override JustEat.HttpClientInterception.InterceptingHttpMessageHandler.SendAsync(System.Net.Http.HttpRequestMessage! request, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!
 static JustEat.HttpClientInterception.BundleExtensions.RegisterBundle(this JustEat.HttpClientInterception.HttpClientInterceptorOptions! options, string! path) -> JustEat.HttpClientInterception.HttpClientInterceptorOptions!
 static JustEat.HttpClientInterception.BundleExtensions.RegisterBundle(this JustEat.HttpClientInterception.HttpClientInterceptorOptions! options, string! path, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, string!>>! templateValues) -> JustEat.HttpClientInterception.HttpClientInterceptorOptions!

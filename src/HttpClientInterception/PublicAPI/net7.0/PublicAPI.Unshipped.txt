@@ -1,2 +1,1 @@
 #nullable enable
-override JustEat.HttpClientInterception.InterceptingHttpMessageHandler.Send(System.Net.Http.HttpRequestMessage! request, System.Threading.CancellationToken cancellationToken) -> System.Net.Http.HttpResponseMessage!
