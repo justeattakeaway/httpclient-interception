@@ -20,7 +20,7 @@
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Text.Json" Version="4.7.2" />
     <PackageVersion Include="xunit" Version="2.6.2" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.5" />
   </ItemGroup>
   <ItemGroup Condition=" '$(AssemblyName)' == 'JustEat.HttpClientInterception' and '$(TargetFramework)' == 'net6.0' ">
     <PackageVersion Update="System.Text.Json" Version="6.0.0" />
