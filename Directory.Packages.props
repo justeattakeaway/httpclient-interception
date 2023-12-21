@@ -16,7 +16,7 @@
     <PackageVersion Include="Refit" Version="7.0.0" />
     <PackageVersion Include="ReportGenerator" Version="5.2.0" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
-    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.507" />
+    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Text.Json" Version="4.7.2" />
     <PackageVersion Include="xunit" Version="2.6.3" />
