@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update-sdk:
-    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@b3d5ca8064ec275f7a1d0b9640d28a57ab94090b # v3.1.1
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@65c5f402b15326dd12d7b1dac63abdbb53ed695c # v3.1.2
     with:
       include-nuget-packages: "Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,Microsoft.NET.Test.Sdk"
       labels: "dependencies,.NET"
