@@ -2238,108 +2238,254 @@ public static partial class HttpRequestInterceptionBuilderTests
     public static void Builder_ForAll_Throws_ArgumentNullException_If_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
-        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
-            new HttpRequestInterceptionBuilder()
-                .Requests()
-                .ForHttps()
-                .ForHost("api.github.com")
-                .ForPath("orgs/justeattakeaway")
-                .ForAll((Predicate<HttpRequestMessage>[])null)
-                .Responds()
-                .WithStatus(HttpStatusCode.OK);
+        var builder = new HttpRequestInterceptionBuilder();
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(InterceptionBuilder).ParamName.ShouldBe("predicates");
+        Predicate<HttpRequestMessage>[] predicates = null;
+
+        // Act and Assert
+        Should.Throw<ArgumentNullException>(() => builder.ForAll(predicates)).ParamName.ShouldBe("predicates");
     }
 
     [Fact]
     public static void Builder_ForAll_Throws_InvalidOperationException_If_Custom_Matching_Delegate_Is_Empty()
     {
         // Arrange
-        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
-            new HttpRequestInterceptionBuilder()
-                .Requests()
-                .ForHttps()
-                .ForHost("api.github.com")
-                .ForPath("orgs/justeattakeaway")
-                .ForAll(Array.Empty<Predicate<HttpRequestMessage>>())
-                .Responds()
-                .WithStatus(HttpStatusCode.OK);
+        var builder = new HttpRequestInterceptionBuilder();
 
-        // Act & Assert
-        Should.Throw<InvalidOperationException>(InterceptionBuilder);
+        var predicates = Array.Empty<Predicate<HttpRequestMessage>>();
+
+        // Act and Assert
+        Should.Throw<InvalidOperationException>(() => builder.ForAll(predicates));
     }
 
     [Fact]
     public static void Builder_ForAll_Throws_ArgumentNullException_If_Async_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
-        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
-            new HttpRequestInterceptionBuilder()
-                .Requests()
-                .ForHttps()
-                .ForHost("api.github.com")
-                .ForPath("orgs/justeattakeaway")
-                .ForAll((Func<HttpRequestMessage, Task<bool>>[])null)
-                .Responds()
-                .WithStatus(HttpStatusCode.OK);
+        var builder = new HttpRequestInterceptionBuilder();
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(InterceptionBuilder).ParamName.ShouldBe("predicates");
+        Func<HttpRequestMessage, Task<bool>>[] predicates = null;
+
+        // Act and Assert
+        Should.Throw<ArgumentNullException>(() => builder.ForAll(predicates)).ParamName.ShouldBe("predicates");
     }
 
     [Fact]
     public static void Builder_ForAll_Throws_InvalidOperationException_If_Async_Custom_Matching_Delegate_Is_Empty()
     {
         // Arrange
-        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
-            new HttpRequestInterceptionBuilder()
-                .Requests()
-                .ForHttps()
-                .ForHost("api.github.com")
-                .ForPath("orgs/justeattakeaway")
-                .ForAll(Array.Empty<Func<HttpRequestMessage, Task<bool>>>())
-                .Responds()
-                .WithStatus(HttpStatusCode.OK);
+        var builder = new HttpRequestInterceptionBuilder();
 
-        // Act & Assert
-        Should.Throw<InvalidOperationException>(InterceptionBuilder);
+        var predicates = Array.Empty<Func<HttpRequestMessage, Task<bool>>>();
+
+        // Act and Assert
+        Should.Throw<InvalidOperationException>(() => builder.ForAll(predicates));
     }
 
     [Fact]
     public static void Builder_ForAll_Throws_InvalidOperationException_If_At_Least_One_Async_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
-        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
-            new HttpRequestInterceptionBuilder()
-                .Requests()
-                .ForHttps()
-                .ForHost("api.github.com")
-                .ForPath("orgs/justeattakeaway")
-                .ForAll(new Func<HttpRequestMessage, Task<bool>>[] { _ => Task.FromResult(true), null })
-                .Responds()
-                .WithStatus(HttpStatusCode.OK);
+        var builder = new HttpRequestInterceptionBuilder();
 
-        // Act & Assert
-        Should.Throw<InvalidOperationException>(InterceptionBuilder);
+        Func<HttpRequestMessage, Task<bool>>[] predicates =
+        [
+            _ => Task.FromResult(true),
+            null,
+        ];
+
+        // Act and Assert
+        Should.Throw<InvalidOperationException>(() => builder.ForAll(predicates));
     }
 
     [Fact]
     public static void Builder_ForAll_Throws_InvalidOperationException_If_At_Least_One_Custom_Matching_Delegate_Is_Null()
     {
         // Arrange
-        static HttpRequestInterceptionBuilder InterceptionBuilder() =>
-            new HttpRequestInterceptionBuilder()
-                .Requests()
-                .ForHttps()
-                .ForHost("api.github.com")
-                .ForPath("orgs/justeattakeaway")
-                .ForAll(new Predicate<HttpRequestMessage>[] { _ => true, null })
-                .Responds()
-                .WithStatus(HttpStatusCode.OK);
+        var builder = new HttpRequestInterceptionBuilder();
 
-        // Act & Assert
-        Should.Throw<InvalidOperationException>(InterceptionBuilder);
+        Predicate<HttpRequestMessage>[] predicates =
+        [
+            _ => true,
+            null,
+        ];
+
+        // Act and Assert
+        Should.Throw<InvalidOperationException>(() => builder.ForAll(predicates));
+    }
+
+    [Fact]
+    public static async Task Builder_ForAll_Matches_Request_With_One_Predicate()
+    {
+        // Arrange
+        string expected = Guid.NewGuid().ToString();
+        Predicate<HttpRequestMessage>[] predicates =
+        [
+            _ => true,
+        ];
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .Requests()
+            .ForAll(predicates)
+            .Responds()
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions()
+            .ThrowsOnMissingRegistration()
+            .Register(builder);
+
+        using var client = options.CreateHttpClient();
+
+        // Act
+        string actual = await client.GetStringAsync("https://google.com/");
+
+        // Assert
+        actual.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static async Task Builder_ForAll_Matches_Request_With_One_Async_Predicate()
+    {
+        // Arrange
+        string expected = Guid.NewGuid().ToString();
+        Func<HttpRequestMessage, Task<bool>>[] predicates =
+        [
+            _ => Task.FromResult(true),
+        ];
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .Requests()
+            .ForAll(predicates)
+            .Responds()
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions()
+            .ThrowsOnMissingRegistration()
+            .Register(builder);
+
+        using var client = options.CreateHttpClient();
+
+        // Act
+        string actual = await client.GetStringAsync("https://google.com/");
+
+        // Assert
+        actual.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static async Task Builder_ForAll_Matches_Request_With_Multiple_Predicates()
+    {
+        // Arrange
+        string expected = Guid.NewGuid().ToString();
+        Predicate<HttpRequestMessage>[] predicates =
+        [
+            _ => true,
+            _ => true,
+        ];
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .Requests()
+            .ForAll(predicates)
+            .Responds()
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions()
+            .ThrowsOnMissingRegistration()
+            .Register(builder);
+
+        using var client = options.CreateHttpClient();
+
+        // Act
+        string actual = await client.GetStringAsync("https://google.com/");
+
+        // Assert
+        actual.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static async Task Builder_ForAll_Matches_Request_With_Multiple_Async_Predicates()
+    {
+        // Arrange
+        string expected = Guid.NewGuid().ToString();
+        Func<HttpRequestMessage, Task<bool>>[] predicates =
+        [
+            _ => Task.FromResult(true),
+            _ => Task.FromResult(true),
+        ];
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .Requests()
+            .ForAll(predicates)
+            .Responds()
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions()
+            .ThrowsOnMissingRegistration()
+            .Register(builder);
+
+        using var client = options.CreateHttpClient();
+
+        // Act
+        string actual = await client.GetStringAsync("https://google.com/");
+
+        // Assert
+        actual.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static async Task Builder_ForAll_Does_Not_Match_Request_With_Multiple_Predicates_If_Any_False()
+    {
+        // Arrange
+        string expected = Guid.NewGuid().ToString();
+        Predicate<HttpRequestMessage>[] predicates =
+        [
+            _ => true,
+            _ => false,
+            _ => true,
+        ];
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .Requests()
+            .ForAll(predicates)
+            .Responds()
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions()
+            .ThrowsOnMissingRegistration()
+            .Register(builder);
+
+        using var client = options.CreateHttpClient();
+
+        // Act and Assert
+        await Should.ThrowAsync<HttpRequestNotInterceptedException>(() => client.GetStringAsync("https://google.com/"));
+    }
+
+    [Fact]
+    public static async Task Builder_ForAll_Matches_Request_With_Multiple_Async_Predicates_If_Any_False()
+    {
+        // Arrange
+        string expected = Guid.NewGuid().ToString();
+        Func<HttpRequestMessage, Task<bool>>[] predicates =
+        [
+            _ => Task.FromResult(true),
+            _ => Task.FromResult(false),
+            _ => Task.FromResult(true),
+        ];
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .Requests()
+            .ForAll(predicates)
+            .Responds()
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions()
+            .ThrowsOnMissingRegistration()
+            .Register(builder);
+
+        using var client = options.CreateHttpClient();
+
+        // Act and Assert
+        await Should.ThrowAsync<HttpRequestNotInterceptedException>(() => client.GetStringAsync("https://google.com/"));
     }
 
     [Fact]
@@ -2422,19 +2568,19 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         using var client = options.CreateHttpClient();
 
-        // Act & Assert (First request)
+        // Act and Assert (First request)
         HttpResponseMessage firstResponse = await client.GetAsync(requestUri);
         firstResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        // Act & Assert (Second request)
+        // Act and Assert (Second request)
         HttpResponseMessage secondResponse = await client.GetAsync(requestUri);
         secondResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
 
-        // Act & Assert (Third request)
+        // Act and Assert (Third request)
         HttpResponseMessage thirdResponse = await client.GetAsync(requestUri);
         thirdResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        // Act & Assert (Fourth request)
+        // Act and Assert (Fourth request)
         HttpResponseMessage fourthResponse = await client.GetAsync(requestUri);
         fourthResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
     }
