@@ -3,13 +3,11 @@
 
 using System.Text.Json;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Diagnosers;
 using Refit;
 
 namespace JustEat.HttpClientInterception;
 
-[EventPipeProfiler(EventPipeProfile.CpuSampling)]
-[MemoryDiagnoser]
+[Config(typeof(CustomBenchmarkConfig))]
 public class InterceptionBenchmarks
 {
     private readonly HttpClientInterceptorOptions _options;
