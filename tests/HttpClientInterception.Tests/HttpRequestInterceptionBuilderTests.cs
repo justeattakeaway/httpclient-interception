@@ -3,11 +3,12 @@
 
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json.Linq;
 
 namespace JustEat.HttpClientInterception;
 
-public static class HttpRequestInterceptionBuilderTests
+public static partial class HttpRequestInterceptionBuilderTests
 {
     [Fact]
     public static async Task Register_For_Builder_With_All_Defaults_Registers_Interception()
@@ -39,6 +40,27 @@ public static class HttpRequestInterceptionBuilderTests
             .ForGet()
             .ForUrl(requestUri)
             .WithJsonContent(expected);
+
+        var options = new HttpClientInterceptorOptions().Register(builder);
+
+        // Act
+        var actual = await HttpAssert.GetAsync<string[]>(options, requestUri);
+
+        // Assert
+        actual.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static async Task Register_For_Builder_With_Json_Source_Generator_Defaults_Registers_Interception()
+    {
+        // Arrange
+        var requestUri = "https://google.com/";
+        var expected = new[] { "foo", "bar" };
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForGet()
+            .ForUrl(requestUri)
+            .WithJsonContent(expected, TestJsonSerializerContext.Default.StringArray);
 
         var options = new HttpClientInterceptorOptions().Register(builder);
 
@@ -672,9 +694,7 @@ public static class HttpRequestInterceptionBuilderTests
             request.Method.ShouldBe(HttpMethod.Post);
             request.RequestUri.ShouldBe(requestUri);
 
-#pragma warning disable xUnit1031
             string json = request.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-#pragma warning restore xUnit1031
 
             var body = JObject.Parse(json);
 
@@ -785,7 +805,7 @@ public static class HttpRequestInterceptionBuilderTests
     public static void WithContent_Validates_Parameters()
     {
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithContent((string)null), "builder");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithContent((string)null)).ParamName.ShouldBe("builder");
     }
 
     [Fact]
@@ -796,8 +816,8 @@ public static class HttpRequestInterceptionBuilderTests
         IEnumerable<KeyValuePair<string, string>> parameters = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithFormContent(parameters), "builder");
-        Should.Throw<ArgumentNullException>(() => builder.WithFormContent(parameters), "parameters");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithFormContent(parameters)).ParamName.ShouldBe("builder");
+        Should.Throw<ArgumentNullException>(() => builder.WithFormContent(parameters)).ParamName.ShouldBe("parameters");
     }
 
     [Fact]
@@ -831,10 +851,14 @@ public static class HttpRequestInterceptionBuilderTests
         // Arrange
         var builder = new HttpRequestInterceptionBuilder();
         object content = null;
+        var typedContent = new CustomObject();
+        var jsonTypeInfo = TestJsonSerializerContext.Default.CustomObject;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithJsonContent(content), "builder");
-        Should.Throw<ArgumentNullException>(() => builder.WithJsonContent(content), "content");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithJsonContent(content)).ParamName.ShouldBe("builder");
+        Should.Throw<ArgumentNullException>(() => builder.WithJsonContent(content)).ParamName.ShouldBe("content");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithJsonContent(typedContent, jsonTypeInfo)).ParamName.ShouldBe("builder");
+        Should.Throw<ArgumentNullException>(() => builder.WithJsonContent(typedContent, null)).ParamName.ShouldBe("jsonTypeInfo");
     }
 
     [Fact]
@@ -845,8 +869,8 @@ public static class HttpRequestInterceptionBuilderTests
         object content = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithSystemTextJsonContent(content), "builder");
-        Should.Throw<ArgumentNullException>(() => builder.WithSystemTextJsonContent(content), "content");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithSystemTextJsonContent(content)).ParamName.ShouldBe("builder");
+        Should.Throw<ArgumentNullException>(() => builder.WithSystemTextJsonContent(content)).ParamName.ShouldBe("content");
     }
 
     [Fact]
@@ -856,49 +880,49 @@ public static class HttpRequestInterceptionBuilderTests
         string uriString = "https://google.com/";
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForUrl(uriString), "builder");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForUrl(uriString)).ParamName.ShouldBe("builder");
     }
 
     [Fact]
     public static void ForDelete_Validates_Parameters()
     {
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForDelete(), "builder");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForDelete()).ParamName.ShouldBe("builder");
     }
 
     [Fact]
     public static void ForGet_Validates_Parameters()
     {
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForGet(), "builder");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForGet()).ParamName.ShouldBe("builder");
     }
 
     [Fact]
     public static void ForPost_Validates_Parameters()
     {
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForPost(), "builder");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForPost()).ParamName.ShouldBe("builder");
     }
 
     [Fact]
     public static void ForPut_Validates_Parameters()
     {
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForPut(), "builder");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForPut()).ParamName.ShouldBe("builder");
     }
 
     [Fact]
     public static void ForHttp_Validates_Parameters()
     {
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForHttp(), "builder");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForHttp()).ParamName.ShouldBe("builder");
     }
 
     [Fact]
     public static void ForHttps_Validates_Parameters()
     {
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForHttps(), "builder");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForHttps()).ParamName.ShouldBe("builder");
     }
 
     [Fact]
@@ -908,7 +932,7 @@ public static class HttpRequestInterceptionBuilderTests
         HttpRequestInterceptionBuilder builder = new HttpRequestInterceptionBuilder();
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.ForMethod(null), "method");
+        Should.Throw<ArgumentNullException>(() => builder.ForMethod(null)).ParamName.ShouldBe("method");
     }
 
     [Fact]
@@ -919,7 +943,7 @@ public static class HttpRequestInterceptionBuilderTests
         UriBuilder uriBuilder = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.ForUri(uriBuilder), "uriBuilder");
+        Should.Throw<ArgumentNullException>(() => builder.ForUri(uriBuilder)).ParamName.ShouldBe("uriBuilder");
     }
 
     [Fact]
@@ -1244,7 +1268,7 @@ public static class HttpRequestInterceptionBuilderTests
         var builder = new HttpRequestInterceptionBuilder();
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.RegisterWith(null), "options");
+        Should.Throw<ArgumentNullException>(() => builder.RegisterWith(null)).ParamName.ShouldBe("options");
     }
 
     [Fact]
@@ -1639,11 +1663,11 @@ public static class HttpRequestInterceptionBuilderTests
         var values = Array.Empty<string>();
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(null, string.Empty), "name");
-        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(null, values), "name");
-        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(null, (IEnumerable<string>)values), "name");
-        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(name, (string[])null), "values");
-        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(name, (IEnumerable<string>)null), "values");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(null, string.Empty)).ParamName.ShouldBe("name");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(null, values)).ParamName.ShouldBe("name");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(null, (IEnumerable<string>)values)).ParamName.ShouldBe("name");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(name, (string[])null)).ParamName.ShouldBe("values");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeader(name, (IEnumerable<string>)null)).ParamName.ShouldBe("values");
     }
 
     [Fact]
@@ -1656,9 +1680,9 @@ public static class HttpRequestInterceptionBuilderTests
         Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headersOfString), "headers");
-        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headersOfStrings), "headers");
-        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headerFactory), "headerFactory");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headersOfString)).ParamName.ShouldBe("headers");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headersOfStrings)).ParamName.ShouldBe("headers");
+        Should.Throw<ArgumentNullException>(() => builder.ForRequestHeaders(headerFactory)).ParamName.ShouldBe("headerFactory");
     }
 
     [Fact]
@@ -1670,11 +1694,11 @@ public static class HttpRequestInterceptionBuilderTests
         var values = Array.Empty<string>();
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(null, string.Empty), "name");
-        Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(null, values), "name");
-        Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(null, (IEnumerable<string>)values), "name");
-        Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(name, (string[])null), "values");
-        Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(name, (IEnumerable<string>)null), "values");
+        Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(null, string.Empty)).ParamName.ShouldBe("name");
+        Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(null, values)).ParamName.ShouldBe("name");
+        Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(null, (IEnumerable<string>)values)).ParamName.ShouldBe("name");
+        Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(name, (string[])null)).ParamName.ShouldBe("values");
+        Should.Throw<ArgumentNullException>(() => builder.WithContentHeader(name, (IEnumerable<string>)null)).ParamName.ShouldBe("values");
     }
 
     [Fact]
@@ -1687,9 +1711,9 @@ public static class HttpRequestInterceptionBuilderTests
         Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headers), "headers");
-        Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headerValues), "headers");
-        Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headerFactory), "headerFactory");
+        Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headers)).ParamName.ShouldBe("headers");
+        Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headerValues)).ParamName.ShouldBe("headers");
+        Should.Throw<ArgumentNullException>(() => builder.WithContentHeaders(headerFactory)).ParamName.ShouldBe("headerFactory");
     }
 
     [Fact]
@@ -1701,11 +1725,11 @@ public static class HttpRequestInterceptionBuilderTests
         var values = Array.Empty<string>();
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(null, string.Empty), "name");
-        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(null, values), "name");
-        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(null, (IEnumerable<string>)values), "name");
-        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(name, (string[])null), "values");
-        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(name, (IEnumerable<string>)null), "values");
+        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(null, string.Empty)).ParamName.ShouldBe("name");
+        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(null, values)).ParamName.ShouldBe("name");
+        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(null, (IEnumerable<string>)values)).ParamName.ShouldBe("name");
+        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(name, (string[])null)).ParamName.ShouldBe("values");
+        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeader(name, (IEnumerable<string>)null)).ParamName.ShouldBe("values");
     }
 
     [Fact]
@@ -1717,8 +1741,8 @@ public static class HttpRequestInterceptionBuilderTests
         Func<IEnumerable<KeyValuePair<string, ICollection<string>>>> headerFactory = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeaders(headers), "headers");
-        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeaders(headerFactory), "headerFactory");
+        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeaders(headers)).ParamName.ShouldBe("headers");
+        Should.Throw<ArgumentNullException>(() => builder.WithResponseHeaders(headerFactory)).ParamName.ShouldBe("headerFactory");
     }
 
     [Fact]
@@ -1729,8 +1753,8 @@ public static class HttpRequestInterceptionBuilderTests
         var parameters = new Dictionary<string, string>();
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForFormContent(parameters), "builder");
-        Should.Throw<ArgumentNullException>(() => builder.ForFormContent(null), "parameters");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForFormContent(parameters)).ParamName.ShouldBe("builder");
+        Should.Throw<ArgumentNullException>(() => builder.ForFormContent(null)).ParamName.ShouldBe("parameters");
     }
 
     [Fact]
@@ -1740,7 +1764,7 @@ public static class HttpRequestInterceptionBuilderTests
         static bool Predicate(HttpContent content) => false;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForContent(Predicate), "builder");
+        Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).ForContent(Predicate)).ParamName.ShouldBe("builder");
     }
 
     [Fact]
@@ -2147,14 +2171,12 @@ public static class HttpRequestInterceptionBuilderTests
     public static async Task Builder_For_Posted_Json_To_Match_Intercepts_Request()
     {
         // Arrange
-#pragma warning disable xUnit1031
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl("https://test.local/post")
             .ForPost()
             .ForContent((content) => content.ReadAsStringAsync().Result == @"{""message"":""Hello, Alice""}")
             .Responds()
             .WithJsonContent(new { message = "Hi Bob!" });
-#pragma warning restore xUnit1031
 
         var options = new HttpClientInterceptorOptions()
             .ThrowsOnMissingRegistration()
@@ -2227,7 +2249,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .WithStatus(HttpStatusCode.OK);
 
         // Act & Assert
-        Should.Throw<ArgumentNullException>(InterceptionBuilder);
+        Should.Throw<ArgumentNullException>(InterceptionBuilder).ParamName.ShouldBe("predicates");
     }
 
     [Fact]
@@ -2263,7 +2285,7 @@ public static class HttpRequestInterceptionBuilderTests
                 .WithStatus(HttpStatusCode.OK);
 
         // Act & Assert
-        Should.Throw<ArgumentNullException>(InterceptionBuilder);
+        Should.Throw<ArgumentNullException>(InterceptionBuilder).ParamName.ShouldBe("predicates");
     }
 
     [Fact]
@@ -2430,5 +2452,11 @@ public static class HttpRequestInterceptionBuilderTests
         public int Number { get; set; }
 
         public string Text { get; set; }
+    }
+
+    [JsonSerializable(typeof(string[]))]
+    [JsonSerializable(typeof(CustomObject))]
+    private sealed partial class TestJsonSerializerContext : JsonSerializerContext
+    {
     }
 }

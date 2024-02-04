@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System.Net.Http.Json;
 using System.Text.Json;
 using BenchmarkDotNet.Attributes;
 using Refit;
@@ -72,35 +73,35 @@ public class InterceptionBenchmarks
     }
 
     [Benchmark]
-    public async Task GetBytes()
+    public async Task<byte[]> GetBytes()
+        => await _client.GetByteArrayAsync("https://files.domain.com/setup.exe");
+
+    [Benchmark]
+    public async Task<string> GetHtml()
+        => await _client.GetStringAsync("http://www.google.co.uk/search?q=Just+Eat");
+
+    [Benchmark]
+    public async Task<JsonDocument> GetJsonDocument()
     {
-        _ = await _client.GetByteArrayAsync("https://files.domain.com/setup.exe");
+        using var stream = await _client.GetStreamAsync("https://api.github.com/orgs/justeattakeaway");
+        return await JsonDocument.ParseAsync(stream);
     }
 
     [Benchmark]
-    public async Task GetHtml()
-    {
-        _ = await _client.GetStringAsync("http://www.google.co.uk/search?q=Just+Eat");
-    }
+    public async Task<Organization> GetJsonObject()
+        => await _client.GetFromJsonAsync<Organization>("https://api.github.com/orgs/justeattakeaway");
+
+#if !NETFRAMEWORK
+    [Benchmark]
+    public async Task<Organization> GetJsonObjectSourceGenerator()
+        => await _client.GetFromJsonAsync("https://api.github.com/orgs/justeattakeaway", GitHubJsonSerializerContext.Default.Organization);
+#endif
 
     [Benchmark]
-    public async Task GetJson()
-    {
-        var stream = await _client.GetStreamAsync("https://api.github.com/orgs/justeattakeaway");
-        using var document = await JsonDocument.ParseAsync(stream);
-    }
+    public async Task<Organization> GetJsonObjectWithRefit()
+        => await _service.GetOrganizationAsync("justeattakeaway");
 
     [Benchmark]
-    public async Task GetJsonWithRefit()
-    {
-        _ = await _service.GetOrganizationAsync("justeattakeaway");
-    }
-
-    [Benchmark]
-    public async Task GetStream()
-    {
-        using (await _client.GetStreamAsync("https://api.github.com/orgs/justeattakeaway?page=1"))
-        {
-        }
-    }
+    public async Task<Stream> GetStream()
+        => await _client.GetStreamAsync("https://api.github.com/orgs/justeattakeaway?page=1");
 }

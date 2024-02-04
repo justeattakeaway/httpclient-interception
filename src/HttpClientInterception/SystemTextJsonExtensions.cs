@@ -2,6 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace JustEat.HttpClientInterception;
@@ -25,6 +26,12 @@ public static class SystemTextJsonExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder"/> or <paramref name="content"/> is <see langword="null"/>.
     /// </exception>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode(WarningMessages.SerializationUnreferencedCodeMessage)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(WarningMessages.SerializationRequiresDynamicCodeMessage)]
+#endif
+#endif
     public static HttpRequestInterceptionBuilder WithSystemTextJsonContent(
         this HttpRequestInterceptionBuilder builder,
         object content,

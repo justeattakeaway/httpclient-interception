@@ -331,9 +331,9 @@ public static class BundleExtensionsTests
         string path = "foo.bar";
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundle(path), "options");
-        Should.Throw<ArgumentNullException>(() => options.RegisterBundle(null), "path");
-        Should.Throw<ArgumentNullException>(() => options.RegisterBundle(path, null), "templateValues");
+        Should.Throw<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundle(path)).ParamName.ShouldBe("options");
+        Should.Throw<ArgumentNullException>(() => options.RegisterBundle(null)).ParamName.ShouldBe("path");
+        Should.Throw<ArgumentNullException>(() => options.RegisterBundle(path, null)).ParamName.ShouldBe("templateValues");
     }
 
     [Fact]
@@ -344,8 +344,8 @@ public static class BundleExtensionsTests
         string path = "foo.bar";
 
         // Act and Assert
-        await Should.ThrowAsync<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleAsync(path), "options");
-        await Should.ThrowAsync<ArgumentNullException>(() => options.RegisterBundleAsync(null), "path");
+        (await Should.ThrowAsync<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleAsync(path))).ParamName.ShouldBe("options");
+        (await Should.ThrowAsync<ArgumentNullException>(() => options.RegisterBundleAsync(null))).ParamName.ShouldBe("path");
     }
 
     [Fact]

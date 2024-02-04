@@ -14,8 +14,8 @@ public static class InterceptingHttpMessageHandlerTests
     public static void Constructor_Throws_If_Options_Is_Null()
     {
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => new InterceptingHttpMessageHandler(null), "options");
-        Should.Throw<ArgumentNullException>(() => new InterceptingHttpMessageHandler(null, Substitute.For<HttpMessageHandler>()), "options");
+        Should.Throw<ArgumentNullException>(() => new InterceptingHttpMessageHandler(null)).ParamName.ShouldBe("options");
+        Should.Throw<ArgumentNullException>(() => new InterceptingHttpMessageHandler(null, Substitute.For<HttpMessageHandler>())).ParamName.ShouldBe("options");
     }
 
     [Fact]
