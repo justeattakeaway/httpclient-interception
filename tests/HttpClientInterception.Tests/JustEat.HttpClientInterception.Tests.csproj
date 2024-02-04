@@ -14,6 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\HttpClientInterception\JustEat.HttpClientInterception.csproj" />
+    <ProjectReference Include="..\HttpClientInterception.Benchmarks\JustEat.HttpClientInterception.Benchmarks.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MarkdownSnippets.MsBuild" />

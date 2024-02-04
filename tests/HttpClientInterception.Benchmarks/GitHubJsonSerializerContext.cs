@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace JustEat.HttpClientInterception;
 
-[JsonSerializable(typeof(Organization))]
+[JsonSerializable(typeof(GitHubOrganization))]
 internal sealed partial class GitHubJsonSerializerContext : JsonSerializerContext
 {
 }
