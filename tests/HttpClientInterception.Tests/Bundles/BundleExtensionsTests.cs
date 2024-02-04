@@ -11,24 +11,24 @@ namespace JustEat.HttpClientInterception.Bundles;
 
 public static class BundleExtensionsTests
 {
-    public static IEnumerable<object[]> BundleFiles
+    public static TheoryData<string> BundleFiles()
     {
-        get
+        var bundles = Directory.GetFiles("Bundles", "*.json");
+        var filePaths = new TheoryData<string>();
+
+        foreach (string path in bundles)
         {
-            var bundles = Directory.GetFiles("Bundles", "*.json");
-
-            foreach (string path in bundles)
+            if (path.Contains("invalid-", StringComparison.OrdinalIgnoreCase) ||
+                path.Contains("no", StringComparison.OrdinalIgnoreCase) ||
+                path.Contains("null-", StringComparison.OrdinalIgnoreCase))
             {
-                if (path.Contains("invalid-", StringComparison.OrdinalIgnoreCase) ||
-                    path.Contains("no", StringComparison.OrdinalIgnoreCase) ||
-                    path.Contains("null-", StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                yield return new object[] { path };
+                continue;
             }
+
+            filePaths.Add(path);
         }
+
+        return filePaths;
     }
 
     [Fact]
