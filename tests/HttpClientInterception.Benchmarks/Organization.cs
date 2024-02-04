@@ -7,7 +7,7 @@ public sealed class Organization
 {
     public string Login { get; set; }
 
-    public string Id { get; set; }
+    public long Id { get; set; }
 
     public string Url { get; set; }
 }
