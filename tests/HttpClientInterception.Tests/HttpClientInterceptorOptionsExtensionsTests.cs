@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System.Text.Json.Serialization;
+
 namespace JustEat.HttpClientInterception;
 
-public static class HttpClientInterceptorOptionsExtensionsTests
+public static partial class HttpClientInterceptorOptionsExtensionsTests
 {
     [Fact]
-    public static async Task RegisterGetJson_For_With_Defaults_Registers_Interception()
+    public static async Task RegisterGetJson_With_Defaults_Registers_Interception()
     {
         // Arrange
         string requestUri = "https://google.com/";
@@ -28,13 +30,48 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpClientInterceptorOptions options = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterGetJson("https://google.com", new { }), "options");
+        Should.Throw<ArgumentNullException>(() => options.RegisterGetJson("https://google.com", new { })).ParamName.ShouldBe("options");
 
         // Arrange
         options = new HttpClientInterceptorOptions();
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterGetJson("https://google.com", null), "content");
+        Should.Throw<ArgumentNullException>(() => options.RegisterGetJson("https://google.com", null)).ParamName.ShouldBe("content");
+    }
+
+    [Fact]
+    public static async Task RegisterGetFromJson_With_Defaults_Registers_Interception()
+    {
+        // Arrange
+        string requestUri = "https://google.com/";
+        string[] expected = ["foo", "bar"];
+        var jsonTypeInfo = CustomJsonSerializerContext.Default.StringArray;
+
+        var options = new HttpClientInterceptorOptions().RegisterGetFromJson(requestUri, expected, jsonTypeInfo);
+
+        // Act
+        string[] actual = await HttpAssert.GetAsync<string[]>(options, requestUri);
+
+        // Assert
+        actual.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static void RegisterGetFromJson_Validates_Parameters_For_Null()
+    {
+        // Arrange
+        HttpClientInterceptorOptions options = null;
+        var content = new CustomJsonObject();
+        var jsonTypeInfo = CustomJsonSerializerContext.Default.CustomJsonObject;
+
+        // Act and Assert
+        Should.Throw<ArgumentNullException>(() => options.RegisterGetFromJson("https://google.com", content, jsonTypeInfo)).ParamName.ShouldBe("options");
+
+        // Arrange
+        options = new HttpClientInterceptorOptions();
+
+        // Act and Assert
+        Should.Throw<ArgumentNullException>(() => options.RegisterGetFromJson("https://google.com", content, null)).ParamName.ShouldBe("jsonTypeInfo");
     }
 
     [Fact]
@@ -94,7 +131,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpClientInterceptorOptions options = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterGet("https://google.com", string.Empty), "options");
+        Should.Throw<ArgumentNullException>(() => options.RegisterGet("https://google.com", string.Empty)).ParamName.ShouldBe("options");
     }
 
     [Fact]
@@ -104,7 +141,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpClientInterceptorOptions options = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.DeregisterGet("https://google.com"), "options");
+        Should.Throw<ArgumentNullException>(() => options.DeregisterGet("https://google.com")).ParamName.ShouldBe("options");
     }
 
     [Fact]
@@ -118,7 +155,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         IEnumerable<KeyValuePair<string, string>> headers = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: headers), "options");
+        Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory: Array.Empty<byte>, responseHeaders: headers)).ParamName.ShouldBe("options");
     }
 
     [Fact]
@@ -131,7 +168,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpClientInterceptorOptions options = null;
         IEnumerable<KeyValuePair<string, string>> headers = null;
 
-        Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream: () => Stream.Null, responseHeaders: headers), "options");
+        Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream: () => Stream.Null, responseHeaders: headers)).ParamName.ShouldBe("options");
     }
 
     [Fact]
@@ -143,7 +180,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpClientInterceptorOptions options = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.CreateHttpClient(baseAddress), "options");
+        Should.Throw<ArgumentNullException>(() => options.CreateHttpClient(baseAddress)).ParamName.ShouldBe("options");
     }
 
     [Fact]
@@ -155,7 +192,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpClientInterceptorOptions options = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.Register(new List<HttpRequestInterceptionBuilder>()), "options");
+        Should.Throw<ArgumentNullException>(() => options.Register(new List<HttpRequestInterceptionBuilder>())).ParamName.ShouldBe("options");
     }
 
     [Fact]
@@ -168,7 +205,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         IEnumerable<HttpRequestInterceptionBuilder> collection = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.Register(collection), "collection");
+        Should.Throw<ArgumentNullException>(() => options.Register(collection)).ParamName.ShouldBe("collection");
     }
 
     [Fact]
@@ -212,7 +249,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpClientInterceptorOptions options = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.Register([]), "options");
+        Should.Throw<ArgumentNullException>(() => options.Register([])).ParamName.ShouldBe("options");
     }
 
     [Fact]
@@ -225,7 +262,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpRequestInterceptionBuilder[] collection = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.Register(collection), "collection");
+        Should.Throw<ArgumentNullException>(() => options.Register(collection)).ParamName.ShouldBe("collection");
     }
 
     [Fact]
@@ -267,7 +304,7 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         HttpClientInterceptorOptions options = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(options.ThrowsOnMissingRegistration, "options");
+        Should.Throw<ArgumentNullException>(options.ThrowsOnMissingRegistration).ParamName.ShouldBe("options");
     }
 
     [Fact]
@@ -296,5 +333,15 @@ public static class HttpClientInterceptorOptionsExtensionsTests
         public int Number { get; set; }
 
         public string Text { get; set; }
+    }
+
+    private sealed class CustomJsonObject
+    {
+    }
+
+    [JsonSerializable(typeof(string[]))]
+    [JsonSerializable(typeof(CustomJsonObject))]
+    private sealed partial class CustomJsonSerializerContext : JsonSerializerContext
+    {
     }
 }

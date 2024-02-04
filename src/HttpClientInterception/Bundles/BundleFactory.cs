@@ -10,14 +10,11 @@ namespace JustEat.HttpClientInterception.Bundles;
 /// </summary>
 internal static class BundleFactory
 {
+#if !NET6_0_OR_GREATER
     /// <summary>
     /// Gets the JSON serializer settings to use.
     /// </summary>
-    private static JsonSerializerOptions Settings { get; } =
-#if NET7_0_OR_GREATER
-        JsonSerializerOptions.Default;
-#else
-        new();
+    private static JsonSerializerOptions Settings { get; } = new();
 #endif
 
     /// <summary>
@@ -30,7 +27,11 @@ internal static class BundleFactory
     public static Bundle? Create(string path)
     {
         string json = File.ReadAllText(path);
+#if NET6_0_OR_GREATER
+        return JsonSerializer.Deserialize(json, BundleJsonSerializerContext.Default.Bundle);
+#else
         return JsonSerializer.Deserialize<Bundle>(json, Settings);
+#endif
     }
 
     /// <summary>
@@ -45,6 +46,11 @@ internal static class BundleFactory
     public static async ValueTask<Bundle?> CreateAsync(string path, CancellationToken cancellationToken)
     {
         using var stream = File.OpenRead(path);
+
+#if NET6_0_OR_GREATER
+        return await JsonSerializer.DeserializeAsync(stream, BundleJsonSerializerContext.Default.Bundle, cancellationToken).ConfigureAwait(false);
+#else
         return await JsonSerializer.DeserializeAsync<Bundle>(stream, Settings, cancellationToken).ConfigureAwait(false);
+#endif
     }
 }

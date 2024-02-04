@@ -3,7 +3,9 @@
 
 using System.Diagnostics;
 using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using JustEat.HttpClientInterception.GitHub;
 using Newtonsoft.Json.Linq;
 using Polly;
@@ -15,7 +17,7 @@ namespace JustEat.HttpClientInterception;
 /// <summary>
 /// This class contains tests which provide example scenarios for using the library.
 /// </summary>
-public static class Examples
+public static partial class Examples
 {
     [Fact]
     public static async Task Fault_Injection()
@@ -856,5 +858,48 @@ public static class Examples
         response2.Content.Headers.TryGetValues("content-type", out values).ShouldBeTrue();
         values.ShouldNotBeNull();
         values.ShouldBe(new[] { "application/json; v=2" });
+    }
+
+    [Fact]
+    public static async Task Intercept_Http_Get_For_Json_Object_With_Json_Source_Generator()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions();
+        var builder = new HttpRequestInterceptionBuilder();
+
+        builder
+            .Requests()
+            .ForGet()
+            .ForHttps()
+            .ForHost("public.je-apis.com")
+            .ForPath("terms")
+            .Responds()
+            .WithJsonContent(new() { Id = 1, Link = "https://www.just-eat.co.uk/privacy-policy" }, AppJsonSerializerContext.Default.TermsAndConditions)
+            .RegisterWith(options);
+
+        using var client = options.CreateHttpClient();
+
+        // Act
+        // The value of json will be: {"Id":1, "Link":"https://www.just-eat.co.uk/privacy-policy"}
+        var content = await client.GetFromJsonAsync<TermsAndConditions>("https://public.je-apis.com/terms");
+
+        // Assert
+        content.ShouldNotBeNull();
+        content.Id.ShouldBe(1);
+        content.Link.ShouldBe("https://www.just-eat.co.uk/privacy-policy");
+    }
+
+    private sealed class TermsAndConditions
+    {
+        [JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("Link")]
+        public string Link { get; set; }
+    }
+
+    [JsonSerializable(typeof(TermsAndConditions))]
+    private sealed partial class AppJsonSerializerContext : JsonSerializerContext
+    {
     }
 }

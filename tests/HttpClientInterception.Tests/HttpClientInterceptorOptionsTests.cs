@@ -503,7 +503,7 @@ public static class HttpClientInterceptorOptionsTests
         Uri uri = new Uri("https://www.just-eat.co.uk");
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.Deregister(method, uri), "method");
+        Should.Throw<ArgumentNullException>(() => options.Deregister(method, uri)).ParamName.ShouldBe("method");
     }
 
     [Fact]
@@ -516,7 +516,7 @@ public static class HttpClientInterceptorOptionsTests
         Uri uri = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.Deregister(method, uri), "uri");
+        Should.Throw<ArgumentNullException>(() => options.Deregister(method, uri)).ParamName.ShouldBe("uri");
     }
 
     [Fact]
@@ -528,7 +528,7 @@ public static class HttpClientInterceptorOptionsTests
         HttpRequestInterceptionBuilder builder = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.Deregister(builder), "builder");
+        Should.Throw<ArgumentNullException>(() => options.Deregister(builder)).ParamName.ShouldBe("builder");
     }
 
     [Fact]
@@ -541,7 +541,7 @@ public static class HttpClientInterceptorOptionsTests
         Uri uri = new Uri("https://www.just-eat.co.uk");
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory: EmptyContent), "method");
+        Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory: EmptyContent)).ParamName.ShouldBe("method");
     }
 
     [Fact]
@@ -554,7 +554,7 @@ public static class HttpClientInterceptorOptionsTests
         var uri = new Uri("https://www.just-eat.co.uk");
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream: EmptyStream), "method");
+        Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream: EmptyStream)).ParamName.ShouldBe("method");
     }
 
     [Fact]
@@ -567,7 +567,7 @@ public static class HttpClientInterceptorOptionsTests
         Uri uri = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory: EmptyContent), "uri");
+        Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory: EmptyContent)).ParamName.ShouldBe("uri");
     }
 
     [Fact]
@@ -580,7 +580,7 @@ public static class HttpClientInterceptorOptionsTests
         Uri uri = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream: EmptyStream), "uri");
+        Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream: EmptyStream)).ParamName.ShouldBe("uri");
     }
 
     [Fact]
@@ -594,7 +594,7 @@ public static class HttpClientInterceptorOptionsTests
         Func<byte[]> contentFactory = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory), "contentFactory");
+        Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory)).ParamName.ShouldBe("contentFactory");
     }
 
     [Fact]
@@ -608,7 +608,7 @@ public static class HttpClientInterceptorOptionsTests
         Func<Task<byte[]>> contentFactory = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory), "contentFactory");
+        Should.Throw<ArgumentNullException>(() => options.RegisterByteArray(method, uri, contentFactory)).ParamName.ShouldBe("contentFactory");
     }
 
     [Fact]
@@ -622,7 +622,7 @@ public static class HttpClientInterceptorOptionsTests
         Func<Stream> contentStream = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream), "contentStream");
+        Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream)).ParamName.ShouldBe("contentStream");
     }
 
     [Fact]
@@ -636,7 +636,7 @@ public static class HttpClientInterceptorOptionsTests
         Func<Task<Stream>> contentStream = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream), "contentStream");
+        Should.Throw<ArgumentNullException>(() => options.RegisterStream(method, uri, contentStream)).ParamName.ShouldBe("contentStream");
     }
 
     [Fact]
@@ -647,7 +647,7 @@ public static class HttpClientInterceptorOptionsTests
         HttpRequestMessage request = null;
 
         // Act and Assert
-        await Should.ThrowAsync<ArgumentNullException>(() => options.GetResponseAsync(request), "request");
+        (await Should.ThrowAsync<ArgumentNullException>(() => options.GetResponseAsync(request))).ParamName.ShouldBe("request");
     }
 
     [Fact]
@@ -658,7 +658,7 @@ public static class HttpClientInterceptorOptionsTests
         HttpRequestInterceptionBuilder builder = null;
 
         // Act and Assert
-        Should.Throw<ArgumentNullException>(() => options.Register(builder), "builder");
+        Should.Throw<ArgumentNullException>(() => options.Register(builder)).ParamName.ShouldBe("builder");
     }
 
     [Fact]

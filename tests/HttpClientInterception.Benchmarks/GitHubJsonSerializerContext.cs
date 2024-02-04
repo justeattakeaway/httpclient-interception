@@ -1,18 +1,13 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+#if !NETFRAMEWORK
 using System.Text.Json.Serialization;
 
 namespace JustEat.HttpClientInterception;
 
-public sealed class Organization
+[JsonSerializable(typeof(Organization))]
+internal sealed partial class GitHubJsonSerializerContext : JsonSerializerContext
 {
-    [JsonPropertyName("login")]
-    public string Login { get; set; }
-
-    [JsonPropertyName("id")]
-    public long Id { get; set; }
-
-    [JsonPropertyName("url")]
-    public string Url { get; set; }
 }
+#endif

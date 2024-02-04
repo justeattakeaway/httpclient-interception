@@ -6,6 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+#if NET6_0_OR_GREATER
+using System.Text.Json.Serialization.Metadata;
+#endif
 
 namespace JustEat.HttpClientInterception;
 
@@ -188,6 +191,12 @@ public static class HttpClientInterceptorOptionsExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="options"/> or <paramref name="content"/> is <see langword="null"/>.
     /// </exception>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode(WarningMessages.SerializationUnreferencedCodeMessage)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(WarningMessages.SerializationRequiresDynamicCodeMessage)]
+#endif
+#endif
     public static HttpClientInterceptorOptions RegisterGetJson(
         this HttpClientInterceptorOptions options,
         [StringSyntax(StringSyntaxAttribute.Uri)]
@@ -205,14 +214,43 @@ public static class HttpClientInterceptorOptionsExtensions
             throw new ArgumentNullException(nameof(content));
         }
 
-        byte[] ContentFactory()
-        {
-            string json = JsonSerializer.Serialize(content);
-            return Encoding.UTF8.GetBytes(json);
-        }
+        byte[] ContentFactory() => JsonSerializer.SerializeToUtf8Bytes(content);
 
         return options.RegisterByteArray(HttpMethod.Get, new Uri(uriString), ContentFactory, statusCode);
     }
+
+#if NET6_0_OR_GREATER
+    /// <summary>
+    /// Registers an HTTP GET request for the specified JSON content.
+    /// </summary>
+    /// <typeparam name="T">The type of the object to serialize as JSON.</typeparam>
+    /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to set up.</param>
+    /// <param name="uriString">The request URL.</param>
+    /// <param name="content">The object to serialize as JSON as the content.</param>
+    /// <param name="jsonTypeInfo">The <see cref="JsonTypeInfo{T}"/> to use.</param>
+    /// <param name="statusCode">The optional HTTP status code to return.</param>
+    /// <returns>
+    /// The value specified by <paramref name="options"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="options"/> or <paramref name="jsonTypeInfo"/> is <see langword="null"/>.
+    /// </exception>
+    public static HttpClientInterceptorOptions RegisterGetFromJson<T>(
+        this HttpClientInterceptorOptions options,
+        [StringSyntax(StringSyntaxAttribute.Uri)]
+        string uriString,
+        T content,
+        JsonTypeInfo<T> jsonTypeInfo,
+        HttpStatusCode statusCode = HttpStatusCode.OK)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(jsonTypeInfo);
+
+        byte[] ContentFactory() => JsonSerializer.SerializeToUtf8Bytes(content, jsonTypeInfo);
+
+        return options.RegisterByteArray(HttpMethod.Get, new Uri(uriString), ContentFactory, statusCode);
+    }
+#endif
 
     /// <summary>
     /// Registers an HTTP GET request for the specified string.

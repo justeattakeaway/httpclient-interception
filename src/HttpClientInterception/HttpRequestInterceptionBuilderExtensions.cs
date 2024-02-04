@@ -4,6 +4,10 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.Json;
+#if NET6_0_OR_GREATER
+using System.Text.Json.Serialization.Metadata;
+#endif
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace JustEat.HttpClientInterception;
@@ -202,12 +206,52 @@ public static class HttpRequestInterceptionBuilderExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder"/> or <paramref name="content"/> is <see langword="null"/>.
     /// </exception>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode(WarningMessages.SerializationUnreferencedCodeMessage)]
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode(WarningMessages.SerializationRequiresDynamicCodeMessage)]
+#endif
+#endif
     public static HttpRequestInterceptionBuilder WithJsonContent(
         this HttpRequestInterceptionBuilder builder,
         object content)
     {
         return builder.WithSystemTextJsonContent(content);
     }
+
+#if NET6_0_OR_GREATER
+    /// <summary>
+    /// Sets the object to use as the response content.
+    /// </summary>
+    /// <typeparam name="T">The type of the object to serialize as JSON.</typeparam>
+    /// <param name="builder">The <see cref="HttpRequestInterceptionBuilder"/> to use.</param>
+    /// <param name="content">The object to serialize as JSON as the content.</param>
+    /// <param name="jsonTypeInfo">The <see cref="JsonTypeInfo{T}"/> to use.</param>
+    /// <returns>
+    /// The value specified by <paramref name="builder"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="builder"/>, <paramref name="content"/> or <paramref name="jsonTypeInfo"/> is <see langword="null"/>.
+    /// </exception>
+    public static HttpRequestInterceptionBuilder WithJsonContent<T>(
+        this HttpRequestInterceptionBuilder builder,
+        T content,
+        JsonTypeInfo<T> jsonTypeInfo)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(content);
+        ArgumentNullException.ThrowIfNull(jsonTypeInfo);
+
+        byte[] ContentFactory()
+        {
+            return JsonSerializer.SerializeToUtf8Bytes(content, jsonTypeInfo);
+        }
+
+        return builder
+            .WithMediaType(HttpClientInterceptorOptions.JsonMediaType)
+            .WithContent(ContentFactory);
+    }
+#endif
 
     /// <summary>
     /// Sets the request URL to intercept a request for.
