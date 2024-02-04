@@ -9,5 +9,5 @@ namespace JustEat.HttpClientInterception;
 internal interface IGitHub
 {
     [Get("/orgs/{organization}")]
-    Task<Organization> GetOrganizationAsync(string organization);
+    Task<GitHubOrganization> GetOrganizationAsync(string organization);
 }

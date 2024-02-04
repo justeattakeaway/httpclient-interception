@@ -88,17 +88,17 @@ public class InterceptionBenchmarks
     }
 
     [Benchmark]
-    public async Task<Organization> GetJsonObject()
-        => await _client.GetFromJsonAsync<Organization>("https://api.github.com/orgs/justeattakeaway");
+    public async Task<GitHubOrganization> GetJsonObject()
+        => await _client.GetFromJsonAsync<GitHubOrganization>("https://api.github.com/orgs/justeattakeaway");
 
 #if !NETFRAMEWORK
     [Benchmark]
-    public async Task<Organization> GetJsonObjectSourceGenerator()
-        => await _client.GetFromJsonAsync("https://api.github.com/orgs/justeattakeaway", GitHubJsonSerializerContext.Default.Organization);
+    public async Task<GitHubOrganization> GetJsonObjectSourceGenerator()
+        => await _client.GetFromJsonAsync("https://api.github.com/orgs/justeattakeaway", GitHubJsonSerializerContext.Default.GitHubOrganization);
 #endif
 
     [Benchmark]
-    public async Task<Organization> GetJsonObjectWithRefit()
+    public async Task<GitHubOrganization> GetJsonObjectWithRefit()
         => await _service.GetOrganizationAsync("justeattakeaway");
 
     [Benchmark]

@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace JustEat.HttpClientInterception;
 
-public sealed class Organization
+public sealed class GitHubOrganization
 {
     [JsonPropertyName("login")]
     public string Login { get; set; }
