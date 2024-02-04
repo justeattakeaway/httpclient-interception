@@ -242,24 +242,29 @@ Further examples of using the library can be found by following the links below:
 
 ### Benchmarks
 
-Generated with the [Benchmarks project](https://github.com/justeattakeaway/httpclient-interception/blob/main/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [c31abf3](https://github.com/justeattakeaway/httpclient-interception/commit/f38ae38d9f0abd50f380d699c281d76e1a1513c9 "Benchmark commit") on 15/11/2022.
-
-``` ini
-
-BenchmarkDotNet=v0.13.2, OS=Windows 11 (10.0.22000.1098/21H2)
-Intel Core i9-9980HK CPU 2.40GHz, 1 CPU, 16 logical and 8 physical cores
-.NET SDK=7.0.100
-  [Host]     : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
-  DefaultJob : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
-
+Generated with the [Benchmarks project](https://github.com/justeattakeaway/httpclient-interception/blob/main/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [ef93cb5](https://github.com/justeattakeaway/httpclient-interception/commit/ef93cb5a54b518fe488de63be962ddf15644ef42 "Benchmark commit") on 04/02/2024.
 
 ```
-|           Method |      Mean |     Error |    StdDev |   Gen0 | Allocated |
-|----------------- |----------:|----------:|----------:|-------:|----------:|
-|         [`GetBytes`](https://github.com/justeattakeaway/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L76-L80) |  3.102 μs | 0.0780 μs | 0.2264 μs | 0.3128 |    2648 B |
-|          [`GetHtml`](https://github.com/justeattakeaway/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L82-L86) |  3.675 μs | 0.0735 μs | 0.2143 μs | 0.3700 |    3104 B |
-|          [`GetJson`](https://github.com/justeattakeaway/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L88-L93) |  5.175 μs | 0.1223 μs | 0.3470 μs | 0.3433 |    2904 B |
-|        [`GetStream`](https://github.com/justeattakeaway/httpclient-interception/blob/f38ae38d9f0abd50f380d699c281d76e1a1513c9/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs#L101-L107) | 36.359 μs | 0.7168 μs | 1.3981 μs | 0.3662 |    3312 B |
+
+BenchmarkDotNet v0.13.12, Windows 11 (10.0.22621.3007/22H2/2022Update/SunValley2)
+12th Gen Intel Core i7-1270P, 1 CPU, 16 logical and 12 physical cores
+.NET SDK 8.0.101
+  [Host]     : .NET 8.0.1 (8.0.123.58001), X64 RyuJIT AVX2
+  Job-IMNGZO : .NET 8.0.1 (8.0.123.58001), X64 RyuJIT AVX2
+
+Arguments=/p:UseArtifactsOutput=false  
+
+```
+| Method                       | Mean       | Error     | StdDev     | Median     | Gen0   | Allocated |
+|----------------------------- |-----------:|----------:|-----------:|-----------:|-------:|----------:|
+| GetBytes                     |   1.708 μs | 0.0338 μs |  0.0898 μs |   1.698 μs | 0.3223 |   2.98 KB |
+| GetHtml                      |   1.618 μs | 0.0324 μs |  0.0703 μs |   1.614 μs | 0.3319 |   3.06 KB |
+| GetJsonDocument              |   1.942 μs | 0.0381 μs |  0.0604 μs |   1.921 μs | 0.3071 |   2.84 KB |
+| GetJsonObject                |   2.460 μs | 0.0778 μs |  0.2195 μs |   2.413 μs | 0.3281 |   3.05 KB |
+| GetJsonObjectSourceGenerator |   2.345 μs | 0.0421 μs |  0.1102 μs |   2.311 μs | 0.3281 |   3.05 KB |
+| GetJsonObjectWithRefit       |   5.169 μs | 0.1025 μs |  0.2117 μs |   5.120 μs | 0.6714 |   6.35 KB |
+| GetStream                    | 209.607 μs | 4.5593 μs | 13.3717 μs | 210.077 μs | 0.2441 |   3.16 KB |
+
 
 ## Feedback
 
