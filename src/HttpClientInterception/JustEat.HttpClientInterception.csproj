@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
     <PackageId>JustEat.HttpClientInterception</PackageId>
-    <PackageValidationBaselineVersion>4.0.0</PackageValidationBaselineVersion>
+    <PackageValidationBaselineVersion>4.2.0</PackageValidationBaselineVersion>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <SignAssembly>true</SignAssembly>
