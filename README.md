@@ -22,7 +22,7 @@ This design means that no HTTP server needs to be hosted to proxy traffic to/fro
 
 To install the library from [NuGet](https://www.nuget.org/packages/JustEat.HttpClientInterception/ "JustEat.HttpClientInterception on NuGet.org") using the .NET SDK run:
 
-```
+```text
 dotnet add package JustEat.HttpClientInterception
 ```
 
@@ -33,6 +33,8 @@ dotnet add package JustEat.HttpClientInterception
 ##### Fluent API
 
 Below is a minimal example of intercepting an HTTP GET request to an API for a JSON resource to return a custom response using the fluent API:
+
+<!-- markdownlint-disable MD031 -->
 
 <!-- snippet: minimal-example -->
 <a id='snippet-minimal-example'></a>
@@ -244,7 +246,7 @@ Further examples of using the library can be found by following the links below:
 
 Generated with the [Benchmarks project](https://github.com/justeattakeaway/httpclient-interception/blob/main/tests/HttpClientInterception.Benchmarks/InterceptionBenchmarks.cs "JustEat.HttpClientInterception benchmark code") using [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet "BenchmarkDotNet on GitHub.com") using commit [ef93cb5](https://github.com/justeattakeaway/httpclient-interception/commit/ef93cb5a54b518fe488de63be962ddf15644ef42 "Benchmark commit") on 04/02/2024.
 
-```
+```text
 
 BenchmarkDotNet v0.13.12, Windows 11 (10.0.22621.3007/22H2/2022Update/SunValley2)
 12th Gen Intel Core i7-1270P, 1 CPU, 16 logical and 12 physical cores
@@ -252,7 +254,7 @@ BenchmarkDotNet v0.13.12, Windows 11 (10.0.22621.3007/22H2/2022Update/SunValley2
   [Host]     : .NET 8.0.1 (8.0.123.58001), X64 RyuJIT AVX2
   Job-IMNGZO : .NET 8.0.1 (8.0.123.58001), X64 RyuJIT AVX2
 
-Arguments=/p:UseArtifactsOutput=false  
+Arguments=/p:UseArtifactsOutput=false
 
 ```
 | Method                       | Mean       | Error     | StdDev     | Median     | Gen0   | Allocated |
@@ -264,7 +266,6 @@ Arguments=/p:UseArtifactsOutput=false
 | GetJsonObjectSourceGenerator |   2.345 μs | 0.0421 μs |  0.1102 μs |   2.311 μs | 0.3281 |   3.05 KB |
 | GetJsonObjectWithRefit       |   5.169 μs | 0.1025 μs |  0.2117 μs |   5.120 μs | 0.6714 |   6.35 KB |
 | GetStream                    | 209.607 μs | 4.5593 μs | 13.3717 μs | 210.077 μs | 0.2441 |   3.16 KB |
-
 
 ## Feedback
 
