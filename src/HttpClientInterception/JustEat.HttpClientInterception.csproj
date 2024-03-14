@@ -19,6 +19,12 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
+    <PackageVersion Update="System.Text.Json" VersionOverride="6.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">
+    <PackageVersion Update="System.Text.Json" VersionOverride="7.0.0" />
+  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <PackageReference Include="System.Net.Http" />
   </ItemGroup>
@@ -27,10 +33,6 @@
     <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Unshipped.txt" />
   </ItemGroup>
   <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
-    <EnableAotAnalyzer>true</EnableAotAnalyzer>
-    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     <IsAotCompatible>true</IsAotCompatible>
-    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 </Project>
