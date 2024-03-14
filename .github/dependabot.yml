@@ -25,3 +25,4 @@ updates:
   - dependency-name: Microsoft.AspNetCore.WebUtilities
   - dependency-name: Newtonsoft.Json
   - dependency-name: System.Net.Http
+  - dependency-name: System.Text.Json
