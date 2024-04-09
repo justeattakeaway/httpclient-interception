@@ -41,7 +41,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <UseArtifactsOutput>true</UseArtifactsOutput>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <VersionPrefix>4.2.1</VersionPrefix>
+    <VersionPrefix>4.2.2</VersionPrefix>
     <VersionSuffix Condition=" '$(VersionSuffix)' == '' AND '$(GITHUB_ACTIONS)' != '' AND '$(GITHUB_HEAD_REF)' != '' ">beta.$(GITHUB_RUN_NUMBER)</VersionSuffix>
     <VersionPrefix Condition=" $(GITHUB_REF.StartsWith(`refs/tags/v`)) ">$(GITHUB_REF.Replace('refs/tags/v', ''))</VersionPrefix>
     <VersionSuffix Condition=" $(GITHUB_REF.StartsWith(`refs/tags/v`)) "></VersionSuffix>
