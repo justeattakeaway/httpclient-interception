@@ -5,12 +5,13 @@
     <NoWarn>$(NoWarn);CA1303;CA1600;CA1707;CA1812;CA1861;CA2000;CA2007;SA1600;SA1601</NoWarn>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Tests for JustEat.HttpClientInterception</Summary>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="example-bundle.json;xunit.runner.json;Bundles\*.json" CopyToOutputDirectory="PreserveNewest" />
     <None Remove="Bundles\*.json" />
     <Content Include="..\..\src\HttpClientInterception\Bundles\http-request-bundle-schema.json" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Bundles\http-request-bundle.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\HttpClientInterception\JustEat.HttpClientInterception.csproj" />
@@ -26,8 +27,5 @@
     <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 </Project>
