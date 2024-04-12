@@ -324,6 +324,56 @@ public static class BundleExtensionsTests
     }
 
     [Fact]
+    public static async Task Can_Intercept_Http_Requests_From_Bundle_Stream()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+        var headers = new Dictionary<string, string>()
+        {
+            ["accept"] = "application/vnd.github.v3+json",
+            ["authorization"] = "token my-token",
+            ["user-agent"] = "My-App/1.0.0",
+        };
+
+        using var stream = typeof(BundleExtensionsTests).Assembly.GetManifestResourceStream("JustEat.HttpClientInterception.Bundles.http-request-bundle.json");
+        stream.ShouldNotBeNull();
+
+        // Act
+        options.RegisterBundleFromStream(stream);
+
+        // Assert
+        await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", mediaType: "text/html");
+        await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/order-history");
+        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway", headers: headers, mediaType: "application/json");
+    }
+
+    [Fact]
+    public static async Task Can_Intercept_Http_Requests_From_Bundle_Stream_Async()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+        var headers = new Dictionary<string, string>()
+        {
+            ["accept"] = "application/vnd.github.v3+json",
+            ["authorization"] = "token my-token",
+            ["user-agent"] = "My-App/1.0.0",
+        };
+
+        using var stream = typeof(BundleExtensionsTests).Assembly.GetManifestResourceStream("JustEat.HttpClientInterception.Bundles.http-request-bundle.json");
+        stream.ShouldNotBeNull();
+
+        // Act
+        await options.RegisterBundleFromStreamAsync(stream);
+
+        // Assert
+        await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", mediaType: "text/html");
+        await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/order-history");
+        await HttpAssert.GetAsync(options, "https://api.github.com/orgs/justeattakeaway", headers: headers, mediaType: "application/json");
+    }
+
+    [Fact]
     public static void RegisterBundle_Validates_Parameters()
     {
         // Arrange
@@ -337,6 +387,18 @@ public static class BundleExtensionsTests
     }
 
     [Fact]
+    public static void RegisterBundleFromStream_Validates_Parameters()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions();
+        var stream = Stream.Null;
+
+        // Act and Assert
+        Should.Throw<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleFromStream(stream)).ParamName.ShouldBe("options");
+        Should.Throw<ArgumentNullException>(() => options.RegisterBundleFromStream(null)).ParamName.ShouldBe("stream");
+    }
+
+    [Fact]
     public static async Task RegisterBundleAsync_Validates_Parameters()
     {
         // Arrange
@@ -346,6 +408,18 @@ public static class BundleExtensionsTests
         // Act and Assert
         (await Should.ThrowAsync<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleAsync(path))).ParamName.ShouldBe("options");
         (await Should.ThrowAsync<ArgumentNullException>(() => options.RegisterBundleAsync(null))).ParamName.ShouldBe("path");
+    }
+
+    [Fact]
+    public static async Task RegisterBundleFromStreamAsync_Validates_Parameters()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions();
+        var stream = Stream.Null;
+
+        // Act and Assert
+        (await Should.ThrowAsync<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleFromStreamAsync(stream))).ParamName.ShouldBe("options");
+        (await Should.ThrowAsync<ArgumentNullException>(() => options.RegisterBundleFromStreamAsync(null))).ParamName.ShouldBe("stream");
     }
 
     [Fact]

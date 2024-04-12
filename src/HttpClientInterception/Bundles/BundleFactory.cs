@@ -18,35 +18,39 @@ internal static class BundleFactory
 #endif
 
     /// <summary>
-    /// Creates a <see cref="Bundle"/> from the specified JSON file.
+    /// Creates a <see cref="Bundle"/> from the specified JSON stream.
     /// </summary>
-    /// <param name="path">The path of the JSON file containing the bundle.</param>
+    /// <param name="stream">The <see cref="Stream"/> of JSON containing the bundle.</param>
     /// <returns>
-    /// The <see cref="Bundle"/> deserialized from the file specified by <paramref name="path"/>.
+    /// The <see cref="Bundle"/> deserialized from the stream specified by <paramref name="stream"/>.
     /// </returns>
-    public static Bundle? Create(string path)
+    public static Bundle? Create(Stream stream)
     {
-        string json = File.ReadAllText(path);
 #if NET6_0_OR_GREATER
-        return JsonSerializer.Deserialize(json, BundleJsonSerializerContext.Default.Bundle);
+        return JsonSerializer.Deserialize(stream, BundleJsonSerializerContext.Default.Bundle);
 #else
+        string json;
+
+        using (var reader = new StreamReader(stream))
+        {
+            json = reader.ReadToEnd();
+        }
+
         return JsonSerializer.Deserialize<Bundle>(json, Settings);
 #endif
     }
 
     /// <summary>
-    /// Creates a <see cref="Bundle"/> from the specified JSON file as an asynchronous operation.
+    /// Creates a <see cref="Bundle"/> from the specified JSON stream as an asynchronous operation.
     /// </summary>
-    /// <param name="path">The path of the JSON file containing the bundle.</param>
+    /// <param name="stream">The <see cref="Stream"/> of JSON containing the bundle.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to use.</param>
     /// <returns>
     /// A <see cref="ValueTask{Bundle}"/> representing the asynchronous operation which
-    /// returns the bundle deserialized from the file specified by <paramref name="path"/>.
+    /// returns the bundle deserialized from the stream specified by <paramref name="stream"/>.
     /// </returns>
-    public static async ValueTask<Bundle?> CreateAsync(string path, CancellationToken cancellationToken)
+    public static async ValueTask<Bundle?> CreateAsync(Stream stream, CancellationToken cancellationToken)
     {
-        using var stream = File.OpenRead(path);
-
 #if NET6_0_OR_GREATER
         return await JsonSerializer.DeserializeAsync(stream, BundleJsonSerializerContext.Default.Bundle, cancellationToken).ConfigureAwait(false);
 #else

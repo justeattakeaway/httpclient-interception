@@ -27,7 +27,7 @@ public static class BundleExtensions
     /// The version of the serialized bundle is not supported.
     /// </exception>
     public static HttpClientInterceptorOptions RegisterBundle(this HttpClientInterceptorOptions options, string path)
-        => options.RegisterBundle(path, Array.Empty<KeyValuePair<string, string>>());
+        => options.RegisterBundle(path, []);
 
     /// <summary>
     /// Registers a bundle of HTTP request interceptions from a specified JSON file.
@@ -64,7 +64,44 @@ public static class BundleExtensions
             throw new ArgumentNullException(nameof(templateValues));
         }
 
-        var bundle = BundleFactory.Create(path);
+        using var stream = File.OpenRead(path);
+
+        return options.RegisterBundleFromStream(stream, templateValues);
+    }
+
+    /// <summary>
+    /// Registers a bundle of HTTP request interceptions from a specified JSON stream.
+    /// </summary>
+    /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to register the bundle with.</param>
+    /// <param name="stream">A <see cref="Stream"/> of JSON containing the serialized bundle.</param>
+    /// <param name="templateValues">The optional template values to specify.</param>
+    /// <returns>
+    /// The value specified by <paramref name="options"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="options"/> or <paramref name="stream"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// The version of the serialized bundle is not supported.
+    /// </exception>
+    public static HttpClientInterceptorOptions RegisterBundleFromStream(
+        this HttpClientInterceptorOptions options,
+        Stream stream,
+        IEnumerable<KeyValuePair<string, string>>? templateValues = default)
+    {
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+
+        if (stream is null)
+        {
+            throw new ArgumentNullException(nameof(stream));
+        }
+
+        templateValues ??= [];
+
+        var bundle = BundleFactory.Create(stream);
 
         return options.RegisterBundle(bundle, templateValues);
     }
@@ -101,9 +138,46 @@ public static class BundleExtensions
             throw new ArgumentNullException(nameof(path));
         }
 
-        templateValues ??= Array.Empty<KeyValuePair<string, string>>();
+        using var stream = File.OpenRead(path);
 
-        var bundle = await BundleFactory.CreateAsync(path, cancellationToken).ConfigureAwait(false);
+        return await options.RegisterBundleFromStreamAsync(stream, templateValues, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Registers a bundle of HTTP request interceptions from a specified stream.
+    /// </summary>
+    /// <param name="options">The <see cref="HttpClientInterceptorOptions"/> to register the bundle with.</param>
+    /// <param name="stream">A <see cref="Stream"/> of JSON containing the serialized bundle.</param>
+    /// <param name="templateValues">The optional template values to specify.</param>
+    /// <param name="cancellationToken">The optional <see cref="CancellationToken"/> to use.</param>
+    /// <returns>
+    /// The value specified by <paramref name="options"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="options"/> or <paramref name="stream"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// The version of the serialized bundle is not supported.
+    /// </exception>
+    public static async Task<HttpClientInterceptorOptions> RegisterBundleFromStreamAsync(
+        this HttpClientInterceptorOptions options,
+        Stream stream,
+        IEnumerable<KeyValuePair<string, string>>? templateValues = default,
+        CancellationToken cancellationToken = default)
+    {
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+
+        if (stream is null)
+        {
+            throw new ArgumentNullException(nameof(stream));
+        }
+
+        templateValues ??= [];
+
+        var bundle = await BundleFactory.CreateAsync(stream, cancellationToken).ConfigureAwait(false);
 
         return options.RegisterBundle(bundle!, templateValues);
     }
