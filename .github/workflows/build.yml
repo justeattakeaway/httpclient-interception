@@ -28,7 +28,7 @@ jobs:
 
     permissions:
       attestations: write
-      contents: read
+      contents: write
       id-token: write
 
     strategy:
@@ -37,11 +37,11 @@ jobs:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
         include:
           - os: macos-latest
-            os_name: macos
+            os-name: macos
           - os: ubuntu-latest
-            os_name: linux
+            os-name: linux
           - os: windows-latest
-            os_name: windows
+            os-name: windows
 
     steps:
 
@@ -67,8 +67,16 @@ jobs:
       name: Upload coverage to Codecov
       with:
         file: ./artifacts/coverage/coverage.cobertura.xml
-        flags: ${{ matrix.os_name }}
+        flags: ${{ matrix.os-name }}
         token: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Generate SBOM
+      uses: anchore/sbom-action@e8d2a6937ecead383dfe75190d104edd1f9c5751 # v0.16.0
+      with:
+        artifact-name: build-${{ matrix.os-name }}.spdx.json
+        output-file: ./artifacts/build.spdx.json
+        path: ./artifacts/bin
+        upload-release-assets: ${{ runner.os == 'Windows' }}
 
     - name: Attest artifacts
       uses: actions/attest-build-provenance@173725a1209d09b31f9d30a3890cf2757ebbff0d # v1.1.2
@@ -84,13 +92,13 @@ jobs:
     - name: Publish artifacts
       uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
       with:
-        name: artifacts-${{ matrix.os_name }}
+        name: artifacts-${{ matrix.os-name }}
         path: ./artifacts
 
     - name: Publish NuGet packages
       uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
       with:
-        name: packages-${{ matrix.os_name }}
+        name: packages-${{ matrix.os-name }}
         path: ./artifacts/package/release
         if-no-files-found: error
 
