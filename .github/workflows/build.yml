@@ -72,7 +72,6 @@ jobs:
 
     - name: Generate SBOM
       uses: anchore/sbom-action@95b086ac308035dc0850b3853be5b7ab108236a8 # v0.16.1
-      if: runner.os != 'Windows' # HACK Disabled due to https://github.com/anchore/sbom-action/issues/472
       with:
         artifact-name: build-${{ matrix.os-name }}.spdx.json
         output-file: ./artifacts/build.spdx.json
