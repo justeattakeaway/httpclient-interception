@@ -39,7 +39,7 @@ jobs:
         shell: pwsh
         env:
           DOTNET_CLI_TELEMETRY_OPTOUT: true
-          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+          DOTNET_NOLOGO: true
         run: |
           $ErrorActionPreference = "Stop"
           $ProgressPreference = "SilentlyContinue"
