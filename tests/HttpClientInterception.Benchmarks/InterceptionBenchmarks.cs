@@ -4,11 +4,13 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Diagnosers;
 using Refit;
 
 namespace JustEat.HttpClientInterception;
 
-[Config(typeof(CustomBenchmarkConfig))]
+[EventPipeProfiler(EventPipeProfile.CpuSampling)]
+[MemoryDiagnoser]
 public class InterceptionBenchmarks
 {
     private readonly HttpClientInterceptorOptions _options;
@@ -40,7 +42,7 @@ public class InterceptionBenchmarks
             .ForQuery(string.Empty)
             .Responds()
             .WithMediaType("application/octet-stream")
-            .WithContent(() => new byte[] { 0, 1, 2, 3, 4 })
+            .WithContent(() => [0, 1, 2, 3, 4])
             .RegisterWith(_options);
 
         builder
