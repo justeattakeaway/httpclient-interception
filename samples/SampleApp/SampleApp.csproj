@@ -6,5 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Refit" />
+    <PackageReference Include="System.Text.Json" OverrideVersion="9.0.0-rc.1.24431.7" />
   </ItemGroup>
 </Project>

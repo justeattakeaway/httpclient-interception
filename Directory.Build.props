@@ -27,7 +27,8 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <NoWarn>$(NoWarn);CA1054;CA2234</NoWarn>
     <NoWarn Condition=" '$(GenerateDocumentationFile)' != 'true' ">$(NoWarn);SA0001</NoWarn>
-    <NuGetAuditMode>direct</NuGetAuditMode>
+    <!-- TODO Remove once .NET 9 is stable -->
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
     <PackageIcon>package-icon.png</PackageIcon>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/justeattakeaway/httpclient-interception</PackageProjectUrl>
@@ -42,7 +43,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <UseArtifactsOutput>true</UseArtifactsOutput>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <VersionPrefix>4.3.1</VersionPrefix>
+    <VersionPrefix>4.4.0</VersionPrefix>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(GITHUB_ACTIONS)' != '' ">
     <VersionSuffix Condition=" '$(VersionSuffix)' == '' AND '$(GITHUB_HEAD_REF)' == '' ">beta.$(GITHUB_RUN_NUMBER)</VersionSuffix>
