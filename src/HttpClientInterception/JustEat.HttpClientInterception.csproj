@@ -4,26 +4,23 @@
     <Description>A .NET library for intercepting server-side HTTP dependencies.</Description>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CA1510</NoWarn>
+    <NuGetAuditMode>direct</NuGetAuditMode>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
     <PackageId>JustEat.HttpClientInterception</PackageId>
-    <PackageValidationBaselineVersion>4.2.0</PackageValidationBaselineVersion>
+    <!-- TODO Update to 4.4.0 once released -->
+    <PackageValidationBaselineVersion>4.3.0</PackageValidationBaselineVersion>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <Summary>A .NET library for intercepting server-side HTTP dependencies.</Summary>
-    <TargetFrameworks>netstandard2.0;net472;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472;net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
     <PackageReference Include="System.Text.Json" />
-  </ItemGroup>
-  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
-    <PackageVersion Update="System.Text.Json" VersionOverride="6.0.0" />
-  </ItemGroup>
-  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">
-    <PackageVersion Update="System.Text.Json" VersionOverride="7.0.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <PackageReference Include="System.Net.Http" />
@@ -32,7 +29,7 @@
     <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Shipped.txt" />
     <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Unshipped.txt" />
   </ItemGroup>
-  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 </Project>

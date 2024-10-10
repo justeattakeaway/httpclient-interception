@@ -100,15 +100,15 @@ public static class HttpClientInterceptorOptionsExtensions
             throw new ArgumentNullException(nameof(contentFactory));
         }
 
-        IDictionary<string, IEnumerable<string>>? multivalueHeaders = null;
+        Dictionary<string, IEnumerable<string>>? multivalueHeaders = null;
 
         if (responseHeaders is not null)
         {
-            multivalueHeaders = new Dictionary<string, IEnumerable<string>>();
+            multivalueHeaders = [];
 
             foreach (var pair in responseHeaders)
             {
-                multivalueHeaders[pair.Key] = new[] { pair.Value };
+                multivalueHeaders[pair.Key] = [pair.Value];
             }
         }
 
@@ -157,15 +157,15 @@ public static class HttpClientInterceptorOptionsExtensions
             throw new ArgumentNullException(nameof(contentStream));
         }
 
-        IDictionary<string, IEnumerable<string>>? multivalueHeaders = null;
+        Dictionary<string, IEnumerable<string>>? multivalueHeaders = null;
 
         if (responseHeaders is not null)
         {
-            multivalueHeaders = new Dictionary<string, IEnumerable<string>>();
+            multivalueHeaders = [];
 
             foreach (var pair in responseHeaders)
             {
-                multivalueHeaders[pair.Key] = new[] { pair.Value };
+                multivalueHeaders[pair.Key] = [pair.Value];
             }
         }
 
