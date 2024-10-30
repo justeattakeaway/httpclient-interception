@@ -71,7 +71,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Generate SBOM
-      uses: anchore/sbom-action@1ca97d9028b51809cf6d3c934c3e160716e1b605 # v0.17.5
+      uses: anchore/sbom-action@251a468eed47e5082b105c3ba6ee500c0e65a764 # v0.17.6
       with:
         artifact-name: build-${{ matrix.os-name }}.spdx.json
         output-file: ./artifacts/build.spdx.json
