@@ -2,7 +2,7 @@
   <PropertyGroup>
     <IsTestProject>true</IsTestProject>
     <NoWarn>$(NoWarn);CA1056;CA1062;CA1707;CA1711;CA1861;CA2007;SA1600</NoWarn>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>net9.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="testsettings.json;xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Shouldly" />
+    <PackageReference Include="System.Text.Encodings.Web" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
