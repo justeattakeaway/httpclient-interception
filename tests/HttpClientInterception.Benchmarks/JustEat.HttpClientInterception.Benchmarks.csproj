@@ -5,7 +5,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Benchmarks for JustEat.HttpClientInterception</Summary>
-    <TargetFrameworks>net472;net6.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net472;net8.0;net9.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="organization.json" CopyToOutputDirectory="PreserveNewest" />
