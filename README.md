@@ -57,7 +57,7 @@ using var client = options.CreateHttpClient();
 
 // Act
 // The value of json will be: {"Id":1, "Link":"https://www.just-eat.co.uk/privacy-policy"}
-string json = await client.GetStringAsync("https://public.je-apis.com/terms");
+string json = await client.GetStringAsync("https://public.je-apis.com/terms", TestContext.Current.CancellationToken);
 ```
 <sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L46-L68' title='Snippet source file'>snippet source</a> | <a href='#snippet-minimal-example' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
@@ -143,7 +143,7 @@ var client = options.CreateHttpClient();
 
 // Throws an HttpRequestException
 await Assert.ThrowsAsync<HttpRequestException>(
-    () => client.GetStringAsync("http://public.je-apis.com"));
+    () => client.GetStringAsync("http://public.je-apis.com", TestContext.Current.CancellationToken));
 ```
 <sup><a href='/tests/HttpClientInterception.Tests/Examples.cs#L25-L40' title='Snippet source file'>snippet source</a> | <a href='#snippet-fault-injection' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->

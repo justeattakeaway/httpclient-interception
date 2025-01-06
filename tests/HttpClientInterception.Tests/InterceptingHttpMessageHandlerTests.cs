@@ -29,7 +29,7 @@ public static class InterceptingHttpMessageHandlerTests
 
         // Act
         var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
-            () => target.GetAsync("https://google.com/"));
+            () => target.GetAsync("https://google.com/", TestContext.Current.CancellationToken));
 
         // Assert
         exception.Message.ShouldBe("No HTTP response is configured for GET https://google.com/.");
@@ -48,7 +48,7 @@ public static class InterceptingHttpMessageHandlerTests
 
         // Act
         var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
-            () => target.PostAsync("https://google.com/", content));
+            () => target.PostAsync("https://google.com/", content, TestContext.Current.CancellationToken));
 
         // Assert
         exception.Message.ShouldBe("No HTTP response is configured for POST https://google.com/.");
