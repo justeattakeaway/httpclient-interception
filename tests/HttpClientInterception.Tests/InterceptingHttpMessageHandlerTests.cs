@@ -73,7 +73,7 @@ public static class InterceptingHttpMessageHandlerTests
 
         handler.GetType()
                .GetMethod("SendAsync", BindingFlags.NonPublic | BindingFlags.Instance)
-               .Invoke(handler, new object[] { request, Arg.Any<CancellationToken>() })
+               .Invoke(handler, [request, Arg.Any<CancellationToken>()])
                .Returns(Task.FromResult(expected));
 
         using var httpClient = options.CreateHttpClient(handler);

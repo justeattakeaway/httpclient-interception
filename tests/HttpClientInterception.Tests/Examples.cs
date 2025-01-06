@@ -105,7 +105,7 @@ public static partial class Examples
             .ForHost("files.domain.com")
             .ForPath("setup.exe")
             .WithMediaType("application/octet-stream")
-            .WithContent(() => new byte[] { 0, 1, 2, 3, 4 });
+            .WithContent(() => [0, 1, 2, 3, 4]);
 
         var options = new HttpClientInterceptorOptions()
             .Register(builder);
@@ -276,7 +276,7 @@ public static partial class Examples
             .ForMethod(new HttpMethod("custom"))
             .ForHost("custom.domain.com")
             .ForQuery("length=2")
-            .WithContent(() => new byte[] { 0, 1 });
+            .WithContent(() => [0, 1]);
 
         var options = new HttpClientInterceptorOptions()
             .Register(builder);
@@ -300,7 +300,7 @@ public static partial class Examples
             .ForMethod(new HttpMethod("custom"))
             .ForHost("custom.domain.com")
             .ForQuery("length=2")
-            .WithContent(() => new byte[] { 0, 1 });
+            .WithContent(() => [0, 1]);
 
         var options = new HttpClientInterceptorOptions()
             .Register(builder);
@@ -746,7 +746,7 @@ public static partial class Examples
 
         // Register an HTTP 429 error for the first three requests.
         var builder1 = new HttpRequestInterceptionBuilder()
-            .ForAll(new Predicate<HttpRequestMessage>[] { IsHttpGetForJustEatGitHubOrg, _ => requestCount < 2 })
+            .ForAll([IsHttpGetForJustEatGitHubOrg, _ => requestCount < 2])
             .WithInterceptionCallback(IncrementRequestCount)
             .Responds()
             .WithStatus(HttpStatusCode.TooManyRequests)
@@ -755,7 +755,7 @@ public static partial class Examples
 
         // Register another request for an HTTP 200 for all subsequent requests.
         var builder2 = new HttpRequestInterceptionBuilder()
-            .ForAll(new Predicate<HttpRequestMessage>[] { IsHttpGetForJustEatGitHubOrg, _ => requestCount >= 2 })
+            .ForAll([IsHttpGetForJustEatGitHubOrg, _ => requestCount >= 2])
             .WithInterceptionCallback(IncrementRequestCount)
             .Responds()
             .WithStatus(HttpStatusCode.OK)
@@ -804,21 +804,21 @@ public static partial class Examples
             {
                 return new Dictionary<string, ICollection<string>>()
                 {
-                    ["x-sequence"] = new[] { (++requestHeadersCounter).ToString(CultureInfo.InvariantCulture) },
+                    ["x-sequence"] = [(++requestHeadersCounter).ToString(CultureInfo.InvariantCulture)],
                 };
             })
             .WithContentHeaders(() =>
             {
                 return new Dictionary<string, ICollection<string>>()
                 {
-                    ["content-type"] = new[] { "application/json; v=" + (++contentHeadersCounter).ToString(CultureInfo.InvariantCulture) },
+                    ["content-type"] = ["application/json; v=" + (++contentHeadersCounter).ToString(CultureInfo.InvariantCulture)],
                 };
             })
             .WithResponseHeaders(() =>
             {
                 return new Dictionary<string, ICollection<string>>()
                 {
-                    ["x-count"] = new[] { (++responseHeadersCounter).ToString(CultureInfo.InvariantCulture) },
+                    ["x-count"] = [(++responseHeadersCounter).ToString(CultureInfo.InvariantCulture)],
                 };
             });
 
@@ -839,11 +839,11 @@ public static partial class Examples
         // Assert
         response1.Headers.TryGetValues("x-count", out var values).ShouldBeTrue();
         values.ShouldNotBeNull();
-        values.ShouldBe(new[] { "1" });
+        values.ShouldBe(["1"]);
 
         response1.Content.Headers.TryGetValues("content-type", out values).ShouldBeTrue();
         values.ShouldNotBeNull();
-        values.ShouldBe(new[] { "application/json; v=1" });
+        values.ShouldBe(["application/json; v=1"]);
 
         // Act
         using var request2 = new HttpRequestMessage(method, requestUri);
@@ -853,11 +853,11 @@ public static partial class Examples
         // Assert
         response2.Headers.TryGetValues("x-count", out values).ShouldBeTrue();
         values.ShouldNotBeNull();
-        values.ShouldBe(new[] { "2" });
+        values.ShouldBe(["2"]);
 
         response2.Content.Headers.TryGetValues("content-type", out values).ShouldBeTrue();
         values.ShouldNotBeNull();
-        values.ShouldBe(new[] { "application/json; v=2" });
+        values.ShouldBe(["application/json; v=2"]);
     }
 
     [Fact]

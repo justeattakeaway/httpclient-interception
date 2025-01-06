@@ -246,8 +246,8 @@ public static class HttpClientInterceptorOptionsTests
         actual.RequestMessage.ShouldBe(request);
         actual.Content.ShouldNotBeNull();
         actual.Content.Headers.ContentLength.ShouldBe(0);
-        actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
-        actual.Headers.GetValues("c").ShouldBe(new[] { "d" });
+        actual.Headers.GetValues("a").ShouldBe(["b"]);
+        actual.Headers.GetValues("c").ShouldBe(["d"]);
     }
 
     [Fact]
@@ -283,8 +283,8 @@ public static class HttpClientInterceptorOptionsTests
 
         var responseHeaders = new Dictionary<string, IEnumerable<string>>()
         {
-            ["a"] = new[] { "b" },
-            ["c"] = new[] { "d", "e" },
+            ["a"] = ["b"],
+            ["c"] = ["d", "e"],
         };
 
         var options = new HttpClientInterceptorOptions()
@@ -300,8 +300,8 @@ public static class HttpClientInterceptorOptionsTests
         actual.RequestMessage.ShouldBe(request);
         actual.Content.ShouldNotBeNull();
         actual.Content.Headers.ContentLength.ShouldBe(0);
-        actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
-        actual.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+        actual.Headers.GetValues("a").ShouldBe(["b"]);
+        actual.Headers.GetValues("c").ShouldBe(["d", "e"]);
     }
 
     [Fact]
@@ -330,8 +330,8 @@ public static class HttpClientInterceptorOptionsTests
         actual.RequestMessage.ShouldBe(request);
         actual.Content.ShouldNotBeNull();
         actual.Content.Headers.ContentLength.ShouldBe(0);
-        actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
-        actual.Headers.GetValues("c").ShouldBe(new[] { "d" });
+        actual.Headers.GetValues("a").ShouldBe(["b"]);
+        actual.Headers.GetValues("c").ShouldBe(["d"]);
     }
 
     [Fact]
@@ -343,8 +343,8 @@ public static class HttpClientInterceptorOptionsTests
 
         var responseHeaders = new Dictionary<string, IEnumerable<string>>()
         {
-            ["a"] = new[] { "b" },
-            ["c"] = new[] { "d", "e" },
+            ["a"] = ["b"],
+            ["c"] = ["d", "e"],
         };
 
         var options = new HttpClientInterceptorOptions()
@@ -360,8 +360,8 @@ public static class HttpClientInterceptorOptionsTests
         actual.RequestMessage.ShouldBe(request);
         actual.Content.ShouldNotBeNull();
         actual.Content.Headers.ContentLength.ShouldBe(0);
-        actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
-        actual.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+        actual.Headers.GetValues("a").ShouldBe(["b"]);
+        actual.Headers.GetValues("c").ShouldBe(["d", "e"]);
     }
 
     [Fact]

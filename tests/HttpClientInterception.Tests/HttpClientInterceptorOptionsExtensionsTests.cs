@@ -223,7 +223,7 @@ public static partial class HttpClientInterceptorOptionsExtensionsTests
             .WithContent("bar");
 
         var options = new HttpClientInterceptorOptions()
-            .Register(new[] { builder1, builder2 });
+            .Register([builder1, builder2]);
 
         string actual1;
         string actual2;

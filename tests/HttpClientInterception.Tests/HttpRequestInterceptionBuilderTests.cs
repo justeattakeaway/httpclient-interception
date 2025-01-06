@@ -389,8 +389,8 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         // Assert
         actual.ShouldNotBeNull();
-        actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
-        actual.Headers.GetValues("c").ShouldBe(new[] { "d" });
+        actual.Headers.GetValues("a").ShouldBe(["b"]);
+        actual.Headers.GetValues("c").ShouldBe(["d"]);
     }
 
     [Fact]
@@ -401,8 +401,8 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         var headers = new Dictionary<string, ICollection<string>>()
         {
-            ["a"] = new[] { "b" },
-            ["c"] = new[] { "d", "e" },
+            ["a"] = ["b"],
+            ["c"] = ["d", "e"],
         };
 
         var builder = new HttpRequestInterceptionBuilder()
@@ -419,8 +419,8 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         // Assert
         actual.ShouldNotBeNull();
-        actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
-        actual.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+        actual.Headers.GetValues("a").ShouldBe(["b"]);
+        actual.Headers.GetValues("c").ShouldBe(["d", "e"]);
     }
 
     [Fact]
@@ -445,8 +445,8 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         // Assert
         actual.ShouldNotBeNull();
-        actual.Headers.GetValues("a").ShouldBe(new[] { "b" });
-        actual.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+        actual.Headers.GetValues("a").ShouldBe(["b"]);
+        actual.Headers.GetValues("c").ShouldBe(["d", "e"]);
     }
 
     [Fact]
@@ -475,8 +475,8 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         // Assert
         actual.ShouldNotBeNull();
-        actual.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
-        actual.Content.Headers.GetValues("c").ShouldBe(new[] { "d" });
+        actual.Content.Headers.GetValues("a").ShouldBe(["b"]);
+        actual.Content.Headers.GetValues("c").ShouldBe(["d"]);
     }
 
     [Fact]
@@ -487,8 +487,8 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         var headers = new Dictionary<string, ICollection<string>>()
         {
-            ["a"] = new[] { "b" },
-            ["c"] = new[] { "d", "e" },
+            ["a"] = ["b"],
+            ["c"] = ["d", "e"],
         };
 
         var builder = new HttpRequestInterceptionBuilder()
@@ -505,8 +505,8 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         // Assert
         actual.ShouldNotBeNull();
-        actual.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
-        actual.Content.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+        actual.Content.Headers.GetValues("a").ShouldBe(["b"]);
+        actual.Content.Headers.GetValues("c").ShouldBe(["d", "e"]);
     }
 
     [Fact]
@@ -533,8 +533,8 @@ public static partial class HttpRequestInterceptionBuilderTests
         actual.ShouldNotBeNull();
         actual.ReasonPhrase.ShouldBe("OK");
         actual.Version.ShouldBe(new Version(1, 1));
-        actual.Content.Headers.GetValues("a").ShouldBe(new[] { "b" });
-        actual.Content.Headers.GetValues("c").ShouldBe(new[] { "d", "e" });
+        actual.Content.Headers.GetValues("a").ShouldBe(["b"]);
+        actual.Content.Headers.GetValues("c").ShouldBe(["d", "e"]);
     }
 
     [Fact]
@@ -1461,7 +1461,7 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         using (var client = options.CreateHttpClient())
         {
-            client.DefaultRequestHeaders.Add("x-forwarded-for", new[] { "192.168.1.1", "192.168.1.2" });
+            client.DefaultRequestHeaders.Add("x-forwarded-for", ["192.168.1.1", "192.168.1.2"]);
 
             // Act
             json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken);
@@ -1493,8 +1493,8 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         using (var client = options.CreateHttpClient())
         {
-            client.DefaultRequestHeaders.Add("x-forwarded-for", new[] { "192.168.1.1", "192.168.1.2" });
-            client.DefaultRequestHeaders.Add("x-forwarded-proto", new[] { "http", "https" });
+            client.DefaultRequestHeaders.Add("x-forwarded-for", ["192.168.1.1", "192.168.1.2"]);
+            client.DefaultRequestHeaders.Add("x-forwarded-proto", ["http", "https"]);
 
             // Act
             json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken);
@@ -1511,8 +1511,8 @@ public static partial class HttpRequestInterceptionBuilderTests
         // Arrange
         var headers = new Dictionary<string, ICollection<string>>()
         {
-            ["x-forwarded-for"] = new[] { "192.168.1.1", "192.168.1.2" },
-            ["x-forwarded-proto"] = new[] { "http", "https" },
+            ["x-forwarded-for"] = ["192.168.1.1", "192.168.1.2"],
+            ["x-forwarded-proto"] = ["http", "https"],
         };
 
         var builder = new HttpRequestInterceptionBuilder()
@@ -1531,8 +1531,8 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         using (var client = options.CreateHttpClient())
         {
-            client.DefaultRequestHeaders.Add("x-forwarded-for", new[] { "192.168.1.1", "192.168.1.2" });
-            client.DefaultRequestHeaders.Add("x-forwarded-proto", new[] { "http", "https" });
+            client.DefaultRequestHeaders.Add("x-forwarded-for", ["192.168.1.1", "192.168.1.2"]);
+            client.DefaultRequestHeaders.Add("x-forwarded-proto", ["http", "https"]);
 
             // Act
             json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken);
