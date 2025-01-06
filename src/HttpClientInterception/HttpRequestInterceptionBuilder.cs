@@ -429,7 +429,7 @@ public class HttpRequestInterceptionBuilder
     /// <paramref name="name"/> is <see langword="null"/>.
     /// </exception>
     public HttpRequestInterceptionBuilder WithContentHeader(string name, string value)
-        => WithContentHeader(name, new[] { value });
+        => WithContentHeader(name, [value]);
 
     /// <summary>
     /// Sets a custom HTTP content header to use with multiple values.
@@ -530,7 +530,7 @@ public class HttpRequestInterceptionBuilder
 
         foreach (var pair in headers)
         {
-            copy[pair.Key] = new[] { pair.Value };
+            copy[pair.Key] = [pair.Value];
         }
 
         _contentHeaders = copy;
@@ -574,7 +574,7 @@ public class HttpRequestInterceptionBuilder
     /// <paramref name="name"/> is <see langword="null"/>.
     /// </exception>
     public HttpRequestInterceptionBuilder WithResponseHeader(string name, string value)
-        => WithResponseHeader(name, new[] { value });
+        => WithResponseHeader(name, [value]);
 
     /// <summary>
     /// Sets a custom HTTP response header to use with multiple values.
@@ -653,7 +653,7 @@ public class HttpRequestInterceptionBuilder
 
         foreach (var pair in headers)
         {
-            copy[pair.Key] = new[] { pair.Value };
+            copy[pair.Key] = [pair.Value];
         }
 
         _responseHeaders = copy;
@@ -906,7 +906,7 @@ public class HttpRequestInterceptionBuilder
     /// HTTP request headers are only tested for interception if the URI requested was registered for interception.
     /// </remarks>
     public HttpRequestInterceptionBuilder ForRequestHeader(string name, string value)
-        => ForRequestHeader(name, new[] { value });
+        => ForRequestHeader(name, [value]);
 
     /// <summary>
     /// Sets an HTTP request header to intercept with multiple values.
@@ -994,7 +994,7 @@ public class HttpRequestInterceptionBuilder
 
         foreach (var pair in headers)
         {
-            copy[pair.Key] = new[] { pair.Value };
+            copy[pair.Key] = [pair.Value];
         }
 
         _requestHeaders = copy;
