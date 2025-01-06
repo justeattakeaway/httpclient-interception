@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace SampleApp.Tests;
 
-[Collection(HttpServerCollection.Name)] // Use the shared HTTP server fixture
+[Collection<HttpServerCollection>] // Use the shared HTTP server fixture
 public sealed class ReposTests : IDisposable
 {
     public ReposTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
@@ -54,7 +54,7 @@ public sealed class ReposTests : IDisposable
             // Act - Perform the HTTP request against our application and deserialize the response
             using (var httpClient = Fixture.CreateClient())
             {
-                string json = await httpClient.GetStringAsync("api/repos?count=2");
+                string json = await httpClient.GetStringAsync("api/repos?count=2", TestContext.Current.CancellationToken);
                 actual = JsonConvert.DeserializeObject<string[]>(json);
             }
 

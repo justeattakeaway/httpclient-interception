@@ -3,6 +3,7 @@
     <Description>Tests for JustEat.HttpClientInterception</Description>
     <IsTestProject>true</IsTestProject>
     <NoWarn>$(NoWarn);CA1303;CA1600;CA1707;CA1812;CA1861;CA2000;CA2007;SA1600;SA1601</NoWarn>
+    <OutputType>Exe</OutputType>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Tests for JustEat.HttpClientInterception</Summary>
     <TargetFramework>net9.0</TargetFramework>
@@ -25,7 +26,7 @@
     <PackageReference Include="Polly.Core" />
     <PackageReference Include="Refit" />
     <PackageReference Include="Shouldly" />
-    <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="xunit.v3" />
   </ItemGroup>
 </Project>

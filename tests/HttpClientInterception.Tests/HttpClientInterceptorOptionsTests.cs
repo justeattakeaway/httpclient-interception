@@ -16,7 +16,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldBeNull();
@@ -32,7 +32,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(HttpMethod.Delete, "https://google.com/");
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldBeNull();
@@ -48,7 +48,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com/");
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldBeNull();
@@ -64,7 +64,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(HttpMethod.Post, "https://google.com/");
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldBeNull();
@@ -80,7 +80,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage();
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldBeNull();
@@ -99,7 +99,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uri);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -122,7 +122,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uriToRequest);
 
         // Act
-        using HttpResponseMessage actual = await options.GetResponseAsync(request);
+        using HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         (actual == null).ShouldBe(expectNull);
@@ -141,7 +141,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uri);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -164,7 +164,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uri);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -187,7 +187,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uri);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -210,7 +210,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uri);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -239,7 +239,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uri);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -265,7 +265,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uri);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -293,7 +293,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uri);
 
         // Act
-        var actual = await options.GetResponseAsync(request);
+        var actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -323,7 +323,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uri);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -353,7 +353,7 @@ public static class HttpClientInterceptorOptionsTests
         var request = new HttpRequestMessage(method, uri);
 
         // Act
-        var actual = await options.GetResponseAsync(request);
+        var actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -647,7 +647,7 @@ public static class HttpClientInterceptorOptionsTests
         HttpRequestMessage request = null;
 
         // Act and Assert
-        (await Should.ThrowAsync<ArgumentNullException>(() => options.GetResponseAsync(request))).ParamName.ShouldBe("request");
+        (await Should.ThrowAsync<ArgumentNullException>(() => options.GetResponseAsync(request, TestContext.Current.CancellationToken))).ParamName.ShouldBe("request");
     }
 
     [Fact]
@@ -674,7 +674,7 @@ public static class HttpClientInterceptorOptionsTests
         using var request = new HttpRequestMessage(method, uri);
 
         // Act and Assert
-        await Should.ThrowAsync<NotImplementedException>(() => options.GetResponseAsync(request));
+        await Should.ThrowAsync<NotImplementedException>(() => options.GetResponseAsync(request, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -690,7 +690,7 @@ public static class HttpClientInterceptorOptionsTests
         using var request = new HttpRequestMessage(method, uri);
 
         // Act and Assert
-        await Should.ThrowAsync<NotImplementedException>(() => options.GetResponseAsync(request));
+        await Should.ThrowAsync<NotImplementedException>(() => options.GetResponseAsync(request, TestContext.Current.CancellationToken));
     }
 
     [Fact]

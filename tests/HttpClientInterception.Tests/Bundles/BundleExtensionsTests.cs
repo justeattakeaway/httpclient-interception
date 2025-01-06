@@ -67,7 +67,7 @@ public static class BundleExtensionsTests
         };
 
         // Act
-        await options.RegisterBundleAsync(Path.Join("Bundles", "http-request-bundle.json"));
+        await options.RegisterBundleAsync(Path.Join("Bundles", "http-request-bundle.json"), cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", mediaType: "text/html");
@@ -244,7 +244,7 @@ public static class BundleExtensionsTests
         };
 
         // Act
-        await options.RegisterBundleAsync(Path.Join("Bundles", "templated-bundle-string.json"), templateValues);
+        await options.RegisterBundleAsync(Path.Join("Bundles", "templated-bundle-string.json"), templateValues, TestContext.Current.CancellationToken);
 
         // Assert
         string content = await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", headers: headers);
@@ -365,7 +365,7 @@ public static class BundleExtensionsTests
         stream.ShouldNotBeNull();
 
         // Act
-        await options.RegisterBundleFromStreamAsync(stream);
+        await options.RegisterBundleFromStreamAsync(stream, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/", mediaType: "text/html");
@@ -406,8 +406,8 @@ public static class BundleExtensionsTests
         string path = "foo.bar";
 
         // Act and Assert
-        (await Should.ThrowAsync<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleAsync(path))).ParamName.ShouldBe("options");
-        (await Should.ThrowAsync<ArgumentNullException>(() => options.RegisterBundleAsync(null))).ParamName.ShouldBe("path");
+        (await Should.ThrowAsync<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleAsync(path, cancellationToken: TestContext.Current.CancellationToken))).ParamName.ShouldBe("options");
+        (await Should.ThrowAsync<ArgumentNullException>(() => options.RegisterBundleAsync(null, cancellationToken: TestContext.Current.CancellationToken))).ParamName.ShouldBe("path");
     }
 
     [Fact]
@@ -418,8 +418,8 @@ public static class BundleExtensionsTests
         var stream = Stream.Null;
 
         // Act and Assert
-        (await Should.ThrowAsync<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleFromStreamAsync(stream))).ParamName.ShouldBe("options");
-        (await Should.ThrowAsync<ArgumentNullException>(() => options.RegisterBundleFromStreamAsync(null))).ParamName.ShouldBe("stream");
+        (await Should.ThrowAsync<ArgumentNullException>(() => ((HttpClientInterceptorOptions)null).RegisterBundleFromStreamAsync(stream, cancellationToken: TestContext.Current.CancellationToken))).ParamName.ShouldBe("options");
+        (await Should.ThrowAsync<ArgumentNullException>(() => options.RegisterBundleFromStreamAsync(null, cancellationToken: TestContext.Current.CancellationToken))).ParamName.ShouldBe("stream");
     }
 
     [Fact]
@@ -577,10 +577,10 @@ public static class BundleExtensionsTests
         // Arrange
         string schemaPath = Path.Join(".", "http-request-bundle-schema.json");
 
-        var json = JToken.Parse(await File.ReadAllTextAsync(bundlePath));
+        var json = JToken.Parse(await File.ReadAllTextAsync(bundlePath, TestContext.Current.CancellationToken));
 
         var schema = JSchema.Parse(
-            await File.ReadAllTextAsync(schemaPath),
+            await File.ReadAllTextAsync(schemaPath, TestContext.Current.CancellationToken),
             new JSchemaReaderSettings() { ValidateVersion = true });
 
         // Act

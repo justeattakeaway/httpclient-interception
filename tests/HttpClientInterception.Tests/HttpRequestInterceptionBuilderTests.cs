@@ -22,7 +22,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         using (var client = options.CreateHttpClient())
         {
             // Act
-            actual = await client.GetStringAsync("http://localhost");
+            actual = await client.GetStringAsync("http://localhost", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -385,7 +385,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -415,7 +415,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -441,7 +441,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -471,7 +471,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -501,7 +501,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -527,7 +527,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -694,7 +694,7 @@ public static partial class HttpRequestInterceptionBuilderTests
             request.Method.ShouldBe(HttpMethod.Post);
             request.RequestUri.ShouldBe(requestUri);
 
-            string json = request.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            string json = request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).GetAwaiter().GetResult();
 
             var body = JObject.Parse(json);
 
@@ -732,7 +732,7 @@ public static partial class HttpRequestInterceptionBuilderTests
             request.Method.ShouldBe(HttpMethod.Post);
             request.RequestUri.ShouldBe(requestUri);
 
-            string json = await request.Content.ReadAsStringAsync();
+            string json = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
             var body = JObject.Parse(json);
 
@@ -771,7 +771,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -794,7 +794,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         // Act
-        HttpResponseMessage actual = await options.GetResponseAsync(request);
+        HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -1362,7 +1362,7 @@ public static partial class HttpRequestInterceptionBuilderTests
             client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
 
             // Act
-            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -1395,7 +1395,7 @@ public static partial class HttpRequestInterceptionBuilderTests
             client.DefaultRequestHeaders.Add("Authorization", "basic my-key");
 
             // Act
-            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -1433,7 +1433,7 @@ public static partial class HttpRequestInterceptionBuilderTests
             client.DefaultRequestHeaders.Add("Authorization", "basic my-key");
 
             // Act
-            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -1464,7 +1464,7 @@ public static partial class HttpRequestInterceptionBuilderTests
             client.DefaultRequestHeaders.Add("x-forwarded-for", new[] { "192.168.1.1", "192.168.1.2" });
 
             // Act
-            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -1497,7 +1497,7 @@ public static partial class HttpRequestInterceptionBuilderTests
             client.DefaultRequestHeaders.Add("x-forwarded-proto", new[] { "http", "https" });
 
             // Act
-            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -1535,7 +1535,7 @@ public static partial class HttpRequestInterceptionBuilderTests
             client.DefaultRequestHeaders.Add("x-forwarded-proto", new[] { "http", "https" });
 
             // Act
-            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history");
+            json = await client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -1563,7 +1563,7 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         // Act
         var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
-            () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
+            () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken));
 
         // Assert
         exception.Message.ShouldStartWith("No HTTP response is configured for ");
@@ -1590,7 +1590,7 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         // Act
         var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
-            () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
+            () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken));
 
         // Assert
         exception.Message.ShouldStartWith("No HTTP response is configured for ");
@@ -1619,7 +1619,7 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         // Act
         var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
-            () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
+            () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken));
 
         // Assert
         exception.Message.ShouldStartWith("No HTTP response is configured for ");
@@ -1648,7 +1648,7 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         // Act
         var exception = await Should.ThrowAsync<HttpRequestNotInterceptedException>(
-            () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history"));
+            () => client.GetStringAsync("https://public.je-apis.com/consumer/order-history", TestContext.Current.CancellationToken));
 
         // Assert
         exception.Message.ShouldStartWith("No HTTP response is configured for ");
@@ -2174,7 +2174,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         var builder = new HttpRequestInterceptionBuilder()
             .ForUrl("https://test.local/post")
             .ForPost()
-            .ForContent((content) => content.ReadAsStringAsync().Result == @"{""message"":""Hello, Alice""}")
+            .ForContent((content) => content.ReadAsStringAsync(TestContext.Current.CancellationToken).Result == @"{""message"":""Hello, Alice""}")
             .Responds()
             .WithJsonContent(new { message = "Hi Bob!" });
 
@@ -2202,7 +2202,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         new HttpRequestInterceptionBuilder()
             .ForUrl("https://chat.local/send")
             .ForPost()
-            .ForContent(async (content) => await content.ReadAsStringAsync() == @"{""message"":""Who are you?""}")
+            .ForContent(async (content) => await content.ReadAsStringAsync(TestContext.Current.CancellationToken) == @"{""message"":""Who are you?""}")
             .Responds()
             .WithJsonContent(new { message = "My name is Alice, what's your name?" })
             .RegisterWith(options);
@@ -2210,7 +2210,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         new HttpRequestInterceptionBuilder()
             .ForUrl("https://chat.local/send")
             .ForPost()
-            .ForContent(async (content) => await content.ReadAsStringAsync() == @"{""message"":""Hello, Alice - I'm Bob.""}")
+            .ForContent(async (content) => await content.ReadAsStringAsync(TestContext.Current.CancellationToken) == @"{""message"":""Hello, Alice - I'm Bob.""}")
             .Responds()
             .WithJsonContent(new { message = "Hi Bob!" })
             .RegisterWith(options);
@@ -2337,7 +2337,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         using var client = options.CreateHttpClient();
 
         // Act
-        string actual = await client.GetStringAsync("https://google.com/");
+        string actual = await client.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldBe(expected);
@@ -2366,7 +2366,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         using var client = options.CreateHttpClient();
 
         // Act
-        string actual = await client.GetStringAsync("https://google.com/");
+        string actual = await client.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldBe(expected);
@@ -2396,7 +2396,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         using var client = options.CreateHttpClient();
 
         // Act
-        string actual = await client.GetStringAsync("https://google.com/");
+        string actual = await client.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldBe(expected);
@@ -2426,7 +2426,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         using var client = options.CreateHttpClient();
 
         // Act
-        string actual = await client.GetStringAsync("https://google.com/");
+        string actual = await client.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldBe(expected);
@@ -2457,7 +2457,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         using var client = options.CreateHttpClient();
 
         // Act and Assert
-        await Should.ThrowAsync<HttpRequestNotInterceptedException>(() => client.GetStringAsync("https://google.com/"));
+        await Should.ThrowAsync<HttpRequestNotInterceptedException>(() => client.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -2485,7 +2485,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         using var client = options.CreateHttpClient();
 
         // Act and Assert
-        await Should.ThrowAsync<HttpRequestNotInterceptedException>(() => client.GetStringAsync("https://google.com/"));
+        await Should.ThrowAsync<HttpRequestNotInterceptedException>(() => client.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -2503,9 +2503,9 @@ public static partial class HttpRequestInterceptionBuilderTests
         using var client = options.CreateHttpClient();
 
         // Act and Assert
-        (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
-        (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
-        (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
+        (await client.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken)).ShouldContain("Google Search");
+        (await client.GetStringAsync("https://google.com/search", TestContext.Current.CancellationToken)).ShouldContain("Google Search");
+        (await client.GetStringAsync("https://google.com/search?q=foo", TestContext.Current.CancellationToken)).ShouldContain("Google Search");
     }
 
     [Fact]
@@ -2525,7 +2525,7 @@ public static partial class HttpRequestInterceptionBuilderTests
 
         // Act and Assert
         await Should.ThrowAsync<HttpRequestNotInterceptedException>(
-            () => client.GetStringAsync("https://google.com/"));
+            () => client.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -2569,19 +2569,19 @@ public static partial class HttpRequestInterceptionBuilderTests
         using var client = options.CreateHttpClient();
 
         // Act and Assert (First request)
-        HttpResponseMessage firstResponse = await client.GetAsync(requestUri);
+        HttpResponseMessage firstResponse = await client.GetAsync(requestUri, TestContext.Current.CancellationToken);
         firstResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Act and Assert (Second request)
-        HttpResponseMessage secondResponse = await client.GetAsync(requestUri);
+        HttpResponseMessage secondResponse = await client.GetAsync(requestUri, TestContext.Current.CancellationToken);
         secondResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
 
         // Act and Assert (Third request)
-        HttpResponseMessage thirdResponse = await client.GetAsync(requestUri);
+        HttpResponseMessage thirdResponse = await client.GetAsync(requestUri, TestContext.Current.CancellationToken);
         thirdResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Act and Assert (Fourth request)
-        HttpResponseMessage fourthResponse = await client.GetAsync(requestUri);
+        HttpResponseMessage fourthResponse = await client.GetAsync(requestUri, TestContext.Current.CancellationToken);
         fourthResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
     }
 

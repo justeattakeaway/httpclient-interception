@@ -35,7 +35,7 @@ public static partial class Examples
 
         // Throws an HttpRequestException
         await Assert.ThrowsAsync<HttpRequestException>(
-            () => client.GetStringAsync("http://public.je-apis.com"));
+            () => client.GetStringAsync("http://public.je-apis.com", TestContext.Current.CancellationToken));
 
         // end-snippet
     }
@@ -63,7 +63,7 @@ public static partial class Examples
 
         // Act
         // The value of json will be: {"Id":1, "Link":"https://www.just-eat.co.uk/privacy-policy"}
-        string json = await client.GetStringAsync("https://public.je-apis.com/terms");
+        string json = await client.GetStringAsync("https://public.je-apis.com/terms", TestContext.Current.CancellationToken);
 
         // end-snippet
 
@@ -90,7 +90,7 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act
-        string html = await client.GetStringAsync("http://www.google.co.uk/search?q=Just+Eat");
+        string html = await client.GetStringAsync("http://www.google.co.uk/search?q=Just+Eat", TestContext.Current.CancellationToken);
 
         // Assert
         html.ShouldContain("Just Eat");
@@ -113,7 +113,7 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act
-        byte[] content = await client.GetByteArrayAsync("https://files.domain.com/setup.exe");
+        byte[] content = await client.GetByteArrayAsync("https://files.domain.com/setup.exe", TestContext.Current.CancellationToken);
 
         // Assert
         content.ShouldBe([0, 1, 2, 3, 4]);
@@ -138,8 +138,8 @@ public static partial class Examples
         using var body = new StringContent(@"{ ""FirstName"": ""John"" }");
 
         // Act
-        using var response = await client.PostAsync("https://public.je-apis.com/consumer", body);
-        string json = await response.Content.ReadAsStringAsync();
+        using var response = await client.PostAsync("https://public.je-apis.com/consumer", body, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
@@ -167,7 +167,7 @@ public static partial class Examples
         client.DefaultRequestHeaders.Add("Accept-Tenant", "uk");
 
         // Act
-        string json = await client.GetStringAsync("https://public.je-apis.com/terms");
+        string json = await client.GetStringAsync("https://public.je-apis.com/terms", TestContext.Current.CancellationToken);
 
         // Assert
         var content = JObject.Parse(json);
@@ -188,7 +188,7 @@ public static partial class Examples
             .ForContent(
                 async (requestContent) =>
                 {
-                    string requestBody = await requestContent.ReadAsStringAsync();
+                    string requestBody = await requestContent.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
                     var body = JObject.Parse(requestBody);
 
@@ -206,8 +206,8 @@ public static partial class Examples
         using var body = new StringContent(@"{ ""FirstName"": ""John"" }");
 
         // Act
-        using var response = await client.PostAsync("https://public.je-apis.com/consumer", body);
-        string json = await response.Content.ReadAsStringAsync();
+        using var response = await client.PostAsync("https://public.je-apis.com/consumer", body, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
@@ -235,8 +235,8 @@ public static partial class Examples
         using var body = new StringContent(@"{ ""User"": { ""DisplayName"": ""John"" } }");
 
         // Act
-        using var response = await client.PutAsync("https://public.je-apis.com/baskets/123/user", body);
-        string json = await response.Content.ReadAsStringAsync();
+        using var response = await client.PutAsync("https://public.je-apis.com/baskets/123/user", body, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
@@ -262,7 +262,7 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act
-        using var response = await client.DeleteAsync("https://public.je-apis.com/baskets/123/orderitems/456");
+        using var response = await client.DeleteAsync("https://public.je-apis.com/baskets/123/orderitems/456", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
@@ -285,8 +285,8 @@ public static partial class Examples
         using var message = new HttpRequestMessage(new HttpMethod("custom"), "http://custom.domain.com?length=2");
 
         // Act
-        using var response = await client.SendAsync(message);
-        byte[] content = await response.Content.ReadAsByteArrayAsync();
+        using var response = await client.SendAsync(message, TestContext.Current.CancellationToken);
+        byte[] content = await response.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken);
 
         // Assert
         content.ShouldBe([0, 1]);
@@ -309,8 +309,8 @@ public static partial class Examples
         using var message = new HttpRequestMessage(new HttpMethod("custom"), "http://custom.domain.com?length=2");
 
         // Act
-        using var response = client.Send(message);
-        using var responseStream = response.Content.ReadAsStream();
+        using var response = client.Send(message, TestContext.Current.CancellationToken);
+        using var responseStream = response.Content.ReadAsStream(TestContext.Current.CancellationToken);
         using var responseBuffer = new MemoryStream();
         responseStream.CopyTo(responseBuffer);
         byte[] content = responseBuffer.ToArray();
@@ -333,7 +333,7 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act and Assert
-        await Should.ThrowAsync<HttpRequestException>(() => client.GetStringAsync("http://www.google.co.uk"));
+        await Should.ThrowAsync<HttpRequestException>(() => client.GetStringAsync("http://www.google.co.uk", TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -344,7 +344,7 @@ public static partial class Examples
 
         var builder = new HttpRequestInterceptionBuilder()
             .ForHost("www.google.co.uk")
-            .WithInterceptionCallback((_) => Task.Delay(latency));
+            .WithInterceptionCallback((_) => Task.Delay(latency, TestContext.Current.CancellationToken));
 
         var options = new HttpClientInterceptorOptions()
             .Register(builder);
@@ -356,7 +356,7 @@ public static partial class Examples
             stopwatch.Start();
 
             // Act
-            await client.GetStringAsync("http://www.google.co.uk");
+            await client.GetStringAsync("http://www.google.co.uk", TestContext.Current.CancellationToken);
 
             stopwatch.Stop();
         }
@@ -380,7 +380,7 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act
-        string json = await client.GetStringAsync("http://xunit.github.io/settings.json");
+        string json = await client.GetStringAsync("http://xunit.github.io/settings.json", TestContext.Current.CancellationToken);
 
         // Assert
         json.ShouldNotBeNullOrWhiteSpace();
@@ -407,16 +407,16 @@ public static partial class Examples
         // Act
         using (var client = options.CreateHttpClient())
         {
-            json1 = await client.GetStringAsync("http://public.je-apis.com");
+            json1 = await client.GetStringAsync("http://public.je-apis.com", TestContext.Current.CancellationToken);
 
             using (options.BeginScope())
             {
                 options.Register(builder.WithJsonContent(new { value = 2 }));
 
-                json2 = await client.GetStringAsync("http://public.je-apis.com");
+                json2 = await client.GetStringAsync("http://public.je-apis.com", TestContext.Current.CancellationToken);
             }
 
-            json3 = await client.GetStringAsync("http://public.je-apis.com");
+            json3 = await client.GetStringAsync("http://public.je-apis.com", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -545,7 +545,7 @@ public static partial class Examples
         using (var client = options.CreateHttpClient())
         {
             // Act
-            actual = await client.GetStringAsync("http://myhost.net/orders?id=12");
+            actual = await client.GetStringAsync("http://myhost.net/orders?id=12", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -554,7 +554,7 @@ public static partial class Examples
         using (var client = options.CreateHttpClient())
         {
             // Act
-            actual = await client.GetStringAsync("http://myotherhost.net/orders?id=12");
+            actual = await client.GetStringAsync("http://myotherhost.net/orders?id=12", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -573,7 +573,7 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act
-        using var response = await client.GetAsync("https://google.com/");
+        using var response = await client.GetAsync("https://google.com/", TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -592,9 +592,9 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act and Assert
-        (await client.GetStringAsync("https://google.com/")).ShouldContain("Google Search");
-        (await client.GetStringAsync("https://google.com/search")).ShouldContain("Google Search");
-        (await client.GetStringAsync("https://google.com/search?q=foo")).ShouldContain("Google Search");
+        (await client.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken)).ShouldContain("Google Search");
+        (await client.GetStringAsync("https://google.com/search", TestContext.Current.CancellationToken)).ShouldContain("Google Search");
+        (await client.GetStringAsync("https://google.com/search?q=foo", TestContext.Current.CancellationToken)).ShouldContain("Google Search");
     }
 
     [Fact]
@@ -621,10 +621,10 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act and Assert
-        (await client.GetStringAsync("https://google.com/")).ShouldBe("First");
-        (await client.GetStringAsync("https://google.co.uk")).ShouldContain("Second");
-        (await client.GetStringAsync("https://example.org/index.html")).ShouldContain("Third");
-        (await client.GetStringAsync("https://www.just-eat.co.uk/")).ShouldContain("Fourth");
+        (await client.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken)).ShouldBe("First");
+        (await client.GetStringAsync("https://google.co.uk", TestContext.Current.CancellationToken)).ShouldContain("Second");
+        (await client.GetStringAsync("https://example.org/index.html", TestContext.Current.CancellationToken)).ShouldContain("Third");
+        (await client.GetStringAsync("https://www.just-eat.co.uk/", TestContext.Current.CancellationToken)).ShouldContain("Fourth");
     }
 
     [Fact]
@@ -633,14 +633,14 @@ public static partial class Examples
         // Arrange
         var options = await new HttpClientInterceptorOptions()
             .ThrowsOnMissingRegistration()
-            .RegisterBundleAsync("example-bundle.json");
+            .RegisterBundleAsync("example-bundle.json", cancellationToken: TestContext.Current.CancellationToken);
 
         // Act
         string content;
 
         using (var client = options.CreateHttpClient())
         {
-            content = await client.GetStringAsync("https://www.just-eat.co.uk/");
+            content = await client.GetStringAsync("https://www.just-eat.co.uk/", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -653,7 +653,7 @@ public static partial class Examples
             client.DefaultRequestHeaders.Add("Authorization", "bearer my-token");
             client.DefaultRequestHeaders.Add("User-Agent", "My-App/1.0.0");
 
-            content = await client.GetStringAsync("https://api.github.com/orgs/justeattakeaway");
+            content = await client.GetStringAsync("https://api.github.com/orgs/justeattakeaway", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -677,10 +677,10 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act
-        using var utf8Json = await client.GetStreamAsync("https://public.je-apis.com/terms");
+        using var utf8Json = await client.GetStreamAsync("https://public.je-apis.com/terms", TestContext.Current.CancellationToken);
 
         // Assert
-        using var content = await JsonDocument.ParseAsync(utf8Json);
+        using var content = await JsonDocument.ParseAsync(utf8Json, cancellationToken: TestContext.Current.CancellationToken);
         content.RootElement.GetProperty("Id").GetInt32().ShouldBe(1);
         content.RootElement.GetProperty("Link").GetString().ShouldBe("https://www.just-eat.co.uk/privacy-policy");
     }
@@ -767,7 +767,7 @@ public static partial class Examples
         // Configure a Polly resilience pipeline that will retry an HTTP request up to three
         // times if the HTTP request fails due to an HTTP 429 response from the server.
         int retryCount = 3;
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var pipeline = new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions()
             {
@@ -834,7 +834,7 @@ public static partial class Examples
         // Act
         using var request1 = new HttpRequestMessage(method, requestUri);
         request1.Headers.Add("x-sequence", "1");
-        using var response1 = await client.SendAsync(request1);
+        using var response1 = await client.SendAsync(request1, TestContext.Current.CancellationToken);
 
         // Assert
         response1.Headers.TryGetValues("x-count", out var values).ShouldBeTrue();
@@ -848,7 +848,7 @@ public static partial class Examples
         // Act
         using var request2 = new HttpRequestMessage(method, requestUri);
         request2.Headers.Add("x-sequence", "2");
-        using var response2 = await client.SendAsync(request2);
+        using var response2 = await client.SendAsync(request2, TestContext.Current.CancellationToken);
 
         // Assert
         response2.Headers.TryGetValues("x-count", out values).ShouldBeTrue();
@@ -881,7 +881,7 @@ public static partial class Examples
 
         // Act
         // The value of json will be: {"Id":1, "Link":"https://www.just-eat.co.uk/privacy-policy"}
-        var content = await client.GetFromJsonAsync<TermsAndConditions>("https://public.je-apis.com/terms");
+        var content = await client.GetFromJsonAsync<TermsAndConditions>("https://public.je-apis.com/terms", TestContext.Current.CancellationToken);
 
         // Assert
         content.ShouldNotBeNull();

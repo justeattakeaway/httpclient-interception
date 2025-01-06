@@ -231,8 +231,8 @@ public static partial class HttpClientInterceptorOptionsExtensionsTests
         // Act
         using (var httpClient = options.CreateHttpClient())
         {
-            actual1 = await httpClient.GetStringAsync("https://google.com/");
-            actual2 = await httpClient.GetStringAsync("https://bing.com/");
+            actual1 = await httpClient.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken);
+            actual2 = await httpClient.GetStringAsync("https://bing.com/", TestContext.Current.CancellationToken);
         }
 
         // Assert
@@ -288,8 +288,8 @@ public static partial class HttpClientInterceptorOptionsExtensionsTests
         // Act
         using (var httpClient = options.CreateHttpClient())
         {
-            actual1 = await httpClient.GetStringAsync("https://google.com/");
-            actual2 = await httpClient.GetStringAsync("https://bing.com/");
+            actual1 = await httpClient.GetStringAsync("https://google.com/", TestContext.Current.CancellationToken);
+            actual2 = await httpClient.GetStringAsync("https://bing.com/", TestContext.Current.CancellationToken);
         }
 
         // Assert
