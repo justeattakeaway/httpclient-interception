@@ -125,7 +125,7 @@ jobs:
           gh pr merge --auto --squash "$env:PR_URL"
         }
         else {
-          Write-Host "PR already approved.";
+          Write-Output "PR already approved.";
         }
 
     # If something was present in the pull request that isn't expected, then disable
@@ -156,5 +156,5 @@ jobs:
           }
         }
         else {
-          Write-Host "PR not already approved.";
+          Write-Output "PR not already approved.";
         }

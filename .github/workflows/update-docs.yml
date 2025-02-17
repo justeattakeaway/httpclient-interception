@@ -48,13 +48,13 @@ jobs:
           dotnet mdsnippets "$env:GITHUB_WORKSPACE" --exclude-directories ./artifacts
 
           if ($LASTEXITCODE -ne 0) {
-            Write-Host "Failed to update documentation."
+            Write-Output "Failed to update documentation."
             exit 1
           }
 
           $gitStatus = (git status --porcelain)
           if ([string]::IsNullOrEmpty($gitStatus)) {
-            Write-Host "No changes to commit."
+            Write-Output "No changes to commit."
             exit 0
           }
 
@@ -67,7 +67,7 @@ jobs:
           git rev-parse --verify --quiet "remotes/origin/$branchName" | Out-Null
 
           if ($LASTEXITCODE -eq 0) {
-            Write-Host "Branch $branchName already exists."
+            Write-Output "Branch $branchName already exists."
             exit 0
           }
 

@@ -25,7 +25,7 @@ $dotnetVersion = (Get-Content $sdkFile | Out-String | ConvertFrom-Json).sdk.vers
 $installDotNetSdk = $false;
 
 if (($null -eq (Get-Command "dotnet" -ErrorAction SilentlyContinue)) -and ($null -eq (Get-Command "dotnet.exe" -ErrorAction SilentlyContinue))) {
-    Write-Host "The .NET SDK is not installed."
+    Write-Output "The .NET SDK is not installed."
     $installDotNetSdk = $true
 }
 else {
@@ -37,7 +37,7 @@ else {
     }
 
     if ($installedDotNetVersion -ne $dotnetVersion) {
-        Write-Host "The required version of the .NET SDK is not installed. Expected $dotnetVersion."
+        Write-Output "The required version of the .NET SDK is not installed. Expected $dotnetVersion."
         $installDotNetSdk = $true
     }
 }
@@ -111,11 +111,14 @@ function DotNetTest {
 }
 
 
-Write-Host "Packaging library..." -ForegroundColor Green
+Write-Output "Packaging library..."
 DotNetPack $libraryProject
 
-Write-Host "Running tests..." -ForegroundColor Green
-Remove-Item -Path (Join-Path $solutionPath "artifacts" "coverage" "coverage.*.json") -Force -ErrorAction SilentlyContinue | Out-Null
-ForEach ($testProject in $testProjects) {
-    DotNetTest $testProject
+if (-Not $SkipTests)
+{
+    Write-Output "Running tests..."
+    Remove-Item -Path (Join-Path $solutionPath "artifacts" "coverage" "coverage.*.json") -Force -ErrorAction SilentlyContinue | Out-Null
+    ForEach ($testProject in $testProjects) {
+        DotNetTest $testProject
+    }
 }
