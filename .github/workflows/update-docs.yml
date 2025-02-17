@@ -24,7 +24,7 @@ jobs:
         with:
           application_id: ${{ secrets.UPDATER_APPLICATION_ID }}
           application_private_key: ${{ secrets.UPDATER_APPLICATION_PRIVATE_KEY }}
-          permissions: "contents:write, pull_requests:write"
+          permissions: 'contents:write, pull_requests:write'
 
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -42,12 +42,14 @@ jobs:
         env:
           DOTNET_CLI_TELEMETRY_OPTOUT: true
           DOTNET_NOLOGO: true
+          UPDATER_COMMIT_USER_EMAIL: ${{ vars.UPDATER_COMMIT_USER_EMAIL }}
+          UPDATER_COMMIT_USER_NAME: ${{ vars.UPDATER_COMMIT_USER_NAME }}
         run: |
           $ErrorActionPreference = "Stop"
           $ProgressPreference = "SilentlyContinue"
 
           dotnet tool restore
-          dotnet mdsnippets "$env:GITHUB_WORKSPACE" --exclude-directories ./artifacts
+          dotnet mdsnippets ${env:GITHUB_WORKSPACE} --exclude-directories ./artifacts
 
           if ($LASTEXITCODE -ne 0) {
             Write-Output "Failed to update documentation."
@@ -60,11 +62,11 @@ jobs:
             exit 0
           }
 
-          $branchName = "update-docs/$($env:GITHUB_SHA)"
+          $branchName = "update-docs/${env:GITHUB_SHA}"
 
-          git config user.email "${{ vars.UPDATER_COMMIT_USER_EMAIL }}" | Out-Null
-          git config user.name "${{ vars.UPDATER_COMMIT_USER_NAME }}" | Out-Null
-          git remote set-url "${{ github.server_url }}/${{ github.repository }}.git" | Out-Null
+          git config user.email "${env:UPDATER_COMMIT_USER_EMAIL}" | Out-Null
+          git config user.name "${env:UPDATER_COMMIT_USER_NAME}" | Out-Null
+          git remote set-url "${env:GITHUB_SERVER_URL}/${env:GITHUB_REPOSITORY}.git" | Out-Null
           git fetch origin | Out-Null
           git rev-parse --verify --quiet "remotes/origin/$branchName" | Out-Null
 
@@ -78,8 +80,8 @@ jobs:
           git commit -m "Update documentation`n`nUpdate examples in documentation." -s
           git push -u origin $branchName
 
-          "branchName=$branchName" >> $env:GITHUB_OUTPUT
-          "updated-docs=true" >> $env:GITHUB_OUTPUT
+          "branchName=$branchName" >> ${env:GITHUB_OUTPUT}
+          "updated-docs=true" >> ${env:GITHUB_OUTPUT}
 
       - name: Create pull request
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1

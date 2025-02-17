@@ -77,7 +77,7 @@ jobs:
 
           "" >> $properties
 
-          "version=${updatedVersion}" >> $env:GITHUB_OUTPUT
+          "version=${updatedVersion}" >> ${env:GITHUB_OUTPUT}
 
       - name: Push changes to GitHub
         id: push-changes
@@ -113,9 +113,9 @@ jobs:
           git commit -m "Bump version`n`nBump version to ${env:NEXT_VERSION} for the next release."
           git push -u origin $branchName
 
-          "branch-name=${branchName}" >> $env:GITHUB_OUTPUT
-          "updated-version=true" >> $env:GITHUB_OUTPUT
-          "version=${env:NEXT_VERSION}" >> $env:GITHUB_OUTPUT
+          "branch-name=${branchName}" >> ${env:GITHUB_OUTPUT}
+          "updated-version=true" >> ${env:GITHUB_OUTPUT}
+          "version=${env:NEXT_VERSION}" >> ${env:GITHUB_OUTPUT}
 
       - name: Create pull request
         if: steps.push-changes.outputs.updated-version == 'true'

@@ -14,8 +14,7 @@ on:
       - dotnet-nightly
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 env:
   FORCE_COLOR: 3
@@ -26,6 +25,9 @@ env:
 jobs:
   lint:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
 
     steps:
 

@@ -155,4 +155,6 @@ jobs:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
     - name: Push NuGet packages to NuGet.org
-      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push "*.nupkg" --api-key ${env:NUGET_API_KEY} --skip-duplicate --source https://api.nuget.org/v3/index.json
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_TOKEN }}
