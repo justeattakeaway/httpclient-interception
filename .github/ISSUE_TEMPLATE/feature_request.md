@@ -1,11 +1,11 @@
 ---
 name: Feature request
+title: Feature request
 about: Suggest an idea for a feature of this library
 labels: feature-request
-
 ---
 
-### Is your feature request related to a problem? Please describe.
+### Is your feature request related to a problem?
 
 <!--
 A clear and concise description of what the problem is. For example: _It would be useful if [...]_

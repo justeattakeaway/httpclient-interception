@@ -47,6 +47,9 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        filter: 'tree:0'
+        show-progress: false
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
@@ -152,4 +155,6 @@ jobs:
         dotnet-version: ${{ needs.build.outputs.dotnet-sdk-version }}
 
     - name: Push NuGet packages to NuGet.org
-      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push "*.nupkg" --api-key "${NUGET_API_KEY}" --skip-duplicate --source https://api.nuget.org/v3/index.json
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_TOKEN }}

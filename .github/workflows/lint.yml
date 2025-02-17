@@ -14,26 +14,64 @@ on:
       - dotnet-nightly
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 env:
   FORCE_COLOR: 3
+  POWERSHELL_YAML_VERSION: '0.4.12'
+  PSSCRIPTANALYZER_VERSION: '1.23.0'
   TERM: xterm
 
 jobs:
   lint:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     steps:
 
     - name: Checkout code
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        filter: 'tree:0'
+        show-progress: false
 
     - name: Add actionlint problem matcher
       run: echo "::add-matcher::.github/actionlint-matcher.json"
 
     - name: Lint workflows
-      uses: docker://rhysd/actionlint@sha256:5acca218639222e4afbc82fc6e9ef56cbe646ade3b07f3f5ec364b638258a244 # v1.7.0
+      uses: docker://rhysd/actionlint@sha256:887a259a5a534f3c4f36cb02dca341673c6089431057242cdc931e9f133147e9 # v1.7.7
       with:
         args: -color
+
+    - name: Lint markdown
+      uses: DavidAnson/markdownlint-cli2-action@05f32210e84442804257b2a6f20b273450ec8265 # v19.1.0
+      with:
+        config: '.markdownlint.json'
+        globs: |
+          **/*.md
+
+    - name: Lint PowerShell in workflows
+      uses: martincostello/lint-actions-powershell@5942e3350ee5bd8f8933cec4e1185d13f0ea688f # v1.0.0
+      with:
+        powershell-yaml-version: ${{ env.POWERSHELL_YAML_VERSION }}
+        psscriptanalyzer-version: ${{ env.PSSCRIPTANALYZER_VERSION }}
+        treat-warnings-as-errors: true
+
+    - name: Lint PowerShell
+      shell: pwsh
+      run: |
+        $settings = @{
+          IncludeDefaultRules = $true
+          Severity = @("Error", "Warning")
+        }
+        $issues = Invoke-ScriptAnalyzer -Path ${env:GITHUB_WORKSPACE} -Recurse -ReportSummary -Settings $settings
+        foreach ($issue in $issues) {
+          $severity = $issue.Severity.ToString()
+          $level = $severity.Contains("Error") ? "error" : $severity.Contains("Warning") ? "warning" : "notice"
+          Write-Output "::${level} file=$($issue.ScriptName),line=$($issue.Line),title=PSScriptAnalyzer::$($issue.Message)"
+        }
+        if ($issues.Count -gt 0) {
+          exit 1
+        }

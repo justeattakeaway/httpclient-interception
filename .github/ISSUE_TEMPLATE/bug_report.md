@@ -1,8 +1,8 @@
 ---
 name: Bug report
+title: Bug report
 about: Create a bug report to help us improve the library
 labels: bug
-
 ---
 
 ### Describe the bug

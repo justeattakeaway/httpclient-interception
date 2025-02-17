@@ -5,15 +5,16 @@ on:
     - cron:  '00 19 * * TUE'
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   update-sdk:
     uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@758e92b362c4164925583874878423a794cce239 # v3.4.1
+    permissions:
+      contents: read
     with:
-      include-nuget-packages: "Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,Microsoft.NET.Test.Sdk"
-      labels: "dependencies,.NET"
+      include-nuget-packages: 'Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,Microsoft.NET.Test.Sdk'
+      labels: 'dependencies,.NET'
       user-email: ${{ vars.UPDATER_COMMIT_USER_EMAIL }}
       user-name: ${{ vars.UPDATER_COMMIT_USER_NAME }}
     secrets:

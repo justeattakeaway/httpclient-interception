@@ -34,6 +34,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          filter: 'tree:0'
+          show-progress: false
           token: ${{ steps.generate-application-token.outputs.token }}
 
       - name: Bump version
@@ -75,7 +77,7 @@ jobs:
 
           "" >> $properties
 
-          "version=${updatedVersion}" >> $env:GITHUB_OUTPUT
+          "version=${updatedVersion}" >> ${env:GITHUB_OUTPUT}
 
       - name: Push changes to GitHub
         id: push-changes
@@ -102,7 +104,7 @@ jobs:
           git rev-parse --verify --quiet "remotes/origin/${branchName}" | Out-Null
 
           if ($LASTEXITCODE -eq 0) {
-            Write-Host "Branch ${branchName} already exists."
+            Write-Output "Branch ${branchName} already exists."
             exit 0
           }
 
@@ -111,9 +113,9 @@ jobs:
           git commit -m "Bump version`n`nBump version to ${env:NEXT_VERSION} for the next release."
           git push -u origin $branchName
 
-          "branch-name=${branchName}" >> $env:GITHUB_OUTPUT
-          "updated-version=true" >> $env:GITHUB_OUTPUT
-          "version=${env:NEXT_VERSION}" >> $env:GITHUB_OUTPUT
+          "branch-name=${branchName}" >> ${env:GITHUB_OUTPUT}
+          "updated-version=true" >> ${env:GITHUB_OUTPUT}
+          "version=${env:NEXT_VERSION}" >> ${env:GITHUB_OUTPUT}
 
       - name: Create pull request
         if: steps.push-changes.outputs.updated-version == 'true'
