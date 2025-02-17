@@ -64,8 +64,8 @@ jobs:
 
           $branchName = "update-docs/${env:GITHUB_SHA}"
 
-          git config user.email "${env:UPDATER_COMMIT_USER_EMAIL}" | Out-Null
-          git config user.name "${env:UPDATER_COMMIT_USER_NAME}" | Out-Null
+          git config user.email ${env:UPDATER_COMMIT_USER_EMAIL} | Out-Null
+          git config user.name ${env:UPDATER_COMMIT_USER_NAME} | Out-Null
           git remote set-url "${env:GITHUB_SERVER_URL}/${env:GITHUB_REPOSITORY}.git" | Out-Null
           git fetch origin | Out-Null
           git rev-parse --verify --quiet "remotes/origin/$branchName" | Out-Null
