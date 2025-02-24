@@ -889,6 +889,103 @@ public static partial class Examples
         content.Link.ShouldBe("https://www.just-eat.co.uk/privacy-policy");
     }
 
+    [Fact]
+    public static async Task Vary_The_Response_Using_Content_Negotiation()
+    {
+        // Arrange
+        var expectedPull =
+            """
+            {
+              "url": "https://api.github.com/repos/justeattakeaway/httpclient-interception/pulls/1004",
+              "id": 2346177741,
+              "node_id": "PR_kwDOBa7mxs6L19TN",
+              "html_url": "https://github.com/justeattakeaway/httpclient-interception/pull/1004",
+              "diff_url": "https://github.com/justeattakeaway/httpclient-interception/pull/1004.diff",
+              "patch_url": "https://github.com/justeattakeaway/httpclient-interception/pull/1004.patch",
+              "issue_url": "https://api.github.com/repos/justeattakeaway/httpclient-interception/issues/1004",
+              "number": 1004,
+              "state": "closed",
+              "title": "Bump the xunit group with 2 updates",
+              "user": {
+                "login": "dependabot[bot]"
+              },
+              "body": "Bumps the xunit group with 2 updates: [xunit.runner.visualstudio](https://github.com/xunit/visualstudio.xunit) and [xunit.v3](https://github.com/xunit/xunit).",
+              "created_at": "2025-02-20T05:25:35Z",
+              "updated_at": "2025-02-20T06:30:51Z",
+              "closed_at": "2025-02-20T06:30:45Z",
+              "merged_at": "2025-02-20T06:30:45Z",
+              "merge_commit_sha": "97e1bfe247e3d79d5235a60b1725a6de44fa9411",
+              "draft": false,
+              "author_association": "CONTRIBUTOR",
+              "merged": true
+            }
+            """;
+
+        var expectedDiff =
+            """
+            diff --git a/Directory.Packages.props b/Directory.Packages.props
+            index 39a1334b..165c7500 100644
+            --- a/Directory.Packages.props
+            +++ b/Directory.Packages.props
+            @@ -19,8 +19,8 @@
+                 <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
+                 <PackageVersion Include="System.Net.Http" Version="4.3.4" />
+                 <PackageVersion Include="System.Text.Json" Version="8.0.5" />
+            -    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.1" />
+            -    <PackageVersion Include="xunit.v3" Version="1.0.1" />
+            +    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
+            +    <PackageVersion Include="xunit.v3" Version="1.1.0" />
+               </ItemGroup>
+               <ItemGroup>
+                 <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
+            """;
+
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForHttps()
+            .ForHost("api.github.com")
+            .ForPath("repos/justeattakeaway/httpclient-interception/pulls/1004")
+            .ForRequestHeader("Accept", "application/vnd.github.v3+json")
+            .WithContentHeader("Content-Type", "application/json; charset=utf-8")
+            .WithContent(expectedPull);
+
+        options.Register(builder);
+
+        builder.ForRequestHeader("Accept", "application/vnd.github.diff")
+               .Responds()
+               .WithContentHeader("Content-Type", "application/vnd.github.diff; charset=utf-8")
+               .WithContent(expectedDiff);
+
+        options.Register(builder);
+
+        string requestUri = "/repos/justeattakeaway/httpclient-interception/pulls/1004";
+
+        using var client = options.CreateHttpClient("https://api.github.com");
+
+        using var pullRequest = new HttpRequestMessage(HttpMethod.Get, requestUri);
+        pullRequest.Headers.Accept.Add(new("application/vnd.github.v3+json"));
+
+        // Act
+        using var pull = await client.SendAsync(pullRequest, cancellationToken);
+        var actualPull = await pull.Content.ReadAsStringAsync(cancellationToken);
+
+        // Assert
+        actualPull.ShouldBe(expectedPull, StringCompareShould.IgnoreLineEndings);
+
+        // Arrange
+        using var diffRequest = new HttpRequestMessage(HttpMethod.Get, requestUri);
+        diffRequest.Headers.Accept.Add(new("application/vnd.github.diff"));
+
+        // Act
+        using var diff = await client.SendAsync(diffRequest, cancellationToken);
+        var actualDiff = await diff.Content.ReadAsStringAsync(cancellationToken);
+
+        // Assert
+        actualDiff.ShouldBe(expectedDiff, StringCompareShould.IgnoreLineEndings);
+    }
+
     private sealed class TermsAndConditions
     {
         [JsonPropertyName("Id")]
