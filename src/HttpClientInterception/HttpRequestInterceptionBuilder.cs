@@ -472,7 +472,7 @@ public class HttpRequestInterceptionBuilder
 
         if (!_contentHeaders.TryGetValue(name, out var current))
         {
-            _contentHeaders[name] = current = new List<string>();
+            _contentHeaders[name] = current = [];
         }
 
         current.Clear();
@@ -617,7 +617,7 @@ public class HttpRequestInterceptionBuilder
 
         if (!_responseHeaders.TryGetValue(name, out ICollection<string>? current))
         {
-            _responseHeaders[name] = current = new List<string>();
+            _responseHeaders[name] = current = [];
         }
 
         current.Clear();
@@ -955,7 +955,7 @@ public class HttpRequestInterceptionBuilder
 
         if (!_requestHeaders.TryGetValue(name, out ICollection<string>? current))
         {
-            _requestHeaders[name] = current = new List<string>();
+            _requestHeaders[name] = current = [];
         }
 
         current.Clear();
@@ -1108,7 +1108,7 @@ public class HttpRequestInterceptionBuilder
 
                 foreach (var pair in _requestHeaders)
                 {
-                    headers[pair.Key] = pair.Value;
+                    headers[pair.Key] = [.. pair.Value];
                 }
 
                 response.RequestHeaders = headers;
@@ -1127,7 +1127,7 @@ public class HttpRequestInterceptionBuilder
 
                 foreach (var pair in _responseHeaders)
                 {
-                    headers[pair.Key] = pair.Value;
+                    headers[pair.Key] = [.. pair.Value];
                 }
 
                 response.ResponseHeaders = headers;
@@ -1171,7 +1171,7 @@ public class HttpRequestInterceptionBuilder
         }
     }
 
-    private sealed class DynamicDictionary :
+    internal sealed class DynamicDictionary :
         IDictionary<string, ICollection<string>>,
         IEnumerable<KeyValuePair<string, IEnumerable<string>>>
     {

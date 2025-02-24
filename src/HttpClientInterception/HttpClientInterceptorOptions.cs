@@ -438,7 +438,79 @@ public class HttpClientInterceptorOptions
             builderForKey.Port = -1;
         }
 
-        return $"{keyPrefix};{interceptor.Method!.Method}:{builderForKey}";
+        string keySuffix = ComputeKeyForHeaders(
+            interceptor.ContentHeaders,
+            interceptor.RequestHeaders);
+
+        return $"{keyPrefix};{interceptor.Method!.Method}:{builderForKey};{keySuffix}";
+    }
+
+    private static string ComputeKeyForHeaders(
+        IEnumerable<KeyValuePair<string, IEnumerable<string>>>? contentHeaders,
+        IEnumerable<KeyValuePair<string, IEnumerable<string>>>? requestHeaders)
+    {
+        List<KeyValuePair<string, IEnumerable<string>>> headers = [];
+
+        // DynamicDictionary is excluded as it is not consider to be immutable so we cannot
+        // use it to create a hash suffix as it might change later and invalidate the key.
+        if (contentHeaders is { } and not HttpRequestInterceptionBuilder.DynamicDictionary)
+        {
+            headers.AddRange(contentHeaders);
+        }
+
+        if (requestHeaders is { } and not HttpRequestInterceptionBuilder.DynamicDictionary)
+        {
+            headers.AddRange(requestHeaders);
+        }
+
+        if (headers.Count < 1)
+        {
+            return string.Empty;
+        }
+
+        int hashCode;
+
+#if NET8_0
+        var combiner = new HashCode();
+
+        foreach (var pair in headers)
+        {
+            // Treat the headers as case-insensitive like HTTP does
+            combiner.Add(pair.Key, StringComparer.OrdinalIgnoreCase);
+
+            if (pair.Value is { } values)
+            {
+                foreach (var value in values)
+                {
+                    combiner.Add(value);
+                }
+            }
+        }
+
+        hashCode = combiner.ToHashCode();
+#else
+        // Copied from https://referencesource.microsoft.com/#mscorlib/system/array.cs,809
+        hashCode = string.Empty.GetHashCode();
+
+        foreach (var pair in headers)
+        {
+            // Treat the headers as case-insensitive like HTTP does
+            hashCode = CombineHashCode(hashCode, pair.Key.ToUpperInvariant());
+
+            if (pair.Value is { } values)
+            {
+                foreach (var value in values)
+                {
+                    hashCode = CombineHashCode(hashCode, value);
+                }
+            }
+        }
+
+        static int CombineHashCode(int hc, string value) => CombineHashCodes(hc, value.GetHashCode());
+        static int CombineHashCodes(int a, int b) => ((a << 5) + a) ^ b;
+#endif
+
+        return hashCode.ToString(CultureInfo.InvariantCulture);
     }
 
     private static void PopulateHeaders(HttpHeaders headers, IEnumerable<KeyValuePair<string, IEnumerable<string>>>? values)
