@@ -3,8 +3,7 @@ updates:
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
-    interval: daily
-    time: "05:30"
+    interval: monthly
     timezone: Europe/London
   reviewers:
     - "justeattakeaway/httpclient-interception"
@@ -15,8 +14,7 @@ updates:
       patterns:
         - xunit*
   schedule:
-    interval: daily
-    time: "05:30"
+    interval: monthly
     timezone: Europe/London
   reviewers:
     - "justeattakeaway/httpclient-interception"
