@@ -5,8 +5,6 @@ updates:
   schedule:
     interval: monthly
     timezone: Europe/London
-  reviewers:
-    - "justeattakeaway/httpclient-interception"
 - package-ecosystem: nuget
   directory: "/"
   groups:
@@ -16,8 +14,6 @@ updates:
   schedule:
     interval: monthly
     timezone: Europe/London
-  reviewers:
-    - "justeattakeaway/httpclient-interception"
   open-pull-requests-limit: 99
   ignore:
   - dependency-name: Microsoft.AspNetCore.WebUtilities
