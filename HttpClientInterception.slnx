@@ -1,0 +1,60 @@
+<Solution>
+  <Folder Name="/samples/">
+    <File Path="samples/README.md" />
+    <Project Path="samples/SampleApp.Tests/SampleApp.Tests.csproj" />
+    <Project Path="samples/SampleApp/SampleApp.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path=".vsconfig" />
+    <File Path="build.ps1" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="HttpClientInterception.ruleset" />
+    <File Path="LICENSE" />
+    <File Path="NuGet.config" />
+    <File Path="README.md" />
+    <File Path="SECURITY.md" />
+    <File Path="stylecop.json" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/">
+    <File Path=".github/CODEOWNERS" />
+    <File Path=".github/CONTRIBUTING.md" />
+    <File Path=".github/dependabot.yml" />
+    <File Path=".github/ISSUE_TEMPLATE.md" />
+    <File Path=".github/PULL_REQUEST_TEMPLATE.md" />
+    <File Path=".github/stale.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/ISSUE_TEMPLATE/">
+    <File Path=".github/ISSUE_TEMPLATE/bug_report.md" />
+    <File Path=".github/ISSUE_TEMPLATE/feature_request.md" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/workflows/">
+    <File Path=".github/workflows/approve-and-merge.yml" />
+    <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/bump-version.yml" />
+    <File Path=".github/workflows/codeql.yml" />
+    <File Path=".github/workflows/dependabot-approve.yml" />
+    <File Path=".github/workflows/dependency-review.yml" />
+    <File Path=".github/workflows/lint.yml" />
+    <File Path=".github/workflows/release.yml" />
+    <File Path=".github/workflows/scorecard.yml" />
+    <File Path=".github/workflows/update-docs.yml" />
+    <File Path=".github/workflows/update-dotnet-sdk.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.vscode/">
+    <File Path=".vscode/launch.json" />
+    <File Path=".vscode/tasks.json" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/HttpClientInterception/JustEat.HttpClientInterception.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HttpClientInterception.Benchmarks/JustEat.HttpClientInterception.Benchmarks.csproj" />
+    <Project Path="tests/HttpClientInterception.Tests/JustEat.HttpClientInterception.Tests.csproj" />
+  </Folder>
+</Solution>
