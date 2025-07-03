@@ -601,4 +601,34 @@ public static class BundleExtensionsTests
         // Act
         options.RegisterBundle(Path.Join("Bundles", "templated-bundle-null-headers.json"), headers);
     }
+
+    [Fact]
+    public static async Task Can_Intercept_Http_Requests_With_Correct_Precedence_For_Http_Request_Headers()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+        var requestUrl = "https://registry.hub.docker.com/v2/user/image/manifests/latest";
+
+        var unauthorized = new Dictionary<string, string>()
+        {
+            ["Accept"] = "application/vnd.oci.image.index.v1+json",
+        };
+
+        var authorized = new Dictionary<string, string>()
+        {
+            ["Accept"] = "application/vnd.oci.image.index.v1+json",
+            ["Authorization"] = "Bearer not-a-real-docker-hub-token",
+        };
+
+        options.RegisterBundle(Path.Join("Bundles", "header-matching.json"));
+
+        // Act
+        var first = await HttpAssert.GetAsync(options, requestUrl, headers: unauthorized);
+        var second = await HttpAssert.GetAsync(options, requestUrl, headers: authorized);
+
+        // Assert
+        first.ShouldBe("unauthorized");
+        second.ShouldBe("authorized");
+    }
 }
