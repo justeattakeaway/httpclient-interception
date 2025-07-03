@@ -1,0 +1,36 @@
+{
+  "$schema": "https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json",
+  "id": "test-http-request-bundle",
+  "comment": "An HTTP request bundle for testing HTTP request header matching for the same URL.",
+  "version": 1,
+  "items": [
+    {
+      "id": "authorized",
+      "comment": "An HTTP request with an Authorization header.",
+      "uri": "https://registry.hub.docker.com/v2/user/image/manifests/latest",
+      "requestHeaders": {
+        "Accept": [
+          "application/vnd.oci.image.index.v1+json"
+        ],
+        "Authorization": [
+          "Bearer not-a-real-docker-hub-token"
+        ]
+      },
+      "contentString": "authorized"
+    },
+    {
+      "id": "unauthorized",
+      "comment": "An HTTP request without an Authorization header.",
+      "uri": "https://registry.hub.docker.com/v2/user/image/manifests/latest",
+      "requestHeaders": {
+        "Accept": [
+          "application/vnd.oci.image.index.v1+json"
+        ]
+      },
+      "contentHeaders": {
+        "Content-Type": [ "application/json" ]
+      },
+      "contentString": "unauthorized"
+    }
+  ]
+}

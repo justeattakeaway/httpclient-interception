@@ -575,7 +575,17 @@ public class HttpClientInterceptorOptions
     {
         var responses = _mappings.Values
             .OrderByDescending((p) => p.Priority.HasValue)
-            .ThenBy((p) => p.Priority);
+            .ThenBy((p) => p.Priority)
+            .ThenByDescending((p) =>
+            {
+                // Sort by the number of request headers, so that those with more headers expected are matched first.
+                // Count() is not used to avoid side-effects of enumerating the headers if they are dynamically generated.
+#if NET8_0_OR_GREATER
+                return p.RequestHeaders?.TryGetNonEnumeratedCount(out var count) is true ? count : 0;
+#else
+                return p.RequestHeaders is ICollection<KeyValuePair<string, IEnumerable<string>>> collection ? collection.Count : 0;
+#endif
+            });
 
         foreach (var response in responses)
         {
