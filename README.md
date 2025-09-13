@@ -74,7 +74,7 @@ This functionality is analogous to our [_Shock_](https://github.com/justeat/Shoc
 
 Below is an example bundle file, which can return content in formats such as a string, JSON and base64-encoded data.
 
-The full JSON schema for HTTP bundle files can be found [here](https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json "JSON Schema for HTTP request interception bundles for use with JustEat.HttpClientInterception.").
+The full JSON schema for HTTP bundle files can be found in [http-request-bundle-schema.json](https://raw.githubusercontent.com/justeattakeaway/httpclient-interception/main/src/HttpClientInterception/Bundles/http-request-bundle-schema.json "JSON Schema for HTTP request interception bundles for use with JustEat.HttpClientInterception.").
 
 <!-- snippet: sample-bundle.json -->
 <a id='snippet-sample-bundle.json'></a>
