@@ -2585,6 +2585,259 @@ public static partial class HttpRequestInterceptionBuilderTests
         fourthResponse.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
     }
 
+    [Fact]
+    public static async Task WithStatus_Factory_Returns_Dynamic_Status_Code()
+    {
+        // Arrange
+        var requestUri = "https://google.com/";
+        var expected = "Dynamic content";
+        var callCount = 0;
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForUrl(requestUri)
+            .WithStatus(() =>
+            {
+                callCount++;
+                return callCount == 1 ? HttpStatusCode.OK : HttpStatusCode.NotFound;
+            })
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions().Register(builder);
+
+        // Act
+        var response1 = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.OK);
+        var response2 = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.NotFound);
+
+        // Assert
+        response1.ShouldBe(expected);
+        response2.ShouldBe(expected);
+        callCount.ShouldBe(2);
+    }
+
+    [Fact]
+    public static async Task WithStatus_Factory_With_Null_Resets_To_Static_Status_Code()
+    {
+        // Arrange
+        var requestUri = "https://google.com/";
+        var expected = "Test content";
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForUrl(requestUri)
+            .WithStatus(HttpStatusCode.BadRequest)
+            .WithStatus(null) // Reset to static
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions().Register(builder);
+
+        // Act
+        var response = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.BadRequest);
+
+        // Assert
+        response.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static async Task WithStatus_Factory_Overrides_Static_Status_Code()
+    {
+        // Arrange
+        var requestUri = "https://google.com/";
+        var expected = "Test content";
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForUrl(requestUri)
+            .WithStatus(HttpStatusCode.BadRequest) // Static status code
+            .WithStatus(() => HttpStatusCode.OK) // Factory overrides static
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions().Register(builder);
+
+        // Act
+        var response = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.OK);
+
+        // Assert
+        response.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static async Task WithStatus_Static_Overrides_Factory_Status_Code()
+    {
+        // Arrange
+        var requestUri = "https://google.com/";
+        var expected = "Test content";
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForUrl(requestUri)
+            .WithStatus(() => HttpStatusCode.OK) // Factory status code
+            .WithStatus(HttpStatusCode.BadRequest) // Static overrides factory
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions().Register(builder);
+
+        // Act
+        var response = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.BadRequest);
+
+        // Assert
+        response.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static async Task WithStatus_Factory_With_Conditional_Logic()
+    {
+        // Arrange
+        var requestUri = "https://google.com/";
+        var expected = "Test content";
+        var isFirstRequest = true;
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForUrl(requestUri)
+            .WithStatus(() =>
+            {
+                if (isFirstRequest)
+                {
+                    isFirstRequest = false;
+                    return HttpStatusCode.OK;
+                }
+
+                return HttpStatusCode.TooManyRequests;
+            })
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions().Register(builder);
+
+        // Act
+        var response1 = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.OK);
+        var response2 = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.TooManyRequests);
+
+        // Assert
+        response1.ShouldBe(expected);
+        response2.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static async Task WithStatus_Factory_With_Exception_Handling()
+    {
+        // Arrange
+        var requestUri = "https://google.com/";
+        var expected = "Test content";
+        var shouldThrow = true;
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForUrl(requestUri)
+            .WithStatus(() =>
+            {
+                if (shouldThrow)
+                {
+                    shouldThrow = false;
+                    throw new InvalidOperationException("Test exception");
+                }
+
+                return HttpStatusCode.OK;
+            })
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions().Register(builder);
+
+        // Act & Assert
+        await Should.ThrowAsync<InvalidOperationException>(async () =>
+            await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.OK));
+    }
+
+    [Fact]
+    public static async Task WithStatus_Factory_With_Multiple_Registrations()
+    {
+        // Arrange
+        var requestUri1 = "https://google.com/";
+        var requestUri2 = "https://bing.com/";
+        var expected = "Test content";
+
+        var builder1 = new HttpRequestInterceptionBuilder()
+            .ForUrl(requestUri1)
+            .WithStatus(() => HttpStatusCode.OK)
+            .WithContent(expected);
+
+        var builder2 = new HttpRequestInterceptionBuilder()
+            .ForUrl(requestUri2)
+            .WithStatus(() => HttpStatusCode.BadRequest)
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions()
+            .Register(builder1)
+            .Register(builder2);
+
+        // Act
+        var response1 = await HttpAssert.GetAsync(options, requestUri1, HttpStatusCode.OK);
+        var response2 = await HttpAssert.GetAsync(options, requestUri2, HttpStatusCode.BadRequest);
+
+        // Assert
+        response1.ShouldBe(expected);
+        response2.ShouldBe(expected);
+    }
+
+    [Fact]
+    public static async Task WithStatus_Factory_With_Interception_Callback()
+    {
+        // Arrange
+        var requestUri = "https://google.com/";
+        var expected = "Test content";
+        var callbackCount = 0;
+        var statusCodeCount = 0;
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForUrl(requestUri)
+            .WithStatus(() =>
+            {
+                statusCodeCount++;
+                return HttpStatusCode.OK;
+            })
+            .WithInterceptionCallback((request) =>
+            {
+                callbackCount++;
+                return Task.FromResult(true);
+            })
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions().Register(builder);
+
+        // Act
+        var response = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.OK);
+
+        // Assert
+        response.ShouldBe(expected);
+        callbackCount.ShouldBe(1);
+        statusCodeCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public static async Task WithStatus_Factory_Called_For_Each_Request()
+    {
+        // Arrange
+        var requestUri = "https://google.com/";
+        var expected = "Test content";
+        var factoryCallCount = 0;
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForUrl(requestUri)
+            .WithStatus(() =>
+            {
+                factoryCallCount++;
+                return HttpStatusCode.OK;
+            })
+            .WithContent(expected);
+
+        var options = new HttpClientInterceptorOptions().Register(builder);
+
+        // Act
+        var response1 = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.OK);
+        var response2 = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.OK);
+        var response3 = await HttpAssert.GetAsync(options, requestUri, HttpStatusCode.OK);
+
+        // Assert
+        response1.ShouldBe(expected);
+        response2.ShouldBe(expected);
+        response3.ShouldBe(expected);
+        factoryCallCount.ShouldBe(3); // Factory should be called for each request
+    }
+
     private sealed class CustomObject
     {
         internal enum Color
