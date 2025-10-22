@@ -2589,7 +2589,7 @@ public static partial class HttpRequestInterceptionBuilderTests
     public static async Task WithStatus_Factory_Returns_Dynamic_Status_Code()
     {
         // Arrange
-        var requestUri = "https://google.com/";
+        var requestUri = "https://test.local/post";
         var expected = "Dynamic content";
         var callCount = 0;
 
@@ -2618,7 +2618,7 @@ public static partial class HttpRequestInterceptionBuilderTests
     public static async Task WithStatus_Factory_With_Null_Resets_To_Static_Status_Code()
     {
         // Arrange
-        var requestUri = "https://google.com/";
+        var requestUri = "https://test.local/post";
         var expected = "Test content";
 
         var builder = new HttpRequestInterceptionBuilder()
@@ -2640,7 +2640,7 @@ public static partial class HttpRequestInterceptionBuilderTests
     public static async Task WithStatus_Factory_Overrides_Static_Status_Code()
     {
         // Arrange
-        var requestUri = "https://google.com/";
+        var requestUri = "https://test.local/post";
         var expected = "Test content";
 
         var builder = new HttpRequestInterceptionBuilder()
@@ -2662,7 +2662,7 @@ public static partial class HttpRequestInterceptionBuilderTests
     public static async Task WithStatus_Static_Overrides_Factory_Status_Code()
     {
         // Arrange
-        var requestUri = "https://google.com/";
+        var requestUri = "https://test.local/post";
         var expected = "Test content";
 
         var builder = new HttpRequestInterceptionBuilder()
@@ -2684,7 +2684,7 @@ public static partial class HttpRequestInterceptionBuilderTests
     public static async Task WithStatus_Factory_With_Conditional_Logic()
     {
         // Arrange
-        var requestUri = "https://google.com/";
+        var requestUri = "https://test.local/post";
         var expected = "Test content";
         var isFirstRequest = true;
 
@@ -2717,7 +2717,7 @@ public static partial class HttpRequestInterceptionBuilderTests
     public static async Task WithStatus_Factory_With_Exception_Handling()
     {
         // Arrange
-        var requestUri = "https://google.com/";
+        var requestUri = "https://test.local/post";
         var expected = "Test content";
         var shouldThrow = true;
 
@@ -2746,7 +2746,7 @@ public static partial class HttpRequestInterceptionBuilderTests
     public static async Task WithStatus_Factory_With_Multiple_Registrations()
     {
         // Arrange
-        var requestUri1 = "https://google.com/";
+        var requestUri1 = "https://test.local/post";
         var requestUri2 = "https://bing.com/";
         var expected = "Test content";
 
@@ -2777,7 +2777,7 @@ public static partial class HttpRequestInterceptionBuilderTests
     public static async Task WithStatus_Factory_With_Interception_Callback()
     {
         // Arrange
-        var requestUri = "https://google.com/";
+        var requestUri = "https://test.local/post";
         var expected = "Test content";
         var callbackCount = 0;
         var statusCodeCount = 0;
@@ -2811,7 +2811,7 @@ public static partial class HttpRequestInterceptionBuilderTests
     public static async Task WithStatus_Factory_Called_For_Each_Request()
     {
         // Arrange
-        var requestUri = "https://google.com/";
+        var requestUri = "https://test.local/post";
         var expected = "Test content";
         var factoryCallCount = 0;
 
