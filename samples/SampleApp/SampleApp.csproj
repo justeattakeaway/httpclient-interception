@@ -2,10 +2,9 @@
   <PropertyGroup>
     <AspNetCoreHostingModel>inprocess</AspNetCoreHostingModel>
     <NoWarn>$(NoWarn);CA1062;CA2007;SA1600</NoWarn>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Refit" />
-    <PackageReference Include="System.Text.Json" OverrideVersion="9.0.0" />
   </ItemGroup>
 </Project>

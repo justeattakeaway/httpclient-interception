@@ -67,16 +67,16 @@ public static class InterceptingHttpMessageHandlerTests
 
         options.OnMissingRegistration = (request) => Task.FromResult<HttpResponseMessage>(null);
 
-        using var handler = Substitute.For<HttpMessageHandler>();
-        using var expected = new HttpResponseMessage(HttpStatusCode.OK);
-        using var request = new HttpRequestMessage(HttpMethod.Options, "https://google.com/foo");
+        var handler = Substitute.For<HttpMessageHandler>();
+        var expected = new HttpResponseMessage(HttpStatusCode.OK);
+        var request = new HttpRequestMessage(HttpMethod.Options, "https://google.com/foo");
 
         handler.GetType()
                .GetMethod("SendAsync", BindingFlags.NonPublic | BindingFlags.Instance)
                .Invoke(handler, [request, Arg.Any<CancellationToken>()])
                .Returns(Task.FromResult(expected));
 
-        using var httpClient = options.CreateHttpClient(handler);
+        var httpClient = options.CreateHttpClient(handler);
 
         // Act
         var actual = await httpClient.SendAsync(request, CancellationToken.None);

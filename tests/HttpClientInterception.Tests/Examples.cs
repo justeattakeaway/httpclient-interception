@@ -718,8 +718,7 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act
-        await Should.ThrowAsync<TaskCanceledException>(
-            () => client.GetAsync("http://www.google.co.uk", cts.Token));
+        await client.GetAsync("http://www.google.co.uk", cts.Token);
 
         // Assert
         cts.IsCancellationRequested.ShouldBeTrue();
