@@ -6,7 +6,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>JustEat.HttpClientInterception</RootNamespace>
     <Summary>Tests for JustEat.HttpClientInterception</Summary>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="example-bundle.json;xunit.runner.json;Bundles\*.json" CopyToOutputDirectory="PreserveNewest" />

@@ -3,18 +3,13 @@
     <IsTestProject>true</IsTestProject>
     <NoWarn>$(NoWarn);CA1056;CA1062;CA1707;CA1711;CA1861;CA2007;SA1600</NoWarn>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net9.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="testsettings.json;xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
-    <WebApplicationFactoryContentRootAttribute
-      Include="SampleApp"
-      AssemblyName="SampleApp"
-      ContentRootPath="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../SampleApp'))"
-      ContentRootTest="SampleApp.csproj"
-      Priority="-1" />
+    <WebApplicationFactoryContentRootAttribute Include="SampleApp" AssemblyName="SampleApp" ContentRootPath="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../SampleApp'))" ContentRootTest="SampleApp.csproj" Priority="-1" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
