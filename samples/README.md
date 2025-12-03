@@ -19,7 +19,7 @@ This resource consumes the [GitHub v3 API](https://developer.github.com/v3/) and
 
 To enable use of `JustEat.HttpClientInterception` for testing, the application has a small number of minor changes:
 
-1. An [extension method](https://github.com/justeattakeaway/httpclient-interception/blob/63e27420c35f66bd4953184586fa10a4762b4bca/samples/SampleApp/Extensions/HttpClientExtensions.cs#L18-L28) that registers `HttpClient` for use with [Refit](https://github.com/paulcbetts/refit) to call the GitHub API.
+1. An [extension method](https://github.com/justeattakeaway/httpclient-interception/blob/63e27420c35f66bd4953184586fa10a4762b4bca/samples/SampleApp/Extensions/HttpClientExtensions.cs#L18-L28) that registers `HttpClient` for use with [Refit](https://github.com/reactiveui/refit) to call the GitHub API.
 1. Dependencies for the GitHub API are [registered](https://github.com/justeattakeaway/httpclient-interception/blob/63e27420c35f66bd4953184586fa10a4762b4bca/samples/SampleApp/Startup.cs#L24) in the `Startup` class.
 1. `IGitHub` is injected into the [constructor of `ReposController`](https://github.com/justeattakeaway/httpclient-interception/blob/63e27420c35f66bd4953184586fa10a4762b4bca/samples/SampleApp/Controllers/ReposController.cs#L18)
 
