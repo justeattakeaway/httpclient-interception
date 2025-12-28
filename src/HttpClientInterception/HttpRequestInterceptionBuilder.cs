@@ -40,6 +40,8 @@ public class HttpRequestInterceptionBuilder
 
     private HttpStatusCode _statusCode = HttpStatusCode.OK;
 
+    private Func<HttpStatusCode>? _statusCodeFactory;
+
     private UriBuilder _uriBuilder = new();
 
     private Version? _version;
@@ -733,7 +735,34 @@ public class HttpRequestInterceptionBuilder
     public HttpRequestInterceptionBuilder WithStatus(HttpStatusCode statusCode)
     {
         _statusCode = statusCode;
+        _statusCodeFactory = null;
         IncrementRevision();
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the function to use to build the response status code.
+    /// </summary>
+    /// <param name="statusCodeFactory">A delegate to a method that returns the HTTP status code.</param>
+    /// <returns>
+    /// The current <see cref="HttpRequestInterceptionBuilder"/>.
+    /// </returns>
+    /// <remarks>
+    /// Pass a value of <see langword="null"/> to reset to no status code factory.
+    /// </remarks>
+    public HttpRequestInterceptionBuilder WithStatus(Func<HttpStatusCode>? statusCodeFactory)
+    {
+        if (statusCodeFactory is null)
+        {
+            _statusCodeFactory = null;
+        }
+        else
+        {
+            _statusCodeFactory = statusCodeFactory;
+        }
+
+        IncrementRevision();
+
         return this;
     }
 
