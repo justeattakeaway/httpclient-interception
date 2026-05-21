@@ -526,7 +526,8 @@ public class HttpClientInterceptorOptions
 
     private static async Task<HttpResponseMessage> BuildResponseAsync(HttpRequestMessage request, HttpInterceptionResponse response)
     {
-        var result = new HttpResponseMessage(response.StatusCode);
+        var statusCode = response.StatusCodeFactory?.Invoke() ?? response.StatusCode;
+        var result = new HttpResponseMessage(statusCode);
 
         try
         {
