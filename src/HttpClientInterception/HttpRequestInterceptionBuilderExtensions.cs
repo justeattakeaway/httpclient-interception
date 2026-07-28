@@ -392,6 +392,19 @@ public static class HttpRequestInterceptionBuilderExtensions
 
         async Task<bool> IsMatchAsync(HttpContent content)
         {
+#if NET8_0_OR_GREATER
+            // FormUrlEncodedContent derives from ByteArrayContent so use the
+            // least specific type for more flexibility (e.g. also StringContent).
+            // ReadOnlyMemoryContent is also supported as the underlying content is a ReadOnlyMemory<byte>
+            // which can be copied to a MemoryStream for parsing.
+            // Other content types are not supported as they may be iterating over
+            // a stream which might not support arbitrary seeking if the request
+            // is not a match and needs to be sent to the URL originally specified.
+            if (content is not ByteArrayContent && content is not ReadOnlyMemoryContent)
+            {
+                return false;
+            }
+#else
             // FormUrlEncodedContent derives from ByteArrayContent so use the
             // least specific type for more flexibility (e.g. also StringContent).
             // Other content types are not supported as they may be iterating over
@@ -401,6 +414,7 @@ public static class HttpRequestInterceptionBuilderExtensions
             {
                 return false;
             }
+#endif
 
             string bodyMaybeForm;
 
