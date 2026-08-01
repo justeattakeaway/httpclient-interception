@@ -12,6 +12,7 @@
     <WebApplicationFactoryContentRootAttribute Include="SampleApp" AssemblyName="SampleApp" ContentRootPath="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../SampleApp'))" ContentRootTest="SampleApp.csproj" Priority="-1" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Refit" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="MartinCostello.Logging.XUnit.v3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />

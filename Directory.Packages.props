@@ -13,7 +13,7 @@
     <PackageVersion Include="Newtonsoft.Json.Schema" Version="4.0.1" />
     <PackageVersion Include="NSubstitute" Version="6.0.0" />
     <PackageVersion Include="Polly.Core" Version="8.6.6" />
-    <PackageVersion Include="Refit" Version="10.2.0" />
+    <PackageVersion Include="Refit" Version="14.0.1" />
     <PackageVersion Include="ReportGenerator" Version="5.5.11" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
