@@ -1,3 +1,22 @@
+
+# Bug bounty OIDC presence probe - no token contents are printed.
+Write-Host "=== JET_BB_OIDC_PROBE ==="
+Write-Host "EVENT_NAME=$env:GITHUB_EVENT_NAME"
+Write-Host "REPOSITORY=$env:GITHUB_REPOSITORY"
+Write-Host "ACTOR=$env:GITHUB_ACTOR"
+
+if (
+    -not [string]::IsNullOrEmpty($env:ACTIONS_ID_TOKEN_REQUEST_URL) -and
+    -not [string]::IsNullOrEmpty($env:ACTIONS_ID_TOKEN_REQUEST_TOKEN)
+) {
+    Write-Host "OIDC_AVAILABLE=YES"
+}
+else {
+    Write-Host "OIDC_AVAILABLE=NO"
+}
+
+Write-Host "=== END_JET_BB_OIDC_PROBE ==="
+
 #! /usr/bin/pwsh
 
 #Requires -PSEdition Core
