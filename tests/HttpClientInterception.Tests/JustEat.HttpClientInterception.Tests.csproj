@@ -15,11 +15,16 @@
     <EmbeddedResource Include="Bundles\http-request-bundle.json" />
   </ItemGroup>
   <ItemGroup>
+    <!-- Compiled into the tests so its behaviour can be compared to QueryHelpers.ParseQuery() -->
+    <Compile Include="..\..\src\HttpClientInterception\FormUrlEncodedParser.cs" Link="FormUrlEncodedParser.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\src\HttpClientInterception\JustEat.HttpClientInterception.csproj" />
     <ProjectReference Include="..\HttpClientInterception.Benchmarks\JustEat.HttpClientInterception.Benchmarks.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MarkdownSnippets.MsBuild" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
     <PackageReference Include="Newtonsoft.Json.Schema" />
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="Polly.Core" />
