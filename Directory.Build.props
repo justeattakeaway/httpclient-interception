@@ -65,11 +65,4 @@
     <Using Include="Shouldly" />
     <Using Include="Xunit" />
   </ItemGroup>
-  <PropertyGroup Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">
-    <CollectCoverage>true</CollectCoverage>
-    <CoverletOutputFormat>cobertura,json</CoverletOutputFormat>
-    <Exclude>[*.Benchmarks]*,[*.Tests]*,[Refit]*,[SampleApp]*,[xunit.*]*</Exclude>
-    <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
-    <Threshold>95</Threshold>
-  </PropertyGroup>
 </Project>

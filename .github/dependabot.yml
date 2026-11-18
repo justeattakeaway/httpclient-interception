@@ -17,6 +17,7 @@ updates:
   open-pull-requests-limit: 99
   ignore:
   - dependency-name: Microsoft.AspNetCore.WebUtilities
+    update-types: ["version-update:semver-major"]
   - dependency-name: Newtonsoft.Json
   - dependency-name: System.Net.Http
   - dependency-name: System.Text.Json

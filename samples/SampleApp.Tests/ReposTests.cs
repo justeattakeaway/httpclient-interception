@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Just Eat, 2017. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System.Text.Json;
 using JustEat.HttpClientInterception;
-using Newtonsoft.Json;
 
 namespace SampleApp.Tests;
 
@@ -55,7 +55,7 @@ public sealed class ReposTests : IDisposable
             using (var httpClient = Fixture.CreateClient())
             {
                 string json = await httpClient.GetStringAsync("api/repos?count=2", TestContext.Current.CancellationToken);
-                actual = JsonConvert.DeserializeObject<string[]>(json);
+                actual = JsonSerializer.Deserialize<string[]>(json);
             }
 
             // Assert - Our application should have parsed the stub-names

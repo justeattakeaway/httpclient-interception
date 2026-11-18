@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: read
     with:
-      include-nuget-packages: 'Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,Microsoft.NET.Test.Sdk'
+      include-nuget-packages: 'Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.'
       labels: 'dependencies,.NET'
       user-email: ${{ vars.UPDATER_COMMIT_USER_EMAIL }}
       user-name: ${{ vars.UPDATER_COMMIT_USER_NAME }}

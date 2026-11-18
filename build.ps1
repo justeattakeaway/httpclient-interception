@@ -16,11 +16,14 @@ $sdkFile = Join-Path $solutionPath "global.json"
 $libraryProject = Join-Path $solutionPath "src" "HttpClientInterception" "JustEat.HttpClientInterception.csproj"
 
 $testProjects = @(
-    (Join-Path $solutionPath "tests" "HttpClientInterception.Tests" "JustEat.HttpClientInterception.Tests.csproj"),
-    (Join-Path $solutionPath "samples" "SampleApp.Tests" "SampleApp.Tests.csproj")
+    @{ Path = (Join-Path $solutionPath "tests" "HttpClientInterception.Tests" "JustEat.HttpClientInterception.Tests.csproj"); CoverageThreshold = 95 },
+    @{ Path = (Join-Path $solutionPath "samples" "SampleApp.Tests" "SampleApp.Tests.csproj"); CoverageThreshold = 0 }
 )
 
 $dotnetVersion = (Get-Content $sdkFile | Out-String | ConvertFrom-Json).sdk.version
+
+# Additional .NET runtimes required to run the tests for older target frameworks
+$additionalRuntimes = @("10.0")
 
 $installDotNetSdk = $false;
 
@@ -58,11 +61,17 @@ if ($installDotNetSdk -eq $true) {
             Invoke-WebRequest "https://dot.net/v1/dotnet-install.sh" -OutFile $installScript -UseBasicParsing
             chmod +x $installScript
             & $installScript --version "$dotnetVersion" --install-dir ${env:DOTNET_INSTALL_DIR} --no-path
+            ForEach ($runtime in $additionalRuntimes) {
+                & $installScript --channel "$runtime" --runtime dotnet --install-dir ${env:DOTNET_INSTALL_DIR} --no-path
+            }
         }
         else {
             $installScript = Join-Path ${env:DOTNET_INSTALL_DIR} "install.ps1"
             Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
             & $installScript -Version "$dotnetVersion" -InstallDir ${env:DOTNET_INSTALL_DIR} -NoPath
+            ForEach ($runtime in $additionalRuntimes) {
+                & $installScript -Channel "$runtime" -Runtime dotnet -InstallDir ${env:DOTNET_INSTALL_DIR} -NoPath
+            }
         }
     }
 }
@@ -93,20 +102,76 @@ function DotNetPack {
     }
 }
 
+$coverageDirectory = Join-Path $solutionPath "artifacts" "coverage"
+
 function DotNetTest {
-    param([string]$Project)
+    param([string]$Project, [int]$CoverageThreshold)
 
     $additionalArgs = @()
 
-    if (![string]::IsNullOrEmpty(${env:GITHUB_SHA})) {
-        $additionalArgs += "--logger"
-        $additionalArgs += "GitHubActions;report-warnings=false"
+    if ($CoverageThreshold -gt 0) {
+        $additionalArgs += "--coverlet-threshold"
+        $additionalArgs += $CoverageThreshold
+        $additionalArgs += "--coverlet-threshold-type"
+        $additionalArgs += "line,branch,method"
     }
 
-    & $dotnet test $Project --configuration "Release" --tl $additionalArgs
+    if (![string]::IsNullOrEmpty(${env:GITHUB_SHA})) {
+        $additionalArgs += "--report-github"
+    }
+
+    # The coverage filter is passed inline as a quoted literal, as PowerShell on Linux and macOS
+    # expands wildcards in arguments passed to native commands from variables.
+    & $dotnet test `
+        --project $Project `
+        --configuration "Release" `
+        --results-directory $coverageDirectory `
+        --coverlet `
+        --coverlet-output-format "cobertura" `
+        --coverlet-include "[JustEat.HttpClientInterception]*" `
+        --coverlet-file-prefix ([System.IO.Path]::GetFileNameWithoutExtension($Project)) `
+        $additionalArgs
 
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet test failed with exit code $LASTEXITCODE"
+    }
+}
+
+function GenerateCoverageReport {
+
+    $reportTypes = "HTML"
+    $outputMarkdown = ![string]::IsNullOrEmpty(${env:GITHUB_STEP_SUMMARY})
+
+    if ($outputMarkdown) {
+        $reportTypes += ";MarkdownSummaryGithub"
+    }
+
+    & $dotnet tool restore
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "dotnet tool restore failed with exit code $LASTEXITCODE"
+    }
+
+    & $dotnet reportgenerator `
+        "-reports:$(Join-Path $coverageDirectory "*.cobertura.*.xml")" `
+        "-targetdir:$coverageDirectory" `
+        "-reporttypes:$reportTypes" `
+        "-title:JustEat.HttpClientInterception" `
+        "-verbosity:Warning"
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "reportgenerator failed with exit code $LASTEXITCODE"
+    }
+
+    if ($outputMarkdown) {
+        $summary = Get-Content (Join-Path $coverageDirectory "SummaryGithub.md") | Out-String
+        @(
+            "<details><summary>:chart_with_upwards_trend: <b>JustEat.HttpClientInterception Code Coverage report</b></summary>",
+            "",
+            $summary,
+            "",
+            "</details>"
+        ) | Out-File -FilePath ${env:GITHUB_STEP_SUMMARY} -Append -Encoding utf8
     }
 }
 
@@ -117,8 +182,9 @@ DotNetPack $libraryProject
 if (-Not $SkipTests)
 {
     Write-Output "Running tests..."
-    Remove-Item -Path (Join-Path $solutionPath "artifacts" "coverage" "coverage.*.json") -Force -ErrorAction SilentlyContinue | Out-Null
+    Remove-Item -Path $coverageDirectory -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
     ForEach ($testProject in $testProjects) {
-        DotNetTest $testProject
+        DotNetTest $testProject.Path $testProject.CoverageThreshold
     }
+    GenerateCoverageReport
 }
