@@ -718,7 +718,12 @@ public static partial class Examples
         using var client = options.CreateHttpClient();
 
         // Act
+#if NET11_0_OR_GREATER
+        // From .NET 11, HttpClient observes the cancellation token when buffering the response content
+        await Should.ThrowAsync<TaskCanceledException>(() => client.GetAsync("http://www.google.co.uk", cts.Token));
+#else
         await client.GetAsync("http://www.google.co.uk", cts.Token);
+#endif
 
         // Assert
         cts.IsCancellationRequested.ShouldBeTrue();

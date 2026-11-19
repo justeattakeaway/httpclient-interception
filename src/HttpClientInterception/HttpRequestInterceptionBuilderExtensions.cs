@@ -8,7 +8,6 @@ using System.Text.Json;
 #if NET6_0_OR_GREATER
 using System.Text.Json.Serialization.Metadata;
 #endif
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace JustEat.HttpClientInterception;
 
@@ -426,20 +425,18 @@ public static class HttpRequestInterceptionBuilderExtensions
 
             // This is tolerant to non-well-formed content, so even JSON
             // parses without issues, it then just won't match the input.
-            var query = QueryHelpers.ParseQuery(bodyMaybeForm);
-
-            bool matched = true;
+            var form = FormUrlEncodedParser.Parse(bodyMaybeForm);
 
             foreach (var pair in parameters)
             {
-                if (!query.TryGetValue(pair.Key, out var value) ||
-                    !string.Equals(pair.Value, value.ToString(), StringComparison.Ordinal))
+                if (!form.TryGetValue(pair.Key, out var value) ||
+                    !string.Equals(pair.Value, value, StringComparison.Ordinal))
                 {
                     return false;
                 }
             }
 
-            return matched;
+            return true;
         }
 
         return builder.ForContent(IsMatchAsync);
