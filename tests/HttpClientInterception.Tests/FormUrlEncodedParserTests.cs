@@ -107,6 +107,19 @@ public static class FormUrlEncodedParserTests
     }
 
     [Fact]
+    public static void Parse_Matches_QueryHelpers_For_Many_Repeated_Values()
+    {
+        // Arrange
+        string content = string.Join("&", Enumerable.Range(0, 10_000).Select((i) => i % 3 == 0 ? "a=" : $"A={i}"));
+
+        // Act
+        var actual = FormUrlEncodedParser.Parse(content);
+
+        // Assert
+        actual.ShouldBe(ParseWithQueryHelpers(content), ignoreOrder: true);
+    }
+
+    [Fact]
     public static void Parse_Keys_Are_Case_Insensitive()
     {
         // Act

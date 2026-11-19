@@ -3,6 +3,8 @@
 
 #nullable enable
 
+using System.Text;
+
 namespace JustEat.HttpClientInterception;
 
 /// <summary>
@@ -29,12 +31,12 @@ internal static class FormUrlEncodedParser
     /// </remarks>
     internal static Dictionary<string, string> Parse(string content)
     {
-        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
         if (string.IsNullOrEmpty(content))
         {
-            return result;
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
+
+        var values = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
         int index = content[0] == '?' ? 1 : 0;
         int length = content.Length;
@@ -63,15 +65,22 @@ internal static class FormUrlEncodedParser
                 string key = Decode(content.Substring(index, separator - index));
                 string value = Decode(content.Substring(separator + 1, delimiter - separator - 1));
 
-                Append(result, key, value);
+                Append(values, key, value);
             }
             else if (delimiter > index)
             {
                 // A key without a value is used as-is without being decoded
-                Append(result, content.Substring(index, delimiter - index), string.Empty);
+                Append(values, content.Substring(index, delimiter - index), string.Empty);
             }
 
             index = delimiter + 1;
+        }
+
+        var result = new Dictionary<string, string>(values.Count, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var pair in values)
+        {
+            result[pair.Key] = Join(pair.Value);
         }
 
         return result;
@@ -80,17 +89,40 @@ internal static class FormUrlEncodedParser
     private static string Decode(string value)
         => Uri.UnescapeDataString(value.Replace('+', ' '));
 
-    private static void Append(Dictionary<string, string> result, string key, string value)
+    private static void Append(Dictionary<string, List<string>> values, string key, string value)
     {
+        if (!values.TryGetValue(key, out var existing))
+        {
+            values[key] = existing = new List<string>(1);
+        }
+
+        existing.Add(value);
+    }
+
+    private static string Join(List<string> values)
+    {
+        if (values.Count == 1)
+        {
+            return values[0];
+        }
+
         // Multiple values are joined in the same way as StringValues.ToString(),
         // which joins them with a comma but omits any values that are empty.
-        if (!result.TryGetValue(key, out string? existing) || existing.Length == 0)
+        var builder = new StringBuilder();
+
+        foreach (string value in values)
         {
-            result[key] = value;
+            if (value.Length > 0)
+            {
+                if (builder.Length > 0)
+                {
+                    builder.Append(',');
+                }
+
+                builder.Append(value);
+            }
         }
-        else if (value.Length > 0)
-        {
-            result[key] = existing + "," + value;
-        }
+
+        return builder.ToString();
     }
 }
