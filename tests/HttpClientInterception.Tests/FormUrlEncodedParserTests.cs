@@ -166,6 +166,9 @@ public static class FormUrlEncodedParserTests
     [InlineData("a=b+c%20d", "a", "b c d", true)]
     [InlineData("a%20b", "a b", "", false)]
     [InlineData("a%20b", "a%20b", "", true)]
+    [InlineData("=1&a=2", "a", "2", true)]
+    [InlineData(" =1&a=2", "a", "2", true)]
+    [InlineData("&&a=1&", "a", "1", true)]
     public static async Task ForFormContent_Matches_Using_Form_Parsing_Rules(string body, string key, string value, bool shouldMatch)
     {
         // Arrange
