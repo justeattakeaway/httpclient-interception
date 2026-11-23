@@ -884,6 +884,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithJsonContent(content)).ParamName.ShouldBe("builder");
         Should.Throw<ArgumentNullException>(() => builder.WithJsonContent(content)).ParamName.ShouldBe("content");
         Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithJsonContent(typedContent, jsonTypeInfo)).ParamName.ShouldBe("builder");
+        Should.Throw<ArgumentNullException>(() => builder.WithJsonContent((CustomObject)null, jsonTypeInfo)).ParamName.ShouldBe("content");
         Should.Throw<ArgumentNullException>(() => builder.WithJsonContent(typedContent, null)).ParamName.ShouldBe("jsonTypeInfo");
     }
 
