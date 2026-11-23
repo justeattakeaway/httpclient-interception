@@ -25,19 +25,16 @@ $dotnetVersion = (Get-Content $sdkFile | Out-String | ConvertFrom-Json).sdk.vers
 # Additional .NET runtimes required to run the tests for older target frameworks
 $additionalRuntimes = @("10.0")
 
-function Test-DotNetRuntimes {
+function Get-MissingDotNetRuntime {
     param([string]$DotNet)
 
     $installedRuntimes = & $DotNet --list-runtimes 2>&1 | Out-String
 
     ForEach ($runtime in $additionalRuntimes) {
         if (-Not ($installedRuntimes -match "Microsoft\.NETCore\.App $([regex]::Escape($runtime))\.")) {
-            Write-Host "The .NET $runtime runtime is not installed."
-            return $false
+            $runtime
         }
     }
-
-    return $true
 }
 
 function Install-DotNet {
@@ -176,8 +173,12 @@ try {
             Write-Output "The required version of the .NET SDK is not installed. Expected $dotnetVersion."
             $installDotNetSdk = $true
         }
-        elseif (-Not (Test-DotNetRuntimes "dotnet")) {
-            $installDotNetSdk = $true
+        else {
+            $missingRuntimes = @(Get-MissingDotNetRuntime "dotnet")
+            if ($missingRuntimes.Count -gt 0) {
+                Write-Output "The .NET $($missingRuntimes -join ", ") runtime is not installed."
+                $installDotNetSdk = $true
+            }
         }
     }
 
