@@ -5,9 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
-#if NET6_0_OR_GREATER
 using System.Text.Json.Serialization.Metadata;
-#endif
 
 namespace JustEat.HttpClientInterception;
 
@@ -218,7 +216,6 @@ public static class HttpRequestInterceptionBuilderExtensions
         return builder.WithSystemTextJsonContent(content);
     }
 
-#if NET6_0_OR_GREATER
     /// <summary>
     /// Sets the object to use as the response content.
     /// </summary>
@@ -237,9 +234,20 @@ public static class HttpRequestInterceptionBuilderExtensions
         T content,
         JsonTypeInfo<T> jsonTypeInfo)
     {
-        ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(content);
-        ArgumentNullException.ThrowIfNull(jsonTypeInfo);
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        if (content is null)
+        {
+            throw new ArgumentNullException(nameof(content));
+        }
+
+        if (jsonTypeInfo is null)
+        {
+            throw new ArgumentNullException(nameof(jsonTypeInfo));
+        }
 
         byte[] ContentFactory()
         {
@@ -250,7 +258,6 @@ public static class HttpRequestInterceptionBuilderExtensions
             .WithMediaType(HttpClientInterceptorOptions.JsonMediaType)
             .WithContent(ContentFactory);
     }
-#endif
 
     /// <summary>
     /// Sets the request URL to intercept a request for.

@@ -1,1 +1,3 @@
 #nullable enable
+static JustEat.HttpClientInterception.HttpClientInterceptorOptionsExtensions.RegisterGetFromJson<T>(this JustEat.HttpClientInterception.HttpClientInterceptorOptions! options, string! uriString, T content, System.Text.Json.Serialization.Metadata.JsonTypeInfo<T>! jsonTypeInfo, System.Net.HttpStatusCode statusCode = System.Net.HttpStatusCode.OK) -> JustEat.HttpClientInterception.HttpClientInterceptorOptions!
+static JustEat.HttpClientInterception.HttpRequestInterceptionBuilderExtensions.WithJsonContent<T>(this JustEat.HttpClientInterception.HttpRequestInterceptionBuilder! builder, T content, System.Text.Json.Serialization.Metadata.JsonTypeInfo<T>! jsonTypeInfo) -> JustEat.HttpClientInterception.HttpRequestInterceptionBuilder!
