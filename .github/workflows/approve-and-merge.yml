@@ -36,7 +36,7 @@ jobs:
       id: check-dependencies
       env:
         # This list of trusted package prefixes needs to stay in sync with include-nuget-packages in the update-dotnet-sdk workflow.
-        INCLUDE_NUGET_PACKAGES: 'Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,Microsoft.NET.Test.Sdk'
+        INCLUDE_NUGET_PACKAGES: 'Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.'
         GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         UPDATER_COMMIT_USER_NAME: ${{ vars.UPDATER_COMMIT_USER_NAME }}

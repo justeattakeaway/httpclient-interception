@@ -480,6 +480,32 @@ public static partial class HttpRequestInterceptionBuilderTests
     }
 
     [Fact]
+    public static async Task GetResponseAsync_Returns_Response_If_Headers_Are_Empty()
+    {
+        // Arrange
+        string url = "https://google.com/";
+
+        var builder = new HttpRequestInterceptionBuilder()
+            .ForUrl(url)
+            .ForRequestHeaders(new Dictionary<string, string>())
+            .WithResponseHeaders(new Dictionary<string, string>())
+            .WithContentHeaders(new Dictionary<string, string>());
+
+        var options = new HttpClientInterceptorOptions()
+            .Register(builder);
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        // Act
+        using HttpResponseMessage actual = await options.GetResponseAsync(request, TestContext.Current.CancellationToken);
+
+        // Assert
+        actual.ShouldNotBeNull();
+        actual.Headers.ShouldBeEmpty();
+        actual.Content.Headers.ContentType?.MediaType.ShouldBe("application/json");
+    }
+
+    [Fact]
     public static async Task GetResponseAsync_Returns_Empty_Response_If_Custom_Content_Headers()
     {
         // Arrange
@@ -858,6 +884,7 @@ public static partial class HttpRequestInterceptionBuilderTests
         Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithJsonContent(content)).ParamName.ShouldBe("builder");
         Should.Throw<ArgumentNullException>(() => builder.WithJsonContent(content)).ParamName.ShouldBe("content");
         Should.Throw<ArgumentNullException>(() => ((HttpRequestInterceptionBuilder)null).WithJsonContent(typedContent, jsonTypeInfo)).ParamName.ShouldBe("builder");
+        Should.Throw<ArgumentNullException>(() => builder.WithJsonContent((CustomObject)null, jsonTypeInfo)).ParamName.ShouldBe("content");
         Should.Throw<ArgumentNullException>(() => builder.WithJsonContent(typedContent, null)).ParamName.ShouldBe("jsonTypeInfo");
     }
 

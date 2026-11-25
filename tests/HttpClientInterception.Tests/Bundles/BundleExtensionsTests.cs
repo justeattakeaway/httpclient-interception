@@ -2,6 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.Net;
+using System.Text;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 
@@ -600,6 +601,50 @@ public static class BundleExtensionsTests
 
         // Act
         options.RegisterBundle(Path.Join("Bundles", "templated-bundle-null-headers.json"), headers);
+    }
+
+    [Fact]
+    public static void RegisterBundleFromStream_Throws_If_Bundle_Is_Null()
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions();
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("null"));
+
+        // Act and Assert
+        var exception = Should.Throw<InvalidOperationException>(() => options.RegisterBundleFromStream(stream));
+        exception.Message.ShouldBe("No HTTP request interception bundle was deserialized.");
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("base64")]
+    [InlineData("string")]
+    public static async Task Can_Intercept_Http_Requests_From_Bundle_With_Template_Values_And_No_Content(string contentFormat)
+    {
+        // Arrange
+        var options = new HttpClientInterceptorOptions().ThrowsOnMissingRegistration();
+
+        var item = new JObject()
+        {
+            ["uri"] = "https://www.just-eat.co.uk/${Path}",
+            ["contentFormat"] = contentFormat,
+            ["templateValues"] = new JObject() { ["Path"] = "order-history" },
+        };
+
+        var bundle = new JObject()
+        {
+            ["version"] = 1,
+            ["items"] = new JArray(item),
+        };
+
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(bundle.ToString()));
+
+        // Act
+        options.RegisterBundleFromStream(stream);
+
+        // Assert
+        string content = await HttpAssert.GetAsync(options, "https://www.just-eat.co.uk/order-history");
+        content.ShouldBe(string.Empty);
     }
 
     [Fact]

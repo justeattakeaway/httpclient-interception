@@ -470,7 +470,7 @@ public class HttpClientInterceptorOptions
 
         int hashCode;
 
-#if NET8_0
+#if NET8_0_OR_GREATER
         var combiner = new HashCode();
 
         foreach (var pair in headers)
