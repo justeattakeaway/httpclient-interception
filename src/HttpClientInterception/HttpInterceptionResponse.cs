@@ -27,6 +27,8 @@ internal sealed class HttpInterceptionResponse
 
     internal Func<Task<byte[]>>? ContentFactory { get; set; }
 
+    internal Func<HttpStatusCode>? StatusCodeFactory { get; set; }
+
     internal Func<Task<Stream>>? ContentStream { get; set; }
 
     internal string? ContentMediaType { get; set; }
